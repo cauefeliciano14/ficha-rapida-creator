@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
     --background: 220 20% 10%;
@@ -34,6 +36,16 @@
 
     --radius: 0.5rem;
 
+    /* D&D themed gold accent */
+    --gold: 43 74% 49%;
+    --gold-foreground: 0 0% 8%;
+    --gold-muted: 43 40% 30%;
+
+    /* Sheet-specific tokens */
+    --sheet-bg: 220 18% 12%;
+    --sheet-border: 220 14% 25%;
+    --sheet-header: 220 20% 8%;
+
     --sidebar-background: 220 20% 8%;
     --sidebar-foreground: 36 20% 88%;
     --sidebar-primary: 0 72% 51%;
@@ -61,7 +73,12 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  /* D&D display font for headers */
+  .font-display {
+    font-family: 'Cinzel', 'Georgia', serif;
   }
 
   /* Accessibility: visible focus ring */
@@ -91,6 +108,90 @@
   }
 }
 
+@layer components {
+  /* D&D Sheet Styles */
+  .sheet-box {
+    @apply rounded-lg border-2 border-border bg-card p-3 text-center transition-all duration-200;
+  }
+
+  .sheet-box:hover {
+    border-color: hsl(var(--gold) / 0.4);
+    box-shadow: 0 0 12px hsl(var(--gold) / 0.1);
+  }
+
+  .sheet-box-label {
+    @apply text-[10px] uppercase tracking-widest font-semibold;
+    color: hsl(var(--gold));
+  }
+
+  .sheet-box-value {
+    @apply text-xl font-bold leading-none mt-1;
+  }
+
+  .sheet-section {
+    @apply rounded-lg border bg-card overflow-hidden transition-all duration-200;
+  }
+
+  .sheet-section-header {
+    @apply flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b;
+    background: hsl(var(--sheet-header));
+    color: hsl(var(--gold));
+  }
+
+  /* Ability score diamond */
+  .ability-diamond {
+    @apply relative flex flex-col items-center justify-center rounded-lg border-2 border-border p-2 transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)));
+    min-width: 70px;
+  }
+
+  .ability-diamond:hover {
+    border-color: hsl(var(--gold) / 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px hsl(var(--gold) / 0.15);
+  }
+
+  /* Interactive card */
+  .interactive-card {
+    @apply rounded-lg border bg-card p-3 transition-all duration-200 cursor-pointer;
+  }
+
+  .interactive-card:hover {
+    @apply border-primary/50 bg-primary/5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.15);
+  }
+
+  .interactive-card.selected {
+    @apply border-primary bg-primary/10;
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 4px 12px hsl(var(--primary) / 0.2);
+  }
+
+  /* Progress bar with glow */
+  .progress-glow {
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.4);
+  }
+
+  /* Proficiency dot */
+  .prof-dot {
+    @apply h-2.5 w-2.5 rounded-full border transition-colors duration-200;
+  }
+
+  .prof-dot.filled {
+    @apply bg-success border-success;
+  }
+
+  .prof-dot.empty {
+    @apply border-muted-foreground/30;
+  }
+
+  /* Mobile bottom bar */
+  .mobile-bottom-bar {
+    @apply fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur-sm;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /* ── Print Styles ── */
 @media print {
   body {
@@ -99,7 +200,7 @@
     font-size: 11pt;
   }
 
-  .print\\:hidden,
+  .print\:hidden,
   header, aside, nav,
   .print-hide {
     display: none !important;
@@ -119,7 +220,7 @@
     color: #666 !important;
   }
 
-  .print\\:break-before-page {
+  .print\:break-before-page {
     break-before: page;
   }
 

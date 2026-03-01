@@ -76,8 +76,11 @@ const STEP_COMPONENTS: Record<StepId, React.LazyExoticComponent<React.ComponentT
 
 function StepFallback() {
   return (
-    <div className="flex items-center justify-center h-64">
-      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+    <div className="flex items-center justify-center h-64 animate-fade-in">
+      <div className="flex flex-col items-center gap-3">
+        <Loader2 className="h-6 w-6 animate-spin text-gold/60" />
+        <p className="text-xs text-muted-foreground">Carregando...</p>
+      </div>
     </div>
   );
 }
@@ -96,8 +99,6 @@ function BuilderContent() {
   const isVisibleStep = visibleSteps.some((step) => step.id === currentStep);
   const validStep = isKnownStep && isVisibleStep ? currentStep : fallbackStep;
 
-  // Guard against stale persisted currentStep that is unknown or currently hidden.
-  // Important: avoid updating store during render, which can trigger render loops.
   useEffect(() => {
     if (validStep !== currentStep) {
       goToStep(validStep as StepId);
@@ -113,14 +114,12 @@ function BuilderContent() {
   const StepComponent = STEP_COMPONENTS[validStep];
   const activeStepContainerRef = useRef<HTMLDivElement>(null);
 
-  // Hook for Enter key to advance
   useEnterToNextStep({
     canGoNext: canNext && !isLast,
     goNext: nextStep,
     containerRef: activeStepContainerRef,
   });
 
-  // Scroll to top when step changes
   useEffect(() => {
     const scroller = document.querySelector("[data-step-scroll='true']") as HTMLElement | null;
     if (scroller) {
@@ -128,58 +127,79 @@ function BuilderContent() {
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-
-    // Focus the step header title for accessibility
     setTimeout(() => {
       const headerTitle = document.querySelector("[data-step-header-title]") as HTMLElement | null;
-      if (headerTitle) {
-        headerTitle.focus();
-      }
-    }, 300); // Wait for scroll animation
+      if (headerTitle) headerTitle.focus();
+    }, 300);
   }, [currentStep, validStep]);
 
   return (
     <div className="flex min-h-screen flex-col">
       {import.meta.env.DEV && getDevAuditStatus().totalErrors > 0 && (
-        <div className="bg-destructive text-destructive-foreground text-sm px-4 py-2 text-center">
-          DEV AUDIT: {getDevAuditStatus().totalErrors} erro(s) de dados detectados (produção não bloqueada).
+        <div className="bg-destructive text-destructive-foreground text-xs px-4 py-1.5 text-center">
+          DEV: {getDevAuditStatus().totalErrors} erro(s) de dados
         </div>
       )}
       <Header />
       <IdentityHeader />
       <div className="flex flex-1 overflow-hidden md:flex-row flex-col">
+        {/* Desktop sidebar */}
         <aside className="hidden md:block">
           <SidebarSteps />
         </aside>
 
+        {/* Main content */}
         <div className="flex flex-1 flex-col overflow-hidden min-w-0">
-          <div className="border-b bg-background px-4 py-2 md:hidden">
+          {/* Mobile step/summary toggles */}
+          <div className="border-b bg-card/80 backdrop-blur-sm px-3 py-2 md:hidden">
             <div className="flex items-center justify-between gap-2">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <ListChecks className="h-4 w-4" />
+                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                    <ListChecks className="h-3.5 w-3.5" />
                     Etapas
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-full p-0 sm:max-w-sm">
+                <SheetContent side="left" className="w-[85%] max-w-sm p-0">
                   <SheetHeader className="border-b px-4 py-3 text-left">
-                    <SheetTitle className="text-base">Etapas</SheetTitle>
+                    <SheetTitle className="text-base font-display">Etapas</SheetTitle>
                   </SheetHeader>
                   <SidebarSteps />
                 </SheetContent>
               </Sheet>
 
+              {/* Mobile step indicator */}
+              <div className="flex items-center gap-1.5">
+                {visibleSteps.map((step) => (
+                  <button
+                    key={step.id}
+                    onClick={() => {
+                      const idx = visibleSteps.findIndex((s) => s.id === step.id);
+                      const navigable = idx === 0 || visibleSteps.slice(0, idx).every((s) => completedSteps.includes(s.id));
+                      if (navigable) goToStep(step.id);
+                    }}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      step.id === validStep
+                        ? "w-6 bg-primary"
+                        : completedSteps.includes(step.id)
+                        ? "w-2 bg-success"
+                        : "w-2 bg-muted"
+                    }`}
+                    aria-label={`Etapa ${step.num}`}
+                  />
+                ))}
+              </div>
+
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <PanelRight className="h-4 w-4" />
+                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
+                    <PanelRight className="h-3.5 w-3.5" />
                     Resumo
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full p-0 sm:max-w-md">
+                <SheetContent side="right" className="w-[85%] max-w-md p-0">
                   <SheetHeader className="border-b px-4 py-3 text-left">
-                    <SheetTitle className="text-base">Resumo</SheetTitle>
+                    <SheetTitle className="text-base font-display">Resumo</SheetTitle>
                   </SheetHeader>
                   <SummaryPanel />
                 </SheetContent>
@@ -187,6 +207,7 @@ function BuilderContent() {
             </div>
           </div>
 
+          {/* Step content with scroll */}
           <div className="flex-1 overflow-y-auto" data-step-scroll="true">
             <StepHeader
               stepId={validStep}
@@ -194,7 +215,13 @@ function BuilderContent() {
               currentMissing={currentMissing}
               showEnterHint={canNext && !isLast}
             />
-            <div ref={activeStepContainerRef} tabIndex={-1} data-active-step-container="true">
+            <div
+              ref={activeStepContainerRef}
+              tabIndex={-1}
+              data-active-step-container="true"
+              className="animate-fade-in"
+              key={validStep}
+            >
               <Suspense fallback={<StepFallback />}>
                 <StepComponent />
               </Suspense>
@@ -202,7 +229,8 @@ function BuilderContent() {
           </div>
         </div>
 
-        <aside className="hidden md:block">
+        {/* Desktop summary panel */}
+        <aside className="hidden xl:block">
           <SummaryPanel />
         </aside>
       </div>
