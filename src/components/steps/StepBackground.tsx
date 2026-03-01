@@ -241,8 +241,7 @@ function BackgroundDetails({ bg, bgLanguageRequired, requirements, selectedLangu
             )}
           </div>
           <p className="mt-2 text-xs text-muted-foreground"><Info className="inline h-3 w-3 mr-1" />As escolhas ficam salvas na ficha automaticamente.</p>
-        </HighlightCard>
-      </div>
+        </Section>
 
         <Section title="Equipamento" icon={<Package className="h-4 w-4 text-primary" />} badge={<Badge>{equipmentSelected === "A" ? "Pacote A" : "50 PO"}</Badge>} highlighted>
           <RadioGroup value={equipmentSelected} onValueChange={(value) => setEquipmentChoice(value as "A" | "B")}>
