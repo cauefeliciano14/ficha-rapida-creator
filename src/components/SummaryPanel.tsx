@@ -69,7 +69,7 @@ export function SummaryPanel() {
   const cls = useMemo(() => classes.find((c) => c.id === classId), [classId]);
   const bg = useMemo(() => backgrounds.find((b) => b.id === backgroundId), [backgroundId]);
 
-  const isSpellcaster = cls?.spellcasting !== null;
+  const isSpellcaster = cls?.spellcasting != null;
 
   const finalScores = useMemo(
     () => getFinalAbilityScores(abilityScores, racialBonuses, backgroundBonuses, asiBonuses, featAbilityBonuses),

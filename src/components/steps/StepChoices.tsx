@@ -119,9 +119,8 @@ export function StepChoices() {
   const cls = classes.find((c) => c.id === classId);
   const sc = cls?.spellcasting ?? null;
 
-  // Build a minimal char-like object for requirements
-  const charSnapshot = useCharacterStore.getState();
-  const requirements = useMemo(() => getChoicesRequirements(charSnapshot), [
+  // Build requirements reactively
+  const requirements = useMemo(() => getChoicesRequirements(useCharacterStore.getState()), [
     classId, raceId, backgroundId, level, choiceSelections,
     classSkillChoices, spellsState.cantrips, spellsState.prepared,
     raceChoices, classFeatureChoices,

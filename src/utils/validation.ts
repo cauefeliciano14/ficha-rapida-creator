@@ -281,8 +281,8 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
       missing.push({
         id: VALIDATION_ITEM_IDS.spellAbility,
         label: "Atributo de conjuração não definido",
-        stepId: "equipment",
-        stepNumber: 5,
+        stepId: choicesStepId,
+        stepNumber: choicesStepNumber,
         severity: "required",
       });
     }
