@@ -6,6 +6,16 @@ import { races } from "@/data/races";
 import { backgrounds } from "@/data/backgrounds";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
+const STEP_ICONS: Record<string, string> = {
+  class: "⚔️",
+  origin: "📜",
+  race: "🧬",
+  abilities: "💪",
+  equipment: "🛡️",
+  choices: "✅",
+  sheet: "📋",
+};
+
 export function SidebarSteps() {
   const classId = useCharacterStore((s) => s.class);
   const raceId = useCharacterStore((s) => s.race);
@@ -23,7 +33,6 @@ export function SidebarSteps() {
 
   const visibleSteps = getVisibleSteps();
 
-  // Mini-summary for each step
   const stepSummary: Record<string, string | undefined> = {
     class: cls?.name,
     origin: bg?.name,
@@ -37,11 +46,11 @@ export function SidebarSteps() {
   };
 
   return (
-    <aside className="w-full md:w-56 shrink-0 border-r md:border-r bg-sidebar p-4 overflow-y-auto">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+    <aside className="w-full md:w-56 shrink-0 border-r bg-sidebar p-3 sm:p-4 overflow-y-auto">
+      <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-gold/70 font-display">
         Etapas
       </p>
-      <nav className="flex flex-col gap-0.5" role="navigation" aria-label="Etapas do builder">
+      <nav className="flex flex-col gap-1" role="navigation" aria-label="Etapas do builder">
         {visibleSteps.map((step, idx) => {
           const isDone = completedSteps.includes(step.id);
           const isActive = currentStep === step.id;
@@ -49,6 +58,7 @@ export function SidebarSteps() {
           const isLocked = !navigable && !isDone;
           const missing = requiredMissing[step.id] ?? [];
           const summary = stepSummary[step.id];
+          const icon = STEP_ICONS[step.id] ?? "📌";
 
           const button = (
             <button
@@ -57,21 +67,23 @@ export function SidebarSteps() {
               disabled={isLocked}
               aria-current={isActive ? "step" : undefined}
               aria-label={`${step.num}. ${step.label}${isDone ? " — concluído" : isLocked ? " — bloqueado" : ""}`}
-              className={`group flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-left transition-all ${
+              className={`group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-left transition-all duration-200 ${
                 isActive
-                  ? "bg-secondary text-foreground font-medium shadow-sm"
+                  ? "bg-primary/10 border border-primary/30 text-foreground font-medium shadow-sm"
                   : isDone
                   ? "text-success hover:bg-secondary/50"
                   : isLocked
-                  ? "text-locked-foreground cursor-not-allowed"
-                  : "text-muted-foreground hover:bg-secondary/50"
+                  ? "text-locked-foreground cursor-not-allowed opacity-50"
+                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
               }`}
             >
-              <div className="shrink-0">
+              <div className="shrink-0 text-base">
                 {isDone ? (
                   <CheckCircle2 className="h-4 w-4 text-success" />
                 ) : isLocked ? (
                   <Lock className="h-4 w-4" />
+                ) : isActive ? (
+                  <span className="text-sm">{icon}</span>
                 ) : missing.length > 0 ? (
                   <AlertCircle className="h-4 w-4 text-info" />
                 ) : (
@@ -79,21 +91,23 @@ export function SidebarSteps() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <span className="block truncate leading-tight">
+                <span className="block truncate leading-tight text-xs sm:text-sm">
                   {step.num}. {step.label}
                 </span>
                 {summary && (
-                  <span className={`mt-0.5 block truncate text-[11px] font-medium ${
-                    isDone ? "text-success/70" : "text-muted-foreground"
+                  <span className={`mt-0.5 block truncate text-[10px] font-medium ${
+                    isDone ? "text-success/70" : "text-gold/50"
                   }`}>
                     {summary}
                   </span>
                 )}
               </div>
+              {isDone && (
+                <span className="text-[10px] text-success/60 font-medium shrink-0">✓</span>
+              )}
             </button>
           );
 
-          // Show tooltip with missing items for non-active steps with pendencies
           if (!isActive && missing.length > 0 && !isLocked) {
             return (
               <Tooltip key={step.id}>

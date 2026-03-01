@@ -6,7 +6,6 @@ import { backgrounds } from "@/data/backgrounds";
 import { spells as spellsData } from "@/data/spells";
 import { featsById } from "@/data/feats";
 import { itemsById } from "@/data/items";
-import type { ArmorProperties, WeaponProperties } from "@/data/items";
 import {
   ABILITY_LABELS, ABILITY_SHORT, ABILITIES, calcAbilityMod,
   getFinalAbilityScores, ALL_SKILLS, type AbilityKey,
@@ -19,7 +18,7 @@ import {
 import {
   CheckCircle2, AlertCircle, Download, Copy, Printer, ArrowLeft,
   ChevronDown, Shield, Swords, Wand2, BookOpen, Users, Scroll, Star,
-  Upload, Share2, FileText,
+  Upload, Share2, FileText, Heart, Zap, Eye, Footprints,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +45,7 @@ export function StepReview() {
 
   const finalScores = useMemo(
     () => getFinalAbilityScores(char.abilityScores, char.racialBonuses, char.backgroundBonuses, char.asiBonuses, char.featAbilityBonuses),
-    [char.abilityScores, char.racialBonuses, char.backgroundBonuses, char.asiBonuses]
+    [char.abilityScores, char.racialBonuses, char.backgroundBonuses, char.asiBonuses, char.featAbilityBonuses]
   );
 
   const validation = useMemo(() => validateCharacterCompleteness(char, builder.choicesRequirements?.needsStep ?? false), [
@@ -59,11 +58,8 @@ export function StepReview() {
     builder.choicesRequirements?.needsStep,
   ]);
 
-  // Step completion is now managed by StepSheet parent
-
   const goToStep = (stepId: string) => builder.goToStep(stepId as StepId);
 
-  // ── Export handlers ──
   const handleExport = () => {
     downloadCharacterJSON(char);
     toast({ title: "Exportado!", description: "Arquivo JSON baixado com sucesso." });
@@ -93,16 +89,10 @@ export function StepReview() {
       const raw = await readFileAsJSON(file);
       const result = validateImportPayload(raw);
       if (!result.success) {
-        toast({
-          title: "Erro na importação",
-          description: result.errors.join("\n"),
-          variant: "destructive",
-        });
+        toast({ title: "Erro na importação", description: result.errors.join("\n"), variant: "destructive" });
         return;
       }
-      if (result.warnings.length > 0) {
-        toast({ title: "Aviso", description: result.warnings.join("\n") });
-      }
+      if (result.warnings.length > 0) toast({ title: "Aviso", description: result.warnings.join("\n") });
       if (result.data) {
         char.patchCharacter(result.data as any);
         char.recalc();
@@ -111,7 +101,6 @@ export function StepReview() {
     } catch (err: any) {
       toast({ title: "Erro", description: err.message ?? "Falha ao ler arquivo.", variant: "destructive" });
     }
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -120,66 +109,24 @@ export function StepReview() {
     (s) => s.id !== "sheet" && !builder.completedSteps.includes(s.id)
   );
 
-  return (
-    <div className="p-6 print:p-2 max-w-4xl mx-auto">
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 className="text-2xl font-bold">Revisão Final</h2>
-          <p className="text-sm text-muted-foreground">Confira todos os dados antes de finalizar.</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {validation.isComplete ? (
-            <Badge className="bg-success text-success-foreground gap-1">
-              <CheckCircle2 className="h-3 w-3" /> Ficha Completa
-            </Badge>
-          ) : (
-            <Badge variant="destructive" className="gap-1">
-              <AlertCircle className="h-3 w-3" /> Faltam {validation.missing.length} itens
-            </Badge>
-          )}
-        </div>
-      </div>
+  const dexMod = calcAbilityMod(finalScores.dex);
 
-      {/* ── Pendências ── */}
+  return (
+    <div className="p-3 sm:p-6 print:p-2 max-w-5xl mx-auto animate-fade-in">
+      {/* ── Validation Banner ── */}
       {(validation.missing.length > 0 || validation.warnings.length > 0) && (
-        <div className="mb-6 space-y-3">
+        <div className="mb-4 space-y-2 animate-fade-in">
           {validation.missing.length > 0 && (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 sm:p-4">
               <p className="text-sm font-semibold text-destructive flex items-center gap-2 mb-2">
-                <AlertCircle className="h-4 w-4" /> Itens obrigatórios pendentes
+                <AlertCircle className="h-4 w-4" /> {validation.missing.length} itens pendentes
               </p>
-              <ul className="space-y-1.5">
+              <ul className="space-y-1">
                 {validation.missing.map((m) => (
                   <li key={m.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">• {m.label}</span>
-                    <Button
-                      variant="ghost" size="sm"
-                      className="text-xs h-7 text-primary"
-                      onClick={() => goToStep(m.stepId)}
-                    >
-                      Ir para etapa {m.stepNumber} →
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {validation.warnings.length > 0 && (
-            <div className="rounded-lg border border-warning/30 bg-warning/10 p-4">
-              <p className="text-sm font-semibold text-warning flex items-center gap-2 mb-2">
-                <AlertCircle className="h-4 w-4" /> Avisos
-              </p>
-              <ul className="space-y-1.5">
-                {validation.warnings.map((w) => (
-                  <li key={w.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">• {w.label}</span>
-                    <Button
-                      variant="ghost" size="sm"
-                      className="text-xs h-7 text-primary"
-                      onClick={() => goToStep(w.stepId)}
-                    >
-                      Ir para etapa {w.stepNumber} →
+                    <span className="text-muted-foreground text-xs sm:text-sm">• {m.label}</span>
+                    <Button variant="ghost" size="sm" className="text-xs h-7 text-primary shrink-0" onClick={() => goToStep(m.stepId)}>
+                      Etapa {m.stepNumber} →
                     </Button>
                   </li>
                 ))}
@@ -189,264 +136,290 @@ export function StepReview() {
         </div>
       )}
 
-      {/* ── Name & Identity ── */}
-      <Section>
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <input
-            type="text"
-            placeholder="Nome do Personagem..."
-            value={char.name}
-            onChange={(e) => char.setField("name", e.target.value)}
-            className="text-2xl font-bold bg-transparent border-b border-border focus:border-primary outline-none pb-1 w-full sm:w-auto min-w-[200px] transition-colors"
-          />
-          <div className="flex gap-2 flex-wrap items-center">
-            <Tag>{race?.name ?? "—"}{subrace ? ` (${subrace.name})` : ""}</Tag>
-            <Tag>{cls?.name ?? "—"}</Tag>
-            <Tag>{bg?.name ?? "—"}</Tag>
-            <Tag>Nível {char.level}</Tag>
-            {hasPlannedRaceContent(race) && <Badge variant="outline">Em desenvolvimento</Badge>}
+      {/* ════════════════════════════════════════════════════
+          PAGE 1 — Character Sheet (Official Layout)
+         ════════════════════════════════════════════════════ */}
+
+      {/* ── Identity Header Row ── */}
+      <div className="sheet-section mb-3">
+        <div className="p-3 sm:p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="sm:col-span-2 lg:col-span-1">
+              <label className="sheet-box-label block mb-1">Nome do Personagem</label>
+              <input
+                type="text"
+                placeholder="Nome..."
+                value={char.name}
+                onChange={(e) => char.setField("name", e.target.value)}
+                className="w-full bg-transparent border-b-2 border-gold/30 focus:border-gold outline-none pb-1 text-lg sm:text-xl font-display font-bold transition-colors"
+              />
+            </div>
+            <SheetField label="Espécie" value={`${race?.name ?? "—"}${subrace ? ` (${subrace.name})` : ""}`} />
+            <SheetField label="Classe / Nível" value={`${cls?.name ?? "—"} ${char.level}`} />
+            <SheetField label="Antecedente" value={bg?.name ?? "—"} />
           </div>
         </div>
-      </Section>
+      </div>
 
-      {/* ── Seção 1: Atributos ── */}
-      <SectionTitle icon={<Users className="h-4 w-4" />} title="Atributos" />
-      <Section>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-muted-foreground text-xs uppercase">
-                <th className="text-left py-2 pr-2">Atributo</th>
-                <th className="text-center py-2 px-2">Base</th>
-                <th className="text-center py-2 px-2">Raça</th>
-                <th className="text-center py-2 px-2">Antec.</th>
-                <th className="text-center py-2 px-2 font-bold text-foreground">Total</th>
-                <th className="text-center py-2 px-2 font-bold text-foreground">Mod</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ABILITIES.map((a) => {
-                const base = char.abilityScores[a];
-                const rb = char.racialBonuses[a];
-                const bb = char.backgroundBonuses[a];
-                const total = finalScores[a];
-                const mod = calcAbilityMod(total);
-                return (
-                  <tr key={a} className="border-t border-border/50">
-                    <td className="py-2 pr-2 font-medium">{ABILITY_LABELS[a]}</td>
-                    <td className="text-center py-2 px-2 text-muted-foreground">{base}</td>
-                    <td className="text-center py-2 px-2">
-                      {rb ? <span className="text-primary font-medium">+{rb}</span> : "—"}
-                    </td>
-                    <td className="text-center py-2 px-2">
-                      {bb ? <span className="text-info font-medium">+{bb}</span> : "—"}
-                    </td>
-                    <td className="text-center py-2 px-2 font-bold text-lg">{total}</td>
-                    <td className="text-center py-2 px-2">
-                      <span className={`font-bold ${mod >= 0 ? "text-success" : "text-destructive"}`}>
-                        {mod >= 0 ? "+" : ""}{mod}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Section>
+      {/* ── Main Content: 2-column layout like official sheet ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-3">
 
-      {/* ── Seção 2: Combate ── */}
-      <SectionTitle icon={<Swords className="h-4 w-4" />} title="Combate" />
-      <Section>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-          <StatBox label="CA" value={String(char.armorClass)} />
-          <StatBox label="PV Máximo" value={String(char.hitPoints.max)} />
-          <StatBox label="Iniciativa" value={`${calcAbilityMod(finalScores.dex) >= 0 ? "+" : ""}${calcAbilityMod(finalScores.dex)}`} />
-          <StatBox label="Deslocamento" value={`${char.speed}m`} />
-        </div>
+        {/* ══ LEFT COLUMN: Abilities + Saves + Skills ══ */}
+        <div className="space-y-3">
 
-        {/* Saving Throws */}
-        <div className="mb-4">
-          <p className="text-xs uppercase text-muted-foreground mb-2 font-semibold">Salvaguardas</p>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-            {ABILITIES.map((a) => {
-              const mod = calcAbilityMod(finalScores[a]);
-              const proficient = char.savingThrows.includes(ABILITY_LABELS[a]);
-              const total = mod + (proficient ? char.proficiencyBonus : 0);
+          {/* Proficiency Bonus */}
+          <div className="sheet-box animate-pulse-gold">
+            <span className="sheet-box-label">Bônus de Proficiência</span>
+            <p className="text-2xl font-bold font-display mt-1">+{char.proficiencyBonus}</p>
+          </div>
+
+          {/* Ability Scores - Vertical Stack */}
+          <div className="space-y-2">
+            {ABILITIES.map((a, i) => {
+              const total = finalScores[a];
+              const mod = calcAbilityMod(total);
+              const profSave = char.savingThrows.some(
+                (st) => st.toLowerCase().startsWith(ABILITY_LABELS[a].toLowerCase().substring(0, 3))
+              );
+              const saveTotal = mod + (profSave ? char.proficiencyBonus : 0);
+
               return (
-                <div key={a} className={`rounded-lg border p-2 text-center ${proficient ? "border-primary/50 bg-primary/5" : "bg-secondary/30"}`}>
-                  <p className="text-[11px] uppercase font-semibold text-muted-foreground">{ABILITY_SHORT[a]}</p>
-                  <p className={`font-bold ${proficient ? "text-primary" : ""}`}>
-                    {total >= 0 ? "+" : ""}{total}
-                  </p>
-                  {proficient && <p className="text-[11px] font-medium text-primary">Prof.</p>}
+                <div
+                  key={a}
+                  className="ability-diamond animate-fade-in"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <div className="flex items-center justify-between w-full gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="text-center min-w-[56px]">
+                        <p className="text-[10px] uppercase tracking-widest font-bold text-gold">{ABILITY_LABELS[a]}</p>
+                        <p className="text-2xl font-bold font-display leading-none mt-0.5">{mod >= 0 ? "+" : ""}{mod}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{total}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`prof-dot ${profSave ? "filled" : "empty"}`} />
+                      <div className="text-right min-w-[40px]">
+                        <p className="text-[9px] uppercase text-muted-foreground">Salva</p>
+                        <p className={`text-sm font-bold ${profSave ? "text-success" : "text-muted-foreground"}`}>
+                          {saveTotal >= 0 ? "+" : ""}{saveTotal}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })}
           </div>
+
+          {/* Inspiration */}
+          <div className="sheet-box">
+            <span className="sheet-box-label">Inspiração Heroica</span>
+            <div className="mt-1 h-6 w-6 mx-auto rounded-full border-2 border-gold/40" />
+          </div>
         </div>
 
-        {/* Attacks */}
-        {char.attacks.length > 0 && (
-          <div>
-            <p className="text-xs uppercase text-muted-foreground mb-2 font-semibold">Ataques</p>
-            <div className="rounded-lg border overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-secondary/40 text-xs uppercase text-muted-foreground">
-                    <th className="text-left py-2 px-3">Arma</th>
-                    <th className="text-center py-2 px-2">Ataque</th>
-                    <th className="text-left py-2 px-2">Dano</th>
-                    <th className="text-center py-2 px-2">Alcance</th>
-                    <th className="text-center py-2 px-2">Prof.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {char.attacks.map((atk) => (
-                    <tr key={atk.weaponId} className="border-t border-border/50">
-                      <td className="py-2 px-3 font-medium">{atk.name}</td>
-                      <td className="text-center py-2 px-2 font-bold text-primary">
-                        {atk.attackBonus >= 0 ? "+" : ""}{atk.attackBonus}
-                      </td>
-                      <td className="py-2 px-2 text-muted-foreground">{atk.damage.split(" (")[0]}</td>
-                      <td className="text-center py-2 px-2 text-muted-foreground">{atk.range}</td>
-                      <td className="text-center py-2 px-2">
-                        {atk.proficient ? <CheckCircle2 className="h-3.5 w-3.5 text-success mx-auto" /> : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-      </Section>
+        {/* ══ RIGHT COLUMN: Combat + Skills + Features ══ */}
+        <div className="space-y-3">
 
-      {/* ── Seção 3: Perícias & Proficiências ── */}
-      <SectionTitle icon={<BookOpen className="h-4 w-4" />} title="Perícias & Proficiências" />
-      <Section>
-        {/* Skills table */}
-        <div className="rounded-lg border overflow-hidden mb-4">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-secondary/40 text-xs uppercase text-muted-foreground">
-                <th className="text-left py-2 px-3">Perícia</th>
-                <th className="text-center py-2 px-2">Atr.</th>
-                <th className="text-center py-2 px-2">Mod</th>
-                <th className="text-center py-2 px-2">Prof.</th>
-              </tr>
-            </thead>
-            <tbody>
+          {/* Combat Stats Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <CombatBox icon={<Shield className="h-4 w-4" />} label="Classe de Armadura" value={String(char.armorClass)} highlight />
+            <CombatBox icon={<Heart className="h-4 w-4" />} label="Pontos de Vida" value={String(char.hitPoints.max)} subValue={`d${char.hitDie}`} />
+            <CombatBox icon={<Zap className="h-4 w-4" />} label="Iniciativa" value={`${dexMod >= 0 ? "+" : ""}${dexMod}`} />
+            <CombatBox icon={<Footprints className="h-4 w-4" />} label="Deslocamento" value={`${char.speed}m`} />
+          </div>
+
+          {/* Skills Table */}
+          <div className="sheet-section">
+            <div className="sheet-section-header">
+              <BookOpen className="h-3.5 w-3.5" />
+              Perícias
+            </div>
+            <div className="divide-y divide-border/50">
               {ALL_SKILLS.map((skill) => {
                 const mod = calcAbilityMod(finalScores[skill.ability]);
                 const proficient = char.skills.includes(skill.name);
-                const total = mod + (proficient ? char.proficiencyBonus : 0);
+                const expert = char.expertiseSkills?.includes(skill.name);
+                const total = mod + (proficient ? char.proficiencyBonus : 0) + (expert ? char.proficiencyBonus : 0);
                 return (
-                  <tr key={skill.name} className={`border-t border-border/50 ${proficient ? "bg-primary/5" : ""}`}>
-                    <td className="py-1.5 px-3 font-medium">{skill.name}</td>
-                    <td className="text-center py-1.5 px-2 text-xs text-muted-foreground">{ABILITY_SHORT[skill.ability]}</td>
-                    <td className="text-center py-1.5 px-2 font-bold">
+                  <div
+                    key={skill.name}
+                    className={`flex items-center gap-2 px-3 py-1.5 text-sm transition-colors hover:bg-secondary/30 ${proficient ? "" : "text-muted-foreground/70"}`}
+                  >
+                    <span className={`prof-dot ${expert ? "filled" : proficient ? "filled" : "empty"}`} />
+                    {expert && <span className="prof-dot filled -ml-1.5" />}
+                    <span className="flex-1 truncate text-xs sm:text-sm">{skill.name}</span>
+                    <span className="text-[10px] uppercase text-muted-foreground/60 w-6 text-center font-semibold">{ABILITY_SHORT[skill.ability]}</span>
+                    <span className={`font-mono font-bold text-sm w-7 text-right ${proficient ? "text-foreground" : "text-muted-foreground/40"}`}>
                       {total >= 0 ? "+" : ""}{total}
-                    </td>
-                    <td className="text-center py-1.5 px-2">
-                      {proficient && <CheckCircle2 className="h-3.5 w-3.5 text-success mx-auto" />}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Proficiencies */}
-        <div className="grid sm:grid-cols-2 gap-3">
-          <ProfList label="Armas" items={char.proficiencies.weapons} />
-          <ProfList label="Armaduras" items={char.proficiencies.armor} />
-          <ProfList label="Ferramentas" items={char.proficiencies.tools} />
-          <ProfList label="Idiomas" items={char.proficiencies.languages} />
-        </div>
-      </Section>
-
-      {/* ── Seção 4: Características ── */}
-      <SectionTitle icon={<Scroll className="h-4 w-4" />} title="Características" />
-      <Section>
-        {char.features.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nenhuma característica registrada.</p>
-        ) : (
-          <div className="space-y-2">
-            {groupFeaturesWithLevel(char.features).map(([group, feats]) => (
-              <div key={group}>
-                <p className="text-xs uppercase text-muted-foreground font-semibold mb-1">{group}</p>
-                {feats.map((f, i) => (
-                  <Collapsible key={`${f.sourceId}-${f.name}-${i}`}>
-                    <CollapsibleTrigger className="flex items-center gap-2 w-full rounded-md px-3 py-2 hover:bg-secondary/40 transition-colors text-left">
-                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform" />
-                      <span className="text-sm font-medium">{f.name}</span>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-8 pb-2 text-sm text-muted-foreground">
-                      {f.description}
-                    </CollapsibleContent>
-                  </Collapsible>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-      </Section>
-
-      {/* ── Seção Talentos ── */}
-      {char.appliedFeats.length > 0 && (
-        <>
-          <SectionTitle icon={<Star className="h-4 w-4" />} title="Talentos" />
-          <Section>
-            <div className="space-y-2">
-              {char.appliedFeats.map((af, i) => {
-                const feat = featsById[af.featId];
-                const sourceName = af.source === "background" ? "Antecedente" : `Level Up (Nv. ${af.levelTaken})`;
-                return (
-                  <div key={`${af.featId}-${i}`} className="rounded-lg border p-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-sm">{feat?.name ?? af.featId}</span>
-                      <span className="text-[11px] font-medium text-muted-foreground bg-secondary rounded-full px-2 py-0.5">
-                        {sourceName}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{feat?.description ?? ""}</p>
-                    {af.choices?.abilityIncreases && Object.keys(af.choices.abilityIncreases).some(k => (af.choices!.abilityIncreases![k as AbilityKey] ?? 0) > 0) && (
-                      <div className="mt-1 flex gap-1.5 flex-wrap">
-                        {Object.entries(af.choices.abilityIncreases).filter(([, v]) => v && v > 0).map(([k, v]) => (
-                          <Tag key={k}>{ABILITY_SHORT[k as AbilityKey]} +{v}</Tag>
-                        ))}
-                      </div>
-                    )}
+                    </span>
                   </div>
                 );
               })}
             </div>
-          </Section>
-        </>
-      )}
+          </div>
 
-      {/* ── Seção 5: Magias ── */}
+          {/* Passive Perception */}
+          <div className="sheet-box">
+            <span className="sheet-box-label">Percepção Passiva</span>
+            <p className="sheet-box-value">
+              {10 + calcAbilityMod(finalScores.wis) + (char.skills.includes("Percepção") ? char.proficiencyBonus : 0)}
+            </p>
+          </div>
+
+          {/* Attacks & Cantrips */}
+          {char.attacks.length > 0 && (
+            <div className="sheet-section">
+              <div className="sheet-section-header">
+                <Swords className="h-3.5 w-3.5" />
+                Armas e Truques de Dano
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-[10px] uppercase text-muted-foreground bg-secondary/30">
+                      <th className="text-left py-2 px-3">Nome</th>
+                      <th className="text-center py-2 px-2">Bônus Atq/CD</th>
+                      <th className="text-left py-2 px-2">Dano e Tipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {char.attacks.map((atk) => (
+                      <tr key={atk.weaponId} className="border-t border-border/50 hover:bg-secondary/20 transition-colors">
+                        <td className="py-2 px-3 font-medium text-xs sm:text-sm">{atk.name}</td>
+                        <td className="text-center py-2 px-2">
+                          <span className="font-bold text-primary">{atk.attackBonus >= 0 ? "+" : ""}{atk.attackBonus}</span>
+                          {!atk.proficient && <span className="text-[10px] text-warning ml-1">!</span>}
+                        </td>
+                        <td className="py-2 px-2 text-muted-foreground text-xs sm:text-sm">{atk.damage.split(" (")[0]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Features */}
+          {char.features.length > 0 && (
+            <div className="sheet-section">
+              <div className="sheet-section-header">
+                <Star className="h-3.5 w-3.5" />
+                Características
+              </div>
+              <div className="p-3 space-y-1">
+                {groupFeaturesWithLevel(char.features).map(([group, feats]) => (
+                  <div key={group}>
+                    <p className="text-[10px] uppercase text-gold/70 font-bold tracking-widest mb-1 mt-2 first:mt-0">{group}</p>
+                    {feats.map((f, i) => (
+                      <Collapsible key={`${f.sourceId}-${f.name}-${i}`}>
+                        <CollapsibleTrigger className="flex items-center gap-2 w-full rounded-md px-2 py-1.5 hover:bg-secondary/40 transition-colors text-left group">
+                          <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                          <span className="text-xs sm:text-sm font-medium">{f.name}</span>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="px-7 pb-2 text-xs text-muted-foreground leading-relaxed animate-fade-in">
+                          {f.description}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Feats */}
+          {char.appliedFeats.length > 0 && (
+            <div className="sheet-section">
+              <div className="sheet-section-header">
+                <Scroll className="h-3.5 w-3.5" />
+                Talentos
+              </div>
+              <div className="p-3 space-y-2">
+                {char.appliedFeats.map((af, i) => {
+                  const feat = featsById[af.featId];
+                  return (
+                    <Collapsible key={`${af.featId}-${i}`}>
+                      <CollapsibleTrigger className="flex items-center justify-between gap-2 w-full rounded-md px-2 py-1.5 hover:bg-secondary/40 transition-colors text-left group">
+                        <div className="flex items-center gap-2">
+                          <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                          <span className="text-xs sm:text-sm font-medium">{feat?.name ?? af.featId}</span>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5 shrink-0">
+                          {af.source === "background" ? "Origem" : `Nv. ${af.levelTaken}`}
+                        </span>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="px-7 pb-2 text-xs text-muted-foreground leading-relaxed animate-fade-in">
+                        {feat?.description ?? ""}
+                        {af.choices?.abilityIncreases && Object.keys(af.choices.abilityIncreases).some(k => (af.choices!.abilityIncreases![k as AbilityKey] ?? 0) > 0) && (
+                          <div className="mt-1.5 flex gap-1 flex-wrap">
+                            {Object.entries(af.choices.abilityIncreases).filter(([, v]) => v && v > 0).map(([k, v]) => (
+                              <span key={k} className="rounded bg-gold/10 border border-gold/20 px-1.5 py-0.5 text-[10px] font-bold text-gold">{ABILITY_SHORT[k as AbilityKey]} +{v}</span>
+                            ))}
+                          </div>
+                        )}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Proficiencies */}
+          <div className="sheet-section">
+            <div className="sheet-section-header">
+              <Shield className="h-3.5 w-3.5" />
+              Treinamento em Equipamentos
+            </div>
+            <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <ProfList label="Armaduras" items={char.proficiencies.armor} />
+              <ProfList label="Armas" items={char.proficiencies.weapons} />
+              <ProfList label="Ferramentas" items={char.proficiencies.tools} />
+              <ProfList label="Idiomas" items={char.proficiencies.languages} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+          PAGE 2 — Spells & Equipment
+         ════════════════════════════════════════════════════ */}
+
+      {/* ── Spells Section ── */}
       {isSpellcaster && cls?.spellcasting && (
-        <>
-          <SectionTitle icon={<Wand2 className="h-4 w-4" />} title="Magias" />
-          <Section>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <StatBox label="Atributo" value={cls.spellcasting.ability} />
-              <StatBox label="CD" value={String(char.spells.spellSaveDC)} />
-              <StatBox label="Ataque" value={`+${char.spells.spellAttackBonus}`} />
+        <div className="mt-4 sheet-section print:break-before-page">
+          <div className="sheet-section-header">
+            <Wand2 className="h-3.5 w-3.5" />
+            Magias
+          </div>
+          <div className="p-3 sm:p-4 space-y-4">
+            {/* Spellcasting Stats */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="sheet-box">
+                <span className="sheet-box-label">Atributo de Conjuração</span>
+                <p className="text-sm sm:text-base font-bold font-display mt-1">{cls.spellcasting.ability}</p>
+              </div>
+              <div className="sheet-box">
+                <span className="sheet-box-label">CD para Evitar</span>
+                <p className="sheet-box-value">{char.spells.spellSaveDC}</p>
+              </div>
+              <div className="sheet-box">
+                <span className="sheet-box-label">Mod. de Conjuração</span>
+                <p className="sheet-box-value">+{char.spells.spellAttackBonus}</p>
+              </div>
             </div>
 
-            {/* Slots */}
+            {/* Spell Slots */}
             {char.spells.slots.length > 0 && (
-              <div className="mb-4">
-                <p className="text-xs uppercase text-muted-foreground mb-2 font-semibold">Espaços de Magia</p>
-                <div className="flex gap-2 flex-wrap">
-                  {char.spells.slots.map((count, i) => count > 0 && (
-                    <div key={i} className="rounded-lg border bg-secondary/30 px-3 py-1.5 text-center">
-                      <p className="text-[11px] text-muted-foreground">{i + 1}º Círculo</p>
-                      <p className="font-bold">{count}</p>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-gold mb-2">Espaços de Magias</p>
+                <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
+                  {char.spells.slots.map((count, i) => (
+                    <div key={i} className={`sheet-box ${count > 0 ? "" : "opacity-40"}`}>
+                      <span className="text-[9px] uppercase text-muted-foreground">{i + 1}º Circ.</span>
+                      <p className="text-lg font-bold mt-0.5">{count}</p>
                     </div>
                   ))}
                 </div>
@@ -455,129 +428,164 @@ export function StepReview() {
 
             {/* Cantrips */}
             {char.spells.cantrips.length > 0 && (
-              <div className="mb-3">
-                <p className="text-xs uppercase text-muted-foreground mb-1.5 font-semibold">Truques</p>
-                <div className="flex flex-wrap gap-1.5">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-gold mb-2">Truques</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {char.spells.cantrips.map((id) => {
                     const sp = spellsData.find((s) => s.id === id);
-                    return <Tag key={id}>{sp?.name ?? id}</Tag>;
+                    return (
+                      <div key={id} className="flex items-center gap-2 rounded border border-border/50 bg-secondary/20 px-3 py-1.5 text-sm hover:bg-secondary/40 transition-colors">
+                        <Sparkle className="h-3 w-3 text-gold/60 shrink-0" />
+                        <span className="font-medium text-xs sm:text-sm">{sp?.name ?? id}</span>
+                        {sp?.school && <span className="text-[10px] text-muted-foreground ml-auto">{sp.school}</span>}
+                      </div>
+                    );
                   })}
                 </div>
               </div>
             )}
 
-            {/* Prepared/Known */}
+            {/* Prepared/Known Spells */}
             {char.spells.prepared.length > 0 && (
               <div>
-                <p className="text-xs uppercase text-muted-foreground mb-1.5 font-semibold">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-gold mb-2">
                   {cls.spellcasting.type === "known" || cls.spellcasting.type === "pact" ? "Magias Conhecidas" : "Magias Preparadas"}
                 </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {char.spells.prepared.map((id) => {
-                    const sp = spellsData.find((s) => s.id === id);
-                    return <Tag key={id}>{sp?.name ?? id}{sp ? ` (${sp.level}º)` : ""}</Tag>;
-                  })}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-[9px] uppercase text-muted-foreground bg-secondary/30">
+                        <th className="text-left py-1.5 px-2">Círculo</th>
+                        <th className="text-left py-1.5 px-2">Nome</th>
+                        <th className="text-left py-1.5 px-2 hidden sm:table-cell">Escola</th>
+                        <th className="text-center py-1.5 px-2 hidden sm:table-cell">C</th>
+                        <th className="text-center py-1.5 px-2 hidden sm:table-cell">R</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {char.spells.prepared.map((id) => {
+                        const sp = spellsData.find((s) => s.id === id);
+                        return (
+                          <tr key={id} className="border-t border-border/30 hover:bg-secondary/20 transition-colors">
+                            <td className="py-1.5 px-2 text-xs text-gold font-bold">{sp?.level ?? "?"}</td>
+                            <td className="py-1.5 px-2 font-medium text-xs sm:text-sm">{sp?.name ?? id}</td>
+                            <td className="py-1.5 px-2 text-xs text-muted-foreground hidden sm:table-cell">{sp?.school ?? ""}</td>
+                            <td className="text-center py-1.5 px-2 hidden sm:table-cell">{sp?.concentration ? "●" : ""}</td>
+                            <td className="text-center py-1.5 px-2 hidden sm:table-cell">{sp?.ritual ? "●" : ""}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
-          </Section>
-        </>
+          </div>
+        </div>
       )}
 
-      {/* ── Seção 6: Equipamento ── */}
-      <SectionTitle icon={<Shield className="h-4 w-4" />} title="Equipamento" />
-      <Section>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-          {char.equipped?.armor && (
-            <StatBox label="Armadura" value={itemsById[char.equipped.armor]?.name ?? "—"} small />
-          )}
-          {char.equipped?.shield && (
-            <StatBox label="Escudo" value={itemsById[char.equipped.shield]?.name ?? "—"} small />
-          )}
-          <StatBox label="Ouro" value={`${char.gold?.gp ?? 0} PO`} />
+      {/* ── Equipment Section ── */}
+      <div className="mt-4 sheet-section">
+        <div className="sheet-section-header">
+          <Shield className="h-3.5 w-3.5" />
+          Equipamento
         </div>
-
-        {char.inventory.length > 0 && (
-          <div className="rounded-lg border overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-secondary/40 text-xs uppercase text-muted-foreground">
-                  <th className="text-left py-2 px-3">Item</th>
-                  <th className="text-center py-2 px-2">Qtd</th>
-                  <th className="text-center py-2 px-2">Peso</th>
-                  <th className="text-center py-2 px-2">Equipado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {char.inventory.map((entry) => {
-                  const item = itemsById[entry.itemId];
-                  const isEquipped =
-                    char.equipped?.armor === entry.itemId ||
-                    char.equipped?.shield === entry.itemId ||
-                    char.equipped?.weapons.includes(entry.itemId);
-                  return (
-                    <tr key={entry.itemId} className={`border-t border-border/50 ${isEquipped ? "bg-primary/5" : ""}`}>
-                      <td className="py-1.5 px-3 font-medium">{item?.name ?? entry.itemId}</td>
-                      <td className="text-center py-1.5 px-2">{entry.quantity}</td>
-                      <td className="text-center py-1.5 px-2 text-muted-foreground">
-                        {item ? `${(item.weight * entry.quantity).toFixed(1)} kg` : "—"}
-                      </td>
-                      <td className="text-center py-1.5 px-2">
-                        {isEquipped && <CheckCircle2 className="h-3.5 w-3.5 text-success mx-auto" />}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot>
-                <tr className="border-t bg-secondary/20">
-                  <td className="py-1.5 px-3 text-xs text-muted-foreground font-semibold">Total</td>
-                  <td className="text-center py-1.5 px-2 text-xs font-semibold">
-                    {char.inventory.reduce((s, e) => s + e.quantity, 0)}
-                  </td>
-                  <td className="text-center py-1.5 px-2 text-xs text-muted-foreground font-semibold">
-                    {char.inventory
-                      .reduce((s, e) => s + (itemsById[e.itemId]?.weight ?? 0) * e.quantity, 0)
-                      .toFixed(1)} kg
-                  </td>
-                  <td />
-                </tr>
-              </tfoot>
-            </table>
+        <div className="p-3 sm:p-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+            {char.equipped?.armor && (
+              <div className="sheet-box">
+                <span className="sheet-box-label">Armadura</span>
+                <p className="text-xs sm:text-sm font-bold mt-1">{itemsById[char.equipped.armor]?.name ?? "—"}</p>
+              </div>
+            )}
+            {char.equipped?.shield && (
+              <div className="sheet-box">
+                <span className="sheet-box-label">Escudo</span>
+                <p className="text-xs sm:text-sm font-bold mt-1">{itemsById[char.equipped.shield]?.name ?? "—"}</p>
+              </div>
+            )}
+            <div className="sheet-box">
+              <span className="sheet-box-label">Ouro (PO)</span>
+              <p className="sheet-box-value text-gold">{char.gold?.gp ?? 0}</p>
+            </div>
           </div>
-        )}
-      </Section>
 
-      {/* ── Actions ── */}
-      <div className="mt-8 flex flex-wrap gap-3 print:hidden">
-        {lastIncompleteStep && (
-          <Button variant="outline" onClick={() => goToStep(lastIncompleteStep.id)}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Voltar e Ajustar
+          {char.inventory.length > 0 && (
+            <div className="overflow-x-auto rounded-lg border border-border/50">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[10px] uppercase text-muted-foreground bg-secondary/30">
+                    <th className="text-left py-2 px-3">Item</th>
+                    <th className="text-center py-2 px-2">Qtd</th>
+                    <th className="text-center py-2 px-2 hidden sm:table-cell">Peso</th>
+                    <th className="text-center py-2 px-2">Equip.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {char.inventory.map((entry) => {
+                    const item = itemsById[entry.itemId];
+                    const isEquipped =
+                      char.equipped?.armor === entry.itemId ||
+                      char.equipped?.shield === entry.itemId ||
+                      char.equipped?.weapons.includes(entry.itemId);
+                    return (
+                      <tr key={entry.itemId} className={`border-t border-border/30 transition-colors hover:bg-secondary/20 ${isEquipped ? "bg-primary/5" : ""}`}>
+                        <td className="py-1.5 px-3 font-medium text-xs sm:text-sm">{item?.name ?? entry.itemId}</td>
+                        <td className="text-center py-1.5 px-2 text-xs">{entry.quantity}</td>
+                        <td className="text-center py-1.5 px-2 text-xs text-muted-foreground hidden sm:table-cell">
+                          {item ? `${(item.weight * entry.quantity).toFixed(1)}` : "—"}
+                        </td>
+                        <td className="text-center py-1.5 px-2">
+                          {isEquipped && <CheckCircle2 className="h-3.5 w-3.5 text-success mx-auto" />}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Actions Bar ── */}
+      <div className="mt-6 mb-4 print:hidden animate-fade-in">
+        <div className="flex flex-wrap gap-2">
+          {lastIncompleteStep && (
+            <Button variant="outline" size="sm" onClick={() => goToStep(lastIncompleteStep.id)} className="gap-1">
+              <ArrowLeft className="h-3.5 w-3.5" /> Voltar e Ajustar
+            </Button>
+          )}
+          <Button size="sm" onClick={handleExport} className="gap-1">
+            <Download className="h-3.5 w-3.5" /> JSON
           </Button>
+          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()} className="gap-1">
+            <Upload className="h-3.5 w-3.5" /> Importar
+          </Button>
+          <input ref={fileInputRef} type="file" accept=".json,application/json" onChange={handleImport} className="hidden" />
+          <Button variant="secondary" size="sm" onClick={handleCopy} className="gap-1">
+            <Copy className="h-3.5 w-3.5" /> {copied ? "Copiado!" : "Copiar"}
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleShare} className="gap-1">
+            <Share2 className="h-3.5 w-3.5" /> Compartilhar
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handlePrint} className="gap-1">
+            <FileText className="h-3.5 w-3.5" /> Imprimir
+          </Button>
+        </div>
+      </div>
+
+      {/* Completion badge */}
+      <div className="flex justify-center pb-4 print:hidden">
+        {validation.isComplete ? (
+          <Badge className="bg-success text-success-foreground gap-1.5 px-4 py-1.5 text-sm animate-scale-in">
+            <CheckCircle2 className="h-4 w-4" /> Ficha Completa
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="gap-1.5 px-4 py-1.5 text-sm text-muted-foreground">
+            <AlertCircle className="h-4 w-4" /> Faltam {validation.missing.length} itens
+          </Badge>
         )}
-        <Button onClick={handleExport}>
-          <Download className="h-4 w-4 mr-1" /> Exportar JSON
-        </Button>
-        <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
-          <Upload className="h-4 w-4 mr-1" /> Importar JSON
-        </Button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json,application/json"
-          onChange={handleImport}
-          className="hidden"
-          aria-label="Importar arquivo JSON"
-        />
-        <Button variant="secondary" onClick={handleCopy}>
-          <Copy className="h-4 w-4 mr-1" /> {copied ? "Copiado!" : "Copiar Resumo"}
-        </Button>
-        <Button variant="secondary" onClick={handleShare}>
-          <Share2 className="h-4 w-4 mr-1" /> Compartilhar
-        </Button>
-        <Button variant="secondary" onClick={handlePrint}>
-          <FileText className="h-4 w-4 mr-1" /> Ficha para Impressão
-        </Button>
       </div>
     </div>
   );
@@ -585,32 +593,29 @@ export function StepReview() {
 
 // ── Helpers ──
 
-function Section({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-lg border bg-card p-4 mb-4">{children}</div>;
+function Sparkle({ className }: { className?: string }) {
+  return <Wand2 className={className} />;
 }
 
-function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
+function SheetField({ label, value }: { label: string; value: string }) {
   return (
-    <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-muted-foreground mt-6 mb-2">
-      {icon} {title}
-    </h3>
-  );
-}
-
-function StatBox({ label, value, small }: { label: string; value: string; small?: boolean }) {
-  return (
-    <div className="rounded-lg border bg-secondary/30 p-3 text-center">
-      <p className="text-[11px] uppercase font-semibold text-muted-foreground">{label}</p>
-      <p className={`font-bold ${small ? "text-sm" : "text-xl"}`}>{value}</p>
+    <div>
+      <p className="sheet-box-label mb-0.5">{label}</p>
+      <p className="text-sm font-medium border-b border-border/50 pb-1">{value}</p>
     </div>
   );
 }
 
-function Tag({ children }: { children: React.ReactNode }) {
+function CombatBox({ icon, label, value, subValue, highlight }: { icon: React.ReactNode; label: string; value: string; subValue?: string; highlight?: boolean }) {
   return (
-    <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
-      {children}
-    </span>
+    <div className={`sheet-box ${highlight ? "border-gold/40 animate-pulse-gold" : ""}`}>
+      <div className="flex items-center justify-center gap-1 mb-1">
+        <span className="text-gold/70">{icon}</span>
+      </div>
+      <p className="sheet-box-label">{label}</p>
+      <p className={`font-bold font-display mt-0.5 ${highlight ? "text-2xl text-gold" : "text-xl"}`}>{value}</p>
+      {subValue && <p className="text-[10px] text-muted-foreground">{subValue}</p>}
+    </div>
   );
 }
 
@@ -619,10 +624,10 @@ function ProfList({ label, items }: { label: string; items: string[] }) {
   const sorted = [...items].sort((a, b) => a.localeCompare(b, "pt-BR"));
   return (
     <div>
-      <p className="text-xs uppercase text-muted-foreground font-semibold mb-1">{label}</p>
+      <p className="text-[10px] uppercase text-gold/60 font-bold tracking-widest mb-1">{label}</p>
       <div className="flex flex-wrap gap-1">
         {sorted.map((i) => (
-          <span key={i} className="rounded bg-secondary px-2 py-0.5 text-xs">{i}</span>
+          <span key={i} className="rounded bg-secondary px-2 py-0.5 text-[11px] font-medium">{i}</span>
         ))}
       </div>
     </div>
@@ -634,20 +639,10 @@ const SOURCE_LABELS: Record<string, string> = {
   subclass: "Subclasse", background: "Antecedente", other: "Outro",
 };
 
-function groupFeatures(features: { sourceType: string; name: string; description: string; sourceId: string }[]) {
-  const groups: Record<string, typeof features> = {};
-  for (const f of features) {
-    const key = SOURCE_LABELS[f.sourceType] ?? f.sourceType;
-    (groups[key] ??= []).push(f);
-  }
-  return Object.entries(groups);
-}
-
 function groupFeaturesWithLevel(features: { sourceType: string; name: string; description: string; sourceId: string; level?: number }[]) {
   const groups: Record<string, typeof features> = {};
   for (const f of features) {
     let key = SOURCE_LABELS[f.sourceType] ?? f.sourceType;
-    // For class features, group by level
     if (f.sourceType === "class" && f.level) {
       key = `${key} — Nível ${f.level}`;
     }
