@@ -6,11 +6,11 @@
 // ── Raw data ──
 export { classes, classesById, type ClassData, type SubclassData, type SpellcastingData, type EquipmentChoice } from "./classes";
 export { races, racesById, type RaceData, type Subrace, type RaceTrait } from "./races";
-export { backgrounds, backgroundsById, type Background, type OriginFeat } from "./backgrounds";
+export { backgrounds, backgroundsById, type Background } from "./backgrounds";
 export { spells, getSpellSchools, type SpellData } from "./spells";
 export { items, itemsById, type Item, type AttackEntry, type InventoryEntry, type EquippedState } from "./items";
 export { feats, featsById, type FeatData, type FeatPrerequisite, type FeatEffects } from "./feats";
-export { tools, toolsByName, type ToolData } from "./tools";
+export { tools, toolsById, type ToolData } from "./tools";
 export { skills, skillsById, skillsByName, type SkillData } from "./skills";
 export { sources, sourcesById, type Source } from "./sources";
 

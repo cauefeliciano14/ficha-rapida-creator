@@ -67,7 +67,7 @@ export function StepBackground() {
     const feat = feats.find((item) => item.id === bg.originFeatId);
     const state = useCharacterStore.getState();
 
-    const toolValue = bg.grantedTool.mode === "fixed" ? bg.grantedTool.name ?? null : null;
+    const hasFixedTool = bg.toolsGranted.length > 0 && !bg.toolsGranted.some((id) => id.startsWith("choose_"));
 
     const features = replaceFeatures(state.features, ["background"], [
       {
