@@ -173,11 +173,7 @@ function BuilderContent() {
                 {visibleSteps.map((step) => (
                   <button
                     key={step.id}
-                    onClick={() => {
-                      const idx = visibleSteps.findIndex((s) => s.id === step.id);
-                      const navigable = idx === 0 || visibleSteps.slice(0, idx).every((s) => completedSteps.includes(s.id));
-                      if (navigable) goToStep(step.id);
-                    }}
+                    onClick={() => goToStep(step.id)}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       step.id === validStep
                         ? "w-6 bg-primary"

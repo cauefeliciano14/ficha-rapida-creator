@@ -14,9 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCharacterStore } from "@/state/characterStore";
 import { useBuilderStore } from "@/state/builderStore";
-import { Progress } from "@/components/ui/progress";
 
-const RESET_CONFIRMATION_TEXT = "REINICIAR";
+const RESET_CONFIRMATION_TEXT = "OK";
 
 export function Header() {
   const [confirmationText, setConfirmationText] = useState("");
@@ -24,13 +23,6 @@ export function Header() {
   const lastSavedAt = useCharacterStore((s) => s.lastSavedAt);
   const persistError = useCharacterStore((s) => s.persistError);
   const resetBuilder = useBuilderStore((s) => s.resetBuilder);
-  const completedSteps = useBuilderStore((s) => s.completedSteps);
-  const getVisibleSteps = useBuilderStore((s) => s.getVisibleSteps);
-
-  const visibleSteps = getVisibleSteps();
-  const totalSteps = visibleSteps.length;
-  const completedCount = visibleSteps.filter((s) => completedSteps.includes(s.id)).length;
-  const progressPercent = totalSteps > 0 ? Math.round((completedCount / totalSteps) * 100) : 0;
 
   const handleReset = () => {
     resetCharacter();
@@ -68,20 +60,6 @@ export function Header() {
             ) : null}
           </div>
 
-          {/* Progress indicator */}
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="text-[10px] font-semibold text-gold">{progressPercent}%</span>
-            <div className="w-20 h-1.5 rounded-full bg-secondary overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 ease-out progress-glow"
-                style={{
-                  width: `${progressPercent}%`,
-                  background: `linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)))`,
-                }}
-              />
-            </div>
-          </div>
-
           <AlertDialog onOpenChange={handleDialogOpenChange}>
             <AlertDialogTrigger asChild>
               <Button
@@ -109,7 +87,7 @@ export function Header() {
                   value={confirmationText}
                   onChange={(event) => setConfirmationText(event.target.value)}
                   className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  aria-label="Digite REINICIAR para confirmar"
+                  aria-label="Digite OK para confirmar"
                 />
               </div>
               <AlertDialogFooter>
@@ -127,16 +105,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile progress bar */}
-      <div className="sm:hidden h-1 bg-secondary">
-        <div
-          className="h-full transition-all duration-500 ease-out"
-          style={{
-            width: `${progressPercent}%`,
-            background: `linear-gradient(90deg, hsl(var(--primary)), hsl(var(--gold)))`,
-          }}
-        />
-      </div>
     </header>
   );
 }
