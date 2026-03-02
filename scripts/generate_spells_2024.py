@@ -121,7 +121,9 @@ def parse_docx_spells(docx: Path) -> list[Spell]:
 
         casting = lines[i + 2].split(":", 1)[1].strip()
         rng = lines[i + 3].split(":", 1)[1].strip() if lines[i + 3].startswith("Alcance:") else ""
-        components = lines[i + 4].split(":", 1)[1].strip() if lines[i + 4].startswith("Componentes:") else ""
+        components = ""
+        if lines[i + 4].startswith("Componentes:") or lines[i + 4].startswith("Componente:"):
+            components = lines[i + 4].split(":", 1)[1].strip()
         duration = lines[i + 5].split(":", 1)[1].strip() if lines[i + 5].startswith("Duração:") else ""
 
         j = i + 6
