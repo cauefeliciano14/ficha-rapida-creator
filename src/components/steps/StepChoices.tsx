@@ -357,11 +357,19 @@ export function StepChoices() {
   const spellsMissing = useMemo(() => {
     if (!isSpellcaster) return [];
     const missing: string[] = [];
-    if (cantripsLimit > 0 && selectedCantrips.length < cantripsLimit) {
-      missing.push(`Truques: ${selectedCantrips.length}/${cantripsLimit}`);
+    if (cantripsLimit > 0 && selectedCantrips.length !== cantripsLimit) {
+      if (selectedCantrips.length > cantripsLimit) {
+        missing.push(`Truques excedentes: remova ${selectedCantrips.length - cantripsLimit}`);
+      } else {
+        missing.push(`Truques: ${selectedCantrips.length}/${cantripsLimit}`);
+      }
     }
-    if (preparedLimit > 0 && selectedPrepared.length < preparedLimit) {
-      missing.push(`Magias ${spellTypeLabel.toLowerCase()}: ${selectedPrepared.length}/${preparedLimit}`);
+    if (preparedLimit > 0 && selectedPrepared.length !== preparedLimit) {
+      if (selectedPrepared.length > preparedLimit) {
+        missing.push(`Magias excedentes: remova ${selectedPrepared.length - preparedLimit}`);
+      } else {
+        missing.push(`Magias ${spellTypeLabel.toLowerCase()}: ${selectedPrepared.length}/${preparedLimit}`);
+      }
     }
     return missing;
   }, [isSpellcaster, cantripsLimit, preparedLimit, selectedCantrips.length, selectedPrepared.length, spellTypeLabel]);
