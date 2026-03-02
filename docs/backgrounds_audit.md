@@ -1,23 +1,21 @@
-# Auditoria de Antecedentes
+# Auditoria de Origens
 
-- Fonte: `sources/player_handbook_2024.docx`
-- Total de antecedentes em `backgrounds.ts`: 16
+- Fonte oficial: `sources/player_handbook_2024.docx`
+- Total atual em `src/data/backgrounds.ts`: 16
+- Status final: **✅ PASS**
 
-| Antecedente | Descrição | Perícias | Talento | Ferramentas | Equipamento |
-|---|---|---|---|---|---|
-| Acólito | OK | OK | OK | OK | OK |
-| Andarilho | OK | OK | OK | OK | OK |
-| Artesão | OK | OK | OK | OK | OK |
-| Artista | OK | OK | OK | OK | OK |
-| Charlatão | OK | OK | OK | OK | OK |
-| Criminoso | OK | OK | OK | OK | OK |
-| Eremita | OK | OK | OK | OK | OK |
-| Escriba | OK | OK | OK | OK | OK |
-| Fazendeiro | OK | OK | OK | OK | OK |
-| Guarda | OK | OK | OK | OK | OK |
-| Guia | OK | OK | OK | OK | OK |
-| Marinheiro | OK | OK | OK | OK | OK |
-| Mercador | OK | OK | OK | OK | OK |
-| Nobre | OK | OK | OK | OK | OK |
-| Sábio | OK | OK | OK | OK | OK |
-| Soldado | OK | OK | OK | OK | OK |
+## Validações executadas
+- Contagem esperada por catálogo
+- Campos obrigatórios por schema
+- Consistência com extração da fonte oficial
+
+## Resultados
+
+| Regra | Status |
+|---|---|
+| Contagem esperada (16) | ✅ |
+| Campos obrigatórios (9) | ✅ |
+| Diffs com extração oficial | ✅ |
+
+## Divergências
+- Nenhuma divergência encontrada.
