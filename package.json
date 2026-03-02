@@ -18,6 +18,7 @@
     "extract:races": "node scripts/extract_races_from_docx.mjs",
     "validate:races": "node scripts/validate_races_against_docx.mjs",
     "extract:classes": "node scripts/extract_classes_from_docx.mjs",
+    "extract:feats": "node scripts/extract_feats_from_docx.mjs",
     "generate:classes": "node scripts/generate_classes_ts.mjs",
     "validate:classes": "node scripts/validate_classes_against_docx.mjs",
     "extract:items": "node scripts/extract_items_from_docx.mjs",
