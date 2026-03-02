@@ -1,0 +1,146 @@
+[
+  {
+    "id": "aasimar",
+    "name": "Aasimar"
+  },
+  {
+    "id": "medio",
+    "name": "Médio"
+  },
+  {
+    "id": "pequeno",
+    "name": "Pequeno"
+  },
+  {
+    "id": "anao",
+    "name": "Anão"
+  },
+  {
+    "id": "draconato",
+    "name": "Draconato"
+  },
+  {
+    "id": "azul",
+    "name": "Azul"
+  },
+  {
+    "id": "branco",
+    "name": "Branco"
+  },
+  {
+    "id": "bronze",
+    "name": "Bronze"
+  },
+  {
+    "id": "cobre",
+    "name": "Cobre"
+  },
+  {
+    "id": "latao",
+    "name": "Latão"
+  },
+  {
+    "id": "negro",
+    "name": "Negro"
+  },
+  {
+    "id": "ouro",
+    "name": "Ouro"
+  },
+  {
+    "id": "prata",
+    "name": "Prata"
+  },
+  {
+    "id": "verde",
+    "name": "Verde"
+  },
+  {
+    "id": "vermelho",
+    "name": "Vermelho"
+  },
+  {
+    "id": "elfo",
+    "name": "Elfo"
+  },
+  {
+    "id": "altoElfo",
+    "name": "Altos Elfos"
+  },
+  {
+    "id": "drow",
+    "name": "Drow"
+  },
+  {
+    "id": "elfoSilvestre",
+    "name": "Elfos Silvestres"
+  },
+  {
+    "id": "gnomo",
+    "name": "Gnomo"
+  },
+  {
+    "id": "bosque",
+    "name": "Gnomo do Bosque"
+  },
+  {
+    "id": "rochas",
+    "name": "Gnomo das Rochas"
+  },
+  {
+    "id": "golias",
+    "name": "Golias"
+  },
+  {
+    "id": "tempestade",
+    "name": "Gigante da Tempestade"
+  },
+  {
+    "id": "pedra",
+    "name": "Gigante da Pedra"
+  },
+  {
+    "id": "fogo",
+    "name": "Gigante de Fogo"
+  },
+  {
+    "id": "gelo",
+    "name": "Gigante do Gelo"
+  },
+  {
+    "id": "nuvem",
+    "name": "Gigante das Nuvens"
+  },
+  {
+    "id": "colina",
+    "name": "Gigante da Colina"
+  },
+  {
+    "id": "humano",
+    "name": "Humano"
+  },
+  {
+    "id": "orc",
+    "name": "Orc"
+  },
+  {
+    "id": "pequenino",
+    "name": "Pequenino"
+  },
+  {
+    "id": "tiferino",
+    "name": "Tiferino"
+  },
+  {
+    "id": "abissal",
+    "name": "Abissal"
+  },
+  {
+    "id": "ctonico",
+    "name": "Ctônico"
+  },
+  {
+    "id": "infernal",
+    "name": "Infernal"
+  }
+]
