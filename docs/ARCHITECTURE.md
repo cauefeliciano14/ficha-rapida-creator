@@ -1,5 +1,8 @@
 # ARCHITECTURE
 
+> **Última revisão:** 2026-03-02  
+> Revisar esta seção sempre que houver qualquer alteração em `dependencies` ou `devDependencies` no `package.json`.
+
 ## Stack técnico
 - **Build e tooling:** Vite 5, TypeScript 5, ESLint 9, PostCSS e Autoprefixer.
 - **Front-end:** React 18 + React DOM 18.
@@ -8,7 +11,8 @@
 - **UI base:** shadcn/ui com componentes Radix UI.
 - **Gerenciamento de estado:** Zustand.
 - **Validação e formulários:** Zod, React Hook Form e @hookform/resolvers.
-- **Testes:** Vitest, Testing Library (react + jest-dom), jsdom.
+- **Testes:** Vitest e jsdom.
+- **Testing Library (react + jest-dom):** não usado atualmente (não consta em `package.json`).
 
 ## Dependências
 
@@ -29,7 +33,8 @@
 - vite, @vitejs/plugin-react-swc
 - typescript
 - eslint, typescript-eslint
-- vitest, @testing-library/react, @testing-library/jest-dom, jsdom
+- vitest, jsdom
+- @testing-library/react, @testing-library/jest-dom (**não usado atualmente**; não constam em `package.json`)
 - tailwindcss, @tailwindcss/typography, postcss, autoprefixer
 
 > Fonte de verdade das versões: `package.json`.
