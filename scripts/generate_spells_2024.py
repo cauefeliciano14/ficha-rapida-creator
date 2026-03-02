@@ -11,7 +11,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-DOCX_DEFAULT = "/mnt/data/D&D 5.5 - Livro do Jogador (2024) 5.1.docx"
+DOCX_DEFAULT = "sources/player_handbook_2024.docx"
 PDF_DEFAULT = "/mnt/data/7-Magias.pdf"
 OUTPUT_DEFAULT = "src/data/spells.generated.json"
 

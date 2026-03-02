@@ -19,7 +19,9 @@
     "validate:races": "node scripts/validate_races_against_docx.mjs",
     "extract:classes": "node scripts/extract_classes_from_docx.mjs",
     "generate:classes": "node scripts/generate_classes_ts.mjs",
-    "validate:classes": "node scripts/validate_classes_against_docx.mjs"
+    "validate:classes": "node scripts/validate_classes_against_docx.mjs",
+    "generate:spells": "python scripts/generate_spells_2024.py --docx sources/player_handbook_2024.docx --output src/data/spells.generated.json",
+    "validate:spells:audit": "python scripts/validate_spells.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
