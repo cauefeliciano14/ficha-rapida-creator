@@ -8,6 +8,7 @@ import { CheckCircle2, Search, Info, ChevronDown, ChevronUp, Loader2 } from "luc
 import { getCanonicalRaceChoiceKeyFromSources, getChoicesRequirements } from "@/utils/choices";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 export function StepRace() {
   const [search, setSearch] = useState("");
@@ -268,12 +269,11 @@ export function StepRace() {
         <h2 className="mb-3 text-lg font-bold">3. Escolha sua Raça</h2>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
+          <Input
             placeholder="Buscar raça..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-md border bg-secondary py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            className="h-11 w-full bg-secondary py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground"
           />
           {isFiltering && (
             <Loader2 className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin text-muted-foreground" />
@@ -292,7 +292,7 @@ export function StepRace() {
               <button
                 key={r.id}
                 onClick={() => handleSelectRace(r.id)}
-                className={`w-full rounded-lg border p-3 text-left transition-colors ${
+                className={`min-h-11 w-full rounded-lg border p-3 text-left transition-colors ${
                   isSelected
                     ? "border-primary bg-primary/10 ring-1 ring-primary/30"
                     : "hover:border-muted-foreground/40 hover:bg-secondary"

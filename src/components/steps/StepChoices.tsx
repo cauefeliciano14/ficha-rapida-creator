@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, type ReactNode } from "react";
 import { useBuilderStore } from "@/state/builderStore";
 import { useCharacterStore, mergeUnique } from "@/state/characterStore";
 import { getCanonicalRaceChoiceKeyFromSources, getChoicesRequirements, type ChoiceOption } from "@/utils/choices";
@@ -12,6 +12,9 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle2, Star, Wand2, Sparkles, BookOpen, Info, Search, Eye, Flame, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import {
   ABILITIES,
   ALL_SKILLS,
@@ -118,6 +121,7 @@ export function StepChoices() {
   const completeStep = useBuilderStore((s) => s.completeStep);
   const uncompleteStep = useBuilderStore((s) => s.uncompleteStep);
   const setMissing = useBuilderStore((s) => s.setMissing);
+  const beginnerHelp = useBuilderStore((s) => s.preferences.beginnerHelp);
 
   const cls = classes.find((c) => c.id === classId);
   const sc = cls?.spellcasting ?? null;
@@ -413,20 +417,46 @@ export function StepChoices() {
 
   const sortedSkills = useMemo(() => [...ALL_SKILLS].sort((a, b) => a.name.localeCompare(b.name, "pt-BR")), []);
 
+  const [activeChoiceTab, setActiveChoiceTab] = useState<"class" | "origin" | "race" | "pending">("pending");
+
+  const groupedBucketKeys = useMemo(() => {
+    const keys: Array<keyof typeof requirements.buckets> = ["classSkills", "languages", "tools", "instruments", "raceChoice", "classFeats"];
+    const grouped = { class: [] as string[], origin: [] as string[], race: [] as string[], pending: [] as string[] };
+    for (const key of keys) {
+      const bucket = requirements.buckets[key];
+      if (bucket.requiredCount <= 0) continue;
+      const src = bucket.sources.join(" ");
+      if (src.includes("class:")) grouped.class.push(key);
+      if (src.includes("background:")) grouped.origin.push(key);
+      if (src.includes("race:") || src.includes("subrace:")) grouped.race.push(key);
+      if (bucket.pendingCount > 0) grouped.pending.push(key);
+    }
+    return grouped;
+  }, [requirements.buckets]);
+
+  const [spellDrawerOpen, setSpellDrawerOpen] = useState(false);
+
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <h2 className="text-2xl font-bold">Escolhas</h2>
       <p className="text-sm text-muted-foreground">
         Complete todas as escolhas pendentes antes de visualizar a ficha final.
       </p>
+      {beginnerHelp && <p className="text-xs text-muted-foreground">Dica: avance aba por aba para reduzir erros e concluir mais rápido.</p>}
 
-      {/* ── Bucket-based choices ── */}
-      <BucketSection title="Perícias" bucket={requirements.buckets.classSkills} onToggle={(id) => toggle("classSkills", id)} />
-      <BucketSection title="Idiomas" bucket={requirements.buckets.languages} onToggle={(id) => toggle("languages", id)} />
-      <BucketSection title="Ferramentas" bucket={requirements.buckets.tools} onToggle={(id) => toggle("tools", id)} />
-      <BucketSection title="Instrumentos" bucket={requirements.buckets.instruments} onToggle={(id) => toggle("instruments", id)} />
-      <BucketSection title="Escolha Racial" bucket={requirements.buckets.raceChoice} onToggle={(id) => toggle("raceChoice", id)} />
-      <BucketSection title="Talentos de Classe" bucket={requirements.buckets.classFeats} onToggle={(id) => toggle("classFeats", id)} />
+      <Tabs value={activeChoiceTab} onValueChange={(value) => setActiveChoiceTab(value as any)}>
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+          <TabsTrigger className="min-h-11" value="class">Classe</TabsTrigger>
+          <TabsTrigger className="min-h-11" value="origin">Origem</TabsTrigger>
+          <TabsTrigger className="min-h-11" value="race">Raça</TabsTrigger>
+          <TabsTrigger className="min-h-11" value="pending">Tudo pendente</TabsTrigger>
+        </TabsList>
+        <TabsContent value="class" className="space-y-3">{groupedBucketKeys.class.map((key) => <TaskBucketCard key={key} bucketKey={key} bucket={requirements.buckets[key as keyof typeof requirements.buckets]} onOpen={() => {}}>{renderBucketByKey(key, requirements.buckets[key as keyof typeof requirements.buckets], toggle)}</TaskBucketCard>)}</TabsContent>
+        <TabsContent value="origin" className="space-y-3">{groupedBucketKeys.origin.map((key) => <TaskBucketCard key={key} bucketKey={key} bucket={requirements.buckets[key as keyof typeof requirements.buckets]} onOpen={() => {}}>{renderBucketByKey(key, requirements.buckets[key as keyof typeof requirements.buckets], toggle)}</TaskBucketCard>)}</TabsContent>
+        <TabsContent value="race" className="space-y-3">{groupedBucketKeys.race.map((key) => <TaskBucketCard key={key} bucketKey={key} bucket={requirements.buckets[key as keyof typeof requirements.buckets]} onOpen={() => {}}>{renderBucketByKey(key, requirements.buckets[key as keyof typeof requirements.buckets], toggle)}</TaskBucketCard>)}</TabsContent>
+        <TabsContent value="pending" className="space-y-3">{groupedBucketKeys.pending.map((key) => <TaskBucketCard key={key} bucketKey={key} bucket={requirements.buckets[key as keyof typeof requirements.buckets]} onOpen={() => {}}>{renderBucketByKey(key, requirements.buckets[key as keyof typeof requirements.buckets], toggle)}</TaskBucketCard>)}</TabsContent>
+      </Tabs>
 
       {/* ── Expertise section ── */}
       {expertiseConfigs.length > 0 && (
@@ -493,6 +523,12 @@ export function StepChoices() {
       )}
 
       {/* ── Spells section ── */}
+      {isSpellcaster && (
+        <Card className="p-4">
+          <h3 className="text-sm font-semibold mb-2">Perfil rápido de magia</h3>
+          <p className="text-xs text-muted-foreground">CD {spellSaveDC} • Ataque +{spellAttackBonus} • Limite {selectedCantrips.length}/{cantripsLimit} truques • {selectedPrepared.length}/{preparedLimit} {spellTypeLabel.toLowerCase()}</p>
+        </Card>
+      )}
       {!selectedClassId && (
         <Card className="p-4">
           <p className="text-sm text-muted-foreground">Selecione uma classe para ver magias.</p>
@@ -637,7 +673,7 @@ export function StepChoices() {
                               <p className="text-[11px] text-muted-foreground">{spell.school} • {spell.castingTime}</p>
                             </div>
                             <div className="flex items-center gap-1">
-                              <button onClick={() => setDetailSpellId(spell.id)} className="rounded border px-2 py-1 text-xs hover:bg-muted">Detalhes</button>
+                              <button onClick={() => { setDetailSpellId(spell.id); setSpellDrawerOpen(true); }} className="rounded border px-2 py-1 text-xs hover:bg-muted">Detalhes</button>
                               <button
                                 type="button"
                                 onClick={() => !disabled && toggleSpell(spell.id, spell.level)}
@@ -663,11 +699,8 @@ export function StepChoices() {
         </Card>
       )}
 
-      <Dialog open={Boolean(detailSpell)} onOpenChange={(open) => !open && setDetailSpellId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{detailSpell?.name}</DialogTitle>
-          </DialogHeader>
+      <Drawer open={spellDrawerOpen && Boolean(detailSpell)} onOpenChange={(open) => { setSpellDrawerOpen(open); if (!open) setDetailSpellId(null); }}><DrawerContent><DrawerHeader><DrawerTitle>{detailSpell?.name}</DrawerTitle></DrawerHeader><div className="p-4">
+        
           {detailSpell && (
             <div className="space-y-2 text-sm">
               <p><span className="font-medium">Círculo:</span> {detailSpell.level === 0 ? "Truque" : `${detailSpell.level}º`}</p>
@@ -676,8 +709,7 @@ export function StepChoices() {
               <p className="text-muted-foreground">{detailSpell.description}</p>
             </div>
           )}
-        </DialogContent>
-      </Dialog>
+        </div></DrawerContent></Drawer>
 
       {/* ── All complete indicator ── */}
       {requirements.buckets && !Object.values(requirements.buckets).some((b) => b.pendingCount > 0) &&
@@ -748,4 +780,15 @@ function BucketSection({
       )}
     </Card>
   );
+}
+
+
+function renderBucketByKey(key: string, bucket: { requiredCount: number; pendingCount: number; selectedIds: string[]; options: ChoiceOption[] }, toggle: (bucket: "classSkills" | "languages" | "tools" | "instruments" | "raceChoice" | "classFeats", id: string) => void) {
+  const map: Record<string, "classSkills" | "languages" | "tools" | "instruments" | "raceChoice" | "classFeats"> = { classSkills: "classSkills", languages: "languages", tools: "tools", instruments: "instruments", raceChoice: "raceChoice", classFeats: "classFeats" };
+  return <BucketSection title={bucketTitle(key)} bucket={bucket} onToggle={(id) => toggle(map[key], id)} />;
+}
+
+function TaskBucketCard({ bucketKey, bucket, onOpen, children }: { bucketKey: string; bucket: { requiredCount: number; pendingCount: number; selectedIds: string[]; options: ChoiceOption[]; sources?: string[] }; onOpen: () => void; children: ReactNode }) {
+  if (bucket.requiredCount <= 0) return null;
+  return <Card className="p-4 space-y-3"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold">{bucketTitle(bucketKey)}</p><p className="text-xs text-muted-foreground">Progresso: {bucket.requiredCount - bucket.pendingCount}/{bucket.requiredCount}</p><p className="text-xs text-muted-foreground">Impacto: afeta escolhas mecânicas da ficha.</p></div><Button onClick={onOpen} variant="outline" size="sm" className="min-h-11">Escolher agora</Button></div>{children}</Card>;
 }
