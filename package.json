@@ -26,7 +26,7 @@
     "validate:items": "node scripts/validate_items_against_docx.mjs",
     "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs",
     "validate:backgrounds:integrity": "vitest run src/test/backgroundsIntegrity.test.ts",
-    "validate:backgrounds:canon": "node scripts/validate_backgrounds_2024.mjs",
+    "validate:backgrounds:canon": "node scripts/validate_backgrounds_2024.mjs", 
     "validate:catalog": "node scripts/validate_catalog_integrity.mjs",
     "validate": "npm run validate:docs-deps && npm run validate:catalog",
     "generate:races": "node scripts/generate_races_ts.mjs",
