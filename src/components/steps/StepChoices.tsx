@@ -113,6 +113,8 @@ export function StepChoices() {
   const profBonus = useCharacterStore((s) => s.proficiencyBonus);
 
   const patchCharacter = useCharacterStore((s) => s.patchCharacter);
+  const toggleCantripInStore = useCharacterStore((s) => s.toggleCantrip);
+  const togglePreparedInStore = useCharacterStore((s) => s.toggleSpell);
   const completeStep = useBuilderStore((s) => s.completeStep);
   const uncompleteStep = useBuilderStore((s) => s.uncompleteStep);
   const setMissing = useBuilderStore((s) => s.setMissing);
@@ -291,23 +293,21 @@ export function StepChoices() {
     }
 
     if (spellLevel === 0) {
-      const current = [...selectedCantrips];
-      const idx = current.indexOf(spellId);
-      if (idx >= 0) current.splice(idx, 1);
-      else if (current.length < cantripsLimit) current.push(spellId);
+      const alreadySelected = selectedCantrips.includes(spellId);
+      if (!alreadySelected && selectedCantrips.length >= cantripsLimit) return;
+      toggleCantripInStore(spellId);
       patchCharacter({
-        spells: { ...spellsState, cantrips: current, spellcastingAbility: abilityKey, spellSaveDC, spellAttackBonus },
+        spells: { ...useCharacterStore.getState().spells, spellcastingAbility: abilityKey, spellSaveDC, spellAttackBonus },
       });
     } else {
-      const current = [...selectedPrepared];
-      const idx = current.indexOf(spellId);
-      if (idx >= 0) current.splice(idx, 1);
-      else if (current.length < preparedLimit) current.push(spellId);
+      const alreadySelected = selectedPrepared.includes(spellId);
+      if (!alreadySelected && selectedPrepared.length >= preparedLimit) return;
+      togglePreparedInStore(spellId);
       patchCharacter({
-        spells: { ...spellsState, prepared: current, cantrips: selectedCantrips, spellcastingAbility: abilityKey, spellSaveDC, spellAttackBonus, slots: Object.values(availableSlots) },
+        spells: { ...useCharacterStore.getState().spells, spellcastingAbility: abilityKey, spellSaveDC, spellAttackBonus, slots: Object.values(availableSlots) },
       });
     }
-  }, [selectedCantrips, selectedPrepared, cantripsLimit, preparedLimit, spellsState, abilityKey, spellSaveDC, spellAttackBonus, availableSlots, patchCharacter, selectedClassId, toast]);
+  }, [selectedCantrips, selectedPrepared, cantripsLimit, preparedLimit, abilityKey, spellSaveDC, spellAttackBonus, availableSlots, patchCharacter, selectedClassId, toast, toggleCantripInStore, togglePreparedInStore]);
 
   // ── Bucket toggle (non-spell choices) ──
   const toggle = (bucket: "classSkills" | "languages" | "tools" | "instruments" | "raceChoice" | "classFeats", id: string) => {
@@ -378,7 +378,7 @@ export function StepChoices() {
     useBuilderStore.getState().updateChoicesRequirements();
 
     const bucketMissing = Object.entries(requirements.buckets)
-      .filter(([key, bucket]) => key !== "cantrips" && key !== "spells" && key !== "classSkills" && bucket.pendingCount > 0)
+      .filter(([key, bucket]) => key !== "cantrips" && key !== "spells" && bucket.pendingCount > 0)
       .map(([bucketKey, bucket]) => `${bucket.pendingCount} pendência(s) em ${bucketTitle(bucketKey)}`);
 
     const allMissing = [...bucketMissing, ...expertiseMissing, ...spellsMissing];
@@ -420,6 +420,7 @@ export function StepChoices() {
       </p>
 
       {/* ── Bucket-based choices ── */}
+      <BucketSection title="Perícias" bucket={requirements.buckets.classSkills} onToggle={(id) => toggle("classSkills", id)} />
       <BucketSection title="Idiomas" bucket={requirements.buckets.languages} onToggle={(id) => toggle("languages", id)} />
       <BucketSection title="Ferramentas" bucket={requirements.buckets.tools} onToggle={(id) => toggle("tools", id)} />
       <BucketSection title="Instrumentos" bucket={requirements.buckets.instruments} onToggle={(id) => toggle("instruments", id)} />

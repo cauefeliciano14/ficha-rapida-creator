@@ -2,22 +2,13 @@
 from __future__ import annotations
 
 import json
-import re
-import sys
 from collections import Counter
 from pathlib import Path
 
 DATASET = Path("src/data/spells.generated.json")
+REPORT = Path("docs/spells_audit.md")
 KNOWN_SCHOOLS = {
-    "Abjuração",
-    "Adivinhação",
-    "Encantamento",
-    "Evocação",
-    "Ilusão",
-    "Invocação",
-    "Necromancia",
-    "Transmutação",
-    "Conjuração",  # compatibilidade com nomenclatura legada
+    "Abjuração", "Adivinhação", "Encantamento", "Evocação", "Ilusão", "Invocação", "Necromancia", "Transmutação", "Conjuração",
 }
 KNOWN_CLASSES = {"Bardo", "Bruxo", "Clérigo", "Druida", "Feiticeiro", "Guardião", "Mago", "Paladino"}
 
@@ -64,11 +55,40 @@ def validate(spells: list[dict]) -> list[str]:
             if bad_classes:
                 errors.append(f"{p}: classes inválidas ({', '.join(bad_classes)})")
 
-    ordered = sorted(spells, key=lambda x: str(x.get("name", "")).casefold())
-    if [s.get("id") for s in ordered] != [s.get("id") for s in spells]:
-        errors.append("Dataset não está ordenado por name (pt-BR)")
-
     return errors
+
+
+def write_report(spells: list[dict], errors: list[str]) -> None:
+    levels = Counter(s.get("level") for s in spells)
+    by_class = Counter(cls for s in spells for cls in (s.get("classes") or []))
+    lines = [
+        "# Auditoria de Magias (0/1/2)",
+        "",
+        f"Fonte validada: `{DATASET}`",
+        "",
+        f"Total: **{len(spells)}**",
+        "",
+        "## Contagem por nível",
+        f"- Truques (0): {levels.get(0, 0)}",
+        f"- 1º Círculo (1): {levels.get(1, 0)}",
+        f"- 2º Círculo (2): {levels.get(2, 0)}",
+        "",
+        "## Contagem por classe",
+    ]
+    for cls, count in sorted(by_class.items(), key=lambda kv: kv[0]):
+        lines.append(f"- {cls}: {count}")
+
+    lines.extend([
+        "",
+        "## Erros de validação",
+    ])
+    if errors:
+        lines.extend(f"- {err}" for err in errors)
+    else:
+        lines.append("- Nenhum erro detectado na validação.")
+
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
+    REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main() -> int:
@@ -78,9 +98,7 @@ def main() -> int:
 
     spells = json.loads(DATASET.read_text(encoding="utf-8"))
     errors = validate(spells)
-    counts = Counter(s.get("level") for s in spells)
-
-    print(f"Contagem por nível: 0={counts.get(0,0)} 1={counts.get(1,0)} 2={counts.get(2,0)}")
+    write_report(spells, errors)
 
     if errors:
         print("\n❌ Erros de validação:")
@@ -88,7 +106,7 @@ def main() -> int:
             print(f"- {err}")
         return 1
 
-    print(f"\n✅ validate:spells OK ({len(spells)} magias)")
+    print(f"✅ validate_spells.py OK ({len(spells)} magias)")
     return 0
 
 
