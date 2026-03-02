@@ -6,6 +6,7 @@ export type BackgroundToolGrant = string;
 export interface BackgroundEquipmentItem {
   itemId: string;
   qty: number;
+  includesChosenTool?: boolean;
 }
 
 export interface BackgroundEquipmentOption {
@@ -34,28 +35,37 @@ export interface Background {
   equipmentChoices: { id: "A" | "B"; label: string; items: string[]; gold: number }[];
 }
 
-const makeItems = (items: Array<[string, number]>): BackgroundEquipmentItem[] =>
-  items.map(([itemId, qty]) => ({ itemId, qty }));
+type ItemInput = [string, number] | { itemId: string; qty: number; includesChosenTool?: boolean };
 
-function makeBackground(input: Omit<Background, "abilityBonuses" | "equipmentChoices" | "skills" | "grantedSkills" | "tools" | "originFeat">): Background {
+const makeItems = (items: ItemInput[]): BackgroundEquipmentItem[] =>
+  items.map((entry) => {
+    if (Array.isArray(entry)) {
+      const [itemId, qty] = entry;
+      return { itemId, qty };
+    }
+    return entry;
+  });
+
+function makeBackground(
+  input: Omit<
+    Background,
+    "abilityBonuses" | "equipmentChoices" | "skills" | "grantedSkills" | "tools" | "originFeat"
+  >
+): Background {
   const optionAItemsAsText = input.equipmentOptionA.items.flatMap((entry) =>
-    Array.from({ length: entry.qty }, () => entry.itemId)
+    Array.from({ length: entry.qty }, () =>
+      entry.includesChosenTool ? `${entry.itemId} (o mesmo escolhido na proficiência)` : entry.itemId
+    )
   );
 
   const feat = feats.find((item) => item.id === input.originFeatId);
-  const toLegacyTool = (toolId: string) => {
-    if (toolId === "choose_musical_instrument") return "Um instrumento à sua escolha";
-    if (toolId === "choose_artisans_tools") return "Uma ferramenta de artesão à sua escolha";
-    if (toolId === "choose_gaming_set") return "Um tipo de jogo à sua escolha";
-    return toolId;
-  };
 
   return {
     ...input,
     abilityBonuses: { mode: "choose" },
     skills: input.skillsGranted,
     grantedSkills: input.skillsGranted,
-    tools: input.toolsGranted.map(toLegacyTool),
+    tools: input.toolsGranted,
     originFeat: { id: input.originFeatId, name: feat?.name ?? input.originFeatId, description: feat?.description ?? "" },
     equipmentChoices: [
       { id: "A", label: "Pacote do antecedente", items: optionAItemsAsText, gold: input.equipmentOptionA.gold },
@@ -64,201 +74,358 @@ function makeBackground(input: Omit<Background, "abilityBonuses" | "equipmentCho
   };
 }
 
-
 export const backgrounds: Background[] = [
   makeBackground({
     id: "acolito",
     name: "Acólito",
-    description: "Você passou a vida nos templos, estudando tradição sagrada e realizando ritos.",
+    description:
+      "Você se dedicou ao serviço em um templo, localizado em uma aldeia ou em um bosque sagrado, onde realizava ritos em homenagem a um deus ou panteão. Sob a orientação de um sacerdote, você estudou religião e, graças à sua devoção, aprendeu a canalizar um pouco do poder divino para o seu local de culto e para as pessoas que ali oravam.",
     abilityOptions: ["int", "wis", "cha"],
     skillsGranted: ["Intuição", "Religião"],
-    toolsGranted: ["kit-herbalismo"],
-    languages: ["Celestial"],
-    originFeatId: "curandeiro",
+    toolsGranted: ["Suprimentos de Calígrafo"],
+    languages: [],
+    originFeatId: "iniciado-magia-clerigo",
     equipmentOptionA: {
-      items: makeItems([["Livro de orações", 1], ["Símbolo sagrado", 1], ["Vareta de incenso", 5], ["Vestimentas", 1], ["Kit de Herbalismo", 1]]),
-      gold: 15,
+      items: makeItems([
+        ["Suprimentos de Calígrafo", 1],
+        ["Livro (orações)", 1],
+        ["Símbolo Sagrado", 1],
+        ["Pergaminho (10 folhas)", 1],
+        ["Túnica", 1],
+      ]),
+      gold: 8,
     },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "andarilho",
     name: "Andarilho",
-    description: "Você cresceu nas terras selvagens, longe da civilização, vivendo da terra.",
-    abilityOptions: ["str", "dex", "wis"],
-    skillsGranted: ["Atletismo", "Sobrevivência"],
-    toolsGranted: ["choose_musical_instrument"],
-    languages: ["Um idioma à sua escolha"],
-    originFeatId: "atleta",
-    equipmentOptionA: { items: makeItems([["Bordão", 1], ["Armadilha de caça", 1], ["Troféu de animal", 1], ["Roupas de viajante", 1]]), gold: 10 },
+    description:
+      "Você cresceu nas ruas cercado por rejeitados igualmente malfadados, alguns deles amigos e outros rivais. Você dormia onde podia e fazia bicos por comida. Às vezes, quando a fome se tornava insuportável, você recorria ao furto. Ainda assim, você nunca perdeu seu orgulho e nunca abandonou a esperança. O destino ainda não terminou com você.",
+    abilityOptions: ["dex", "wis", "cha"],
+    skillsGranted: ["Furtividade", "Intuição"],
+    toolsGranted: ["Ferramentas de Ladrão"],
+    languages: [],
+    originFeatId: "sortudo",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Adaga", 2],
+        ["Ferramentas de Ladrão", 1],
+        ["Kit de Jogos (qualquer um)", 1],
+        ["Algibeira", 2],
+        ["Roupas de Viagem", 1],
+        ["Saco de Dormir", 1],
+      ]),
+      gold: 16,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "artesao",
     name: "Artesão",
-    description: "Membro de uma guilda de artesãos, com habilidades práticas e contatos comerciais.",
+    description:
+      "Você começou a limpar o chão e esfregar balcões na oficina de um artesão por alguns trocados por dia assim que ficou forte o suficiente para carregar um balde. Ao se tornar aprendiz, aprendeu a fabricar artesanatos básicos e a lidar com clientes exigentes, desenvolvendo também um olhar aguçado para detalhes.",
     abilityOptions: ["str", "dex", "int"],
-    skillsGranted: ["Intuição", "Persuasão"],
-    toolsGranted: ["choose_artisans_tools"],
-    languages: ["Um idioma à sua escolha"],
-    originFeatId: "sortudo",
-    equipmentOptionA: { items: makeItems([["Ferramentas de artesão", 1], ["Carta de apresentação da guilda", 1], ["Roupas de viajante", 1]]), gold: 15 },
+    skillsGranted: ["Investigação", "Persuasão"],
+    toolsGranted: ["Escolha um tipo de Ferramentas de Artesão (veja o capítulo 6)"],
+    languages: [],
+    originFeatId: "artifista",
+    equipmentOptionA: {
+      items: makeItems([
+        { itemId: "Ferramentas de Artesão", qty: 1, includesChosenTool: true },
+        ["Algibeira", 2],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 32,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "artista",
     name: "Artista",
-    description: "Você encanta audiências com sua performance, seja música, dança ou teatro.",
+    description:
+      "Você passou a juventude em feiras e festivais itinerantes, fazendo bicos para músicos e acrobatas em troca de aulas. Aprendeu a andar na corda bamba, tocar alaúde de um jeito distinto e recitar poesia com dicção impecável. Até hoje, prospera com aplausos e anseia pelo palco.",
     abilityOptions: ["str", "dex", "cha"],
     skillsGranted: ["Acrobacia", "Atuação"],
-    toolsGranted: ["kit-disfarce", "choose_musical_instrument"],
+    toolsGranted: ["Escolha um tipo de Instrumento Musical (veja o capítulo 6)"],
     languages: [],
-    originFeatId: "inspirador",
-    equipmentOptionA: { items: makeItems([["Instrumento musical", 1], ["Carta de apresentação", 1], ["Fantasia", 1], ["Roupas finas", 1]]), gold: 15 },
+    originFeatId: "musico",
+    equipmentOptionA: {
+      items: makeItems([
+        { itemId: "Instrumento Musical", qty: 1, includesChosenTool: true },
+        ["Espelho", 1],
+        ["Fantasia", 2],
+        ["Perfume", 1],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 11,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "charlatao",
     name: "Charlatão",
-    description: "Você sempre teve talento para enganar as pessoas e lucrar com isso.",
+    description:
+      "Assim que você atingiu a idade para pedir uma cerveja, escolheu seu banquinho favorito em cada taverna a quinze quilômetros de onde nasceu. Ao percorrer o circuito de bares e botequins, aprendeu a lidar com os infelizes em busca de mentiras reconfortantes — talvez uma poção falsa ou registros de ancestralidade forjados.",
     abilityOptions: ["dex", "con", "cha"],
     skillsGranted: ["Enganação", "Prestidigitação"],
-    toolsGranted: ["kit-falsificacao", "kit-disfarce"],
+    toolsGranted: ["Kit de Falsificação"],
     languages: [],
-    originFeatId: "ator",
-    equipmentOptionA: { items: makeItems([["Kit de disfarce", 1], ["Roupas finas", 1], ["Ferramentas de vigarista", 1]]), gold: 15 },
+    originFeatId: "habilidoso",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Kit de Falsificação", 1],
+        ["Fantasia", 1],
+        ["Roupas Finas", 1],
+      ]),
+      gold: 15,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "criminoso",
     name: "Criminoso",
-    description: "Você tem histórico de infringir a lei e contatos no submundo.",
+    description:
+      "Você sobrevivia em becos escuros, furtando pessoas ou assaltando lojas. Talvez fizesse parte de uma pequena gangue de criminosos que se protegiam mutuamente, ou fosse um lobo solitário, enfrentando a guilda dos ladrões locais e os criminosos mais temíveis.",
     abilityOptions: ["dex", "con", "int"],
-    skillsGranted: ["Enganação", "Furtividade"],
-    toolsGranted: ["ferramentas-ladrao", "choose_gaming_set"],
+    skillsGranted: ["Furtividade", "Prestidigitação"],
+    toolsGranted: ["Ferramentas de Ladrão"],
     languages: [],
     originFeatId: "alerta",
-    equipmentOptionA: { items: makeItems([["Pé de cabra", 1], ["Roupas escuras com capuz", 1], ["Ferramentas de ladrão", 1]]), gold: 15 },
+    equipmentOptionA: {
+      items: makeItems([
+        ["Adaga", 2],
+        ["Ferramentas de Ladrão", 1],
+        ["Algibeira", 2],
+        ["Pé de Cabra", 1],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 16,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "eremita",
     name: "Eremita",
-    description: "Você viveu em reclusão por muitos anos, buscando iluminação espiritual.",
+    description:
+      "Você passou seus primeiros anos isolado em uma cabana ou mosteiro localizado bem além dos arredores do povoado mais próximo. Naqueles dias, seus únicos companheiros eram as criaturas da floresta e aqueles que ocasionalmente faziam uma visita para trazer suprimentos e notícias do mundo externo. A solidão permitia que você passasse muitas horas ponderando os mistérios da criação.",
     abilityOptions: ["con", "wis", "cha"],
     skillsGranted: ["Medicina", "Religião"],
-    toolsGranted: ["kit-herbalismo"],
-    languages: ["Um idioma à sua escolha"],
+    toolsGranted: ["Kit de Herbalismo"],
+    languages: [],
     originFeatId: "curandeiro",
-    equipmentOptionA: { items: makeItems([["Pergaminho de estudo", 1], ["Kit de Herbalismo", 1], ["Cobertor de inverno", 1], ["Roupas comuns", 1]]), gold: 5 },
+    equipmentOptionA: {
+      items: makeItems([
+        ["Cajado", 1],
+        ["Kit de Herbalismo", 1],
+        ["Lâmpada", 1],
+        ["Livro (filosofia)", 1],
+        ["Óleo (3 frascos)", 1],
+        ["Roupas de Viagem", 1],
+        ["Saco de Dormir", 1],
+      ]),
+      gold: 16,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "escriba",
     name: "Escriba",
-    description: "Você estudou em uma academia arcana ou biblioteca, absorvendo conhecimento e tradições escritas.",
-    abilityOptions: ["con", "int", "wis"],
-    skillsGranted: ["Arcanismo", "Investigação"],
-    toolsGranted: ["calligrapher-supplies"],
-    languages: ["Dois idiomas à sua escolha"],
-    originFeatId: "iniciado-em-magia",
-    equipmentOptionA: { items: makeItems([["Grimório", 1], ["Tinta", 1], ["Caneta", 1], ["Bolsa de componentes", 1], ["Roupas de estudioso", 1]]), gold: 10 },
+    description:
+      "Você passou anos de formação em um scriptorium, um mosteiro dedicado à preservação do conhecimento ou uma agência governamental, onde aprendeu a escrever com uma mão firme e produzir textos finamente escritos. Talvez você tenha escrito documentos governamentais ou copiado tomos de literatura. Você pode ter alguma habilidade como escritor de poesia, narrativa ou pesquisa acadêmica. Acima de tudo, você tem uma atenção cuidadosa aos detalhes, o que lhe ajuda a evitar a introdução de erros aos documentos que você copia e cria.",
+    abilityOptions: ["dex", "int", "wis"],
+    skillsGranted: ["Investigação", "Percepção"],
+    toolsGranted: ["Suprimentos de Calígrafo"],
+    languages: [],
+    originFeatId: "habilidoso",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Suprimentos de Calígrafo", 1],
+        ["Lâmpada", 1],
+        ["Óleo (3 frascos)", 1],
+        ["Pergaminho (12 folhas)", 1],
+        ["Roupas Finas", 1],
+      ]),
+      gold: 23,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "fazendeiro",
     name: "Fazendeiro",
-    description: "Você é de origem humilde, tendo crescido trabalhando a terra e cuidando de animais.",
+    description:
+      "Você cresceu perto da terra. Os anos cuidando de animais e cultivando a terra o recompensaram com paciência e boa saúde. Você tem um grande apreço pela generosidade da natureza, juntamente com um respeito saudável pela ira dela.",
     abilityOptions: ["str", "con", "wis"],
-    skillsGranted: ["Adestrar Animais", "Sobrevivência"],
-    toolsGranted: ["choose_artisans_tools", "veiculos-terrestres"],
+    skillsGranted: ["Lidar com Animais", "Natureza"],
+    toolsGranted: ["Ferramentas de Carpinteiro"],
     languages: [],
-    originFeatId: "sentinela",
-    equipmentOptionA: { items: makeItems([["Ferramentas de artesão", 1], ["Pá", 1], ["Panela de ferro", 1], ["Roupas comuns", 1]]), gold: 10 },
+    originFeatId: "vigoroso",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Foice", 1],
+        ["Ferramentas de Carpinteiro", 1],
+        ["Kit de Curandeiro", 1],
+        ["Balde de Ferro", 1],
+        ["Pá", 1],
+      ]),
+      gold: 30,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "guarda",
     name: "Guarda",
-    description: "Você serviu em um exército ou milícia, treinando nas artes da guerra e da vigilância.",
-    abilityOptions: ["str", "con", "wis"],
-    skillsGranted: ["Atletismo", "Intimidação"],
-    toolsGranted: ["choose_gaming_set", "veiculos-terrestres"],
+    description:
+      "Seus pés doem quando você se lembra das incontáveis horas que passou em seu posto na torre. Você foi treinado para manter um olho atento para o que ocorria do lado fora da muralha, observando saqueadores vasculhando a floresta próxima, e seu outro olho voltado para dentro da muralha, procurando por assaltantes e encrenqueiros.",
+    abilityOptions: ["str", "int", "wis"],
+    skillsGranted: ["Atletismo", "Percepção"],
+    toolsGranted: ["Escolha um tipo de Kit de Jogos (veja o capítulo 6)"],
     languages: [],
-    originFeatId: "sentinela",
-    equipmentOptionA: { items: makeItems([["Insígnia de patente", 1], ["Troféu de inimigo", 1], ["Dados de osso", 1], ["Roupas comuns", 1]]), gold: 10 },
+    originFeatId: "alerta",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Lança", 1],
+        ["Besta Leve", 1],
+        ["Virote", 20],
+        { itemId: "Kit de Jogo", qty: 1, includesChosenTool: true },
+        ["Aljava", 1],
+        ["Grilhões", 1],
+        ["Lanterna Coberta", 1],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 12,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "guia",
     name: "Guia",
-    description: "Você viajou por terras distantes em busca de significado ou proteção, guiando viajantes.",
+    description:
+      "Você cresceu ao ar livre, longe de terras povoadas. Sua casa ficava em qualquer lugar que você escolhesse para estender seu saco de dormir. Há maravilhas na natureza — monstros estranhos, florestas e riachos intocados, ruínas imensas de grandes salões outrora pisados por gigantes — e você aprendeu a se defender enquanto as explorava. De tempos em tempos, você guiava sacerdotes da natureza amigáveis que o instruíam nos fundamentos de canalizar a magia da natureza.",
     abilityOptions: ["dex", "con", "wis"],
-    skillsGranted: ["Intuição", "Sobrevivência"],
-    toolsGranted: ["cartographer-tools"],
-    languages: ["Dois idiomas à sua escolha"],
-    originFeatId: "observador",
-    equipmentOptionA: { items: makeItems([["Cobertor de inverno", 1], ["Roupas de viajante", 1], ["Diário de viagem", 1]]), gold: 10 },
+    skillsGranted: ["Furtividade", "Sobrevivência"],
+    toolsGranted: ["Ferramentas de Cartógrafo"],
+    languages: [],
+    originFeatId: "iniciado-magia-druida",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Arco Curto", 1],
+        ["Flecha", 20],
+        ["Ferramentas de Cartógrafo", 1],
+        ["Aljava", 1],
+        ["Roupas de Viagem", 1],
+        ["Saco de Dormir", 1],
+        ["Tenda", 1],
+      ]),
+      gold: 3,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "marinheiro",
     name: "Marinheiro",
-    description: "Você navegou os mares por anos, enfrentando tempestades e aventuras.",
-    abilityOptions: ["str", "dex", "con"],
-    skillsGranted: ["Atletismo", "Percepção"],
-    toolsGranted: ["ferramentas-navegador", "veiculos-aquaticos"],
+    description:
+      "Você viveu como um marinheiro, com o vento nas costas e os conveses balançando sob seus pés. Você já se sentou em bancos de bar em mais portos de escala do que consegue se lembrar, enfrentou grandes tempestades e trocou histórias com pessoas que vivem sob as ondas.",
+    abilityOptions: ["str", "dex", "wis"],
+    skillsGranted: ["Acrobacia", "Percepção"],
+    toolsGranted: ["Ferramentas de Navegador"],
     languages: [],
-    originFeatId: "atleta",
-    equipmentOptionA: { items: makeItems([["Bordão", 1], ["15m de corda de seda", 1], ["Amuleto de sorte", 1], ["Roupas comuns", 1]]), gold: 10 },
+    originFeatId: "valentao-taverna",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Adaga", 1],
+        ["Ferramentas de Navegador", 1],
+        ["Corda", 1],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 20,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "mercador",
     name: "Mercador",
-    description: "Você cresceu nas ruas e mercados, sobrevivendo por esperteza e negociação.",
+    description:
+      "Você foi aprendiz de um comerciante, mestre de caravanas ou lojista, aprendendo os fundamentos do comércio. Com ele, viajou bastante e ganhou a vida comprando e vendendo as matérias-primas que os artesãos precisam para praticar seu ofício, ou trabalhos acabados de tais artesãos. Você pode ter transportado mercadorias de um lugar para outro (por navio, carroça ou caravana) ou comprado de comerciantes viajantes e vendido em sua própria loja.",
     abilityOptions: ["con", "int", "cha"],
-    skillsGranted: ["Persuasão", "Prestidigitação"],
-    toolsGranted: ["kit-disfarce", "ferramentas-ladrao"],
+    skillsGranted: ["Lidar com Animais", "Persuasão"],
+    toolsGranted: ["Ferramentas de Navegador"],
     languages: [],
     originFeatId: "sortudo",
-    equipmentOptionA: { items: makeItems([["Balança de mercador", 1], ["Mapa da cidade", 1], ["Roupas comuns", 1]]), gold: 15 },
+    equipmentOptionA: {
+      items: makeItems([
+        ["Ferramentas de Navegador", 1],
+        ["Algibeira", 2],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 22,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "nobre",
     name: "Nobre",
-    description: "Nascido em família de prestígio, você carrega título e responsabilidades.",
+    description:
+      "Você foi criado em um castelo, cercado por riqueza, poder e privilégio. Sua família de aristocratas menores garantiu que você recebesse uma educação de primeira categoria, com conteúdos que você apreciava e outros dos quais se ressentia. Seu tempo no castelo, especialmente as muitas horas que passou observando sua família na corte, também lhe ensinou muito sobre liderança.",
     abilityOptions: ["str", "int", "cha"],
     skillsGranted: ["História", "Persuasão"],
-    toolsGranted: ["choose_gaming_set"],
-    languages: ["Um idioma à sua escolha"],
-    originFeatId: "inspirador",
-    equipmentOptionA: { items: makeItems([["Roupas finas", 1], ["Anel de sinete", 1], ["Pergaminho de linhagem", 1]]), gold: 25 },
+    toolsGranted: ["Escolha um tipo de Kit de Jogos (veja o capítulo 6)"],
+    languages: [],
+    originFeatId: "habilidoso",
+    equipmentOptionA: {
+      items: makeItems([
+        { itemId: "Kit de Jogo", qty: 1, includesChosenTool: true },
+        ["Perfume", 1],
+        ["Roupas Finas", 1],
+      ]),
+      gold: 29,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "sabio",
     name: "Sábio",
-    description: "Você dedicou anos ao estudo acadêmico e à busca do conhecimento.",
+    description:
+      "Você passou seus anos de formação viajando entre mansões e mosteiros, realizando vários bicos e serviços em troca de acesso às bibliotecas desses locais. Suas noites se resumiram a estudar livros e pergaminhos, aprendendo a sabedoria do multiverso — até mesmo os rudimentos da magia — e, agora, sua mente anseia por mais.",
     abilityOptions: ["con", "int", "wis"],
     skillsGranted: ["Arcanismo", "História"],
-    toolsGranted: ["calligrapher-supplies"],
-    languages: ["Dois idiomas à sua escolha"],
-    originFeatId: "observador",
-    equipmentOptionA: { items: makeItems([["Tinta", 1], ["Caneta", 1], ["Faca pequena", 1], ["Carta de universidade", 1], ["Roupas comuns", 1]]), gold: 10 },
+    toolsGranted: ["Suprimentos de Calígrafo"],
+    languages: [],
+    originFeatId: "iniciado-magia-mago",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Cajado", 1],
+        ["Suprimentos de Calígrafo", 1],
+        ["Livro (história)", 1],
+        ["Pergaminho (8 folhas)", 1],
+        ["Túnica", 1],
+      ]),
+      gold: 8,
+    },
     equipmentOptionB: { gold: 50 },
   }),
   makeBackground({
     id: "soldado",
     name: "Soldado",
-    description: "Você serviu como soldado em exércitos ou milícias, treinado para combate e disciplina.",
+    description:
+      "Você começou a treinar para a guerra assim que atingiu a idade adulta e tem poucas lembranças preciosas da vida antes de pegar em armas. A batalha está em seu sangue. Às vezes, você se pega realizando reflexivamente os exercícios básicos de luta que aprendeu primeiro. Por fim, você coloca esse treinamento em prática no campo de batalha, protegendo o reino por meio da guerra.",
     abilityOptions: ["str", "dex", "con"],
     skillsGranted: ["Atletismo", "Intimidação"],
-    toolsGranted: ["choose_gaming_set"],
-    languages: ["Um idioma à sua escolha"],
-    originFeatId: "combate-com-armas-grandes",
-    equipmentOptionA: { items: makeItems([["Bastão", 1], ["Armadilha de caça", 1], ["Troféu de animal", 1], ["Roupas de viajante", 1]]), gold: 10 },
+    toolsGranted: ["Escolha um tipo de Kit de Jogos (veja o capítulo 6)"],
+    languages: [],
+    originFeatId: "atacante-selvagem",
+    equipmentOptionA: {
+      items: makeItems([
+        ["Lança", 1],
+        ["Arco Curto", 1],
+        ["Flecha", 20],
+        ["Kit de Curandeiro", 1],
+        { itemId: "Kit de Jogo", qty: 1, includesChosenTool: true },
+        ["Aljava", 1],
+        ["Roupas de Viagem", 1],
+      ]),
+      gold: 14,
+    },
     equipmentOptionB: { gold: 50 },
   }),
 ].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
