@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCcw, Swords, Settings, Shield, Save, CheckCircle2 } from "lucide-react";
+import { RotateCcw, Swords, Shield, CheckCircle2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,9 +12,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useCharacterStore } from "@/state/characterStore";
 import { useBuilderStore } from "@/state/builderStore";
 
@@ -26,8 +23,6 @@ export function Header() {
   const lastSavedAt = useCharacterStore((s) => s.lastSavedAt);
   const persistError = useCharacterStore((s) => s.persistError);
   const resetBuilder = useBuilderStore((s) => s.resetBuilder);
-  const preferences = useBuilderStore((s) => s.preferences);
-  const setPreferences = useBuilderStore((s) => s.setPreferences);
 
   const handleReset = () => {
     resetCharacter();
@@ -85,63 +80,6 @@ export function Header() {
               </span>
             ) : null}
           </div>
-
-          {/* Settings */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="min-h-[40px] gap-1.5 px-2 sm:px-3 text-muted-foreground hover:text-gold hover:bg-gold/5 transition-colors"
-              >
-                <Settings className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Configurações</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="border-gold/20">
-              <DialogHeader>
-                <DialogTitle className="font-display text-gold">Configurações do Builder</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="rounded-lg border border-border/60 bg-secondary/30 p-4">
-                  <p className="text-sm font-semibold text-foreground mb-1">Exibição de Atributos</p>
-                  <p className="text-xs text-muted-foreground mb-3">Como os valores de atributo são exibidos no resumo.</p>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={preferences.abilityDisplay === "mod_first" ? "default" : "outline"}
-                      onClick={() => setPreferences({ abilityDisplay: "mod_first" })}
-                      className={preferences.abilityDisplay === "mod_first" ? "bg-primary" : "border-border/60"}
-                    >
-                      Modificador primeiro
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={preferences.abilityDisplay === "score_first" ? "default" : "outline"}
-                      onClick={() => setPreferences({ abilityDisplay: "score_first" })}
-                      className={preferences.abilityDisplay === "score_first" ? "bg-primary" : "border-border/60"}
-                    >
-                      Valor primeiro
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between rounded-lg border border-border/60 bg-secondary/30 p-4">
-                  <div>
-                    <Label htmlFor="beginner-help" className="text-sm font-semibold">Modo Iniciante</Label>
-                    <p className="text-xs text-muted-foreground mt-0.5">Exibe textos explicativos contextuais.</p>
-                  </div>
-                  <Switch
-                    id="beginner-help"
-                    checked={preferences.beginnerHelp}
-                    onCheckedChange={(checked) => setPreferences({ beginnerHelp: checked })}
-                  />
-                </div>
-                <div className="rounded-lg border border-dashed border-gold/20 bg-gold/5 p-3 text-xs text-gold/60">
-                  <span className="font-display">Em breve:</span> controle de fontes e conteúdo adicional.
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
 
           {/* Reset */}
           <AlertDialog onOpenChange={handleDialogOpenChange}>
