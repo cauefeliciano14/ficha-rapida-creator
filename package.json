@@ -28,7 +28,12 @@
     "validate:backgrounds:integrity": "vitest run src/test/backgroundsIntegrity.test.ts",
     "validate:backgrounds:canon": "node scripts/validate_backgrounds_2024.mjs",
     "validate:catalog": "node scripts/validate_catalog_integrity.mjs",
-    "validate": "npm run validate:docs-deps && npm run validate:catalog"
+    "validate": "npm run validate:docs-deps && npm run validate:catalog",
+    "generate:races": "node scripts/generate_races_ts.mjs",
+    "extract:backgrounds": "node scripts/extract_backgrounds_from_docx.mjs",
+    "generate:backgrounds": "node scripts/generate_backgrounds_ts.mjs",
+    "extract:spells": "node scripts/extract_spells_0_1_2_from_docx.mjs",
+    "generate:spells": "node scripts/generate_spells_ts.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
