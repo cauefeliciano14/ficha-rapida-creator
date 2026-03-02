@@ -24,7 +24,9 @@
     "extract:items": "node scripts/extract_items_from_docx.mjs",
     "extract:starting-equipment": "node scripts/extract_starting_equipment_from_docx.mjs",
     "validate:items": "node scripts/validate_items_against_docx.mjs",
-    "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs"
+    "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs",
+    "validate:catalog": "node scripts/validate_catalog_integrity.mjs",
+    "validate": "npm run validate:docs-deps && npm run validate:catalog"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
