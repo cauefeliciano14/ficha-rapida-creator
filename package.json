@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate:spells": "node scripts/validateSpells.mjs",
-    "validate:backgrounds": "vitest run src/test/backgroundsIntegrity.test.ts"
+    "validate:backgrounds": "vitest run src/test/backgroundsIntegrity.test.ts",
+    "validate:docs-deps": "node scripts/validateDocsDeps.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

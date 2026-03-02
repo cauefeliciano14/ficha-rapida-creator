@@ -52,6 +52,7 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   const bg = backgrounds.find((b) => b.id === char.background);
   const choicesStepId = useChoicesStep ? "choices" : "equipment";
   const choicesStepNumber = useChoicesStep ? 6 : 5;
+  const sheetStepNumber = useChoicesStep ? 7 : 6;
 
   // 1. Ability method
   if (char.level > 2) {
@@ -59,7 +60,7 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
       id: "level-unsupported",
       label: "Somente níveis 1 e 2 são suportados neste recorte",
       stepId: "sheet",
-      stepNumber: 6,
+      stepNumber: sheetStepNumber,
       severity: "required",
     });
   }
@@ -96,7 +97,9 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   // Race ability choices
   if (race?.abilityBonuses.mode === "choose" && race.abilityBonuses.choose) {
     const choicesNeeded = race.abilityBonuses.choose.choices;
-    const chosen = ABILITY_KEYS.filter((key) => (char.raceAbilityChoices[key] ?? 0) > 0).length;
+    const chosen = (Object.keys(char.raceAbilityChoices) as AbilityKey[]).filter(
+      (key) => (char.raceAbilityChoices[key] ?? 0) > 0
+    ).length;
     if (chosen < choicesNeeded) {
       missing.push({
         id: "race-ability-choices",
@@ -106,18 +109,6 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
         severity: "required",
       });
     }
-  }
-
-  // Race choices (e.g., Draconato ancestralidade)
-  const raceChoices: RaceChoicesState = char.raceChoices ?? {};
-  if (char.race === "draconato" && !raceChoices.draconicAncestry) {
-    missing.push({
-      id: "draconato-ancestralidade",
-      label: "Ancestralidade dracônica não escolhida",
-      stepId: "race",
-      stepNumber: 3,
-      severity: "required",
-    });
   }
 
   // 3. Class
@@ -159,54 +150,6 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
       });
     }
 
-    // ── Class Feature Choices ──
-    const cfc = char.classFeatureChoices ?? {};
-
-    // Cleric: Divine Order
-    if (char.class === "clerigo" && !cfc["clerigo:ordemDivina"]) {
-      missing.push({
-        id: "clerigo-ordem-divina",
-        label: "Ordem Divina não escolhida (Clérigo)",
-        stepId: "class",
-        stepNumber: 1,
-        severity: "required",
-      });
-    }
-
-    // Druid: Primal Order
-    if (char.class === "druida" && !cfc["druida:ordemPrimal"]) {
-      missing.push({
-        id: "druida-ordem-primal",
-        label: "Ordem Primal não escolhida (Druida)",
-        stepId: "class",
-        stepNumber: 1,
-        severity: "required",
-      });
-    }
-
-    // Expertise validations
-    const expertiseChecks: { key: string; count: number; label: string; minLevel: number }[] = [
-      { key: "ladino:especialista", count: 2, label: "Especialização do Ladino", minLevel: 1 },
-      { key: "bardo:especialista", count: 2, label: "Especialização do Bardo", minLevel: 2 },
-      { key: "guardiao:exploradorHabil:especialista", count: 1, label: "Explorador Hábil (Guardião)", minLevel: 2 },
-      { key: "mago:academico", count: 1, label: "Acadêmico (Mago)", minLevel: 2 },
-    ];
-
-    for (const check of expertiseChecks) {
-      if (char.class !== check.key.split(":")[0]) continue;
-      if (char.level < check.minLevel) continue;
-      const val = cfc[check.key];
-      const chosen = Array.isArray(val) ? val.length : (typeof val === "string" ? 1 : 0);
-      if (chosen < check.count) {
-        missing.push({
-          id: `expertise-${check.key}`,
-          label: `${check.label}: ${chosen}/${check.count} escolhido(s)`,
-          stepId: choicesStepId,
-          stepNumber: choicesStepNumber,
-          severity: "required",
-        });
-      }
-    }
   }
 
   // 4. Background
@@ -238,6 +181,29 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
 
 
   const choicesReq = getChoicesRequirements(char);
+  for (const requirement of choicesReq.mandatory.pending) {
+    if (requirement.source.startsWith("class:")) {
+      missing.push({
+        id: requirement.id,
+        label: requirement.label,
+        stepId: choicesStepId,
+        stepNumber: choicesStepNumber,
+        severity: "required",
+        details: `${requirement.selectedCount}/${requirement.requiredCount}`,
+      });
+    }
+    if (requirement.source.startsWith("race:")) {
+      missing.push({
+        id: requirement.id,
+        label: requirement.label,
+        stepId: "race",
+        stepNumber: 3,
+        severity: "required",
+        details: `${requirement.selectedCount}/${requirement.requiredCount}`,
+      });
+    }
+  }
+
   if (choicesReq.needsStep) {
     const pending = Object.values(choicesReq.buckets).reduce((a, b) => a + b.pendingCount, 0);
     missing.push({

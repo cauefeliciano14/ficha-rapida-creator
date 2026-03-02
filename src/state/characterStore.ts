@@ -8,11 +8,10 @@ import { getChoicesRequirements } from "@/utils/choices";
 import { toast } from "@/hooks/use-toast";
 import { commonLanguages } from "@/data/languagesCommon";
 import type {
+  AppliedFeatState as AppliedFeat,
+  CharacterSpellsState,
   ChoiceSelectionsState,
   ClassFeatureChoicesState,
-  LegacyRaceChoicesState,
-  RaceChoicesState,
-  SpellcastingState,
 } from "@/state/types";
 
 // ── Types ──
@@ -82,12 +81,7 @@ const DEFAULT_LEVELING: LevelingState = {
   choices: { subclassId: null, asiOrFeat: {} }, changesSummary: [],
 };
 
-export interface AppliedFeat {
-  featId: string;
-  levelTaken: number;
-  source: "levelUp" | "background";
-  choices?: { abilityIncreases?: Partial<Record<AbilityKey, number>> };
-}
+export type RaceChoicesState = Record<string, string>;
 
 export interface OriginSelectionState {
   background: string | null;
@@ -133,7 +127,7 @@ export interface CharacterState {
   armorClass: number;
   speed: number;
   features: NormalizedFeature[];
-  spells: SpellcastingState;
+  spells: CharacterSpellsState;
   selectedCantrips: string[];
   selectedSpells: string[];
   equipment: string[];

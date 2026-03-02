@@ -8,7 +8,7 @@
 - **UI base:** shadcn/ui com componentes Radix UI.
 - **Gerenciamento de estado:** Zustand.
 - **Validação e formulários:** Zod, React Hook Form e @hookform/resolvers.
-- **Testes:** Vitest, Testing Library (react + jest-dom), jsdom.
+- **Testes:** Vitest + jsdom (sem Testing Library no `package.json` atual).
 
 ## Dependências
 
@@ -26,13 +26,25 @@
 - date-fns
 
 ### Desenvolvimento (principais)
-- vite, @vitejs/plugin-react-swc
-- typescript
-- eslint, typescript-eslint
-- vitest, @testing-library/react, @testing-library/jest-dom, jsdom
-- tailwindcss, @tailwindcss/typography, postcss, autoprefixer
+- eslint, @eslint/js, typescript-eslint
+- vitest, jsdom
+- @types/node, @types/react, @types/react-dom
+- eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals
 
-> Fonte de verdade das versões: `package.json`.
+### Observação importante sobre classificação atual
+- No `package.json` deste projeto, várias ferramentas de build/runtime de front-end estão em `dependencies` (ex.: `vite`, `typescript`, `tailwindcss`, `postcss`, `autoprefixer`, `@vitejs/plugin-react-swc`, `@tailwindcss/typography`).
+- Esta seção descreve o estado **como está hoje**, sem reclassificar automaticamente para `devDependencies`.
+
+
+## Fonte de verdade e governança de atualização
+- **Fonte de verdade:** `package.json` (scripts, `dependencies`, `devDependencies`).
+- **Última revisão desta documentação:** 2026-03-02.
+
+### Checklist rápido (quando mudar scripts/deps)
+- [ ] Atualizar `docs/ARCHITECTURE.md` (stack, testes e dependências impactadas).
+- [ ] Validar se todos os scripts citados existem em `package.json`.
+- [ ] Validar se as dependências citadas nos docs existem em `dependencies`/`devDependencies`.
+- [ ] Se aplicável, ajustar exemplos/comandos de execução e CI.
 
 ## Padrões de arquitetura
 - **Organização por domínio/função em `src/`:**

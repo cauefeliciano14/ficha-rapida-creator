@@ -33,6 +33,25 @@ export interface ChoicesRequirements {
     classFeats: ChoiceBucket;
   };
   skills: ChoiceBucket;
+  mandatory: {
+    bySource: ChoiceRequirementsBySource;
+    pending: MandatoryChoiceRequirement[];
+  };
+}
+
+export interface MandatoryChoiceRequirement {
+  id: string;
+  label: string;
+  source: string;
+  requiredCount: number;
+  selectedCount: number;
+  pendingCount: number;
+}
+
+export interface ChoiceRequirementsBySource {
+  class: MandatoryChoiceRequirement[];
+  race: MandatoryChoiceRequirement[];
+  background: MandatoryChoiceRequirement[];
 }
 
 interface ChoicesDatasets { classes: typeof classes; backgrounds: typeof backgrounds; races: typeof races; }
@@ -56,6 +75,15 @@ const RACE_CHOICE_KEY_BY_KIND: Record<string, string> = {
   sizeChoice: "height",
 };
 
+const CLASS_FEATURE_REQUIREMENTS = [
+  { id: "clerigo-ordem-divina", key: "clerigo:ordemDivina", classId: "clerigo", minLevel: 1, count: 1, label: "Ordem Divina não escolhida (Clérigo)" },
+  { id: "druida-ordem-primal", key: "druida:ordemPrimal", classId: "druida", minLevel: 1, count: 1, label: "Ordem Primal não escolhida (Druida)" },
+  { id: "expertise-ladino:especialista", key: "ladino:especialista", classId: "ladino", minLevel: 1, count: 2, label: "Especialização do Ladino" },
+  { id: "expertise-bardo:especialista", key: "bardo:especialista", classId: "bardo", minLevel: 2, count: 2, label: "Especialização do Bardo" },
+  { id: "expertise-guardiao:exploradorHabil:especialista", key: "guardiao:exploradorHabil:especialista", classId: "guardiao", minLevel: 2, count: 1, label: "Explorador Hábil (Guardião)" },
+  { id: "expertise-mago:academico", key: "mago:academico", classId: "mago", minLevel: 2, count: 1, label: "Acadêmico (Mago)" },
+] as const;
+
 export function getCanonicalRaceChoiceKey(kind?: string | null) {
   if (!kind) return "";
   return RACE_CHOICE_KEY_BY_KIND[kind] ?? kind;
@@ -65,6 +93,14 @@ export function getCanonicalRaceChoiceKeyFromSources(sources: string[]) {
   const source = (sources ?? []).find((entry) => entry.startsWith("race:"));
   if (!source) return "";
   return source.split(":").pop() ?? "";
+}
+
+function getChoiceRequirementsBySource(requirements: MandatoryChoiceRequirement[]): ChoiceRequirementsBySource {
+  return {
+    class: requirements.filter((item) => item.source.startsWith("class:")),
+    race: requirements.filter((item) => item.source.startsWith("race:")),
+    background: requirements.filter((item) => item.source.startsWith("background:")),
+  };
 }
 
 const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -218,19 +254,16 @@ export function getChoicesRequirements(character: CharacterState, datasets: Choi
   const currentBackground = datasets.backgrounds.find((b) => b.id === character.background);
   const currentRace = datasets.races.find((r) => r.id === character.race);
 
-  const defaultSelections: ChoiceSelectionsState = { classSkills: [], languages: [], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: [] };
-  const selections: ChoiceSelectionsState = character.choiceSelections ?? defaultSelections;
-  const spellData = character.class
-    ? resolveCasterSpellLimit(character, character.class)
-    : { cantrips: 0, spells: 0, options: [] };
+  const selections: ChoiceSelectionsState = character.choiceSelections ?? { classSkills: [], languages: [], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: [], skills: [] };
+  const spellData = character.class ? resolveCasterSpellLimit(character, character.class) : { cantrips: 0, spells: 0, options: [] as ChoiceOption[] };
   const extraMagic = resolveExtraMagicSources(character);
 
   const classSkillRequired = currentClass ? (CANONICAL_CLASS_SKILL_COUNTS[currentClass.id] ?? currentClass.skillChoices.choose) : 0;
   const classSkillOptions = uniq(
     (currentClass?.skillChoices.from ?? [])
-      .map((name) => skills.find((entry) => normalize(entry.name) === normalize(name)))
-      .filter((entry): entry is (typeof skills)[number] => Boolean(entry))
-      .map((entry) => ({ id: entry.id, name: entry.name }))
+      .map((name) => skills.find((skill) => normalize(skill.name) === normalize(name)))
+      .filter((skill): skill is (typeof skills)[number] => Boolean(skill))
+      .map((skill) => ({ id: skill.id, name: skill.name }))
   );
 
   const raceLangReq = reqCount(currentRace?.languages, (v) => LANGUAGE_RX.test(v));
@@ -318,6 +351,57 @@ export function getChoicesRequirements(character: CharacterState, datasets: Choi
     classFeats: makeBucket(classFeatRequired, selections.classFeats ?? [], classFeatOptions, classFeatRequired ? [`class:${character.class}:fighting-style`] : []),
   };
 
+  const classFeatureRequirements = CLASS_FEATURE_REQUIREMENTS
+    .filter((rule) => character.class === rule.classId && character.level >= rule.minLevel)
+    .map((rule) => {
+      const value = character.classFeatureChoices?.[rule.key];
+      const selectedCount = Array.isArray(value) ? value.length : (typeof value === "string" ? 1 : 0);
+      return {
+        id: rule.id,
+        label: rule.label,
+        source: `class:${rule.classId}:${rule.key}`,
+        requiredCount: rule.count,
+        selectedCount,
+        pendingCount: Math.max(0, rule.count - selectedCount),
+      };
+    });
+
+  const mandatoryRequirements: MandatoryChoiceRequirement[] = [
+    ...classFeatureRequirements,
+    {
+      id: "race-choice",
+      label: "Escolha racial obrigatória pendente",
+      source: buckets.raceChoice.sources[0] ?? "",
+      requiredCount: buckets.raceChoice.requiredCount,
+      selectedCount: buckets.raceChoice.selectedIds.length,
+      pendingCount: buckets.raceChoice.pendingCount,
+    },
+    {
+      id: "class-feats",
+      label: "Escolhas obrigatórias de talentos de classe pendentes",
+      source: buckets.classFeats.sources[0] ?? "",
+      requiredCount: buckets.classFeats.requiredCount,
+      selectedCount: buckets.classFeats.selectedIds.length,
+      pendingCount: buckets.classFeats.pendingCount,
+    },
+    {
+      id: "cantrips",
+      label: "Truques obrigatórios pendentes",
+      source: buckets.cantrips.sources[0] ?? "",
+      requiredCount: buckets.cantrips.requiredCount,
+      selectedCount: buckets.cantrips.selectedIds.length,
+      pendingCount: buckets.cantrips.pendingCount,
+    },
+    {
+      id: "spells",
+      label: "Magias obrigatórias pendentes",
+      source: buckets.spells.sources[0] ?? "",
+      requiredCount: buckets.spells.requiredCount,
+      selectedCount: buckets.spells.selectedIds.length,
+      pendingCount: buckets.spells.pendingCount,
+    },
+  ].filter((item) => item.requiredCount > 0 && Boolean(item.source));
+
   if (import.meta.env.DEV) {
     for (const [bucketName, bucket] of Object.entries(buckets)) {
       if (bucket.requiredCount > 0 && bucket.options.length === 0) console.warn(`[DEV AUDIT][choices] WARNING bucket sem opções: ${bucketName}`, bucket.sources);
@@ -325,5 +409,13 @@ export function getChoicesRequirements(character: CharacterState, datasets: Choi
   }
 
   const needsStep = Object.values(buckets).some((b) => b.pendingCount > 0);
-  return { needsStep, buckets, skills: buckets.classSkills };
+  return {
+    needsStep,
+    buckets,
+    skills: buckets.classSkills,
+    mandatory: {
+      bySource: getChoiceRequirementsBySource(mandatoryRequirements),
+      pending: mandatoryRequirements.filter((item) => item.pendingCount > 0),
+    },
+  };
 }
