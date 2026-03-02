@@ -516,6 +516,34 @@ export function StepAbilityMethod() {
         )}
       </section>
 
+      {/* ── Class Hint ── */}
+      {classId && (() => {
+        const cls = classes.find((c) => c.id === classId);
+        if (!cls) return null;
+        return (
+          <section className="mb-8 rounded-lg border border-primary/30 bg-primary/5 p-4">
+            <div className="flex flex-wrap items-center gap-6">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-primary/80 font-semibold mb-1">Atributo Primário</p>
+                <div className="flex gap-2">
+                  {cls.primaryAbility.map((a) => (
+                    <span key={a} className="rounded-md bg-primary/15 border border-primary/30 px-3 py-1.5 text-sm font-bold">{a}</span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-primary/80 font-semibold mb-1">Salvaguardas</p>
+                <div className="flex gap-2">
+                  {cls.savingThrows.map((s) => (
+                    <span key={s} className="rounded-md bg-secondary border px-3 py-1.5 text-sm font-medium">{s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
       {/* ── Ability Drop Zones ── */}
       <section>
         <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-3">

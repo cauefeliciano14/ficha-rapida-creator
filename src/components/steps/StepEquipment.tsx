@@ -45,7 +45,7 @@ export function StepEquipment() {
   const bgEquipChoicePending = bgHasEquipChoices && !char.backgroundEquipmentChoice;
   const requirements = useMemo(() => getChoicesRequirements(char), [char]);
   const pendingChoicesCount = Object.entries(requirements.buckets)
-    .filter(([key]) => key !== "cantrips" && key !== "spells")
+    .filter(([key]) => key !== "cantrips" && key !== "spells" && key !== "classSkills")
     .reduce((sum, [, bucket]) => sum + bucket.pendingCount, 0);
 
   // ── Catalog state ──
@@ -346,37 +346,17 @@ export function StepEquipment() {
         <section className="space-y-2 rounded-lg border bg-card p-3">
           <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Pendências obrigatórias</h3>
           <ul className="text-sm space-y-1">
-            {Object.entries(requirements.buckets).filter(([id, bucket]) => id !== "cantrips" && id !== "spells" && bucket.pendingCount > 0).map(([id, bucket]) => (
+            {Object.entries(requirements.buckets).filter(([id, bucket]) => id !== "cantrips" && id !== "spells" && id !== "classSkills" && bucket.pendingCount > 0).map(([id, bucket]) => (
               <li key={id} className="text-warning">• {PENDING_LABELS[id] ?? id}: {bucket.pendingCount} pendente(s)</li>
             ))}
           </ul>
         </section>
       )}
 
-      {(classSkillsBucket.requiredCount > 0 || requirements.buckets.languages.pendingCount > 0 || requirements.buckets.instruments.pendingCount > 0 || requirements.buckets.raceChoice.pendingCount > 0) && (
+      {(requirements.buckets.languages.pendingCount > 0 || requirements.buckets.instruments.pendingCount > 0 || requirements.buckets.raceChoice.pendingCount > 0) && (
         <section className="space-y-3 rounded-lg border bg-card p-3">
           <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Resolver pendências</h3>
-          {classSkillsBucket.requiredCount > 0 && (
-            <ChoiceGrid
-              title="Perícias"
-              statusBadge={classSkillsMissing === 0 ? <Badge className="text-[10px]">Completo</Badge> : undefined}
-              helperText={
-                classSkillsMissing > 0
-                  ? `Selecione ${classSkillsBucket.requiredCount} perícias (faltam ${classSkillsMissing}).`
-                  : `Seleção completa (${classSkillsSelectedCount}/${classSkillsBucket.requiredCount}). Você pode editar quando quiser.`
-              }
-              summary={classSkillsMissing === 0 ? classSkillsBucket.options.filter((option) => classSkillsBucket.selectedIds.includes(option.id)).map((option) => option.name).sort((a, b) => a.localeCompare(b, "pt-BR")) : []}
-              options={classSkillsBucket.options}
-              selected={classSkillsBucket.selectedIds}
-              maxSelections={classSkillsBucket.requiredCount}
-              onToggle={(id) => {
-                const cur = new Set(classSkillsBucket.selectedIds);
-                if (cur.has(id)) cur.delete(id); else if (cur.size < classSkillsBucket.requiredCount) cur.add(id);
-                const nextSkills = [...cur];
-                patchCharacter({ choiceSelections: { ...char.choiceSelections, classSkills: nextSkills }, classSkillChoices: nextSkills });
-              }}
-            />
-          )}
+          {/* Perícias de classe são escolhidas na etapa Escolhas */}
           {requirements.buckets.languages.pendingCount > 0 && (
             <ChoiceGrid title="Idiomas" options={requirements.buckets.languages.options} selected={char.choiceSelections.languages} onToggle={(id) => {
               const cur = new Set(char.choiceSelections.languages ?? []);

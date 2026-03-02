@@ -1,15 +1,11 @@
 import { useCharacterStore, mergeUnique, replaceFeatures, type NormalizedFeature } from "@/state/characterStore";
 import { useBuilderStore } from "@/state/builderStore";
 import { classes, type ClassData } from "@/data/classes";
-import { CheckCircle2, Search, Info, ChevronDown, ChevronUp, Swords, Shield, Package, AlertTriangle, BookOpen, Lock, Loader2 } from "lucide-react";
+import { CheckCircle2, Search, Info, ChevronDown, ChevronUp, Package, Lock, Loader2 } from "lucide-react";
 import { getChoicesRequirements } from "@/utils/choices";
 import { instruments } from "@/data/instruments";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function hasAttributeBonus(cls: ClassData): boolean {
@@ -23,7 +19,7 @@ export function StepClass() {
   const [expandedFeatures, setExpandedFeatures] = useState<Record<string, boolean>>({});
 
   const classId = useCharacterStore((s) => s.class);
-  const subclassId = useCharacterStore((s) => s.subclass);
+  // subclassId removed — subclass UI moved to future step
   const classEquipmentChoice = useCharacterStore((s) => s.classEquipmentChoice);
   const classFeatureChoices = useCharacterStore((s) => s.classFeatureChoices);
   const level = useCharacterStore((s) => s.level);
@@ -227,57 +223,7 @@ export function StepClass() {
     });
   };
 
-  // --- Subclass ---
-  const [pendingSubclassSwap, setPendingSubclassSwap] = useState<string | null>(null);
-
-  const applySubclass = (subId: string) => {
-    if (!selectedClass) return;
-    const sub = selectedClass.subclasses.find((s) => s.id === subId);
-    if (!sub) return;
-
-    const state = useCharacterStore.getState();
-    const subFeatures: NormalizedFeature[] = sub.featuresByLevel
-      .filter((fl) => fl.level <= level)
-      .flatMap((fl) =>
-        fl.features.map((f) => ({
-          sourceType: "subclass" as const,
-          sourceId: sub.id,
-          name: f.name,
-          description: f.description,
-          level: fl.level,
-        }))
-      );
-
-    const features = [
-      ...state.features.filter((f) => f.sourceType !== "subclass"),
-      ...subFeatures,
-    ];
-
-    // Set subclass-specific flags
-    const subclassFlags: Record<string, number | boolean> = {
-      ...state.flags,
-      draconicResilience: subId === "linhagemDraconica",
-    };
-
-    patchCharacter({ subclass: subId, features, flags: subclassFlags });
-  };
-
-  const handleSubclass = (subId: string) => {
-    if (!selectedClass) return;
-    // If already has a subclass and trying to change, show confirmation
-    if (subclassId && subclassId !== subId) {
-      setPendingSubclassSwap(subId);
-      return;
-    }
-    applySubclass(subId);
-  };
-
-  const confirmSubclassSwap = () => {
-    if (pendingSubclassSwap) {
-      applySubclass(pendingSubclassSwap);
-      setPendingSubclassSwap(null);
-    }
-  };
+  // Subclass logic removed — will be in future step
 
   const toggleInstrument = (instrumentId: string) => {
     if (classId !== "bardo") return;
@@ -387,14 +333,12 @@ export function StepClass() {
             cls={selectedClass}
             classEquipmentChoice={classEquipmentChoice}
             classFeatureChoices={classFeatureChoices}
-            subclassId={subclassId}
             level={level}
             expandedFeatures={expandedFeatures}
             instrumentSelections={choiceSelections.instruments ?? []}
             instrumentOptions={requirements.buckets.instruments.options}
             instrumentPending={requirements.buckets.instruments.pendingCount}
             onToggleInstrument={toggleInstrument}
-            onSelectSubclass={handleSubclass}
             onToggleFeature={toggleFeature}
             onSetFeatureChoice={(key, value) => {
               const state = useCharacterStore.getState();
@@ -442,24 +386,7 @@ export function StepClass() {
         )}
       </div>
 
-      {/* Subclass swap confirmation */}
-      <AlertDialog open={!!pendingSubclassSwap} onOpenChange={() => setPendingSubclassSwap(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              Trocar Subclasse?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Trocar de subclasse removerá todas as características da subclasse anterior e pode invalidar escolhas feitas. Deseja continuar?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmSubclassSwap}>Confirmar Troca</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Subclass swap removed */}
     </div>
   );
 }
@@ -470,14 +397,12 @@ interface ClassDetailsProps {
   cls: ClassData;
   classEquipmentChoice: string | null;
   classFeatureChoices: Record<string, string | string[]>;
-  subclassId: string | null;
   level: number;
   expandedFeatures: Record<string, boolean>;
   instrumentSelections: string[];
   instrumentOptions: { id: string; name: string }[];
   instrumentPending: number;
   onToggleInstrument: (id: string) => void;
-  onSelectSubclass: (id: string) => void;
   onToggleFeature: (name: string) => void;
   onSetFeatureChoice: (key: string, value: string) => void;
 }
@@ -486,14 +411,12 @@ function ClassDetails({
   cls,
   classEquipmentChoice,
   classFeatureChoices,
-  subclassId,
   level,
   expandedFeatures,
   instrumentSelections,
   instrumentOptions,
   instrumentPending,
   onToggleInstrument,
-  onSelectSubclass,
   onToggleFeature,
   onSetFeatureChoice,
 }: ClassDetailsProps) {
@@ -540,6 +463,56 @@ function ClassDetails({
             </div>
           </div>
         </Section>
+
+        {/* Conjuração — logo após Traços Básicos */}
+        {isSpellcaster && cls.spellcasting && (
+          <Section title="Conjuração">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Atributo de Conjuração</p>
+                <p className="mt-1 text-lg font-bold">{cls.spellcasting.ability}</p>
+              </div>
+              <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Tipo</p>
+                <p className="mt-1 text-lg font-bold">
+                  {cls.spellcasting.type === "prepared" ? "Magias Preparadas" : cls.spellcasting.type === "known" ? "Magias Conhecidas" : "Magia de Pacto"}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+              <div>
+                <span className="text-muted-foreground">Truques no Nível {level}:</span>{" "}
+                <span className="font-bold">
+                  {(() => {
+                    const entries = Object.entries(cls.spellcasting!.cantripsKnownAtLevel)
+                      .map(([l, c]) => [Number(l), c] as [number, number])
+                      .sort((a, b) => a[0] - b[0]);
+                    let lim = 0;
+                    for (const [l, c] of entries) { if (level >= l) lim = c; }
+                    return lim;
+                  })()}
+                </span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Fórmula:</span>{" "}
+                <span className="font-medium text-xs">{cls.spellcasting.spellsPreparedFormula}</span>
+              </div>
+              {cls.spellcasting.spellSlotsByLevel[level] && (
+                <div>
+                  <span className="text-muted-foreground">Espaços:</span>{" "}
+                  <span className="font-bold">
+                    {Object.entries(cls.spellcasting.spellSlotsByLevel[level])
+                      .map(([lvl, slots]) => `${slots}× ${lvl}º`)
+                      .join(", ")}
+                  </span>
+                </div>
+              )}
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground italic">
+              A seleção de magias será feita na etapa "Escolhas".
+            </p>
+          </Section>
+        )}
 
         {hasAttributeBonus(cls) && (
           <Section title="Bônus de atributo">
@@ -616,9 +589,9 @@ function ClassDetails({
           <p className="text-sm text-muted-foreground">
             Você escolherá seu equipamento inicial na etapa <span className="font-medium">5. Equipamentos</span>.
           </p>
-          <div className="mt-3 space-y-2">
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
             {cls.equipmentChoices.map((choice) => (
-              <div key={choice.id} className="w-full rounded-lg border p-4 bg-secondary/40">
+              <div key={choice.id} className="rounded-lg border p-4 bg-secondary/40">
                 <div className="flex items-center gap-2 mb-1">
                   <Package className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-sm">{choice.label}</span>
@@ -714,7 +687,7 @@ function ClassDetails({
           .filter((fl) => fl.level <= level)
           .sort((a, b) => a.level - b.level)
           .map((fl) => (
-            <Section key={fl.level} title={`Características (Nível ${fl.level})`}>
+            <Section key={fl.level} title={`Características de Classe de ${cls.name} (Nível ${fl.level})`}>
               {fl.features.map((f) => {
                 const key = `${fl.level}-${f.name}`;
                 const isOpen = expandedFeatures[key] ?? true;
@@ -746,59 +719,9 @@ function ClassDetails({
           </p>
         )}
 
-        {/* Spellcasting info */}
-        {isSpellcaster && cls.spellcasting && (
-          <Section title="Conjuração">
-            <div className="space-y-2 text-sm">
-              <div>
-                <span className="text-muted-foreground">Atributo:</span>{" "}
-                {cls.spellcasting.ability}
-              </div>
-              <div>
-                <span className="text-muted-foreground">Tipo:</span>{" "}
-                {cls.spellcasting.type === "prepared"
-                  ? "Magias preparadas"
-                  : cls.spellcasting.type === "known"
-                  ? "Magias conhecidas"
-                  : "Magia de pacto"}
-              </div>
-              <div>
-                <span className="text-muted-foreground">Truques no Nível {level}:</span>{" "}
-                {(() => {
-                  const entries = Object.entries(cls.spellcasting!.cantripsKnownAtLevel)
-                    .map(([l, c]) => [Number(l), c] as [number, number])
-                    .sort((a, b) => a[0] - b[0]);
-                  let limit = 0;
-                  for (const [l, c] of entries) { if (level >= l) limit = c; }
-                  return limit;
-                })()}
-              </div>
-              <div>
-                <span className="text-muted-foreground">Magias preparadas:</span>{" "}
-                {cls.spellcasting.spellsPreparedFormula}
-              </div>
-              {cls.spellcasting.spellSlotsByLevel[level] && (
-                <div>
-                  <span className="text-muted-foreground">Espaços (Nível {level}):</span>{" "}
-                  {Object.entries(cls.spellcasting.spellSlotsByLevel[level])
-                    .map(([lvl, slots]) => `${slots}× nível ${lvl}`)
-                    .join(", ")}
-                </div>
-              )}
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground italic">
-              A seleção de magias será feita na etapa "Magias".
-            </p>
-          </Section>
-        )}
+        {/* Conjuração movida para após Traços Básicos */}
 
-        {/* Subclasses */}
-        <SubclassSection
-          cls={cls}
-          subclassId={subclassId}
-          level={level}
-          onSelectSubclass={onSelectSubclass}
-        />
+        {/* Subclasses removidas da etapa Classe */}
       </div>
     </div>
   );
@@ -837,135 +760,4 @@ function RequiredBadge({ label }: { label: string }) {
   );
 }
 
-// ─── Subclass Section ───
-
-function SubclassSection({
-  cls,
-  subclassId,
-  level,
-  onSelectSubclass,
-}: {
-  cls: ClassData;
-  subclassId: string | null;
-  level: number;
-  onSelectSubclass: (id: string) => void;
-}) {
-  const [expandedSubclass, setExpandedSubclass] = useState<string | null>(subclassId);
-
-  const subclassLevel = cls.subclassLevel;
-  const hasSubclasses = cls.subclasses.length > 0;
-  const isUnlocked = subclassLevel != null && level >= subclassLevel;
-  const isRequired = isUnlocked && hasSubclasses && !subclassId;
-
-  if (!hasSubclasses) return null;
-
-  return (
-    <Section
-      title="Subclasse"
-      badge={
-        isRequired ? (
-          <RequiredBadge label="Obrigatório" />
-        ) : !isUnlocked && subclassLevel ? (
-          <span className="text-[10px] text-muted-foreground italic">Nível {subclassLevel}</span>
-        ) : null
-      }
-    >
-      {!isUnlocked ? (
-        subclassLevel ? (
-          <p className="text-sm text-muted-foreground italic">
-            Você escolherá sua subclasse no nível {subclassLevel}.
-          </p>
-        ) : (
-          <p className="text-sm text-warning italic flex items-center gap-1.5">
-            <AlertTriangle className="h-3.5 w-3.5" />
-            subclassLevel não definido nos dados desta classe. Seleção indisponível.
-          </p>
-        )
-      ) : (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            Escolha uma subclasse para {cls.name}:
-          </p>
-          <div className="space-y-2">
-            {[...cls.subclasses]
-              .filter((sc) => {
-                if (cls.id !== "feiticeiro") return true;
-                const raceLikeNames = new Set(["draconato", "gnomo", "tiferino", "elfo", "golias"]);
-                const normalized = sc.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-                return !raceLikeNames.has(normalized);
-              })
-              .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
-              .map((sc) => {
-                const isSel = subclassId === sc.id;
-                const isExpanded = expandedSubclass === sc.id;
-                return (
-                  <div key={sc.id} className={`rounded-lg border transition-colors ${
-                    isSel ? "border-primary bg-primary/5" : "hover:border-muted-foreground/40"
-                  }`}>
-                    <button
-                      onClick={() => {
-                        onSelectSubclass(sc.id);
-                        setExpandedSubclass(sc.id);
-                      }}
-                      className="w-full p-3 text-left"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium text-sm">{sc.name}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {isSel && (
-                            <span className="text-[10px] font-medium text-primary bg-primary/10 rounded-full px-2 py-0.5">
-                              Selecionado
-                            </span>
-                          )}
-                          <CheckCircle2 className={`h-4 w-4 ${isSel ? "text-primary" : "text-transparent"}`} />
-                        </div>
-                      </div>
-                      <p className="mt-1 text-xs text-muted-foreground">{sc.description}</p>
-                    </button>
-
-                    {/* Toggle details */}
-                    <button
-                      onClick={() => setExpandedSubclass(isExpanded ? null : sc.id)}
-                      className="w-full flex items-center justify-center gap-1 py-1.5 text-[10px] text-muted-foreground hover:text-foreground border-t transition-colors"
-                    >
-                      {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                      {isExpanded ? "Ocultar detalhes" : "Ver características"}
-                    </button>
-
-                    {/* Features by level */}
-                    {isExpanded && sc.featuresByLevel.length > 0 && (
-                      <div className="px-3 pb-3 space-y-2">
-                        {sc.featuresByLevel
-                          .sort((a, b) => a.level - b.level)
-                          .map((fl) => (
-                            <div key={fl.level}>
-                              <p className="text-[10px] uppercase text-muted-foreground font-semibold mb-1">
-                                Nível {fl.level}
-                                {fl.level > level && (
-                                  <span className="ml-1 text-muted-foreground/50">(bloqueado)</span>
-                                )}
-                              </p>
-                              {fl.features.map((f) => (
-                                <div key={f.name} className={`rounded-md p-2 mb-1 ${
-                                  fl.level <= level ? "bg-secondary/60" : "bg-secondary/20 opacity-60"
-                                }`}>
-                                  <p className="text-xs font-medium">{f.name}</p>
-                                  <p className="text-[11px] text-muted-foreground mt-0.5">{f.description}</p>
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-      )}
-    </Section>
-  );
-}
+// Subclass section removed — will be used in a future step
