@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
-import { useCharacterStore, type NormalizedFeature, type LevelingChangeSummary, type ASIOrFeatChoice, type AppliedFeat } from "@/state/characterStore";
-import { classes } from "@/data/classes";
+import { useCharacterStore, type NormalizedFeature, type LevelingChangeSummary, type ASIOrFeatChoice } from "@/state/characterStore";
+import type { AppliedFeatState as AppliedFeat, SpellProgressionSnapshot } from "@/state/types";
+import { classes, type ClassData, type ClassFeature } from "@/data/classes";
 import { feats, featsById } from "@/data/feats";
 import { computeFeatAbilityBonuses } from "@/utils/feats";
 import { FeatPicker, type FeatSelection } from "@/components/FeatPicker";
@@ -472,7 +473,14 @@ function LevelUpWizard({ cls, fromLevel, toLevel, onClose }: {
 
 // ── Step Components ──
 
-function StepGains({ newProfBonus, oldProfBonus, newClassFeatures, newSubclassFeatures, toLevel, cls }: any) {
+function StepGains({ newProfBonus, oldProfBonus, newClassFeatures, newSubclassFeatures, cls }: {
+  newProfBonus: number;
+  oldProfBonus: number;
+  newClassFeatures: ClassFeature[];
+  newSubclassFeatures: ClassFeature[];
+  toLevel: number;
+  cls: ClassData;
+}) {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -497,7 +505,7 @@ function StepGains({ newProfBonus, oldProfBonus, newClassFeatures, newSubclassFe
       {newClassFeatures.length > 0 && (
         <div>
           <p className="text-sm font-semibold text-muted-foreground uppercase mb-2">Novas Características da Classe</p>
-          {newClassFeatures.map((f: any) => (
+          {newClassFeatures.map((f) => (
             <div key={f.name} className="rounded-lg border p-3 mb-2">
               <p className="font-medium text-sm">{f.name}</p>
               <p className="text-xs text-muted-foreground mt-1">{f.description}</p>
@@ -509,7 +517,7 @@ function StepGains({ newProfBonus, oldProfBonus, newClassFeatures, newSubclassFe
       {newSubclassFeatures.length > 0 && (
         <div>
           <p className="text-sm font-semibold text-muted-foreground uppercase mb-2">Novas Características da Subclasse</p>
-          {newSubclassFeatures.map((f: any) => (
+          {newSubclassFeatures.map((f) => (
             <div key={f.name} className="rounded-lg border p-3 mb-2">
               <p className="font-medium text-sm">{f.name}</p>
               <p className="text-xs text-muted-foreground mt-1">{f.description}</p>
@@ -768,7 +776,7 @@ function StepASIWithPicker({ asiChoice, onChangeChoice, currentScores, asiBonuse
   );
 }
 
-function StepSpellsInfo({ spellChanges, cls }: { spellChanges: any; cls: any }) {
+function StepSpellsInfo({ spellChanges, cls }: { spellChanges: SpellProgressionSnapshot; cls: ClassData }) {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold flex items-center gap-2">

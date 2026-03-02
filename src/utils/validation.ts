@@ -94,8 +94,8 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   // Race ability choices
   if (race?.abilityBonuses.mode === "choose" && race.abilityBonuses.choose) {
     const choicesNeeded = race.abilityBonuses.choose.choices;
-    const chosen = Object.keys(char.raceAbilityChoices).filter(
-      (k) => (char.raceAbilityChoices as any)[k] > 0
+    const chosen = (Object.keys(char.raceAbilityChoices) as AbilityKey[]).filter(
+      (key) => (char.raceAbilityChoices[key] ?? 0) > 0
     ).length;
     if (chosen < choicesNeeded) {
       missing.push({

@@ -9,6 +9,7 @@ import { skills } from "@/data/skills";
 import { feats } from "@/data/feats";
 import { spellsByClassId } from "@/data/indexes";
 import type { CharacterState } from "@/state/characterStore";
+import type { ChoiceSelectionsState } from "@/state/types";
 import { calcAbilityMod, getFinalAbilityScores, type AbilityKey } from "@/utils/calculations";
 
 export interface ChoiceOption { id: string; name: string; }
@@ -253,12 +254,17 @@ export function getChoicesRequirements(character: CharacterState, datasets: Choi
   const currentBackground = datasets.backgrounds.find((b) => b.id === character.background);
   const currentRace = datasets.races.find((r) => r.id === character.race);
 
-  const selections = character.choiceSelections ?? { classSkills: [], languages: [], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: [], skills: [] } as any;
-  const spellData = character.class ? resolveCasterSpellLimit(character, character.class) : { cantrips: 0, spells: 0, options: [] as any[] };
+  const selections: ChoiceSelectionsState = character.choiceSelections ?? { classSkills: [], languages: [], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: [], skills: [] };
+  const spellData = character.class ? resolveCasterSpellLimit(character, character.class) : { cantrips: 0, spells: 0, options: [] as ChoiceOption[] };
   const extraMagic = resolveExtraMagicSources(character);
 
   const classSkillRequired = currentClass ? (CANONICAL_CLASS_SKILL_COUNTS[currentClass.id] ?? currentClass.skillChoices.choose) : 0;
-  const classSkillOptions = uniq((currentClass?.skillChoices.from ?? []).map((name) => skills.find((s) => normalize(s.name) === normalize(name))).filter(Boolean).map((s) => ({ id: (s as any).id, name: (s as any).name })));
+  const classSkillOptions = uniq(
+    (currentClass?.skillChoices.from ?? [])
+      .map((name) => skills.find((skill) => normalize(skill.name) === normalize(name)))
+      .filter((skill): skill is (typeof skills)[number] => Boolean(skill))
+      .map((skill) => ({ id: skill.id, name: skill.name }))
+  );
 
   const raceLangReq = reqCount(currentRace?.languages, (v) => LANGUAGE_RX.test(v));
   const bgLangReq = reqCount(currentBackground?.languages, (v) => LANGUAGE_RX.test(v));
