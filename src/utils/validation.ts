@@ -4,6 +4,9 @@ import { classes } from "@/data/classes";
 import { backgrounds } from "@/data/backgrounds";
 import { type AbilityKey } from "@/utils/calculations";
 import { getChoicesRequirements } from "@/utils/choices";
+import type { RaceChoicesState } from "@/state/types";
+
+const ABILITY_KEYS: AbilityKey[] = ["str", "dex", "con", "int", "wis", "cha"];
 
 export interface ValidationItem {
   id: string;
