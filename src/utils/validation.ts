@@ -55,16 +55,6 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   const sheetStepNumber = useChoicesStep ? 7 : 6;
 
   // 1. Ability method
-  if (char.level > 2) {
-    missing.push({
-      id: "level-unsupported",
-      label: "Somente níveis 1 e 2 são suportados neste recorte",
-      stepId: "sheet",
-      stepNumber: sheetStepNumber,
-      severity: "required",
-    });
-  }
-
   if (!char.abilityGeneration.method || !char.abilityGeneration.confirmed) {
     missing.push({
       id: VALIDATION_ITEM_IDS.abilityMethod,

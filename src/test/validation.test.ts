@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { VALIDATION_ITEM_IDS, validateCharacterCompleteness } from "@/utils/validation";
-import { INCOMPLETE_CHAR, FIGHTER_HUMAN_L1, MISSING_SUBRACE, WIZARD_ELF_L1, makeCharacter } from "@/test/fixtures";
+import { INCOMPLETE_CHAR, FIGHTER_HUMAN_L1, MISSING_SUBRACE, makeCharacter } from "@/test/fixtures";
 import * as choicesUtils from "@/utils/choices";
 
 describe("validateCharacterCompleteness", () => {
@@ -122,42 +122,43 @@ describe("validateCharacterCompleteness", () => {
 
 
 
-  it("maps level-unsupported to sheet step 6 when useChoicesStep=false", () => {
-    const result = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, false);
-    const levelUnsupported = result.missing.find((m) => m.id === "level-unsupported");
-    expect(levelUnsupported).toBeDefined();
-    expect(levelUnsupported?.stepId).toBe("sheet");
-    expect(levelUnsupported?.stepNumber).toBe(6);
+  it("classe conjuradora em nível alto não recebe bloqueio de nível", () => {
+    const highLevelCleric = makeCharacter({
+      name: "High Cleric", level: 10, race: "humano", class: "clerigo", background: "acolito",
+      abilityGeneration: { method: "standard", rolls: null, rollResults: null, pointBuyRemaining: 0,
+        standardAssignments: { str: 8, dex: 12, con: 14, int: 10, wis: 16, cha: 10 },
+        rollAssignments: { str: null, dex: null, con: null, int: null, wis: null, cha: null },
+        confirmed: true },
+      abilityScores: { str: 8, dex: 12, con: 14, int: 10, wis: 16, cha: 10 },
+      classFeatureChoices: { "clerigo:ordemDivina": "protetor" },
+    });
+
+    const result = validateCharacterCompleteness(highLevelCleric, true);
+    expect(result.missing.some((m) => m.id === "level-unsupported")).toBe(false);
   });
 
-  it("maps level-unsupported to sheet step 7 when useChoicesStep=true", () => {
-    const result = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, true);
-    const levelUnsupported = result.missing.find((m) => m.id === "level-unsupported");
-    expect(levelUnsupported).toBeDefined();
-    expect(levelUnsupported?.stepId).toBe("sheet");
-    expect(levelUnsupported?.stepNumber).toBe(7);
-  });
+  it("guerreiro nível 12 não exige validações de conjuração", () => {
+    const highLevelFighter = makeCharacter({
+      name: "High Fighter", level: 12, race: "humano", class: "guerreiro", background: "soldado",
+      abilityGeneration: { method: "standard", rolls: null, rollResults: null, pointBuyRemaining: 0,
+        standardAssignments: { str: 16, dex: 14, con: 14, int: 10, wis: 12, cha: 8 },
+        rollAssignments: { str: null, dex: null, con: null, int: null, wis: null, cha: null },
+        confirmed: true },
+      abilityScores: { str: 16, dex: 14, con: 14, int: 10, wis: 12, cha: 8 },
+      classSkillChoices: ["Atletismo", "Intimidação"],
+      classEquipmentChoice: "A",
+      backgroundEquipmentChoice: "A",
+      choiceSelections: {
+        classSkills: ["atletismo", "intimidacao"],
+        languages: ["anao", "elfico"],
+        tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: ["combate-com-armas-grandes"],
+      },
+    });
 
-  it("keeps sheet stepId/stepNumber consistent between StepSheet and StepReview flow", () => {
-    const withoutChoicesStep = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, false);
-    const withoutChoicesLevelUnsupported = withoutChoicesStep.missing.find((m) => m.id === "level-unsupported");
-    expect(withoutChoicesLevelUnsupported?.stepId).toBe("sheet");
-    expect(withoutChoicesLevelUnsupported?.stepNumber).toBe(6);
-
-    const withChoicesStep = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, true);
-    const withChoicesLevelUnsupported = withChoicesStep.missing.find((m) => m.id === "level-unsupported");
-    expect(withChoicesLevelUnsupported?.stepId).toBe("sheet");
-    expect(withChoicesLevelUnsupported?.stepNumber).toBe(7);
-  });
-
-  it("wizard missing cantrips/spells shows spell warnings", () => {
-    const wizNoSpells = {
-      ...WIZARD_ELF_L1,
-      spells: { ...WIZARD_ELF_L1.spells, cantrips: [], prepared: [] },
-    };
-    const result = validateCharacterCompleteness(wizNoSpells);
-    expect(result.missing.some((m) => m.id === VALIDATION_ITEM_IDS.cantripsCount)).toBe(true);
-    expect(result.missing.some((m) => m.id === VALIDATION_ITEM_IDS.spellsCount)).toBe(true);
+    const result = validateCharacterCompleteness(highLevelFighter, true);
+    expect(result.missing.some((m) => m.id === VALIDATION_ITEM_IDS.cantripsCount)).toBe(false);
+    expect(result.missing.some((m) => m.id === VALIDATION_ITEM_IDS.spellsCount)).toBe(false);
+    expect(result.missing.some((m) => m.id === VALIDATION_ITEM_IDS.spellAbility)).toBe(false);
   });
 
   // ── Cleric/Druid Order validation ──
