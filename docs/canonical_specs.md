@@ -1,7 +1,7 @@
 # CANONICAL_SPECS — Fonte Operacional do Projeto
 
 Este documento é a referência interna definitiva para regras, nomenclaturas e contagens operacionais do projeto.
-Toda implementação deve seguir exclusivamente este arquivo (recorte: **PHB 2024, níveis 1 e 2**).
+Toda implementação deve seguir exclusivamente este arquivo com cobertura integral do **PHB 2024** para os domínios já implementados no produto.
 
 ## Fontes de referência
 
@@ -10,7 +10,7 @@ Toda implementação deve seguir exclusivamente este arquivo (recorte: **PHB 202
 
 ---
 
-## 1) Raças (10)
+## 1) Raças (10) — cobertura integral
 
 ### Anão
 - Tamanho: Médio
@@ -30,7 +30,7 @@ Toda implementação deve seguir exclusivamente este arquivo (recorte: **PHB 202
   - Elfo Silvestre
   - Drow
 
-### Halfling
+### Pequenino
 - Tamanho: Pequeno
 - Deslocamento: 7,5m
 - Sorte
@@ -73,37 +73,44 @@ Toda implementação deve seguir exclusivamente este arquivo (recorte: **PHB 202
 - Idiomas: Comum + Orc
 - Sem sub-raça obrigatória
 
-### Tiefling
+### Tiferino
 - Tamanho: Médio
 - Deslocamento: 9m
 - Resistência a Fogo
 - Idiomas: Comum + Infernal
 - Sem sub-raça obrigatória
 
-### Meio-Elfo
-- Não existe no PHB 2024
+### Aasimar
+- Tamanho: Médio
+- Deslocamento: 9m
+- Visão no Escuro
+- Mãos Curativas
+- Portador da Luz
+- Consumo Celestial (com escolha de manifestação)
+
+**Diretriz de cobertura:** as 10 raças devem manter texto descritivo integral, traços completos e subopções/choices obrigatórias quando aplicável.
 
 ---
 
-## 2) Antecedentes (16)
+## 2) Origens (Antecedentes) (16) — estrutura final
 
 Lista canônica:
 - Acólito
+- Andarilho
 - Artesão
 - Artista
 - Charlatão
 - Criminoso
 - Eremita
-- Forasteiro
-- Gladiador
+- Escriba
+- Fazendeiro
 - Guarda
+- Guia
 - Marinheiro
 - Mercador
 - Nobre
-- Órfão
 - Sábio
 - Soldado
-- Viajante
 
 Cada antecedente concede:
 - 2 perícias fixas
@@ -120,9 +127,11 @@ Choice Engine deve detectar strings como:
 - “uma ferramenta à sua escolha”
 - “um instrumento musical à sua escolha”
 
+**Diretriz de cobertura:** as 16 origens devem seguir a estrutura final (descrição, perícias, talento de origem, ferramentas/idiomas quando houver, equipamento) com escolhas corretas e validadas.
+
 ---
 
-## 3) Classes (12)
+## 3) Classes (12) — progressão completa
 
 - Bárbaro
 - Bardo
@@ -136,6 +145,8 @@ Choice Engine deve detectar strings como:
 - Mago
 - Monge
 - Paladino
+
+**Diretriz de cobertura:** as 12 classes devem manter progressão completa de características em todos os níveis previstos pelo PHB 2024 (1–20), incluindo `coreTraits`, `featuresByLevel`, escolhas obrigatórias e regras de conjuração por classe.
 
 ---
 
@@ -159,7 +170,7 @@ Choice Engine:
 
 ---
 
-## 5) Conjuração (recorte nível 1–2)
+## 5) Conjuração
 
 ### Classes conjuradoras no nível 1
 - Bardo
@@ -196,7 +207,7 @@ Choice Engine:
 
 ---
 
-## 6) Talentos (capítulo 5 — recorte operacional)
+## 6) Talentos (capítulo 5)
 
 ### Talentos de Origem
 - Cada antecedente concede 1 talento de origem obrigatório.
@@ -280,9 +291,13 @@ Ficha:
 
 ---
 
-## 12) Restrições do projeto
+## 12) Validações automáticas e relatórios
 
-- Apenas níveis 1 e 2
-- Nenhuma progressão 3–20
-- Nada acima do nível 2 gera escolha ativa
-- Tudo deve funcionar por ID, nunca por `name`
+- Tudo deve funcionar por ID, nunca por `name`.
+- As validações automatizadas devem permanecer alinhadas aos scripts oficiais de auditoria e cobertura:
+  - `scripts/validate_classes_against_docx.mjs` → `docs/classes_audit.md`
+  - `scripts/validate_races_against_docx.mjs` e `scripts/validate_races_2024.ts` → `docs/races_audit.md`
+  - `scripts/validate_backgrounds_against_docx.mjs` → `docs/backgrounds_audit.md` (inclui origens)
+  - `scripts/validate_canon.ts` → `docs/spells_audit.md`
+  - `scripts/check_extraction_coverage.mjs` → `docs/extraction_coverage.md`
+- Divergências entre dados, auditorias e cobertura devem gerar erro explícito de validação.
