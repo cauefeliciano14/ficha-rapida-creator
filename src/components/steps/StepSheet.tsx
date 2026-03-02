@@ -11,7 +11,7 @@ export function StepSheet() {
 
   // Validation drives step completion for "sheet"
   const validation = useMemo(
-    () => validateCharacterCompleteness(char),
+    () => validateCharacterCompleteness(char, builder.choicesRequirements?.needsStep ?? false),
     [
       char.race, char.subrace, char.class, char.background,
       char.abilityGeneration.confirmed, char.abilityGeneration.method,
@@ -20,6 +20,7 @@ export function StepSheet() {
       char.raceAbilityChoices, char.backgroundAbilityChoices,
       char.inventory, char.equipped, char.features,
       char.classFeatureChoices, char.level,
+      builder.choicesRequirements?.needsStep,
     ]
   );
 

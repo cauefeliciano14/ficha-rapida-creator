@@ -49,6 +49,7 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   const bg = backgrounds.find((b) => b.id === char.background);
   const choicesStepId = useChoicesStep ? "choices" : "equipment";
   const choicesStepNumber = useChoicesStep ? 6 : 5;
+  const sheetStepNumber = useChoicesStep ? 7 : 6;
 
   // 1. Ability method
   if (char.level > 2) {
@@ -56,7 +57,7 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
       id: "level-unsupported",
       label: "Somente níveis 1 e 2 são suportados neste recorte",
       stepId: "sheet",
-      stepNumber: 6,
+      stepNumber: sheetStepNumber,
       severity: "required",
     });
   }

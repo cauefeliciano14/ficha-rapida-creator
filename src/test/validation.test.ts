@@ -119,6 +119,36 @@ describe("validateCharacterCompleteness", () => {
     expect(withChoicesPending?.stepNumber).toBe(6);
   });
 
+
+
+  it("maps level-unsupported to sheet step 6 when useChoicesStep=false", () => {
+    const result = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, false);
+    const levelUnsupported = result.missing.find((m) => m.id === "level-unsupported");
+    expect(levelUnsupported).toBeDefined();
+    expect(levelUnsupported?.stepId).toBe("sheet");
+    expect(levelUnsupported?.stepNumber).toBe(6);
+  });
+
+  it("maps level-unsupported to sheet step 7 when useChoicesStep=true", () => {
+    const result = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, true);
+    const levelUnsupported = result.missing.find((m) => m.id === "level-unsupported");
+    expect(levelUnsupported).toBeDefined();
+    expect(levelUnsupported?.stepId).toBe("sheet");
+    expect(levelUnsupported?.stepNumber).toBe(7);
+  });
+
+  it("keeps sheet stepId/stepNumber consistent between StepSheet and StepReview flow", () => {
+    const withoutChoicesStep = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, false);
+    const withoutChoicesLevelUnsupported = withoutChoicesStep.missing.find((m) => m.id === "level-unsupported");
+    expect(withoutChoicesLevelUnsupported?.stepId).toBe("sheet");
+    expect(withoutChoicesLevelUnsupported?.stepNumber).toBe(6);
+
+    const withChoicesStep = validateCharacterCompleteness({ ...FIGHTER_HUMAN_L1, level: 3 }, true);
+    const withChoicesLevelUnsupported = withChoicesStep.missing.find((m) => m.id === "level-unsupported");
+    expect(withChoicesLevelUnsupported?.stepId).toBe("sheet");
+    expect(withChoicesLevelUnsupported?.stepNumber).toBe(7);
+  });
+
   it("wizard missing cantrips/spells shows spell warnings", () => {
     const wizNoSpells = {
       ...WIZARD_ELF_L1,
