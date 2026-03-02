@@ -1,5 +1,8 @@
 # ARCHITECTURE
 
+> **Última revisão:** 2026-03-02  
+> Revisar esta seção sempre que houver qualquer alteração em `dependencies` ou `devDependencies` no `package.json`.
+
 ## Stack técnico
 - **Build e tooling:** Vite 5, TypeScript 5, ESLint 9, PostCSS e Autoprefixer.
 - **Front-end:** React 18 + React DOM 18.
