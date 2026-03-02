@@ -1,13 +1,27 @@
 import { execSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const DOCX_PATH = path.resolve("sources/player_handbook_2024.docx");
-const CANON_DIR = path.resolve("src/data/_canon");
-const SPELLS_JSON_PATH = path.resolve("src/data/spells.generated.json");
+const TMP_DIR = path.resolve("scripts/_tmp");
+const SPECIES = ["Aasimar", "Anão", "Draconato", "Elfo", "Gnomo", "Golias", "Humano", "Orc", "Pequenino", "Tiferino"] as const;
 
-function extractDocxPlainText(docxPath: string): string {
-  const xml = execSync(`unzip -p ${JSON.stringify(docxPath)} word/document.xml`, { encoding: "utf8", maxBuffer: 1024 * 1024 * 25 });
+type Trait = { name: string; description: string };
+type ExtractedRace = {
+  name: string;
+  description: string;
+  tipoCriatura: string;
+  tamanho: string;
+  deslocamento: string;
+  traits: Trait[];
+  tableData: Record<string, unknown>;
+};
+
+function readDocumentXml() {
+  return execSync(`unzip -p ${JSON.stringify(DOCX_PATH)} word/document.xml`, { encoding: "utf8", maxBuffer: 1024 * 1024 * 50 });
+}
+
+function xmlToPlainText(xml: string): string {
   return xml
     .replace(/<w:tab\/?\s*>/g, "\t")
     .replace(/<w:br\/?\s*>/g, "\n")
@@ -16,46 +30,84 @@ function extractDocxPlainText(docxPath: string): string {
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
     .replace(/\r/g, "");
 }
 
-function parseKnownCatalogFromTs(sourcePath: string, exportName: string): Array<{ id: string; name: string }> {
-  const src = readFileSync(sourcePath, "utf8");
-  const blockMatch = src.match(new RegExp(`export const ${exportName}:[\\s\\S]*?= \\[([\\s\\S]*?)\\n\\];`));
-  if (!blockMatch) return [];
-  const block = blockMatch[1];
-  const out: Array<{ id: string; name: string }> = [];
-  const re = /id:\s*"([^"]+)"[\s\S]*?name:\s*"([^"]+)"/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(block))) out.push({ id: m[1], name: m[2] });
-  return out;
+function xmlToLooseHtml(xml: string): string {
+  return xml
+    .replace(/<w:tbl\b[^>]*>/g, "<table>")
+    .replace(/<\/w:tbl>/g, "</table>")
+    .replace(/<w:tr\b[^>]*>/g, "<tr>")
+    .replace(/<\/w:tr>/g, "</tr>")
+    .replace(/<w:tc\b[^>]*>/g, "<td>")
+    .replace(/<\/w:tc>/g, "</td>")
+    .replace(/<w:p\b[^>]*>/g, "<p>")
+    .replace(/<\/w:p>/g, "</p>")
+    .replace(/<w:t\b[^>]*>/g, "")
+    .replace(/<\/w:t>/g, "")
+    .replace(/<w:tab\/?\s*>/g, "\t")
+    .replace(/<w:br\/?\s*>/g, "<br />")
+    .replace(/<[^>]+>/g, (tag) => (tag.startsWith("<p") || tag.startsWith("</p") || tag.startsWith("<table") || tag.startsWith("</table") || tag.startsWith("<tr") || tag.startsWith("</tr") || tag.startsWith("<td") || tag.startsWith("</td") || tag.startsWith("<br") ? tag : ""));
+}
+
+function extractRaces(lines: string[]): ExtractedRace[] {
+  const start = lines.indexOf("Descrições das Espécies");
+  const end = lines.indexOf("Capítulo 5 - Talentos");
+  const inSection = lines.slice(start, end);
+
+  const indexes = SPECIES.map((name) => ({ name, idx: inSection.indexOf(name) })).sort((a, b) => a.idx - b.idx);
+
+  return indexes.map((entry, i) => {
+    const next = indexes[i + 1]?.idx ?? inSection.length;
+    const block = inSection.slice(entry.idx, next);
+    const traitHeader = block.findIndex((l) => l === `Traços de ${entry.name}`);
+
+    const description = block.slice(1, traitHeader).join("\n\n").trim();
+    const traitLines = block.slice(traitHeader + 1);
+
+    const tipoCriatura = traitLines.find((l) => l.startsWith("Tipo de Criatura:"))?.replace("Tipo de Criatura:", "").trim() ?? "";
+    const tamanho = traitLines.find((l) => l.startsWith("Tamanho:"))?.replace("Tamanho:", "").trim() ?? "";
+    const deslocamento = traitLines.find((l) => l.startsWith("Deslocamento:"))?.replace("Deslocamento:", "").trim() ?? "";
+
+    const details = traitLines.filter((l) => !l.startsWith("Tipo de Criatura:") && !l.startsWith("Tamanho:") && !l.startsWith("Deslocamento:"));
+    const traits: Trait[] = [];
+    for (const line of details) {
+      const m = line.match(/^([^.:]{3,80})\.\s+(.+)$/);
+      if (m) {
+        traits.push({ name: m[1].trim(), description: m[2].trim() });
+      } else if (traits.length) {
+        traits[traits.length - 1].description += `\n${line}`;
+      }
+    }
+
+    return {
+      name: entry.name,
+      description,
+      tipoCriatura,
+      tamanho,
+      deslocamento,
+      traits,
+      tableData: {},
+    };
+  });
 }
 
 function main() {
-  mkdirSync(CANON_DIR, { recursive: true });
+  mkdirSync(TMP_DIR, { recursive: true });
+  const xml = readDocumentXml();
+  const txt = xmlToPlainText(xml);
+  const lines = txt.split("\n").map((l) => l.trim()).filter(Boolean);
 
-  const text = extractDocxPlainText(DOCX_PATH);
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const html = `<!doctype html><html><head><meta charset=\"utf-8\"><title>PHB 2024</title></head><body>${xmlToLooseHtml(xml)}</body></html>`;
+  const extracted = extractRaces(lines);
 
-  const allSpells = JSON.parse(readFileSync(SPELLS_JSON_PATH, "utf8"));
-  const spells012 = allSpells.filter((s: any) => [0, 1, 2].includes(Number(s.level)))
-    .sort((a: any, b: any) => a.level - b.level || a.name.localeCompare(b.name, "pt-BR"));
+  writeFileSync(path.join(TMP_DIR, "player_handbook_2024.html"), html);
+  writeFileSync(path.join(TMP_DIR, "player_handbook_2024.txt"), txt);
+  writeFileSync(path.join(TMP_DIR, "races_2024_extracted.json"), JSON.stringify(extracted, null, 2) + "\n");
 
-  const classes = parseKnownCatalogFromTs(path.resolve("src/data/classes.ts"), "classes");
-  const backgrounds = parseKnownCatalogFromTs(path.resolve("src/data/backgrounds.ts"), "backgrounds");
-  const races = parseKnownCatalogFromTs(path.resolve("src/data/races.ts"), "races");
-
-  const languagesCommon = [...new Set(lines.filter((l) => l.length < 30 && /[A-Za-zÀ-ÿ]/.test(l) && /Comum|Anão|Élfico|Dracônico|Infernal|Celestial|Gigante/i.test(l)))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-  const instruments = [...new Set(lines.filter((l) => l.length < 60 && /(alaúde|flauta|tambor|lira|gaita|violino|harpa|chifre)/i.test(l)))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-
-  writeFileSync(path.join(CANON_DIR, "spells_0_1_2.json"), JSON.stringify(spells012, null, 2) + "\n");
-  writeFileSync(path.join(CANON_DIR, "classes_10.json"), JSON.stringify(classes, null, 2) + "\n");
-  writeFileSync(path.join(CANON_DIR, "backgrounds_16.json"), JSON.stringify(backgrounds, null, 2) + "\n");
-  writeFileSync(path.join(CANON_DIR, "races_10.json"), JSON.stringify(races, null, 2) + "\n");
-  writeFileSync(path.join(CANON_DIR, "languages_common.json"), JSON.stringify(languagesCommon, null, 2) + "\n");
-  writeFileSync(path.join(CANON_DIR, "instruments.json"), JSON.stringify(instruments, null, 2) + "\n");
-
-  console.log("Canon extracted to src/data/_canon");
+  console.log(`Extraído: ${extracted.length} espécies -> scripts/_tmp/races_2024_extracted.json`);
 }
 
 main();
