@@ -33,13 +33,18 @@ O fluxo principal é sequencial e segue estas etapas:
 4. **Atributos**
    - Escolha o método e confirme a distribuição de atributos.
 5. **Equipamento**
-   - Selecione kits/equipamentos iniciais e resolva escolhas obrigatórias pendentes.
-6. **Ficha**
+   - Selecione kits/equipamentos iniciais e confirme a carga inicial.
+6. **Escolhas**
+   - Resolva escolhas obrigatórias pendentes (perícias, idiomas, ferramentas, talentos, truques e magias, quando aplicável).
+7. **Ficha**
    - Revise o resultado final, valide pendências e use ações de saída.
+
+IDs de etapa (ID-first): `class` → `origin` → `race` → `abilities` → `equipment` → `choices` → `sheet`.
 
 ## Funcionalidades prontas
 
 - Fluxo guiado por etapas com bloqueio de progressão quando há pendências obrigatórias.
+- Etapa dedicada de **Escolhas** para consolidar e resolver pendências obrigatórias antes da ficha final.
 - Persistência local automática do estado do personagem e progresso do builder.
 - **Exportar JSON** da ficha.
 - **Importar JSON** com validação de payload.
@@ -50,6 +55,7 @@ O fluxo principal é sequencial e segue estas etapas:
 
 - Escopo de regras limitado ao recorte canônico: **PHB 2024, níveis 1 e 2**.
 - Não há progressão funcional para níveis 3–20.
+- Pendências obrigatórias ainda dependem da cobertura canônica disponível por classe/raça/antecedente; quando faltam dados, a etapa **Escolhas** pode não refletir 100% do livro.
 - O projeto opera com regras e nomenclaturas internas definidas no documento canônico; itens fora desse escopo não devem ser considerados válidos.
 
 ## Próximas entregas
@@ -58,7 +64,7 @@ Alinhado ao `docs/canonical_specs.md`, as próximas entregas priorizadas são:
 
 1. **Expansão e endurecimento do Choice Engine**
    - Cobrir integralmente escolhas obrigatórias (perícias, idiomas, ferramentas, instrumentos, talentos, truques e magias) com rastreio por origem da regra.
-2. **Validação operacional mais rígida na etapa de Equipamentos**
+2. **Validação operacional mais rígida na etapa de Escolhas**
    - Garantir bloqueio consistente enquanto houver pendências e manter a etapa de Ficha apenas para revisão final.
 3. **Auditoria de dados canônicos mais abrangente (DEV)**
    - Aumentar cobertura de inconsistências entre catálogos e regras (ausência de itens obrigatórios, vínculos quebrados e campos canônicos incompletos).

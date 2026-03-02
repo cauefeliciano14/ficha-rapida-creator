@@ -262,7 +262,7 @@ Choice Engine:
 
 ## 11) Regras de UX
 
-As escolhas abaixo devem ocorrer na etapa **Equipamentos**:
+As escolhas abaixo devem ocorrer na etapa **Escolhas**:
 - Perícias
 - Truques
 - Magias
@@ -272,7 +272,7 @@ As escolhas abaixo devem ocorrer na etapa **Equipamentos**:
 - Talentos obrigatórios
 
 Se houver pendência:
-- Etapa **Equipamentos** fica bloqueada.
+- Etapa **Escolhas** fica bloqueada.
 
 Ficha:
 - Somente revisão final.
