@@ -18,10 +18,13 @@
     "extract:races": "node scripts/extract_races_from_docx.mjs",
     "validate:races": "node scripts/validate_races_against_docx.mjs",
     "extract:classes": "node scripts/extract_classes_from_docx.mjs",
+    "extract:feats": "node scripts/extract_feats_from_docx.mjs",
     "generate:classes": "node scripts/generate_classes_ts.mjs",
     "validate:classes": "node scripts/validate_classes_against_docx.mjs",
-    "extract:all": "node scripts/extract_all_from_docx.mjs",
-    "validate:all-docx": "npm run extract:all && node scripts/validate_classes_against_docx.mjs && node scripts/validate_races_against_docx.mjs"
+    "extract:items": "node scripts/extract_items_from_docx.mjs",
+    "extract:starting-equipment": "node scripts/extract_starting_equipment_from_docx.mjs",
+    "validate:items": "node scripts/validate_items_against_docx.mjs",
+    "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

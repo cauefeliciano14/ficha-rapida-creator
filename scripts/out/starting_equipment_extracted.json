@@ -1,0 +1,175 @@
+{
+  "source": "sources/player_handbook_2024.docx",
+  "classes": [
+    {
+      "name": "Bárbaro",
+      "rawEquipment": "Escolha A ou B: (A) 4 Machadinhas, Machado Grande, Kit de Aventureiro e 15 PO; ou (B) 75 PO",
+      "optionAGold": null,
+      "optionBGold": 75
+    },
+    {
+      "name": "Bardo",
+      "rawEquipment": "Escolha A ou B: (A) Armadura de Couro, 2 Adagas, Instrumento Musical à sua escolha, Kit de Artista e 19 PO; ou (B) 90 PO",
+      "optionAGold": null,
+      "optionBGold": 90
+    },
+    {
+      "name": "Bruxo",
+      "rawEquipment": "Escolha A ou B: (A) Armadura de Couro, Foice, 2 Adagas, Foco Arcano (orbe), Livro (conhecimento oculto), Kit de Erudito e 15 PO; ou (B) 100 PO",
+      "optionAGold": null,
+      "optionBGold": 100
+    },
+    {
+      "name": "Clérigo",
+      "rawEquipment": null,
+      "optionAGold": null,
+      "optionBGold": null
+    },
+    {
+      "name": "Druida",
+      "rawEquipment": "Escolha A ou B: (A) Armadura de Couro, Escudo, Foice, Foco Druídico (Cajado), Kit de Explorador, Kit de Herbalismo, 9 PO; ou (B) 50 PO",
+      "optionAGold": 9,
+      "optionBGold": 50
+    },
+    {
+      "name": "Feiticeiro",
+      "rawEquipment": "Escolha A ou B: (A) Lança, 2 Adagas, Foco Arcano (cristal), Kit de Explorador de Masmorras e 28 PO; ou (B) 50 PO",
+      "optionAGold": null,
+      "optionBGold": 50
+    },
+    {
+      "name": "Guardião",
+      "rawEquipment": "Escolha A ou B: (A) armadura de Couro Batido, Cimitarra, Espada Curta, Arco Longo, 20 Flechas, Aljava, Foco Druídico (ramo de visco), Kit de Aventureiro e 7 PO; ou (B) 150 PO",
+      "optionAGold": null,
+      "optionBGold": 150
+    },
+    {
+      "name": "Guerreiro",
+      "rawEquipment": null,
+      "optionAGold": null,
+      "optionBGold": null
+    },
+    {
+      "name": "Ladino",
+      "rawEquipment": "Escolha A ou B: (A) Armadura de Couro, 2 Adagas, Espada Curta, Arco Curto, 20 Flechas, Aljava, Ferramentas de Ladrão, Kit de Assaltante e 8 PO; ou (B) 100 PO",
+      "optionAGold": null,
+      "optionBGold": 100
+    },
+    {
+      "name": "Mago",
+      "rawEquipment": "Escolha A ou B: (A) 2 Adagas, Foco Arcano (Cajado), Kit de Erudito, Livro de Magias, Túnica e 5 PO; ou (B) 55 PO",
+      "optionAGold": null,
+      "optionBGold": 55
+    },
+    {
+      "name": "Monge",
+      "rawEquipment": "Escolha A ou B: (A) Lança, 5 Adagas, Ferramentas de Artesão ou Instrumento Musical escolhido para a proficiência com ferramenta acima, Kit de Aventureiro e 11 PO; ou (B) 50 PO",
+      "optionAGold": null,
+      "optionBGold": 50
+    },
+    {
+      "name": "Paladino",
+      "rawEquipment": "Escolha A ou B: (A) Cota de Malha, Escudo, Espada Longa, 6 Azagaias, Símbolo Sagrado, Kit de Sacerdote e 9 PO; ou (B) 150 PO",
+      "optionAGold": null,
+      "optionBGold": 150
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "Acólito",
+      "rawEquipment": "Escolha A ou B: (A) Suprimentos de Calígrafo, Livro (orações), Símbolo Sagrado, Pergaminho (10 folhas), Túnica, 8 PO; ou (B) 50 PO",
+      "optionAGold": 8,
+      "optionBGold": 50
+    },
+    {
+      "name": "Andarilho",
+      "rawEquipment": "Escolha A ou B: (A) 2 Adagas, Ferramentas de Ladrão, Kit de Jogos (qualquer um), 2 Algibeiras, Roupas de Viagem, Saco de Dormir, 16 PO; ou (B) 50 PO",
+      "optionAGold": 16,
+      "optionBGold": 50
+    },
+    {
+      "name": "Artesão",
+      "rawEquipment": "Escolha A ou B: (A) Ferramentas de Artesão (a mesma que acima), 2 Algibeiras, Roupas de Viagem, 32 PO; ou (B) 50 PO",
+      "optionAGold": 32,
+      "optionBGold": 50
+    },
+    {
+      "name": "Artista",
+      "rawEquipment": "Escolha A ou B: (A) Instrumento Musical (o mesmo que acima), Espelho, 2 Fantasias, Perfume, Roupas de Viagem, 11 PO; ou (B) 50 PO",
+      "optionAGold": 11,
+      "optionBGold": 50
+    },
+    {
+      "name": "Charlatão",
+      "rawEquipment": "Escolha A ou B: (A) Kit de Falsificação, Fantasia, Roupas Finas, 15 PO; ou (B) 50 PO",
+      "optionAGold": 15,
+      "optionBGold": 50
+    },
+    {
+      "name": "Criminoso",
+      "rawEquipment": "Escolha A ou B: (A) 2 Adagas, Ferramentas de Ladrão, 2 Algibeiras, Pé de Cabra, Roupas de Viagem, 16 PO; ou (B) 50 PO",
+      "optionAGold": 16,
+      "optionBGold": 50
+    },
+    {
+      "name": "Eremita",
+      "rawEquipment": "Escolha A ou B: (A) Cajado, Kit de Herbalismo, Lâmpada, Livro (filosofia), Óleo (3 frascos), Roupas de Viagem, Saco de Dormir, 16 PO; ou (B) 50 PO",
+      "optionAGold": 16,
+      "optionBGold": 50
+    },
+    {
+      "name": "Escriba",
+      "rawEquipment": "Escolha A ou B: (A) Suprimentos de Calígrafo, Lâmpada, Óleo (3 frascos), Pergaminho (12 folhas), Roupas Finas, 23 PO; ou (B) 50 PO",
+      "optionAGold": 23,
+      "optionBGold": 50
+    },
+    {
+      "name": "Fazendeiro",
+      "rawEquipment": "Escolha A ou B: (A) Foice, Ferramentas de Carpinteiro, Kit de Curandeiro, Balde de Ferro, Pá, 30 PO; ou (B) 50 PO",
+      "optionAGold": 30,
+      "optionBGold": 50
+    },
+    {
+      "name": "Guarda",
+      "rawEquipment": "Escolha A ou B: (A) Lança, Besta Leve, 20 Virotes, Kit de Jogo (o mesmo que acima), Aljava, Grilhões, Lanterna Coberta, Roupas de Viagem, 12 PO; ou (B) 50 PO",
+      "optionAGold": 12,
+      "optionBGold": 50
+    },
+    {
+      "name": "Guia",
+      "rawEquipment": "Escolha A ou B: (A) Arco Curto, 20 Flechas, Ferramentas de Cartógrafo, Aljava, Roupas de Viagem, Saco de Dormir, Tenda, 3 PO; ou (B) 50 PO",
+      "optionAGold": 3,
+      "optionBGold": 50
+    },
+    {
+      "name": "Marinheiro",
+      "rawEquipment": "Escolha A ou B: (A) Adaga, Ferramentas de Navegador, Corda, Roupas de Viagem, 20 PO; ou (B) 50 PO",
+      "optionAGold": 20,
+      "optionBGold": 50
+    },
+    {
+      "name": "Mercador",
+      "rawEquipment": "Escolha A ou B: (A) Ferramentas de Navegador, 2 Algibeiras, Roupas de Viagem, 22 PO; ou (B) 50 PO",
+      "optionAGold": 22,
+      "optionBGold": 50
+    },
+    {
+      "name": "Nobre",
+      "rawEquipment": "Escolha A ou B: (A) Kit de Jogos (o mesmo que acima), Perfume, Roupas Finas, 29 PO; ou (B) 50 PO",
+      "optionAGold": 29,
+      "optionBGold": 50
+    },
+    {
+      "name": "Sábio",
+      "rawEquipment": "Escolha A ou B: (A) Cajado, Suprimentos de Calígrafo, Livro (história), Pergaminho (8 folhas), Túnica, 8 PO; ou (B) 50 PO",
+      "optionAGold": 8,
+      "optionBGold": 50
+    },
+    {
+      "name": "Soldado",
+      "rawEquipment": "Escolha A ou B: (A) Lança, Arco Curto, 20 Flechas, Kit de Curandeiro, Kit de Jogo (o mesmo que acima), Aljava, Roupas de Viagem, 14 PO; ou (B) 50 PO",
+      "optionAGold": 14,
+      "optionBGold": 50
+    }
+  ]
+}
