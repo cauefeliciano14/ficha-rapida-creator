@@ -7,6 +7,12 @@ import { perfTime } from "@/utils/perf";
 import { getChoicesRequirements } from "@/utils/choices";
 import { toast } from "@/hooks/use-toast";
 import { commonLanguages } from "@/data/languagesCommon";
+import type {
+  AppliedFeatState as AppliedFeat,
+  CharacterSpellsState,
+  ChoiceSelectionsState,
+  ClassFeatureChoicesState,
+} from "@/state/types";
 
 // ── Types ──
 
@@ -75,13 +81,6 @@ const DEFAULT_LEVELING: LevelingState = {
   choices: { subclassId: null, asiOrFeat: {} }, changesSummary: [],
 };
 
-export interface AppliedFeat {
-  featId: string;
-  levelTaken: number;
-  source: "levelUp" | "background";
-  choices?: { abilityIncreases?: Partial<Record<AbilityKey, number>> };
-}
-
 export type RaceChoicesState = Record<string, string>;
 
 export interface OriginSelectionState {
@@ -90,19 +89,6 @@ export interface OriginSelectionState {
   toolGranted: string | null;
   originFeat: string | null;
   startingEquipment: "A" | "B" | null;
-}
-
-export interface ChoiceSelectionsState {
-  classSkills: string[];
-  languages: string[];
-  tools: string[];
-  instruments: string[];
-  cantrips: string[];
-  spells: string[];
-  raceChoice: string | null;
-  classFeats: string[];
-  /** @deprecated legacy key */
-  skills?: string[];
 }
 
 export interface CharacterState {
@@ -141,14 +127,7 @@ export interface CharacterState {
   armorClass: number;
   speed: number;
   features: NormalizedFeature[];
-  spells: {
-    cantrips: string[];
-    prepared: string[];
-    slots: number[];
-    spellcastingAbility: string | null;
-    spellSaveDC: number;
-    spellAttackBonus: number;
-  };
+  spells: CharacterSpellsState;
   selectedCantrips: string[];
   selectedSpells: string[];
   equipment: string[];
@@ -159,7 +138,7 @@ export interface CharacterState {
   appliedFeats: AppliedFeat[];
   featAbilityBonuses: Record<AbilityKey, number>;
   flags: Record<string, number | boolean>;
-  classFeatureChoices: Record<string, string | string[]>;
+  classFeatureChoices: ClassFeatureChoicesState;
   choiceSelections: ChoiceSelectionsState;
   expertiseSkills: string[];
   skillMods: Record<string, SkillMod>;
