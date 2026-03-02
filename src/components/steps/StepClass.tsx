@@ -1,11 +1,10 @@
 import { useCharacterStore, mergeUnique, replaceFeatures, type NormalizedFeature } from "@/state/characterStore";
 import { useBuilderStore } from "@/state/builderStore";
 import { classes, type ClassData } from "@/data/classes";
-import { CheckCircle2, Search, Info, ChevronDown, ChevronUp, Package, Lock, Loader2 } from "lucide-react";
+import { CheckCircle2, Search, Info, ChevronDown, ChevronUp, Package, Loader2 } from "lucide-react";
 import { getChoicesRequirements } from "@/utils/choices";
 import { instruments } from "@/data/instruments";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function hasAttributeBonus(cls: ClassData): boolean {
@@ -51,7 +50,7 @@ export function StepClass() {
   const datasetsVersion = `${classes.length}:${instruments.length}`;
   const requirements = useMemo(() => getChoicesRequirements(useCharacterStore.getState()), [classId, raceId, backgroundId, level, choiceSelections, datasetsVersion]);
 
-  const MAX_SUPPORTED_LEVEL = 2;
+  const MAX_SUPPORTED_LEVEL = 20;
 
   // --- Level handler ---
   const handleLevelChange = useCallback((newLevel: number) => {
@@ -246,12 +245,12 @@ export function StepClass() {
           <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
             Nível Inicial
           </h3>
-          <div className="inline-flex rounded-lg border bg-card p-1 gap-1 w-full">
-            {[1, 2].map((lvl) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 rounded-lg border bg-card p-1 gap-1 w-full">
+            {Array.from({ length: MAX_SUPPORTED_LEVEL }, (_, index) => index + 1).map((lvl) => (
               <button
                 key={lvl}
                 onClick={() => handleLevelChange(lvl)}
-                className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   level === lvl
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -260,18 +259,6 @@ export function StepClass() {
                 Nível {lvl}
               </button>
             ))}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  disabled
-                  className="flex-1 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground/40 cursor-not-allowed flex items-center justify-center gap-1"
-                >
-                  <Lock className="h-3 w-3" />
-                  3–20
-                </button>
-              </TooltipTrigger>
-              <TooltipContent><p>Em breve</p></TooltipContent>
-            </Tooltip>
           </div>
         </section>
 

@@ -36,6 +36,37 @@ describe("choice engine", () => {
     expect(req.buckets.cantrips.options.every((o) => typeof o.id === "string")).toBe(true);
   });
 
+  it("bardo nível 10 mantém requisito obrigatório de expertise", () => {
+    const char = makeCharacter({
+      class: "bardo",
+      race: "humano",
+      background: "acolito",
+      level: 10,
+      classFeatureChoices: {},
+      abilityGeneration: { ...makeCharacter().abilityGeneration, method: "standard", confirmed: true },
+      choiceSelections: { classSkills: [], languages: [], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: [] },
+    });
+
+    const req = getChoicesRequirements(char);
+    expect(req.mandatory.bySource.class.some((r) => r.id === "expertise-bardo:especialista")).toBe(true);
+    expect(req.mandatory.pending.some((r) => r.id === "expertise-bardo:especialista")).toBe(true);
+  });
+
+  it("guerreiro nível 12 não cria pendências de conjuração", () => {
+    const char = makeCharacter({
+      class: "guerreiro",
+      race: "humano",
+      background: "soldado",
+      level: 12,
+      abilityGeneration: { ...makeCharacter().abilityGeneration, method: "standard", confirmed: true },
+      choiceSelections: { classSkills: ["atletismo", "intuicao"], languages: ["anao", "elfico"], tools: [], instruments: [], cantrips: [], spells: [], raceChoice: null, classFeats: ["combate-com-armas-grandes"] },
+    });
+
+    const req = getChoicesRequirements(char);
+    expect(req.buckets.cantrips.requiredCount).toBe(0);
+    expect(req.buckets.spells.requiredCount).toBe(0);
+  });
+
   it("troca de classe invalida seleções antigas", () => {
     const wizard = makeCharacter({
       class: "mago",
