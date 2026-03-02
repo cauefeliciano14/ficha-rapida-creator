@@ -4,6 +4,9 @@ import { classes } from "@/data/classes";
 import { backgrounds } from "@/data/backgrounds";
 import { type AbilityKey } from "@/utils/calculations";
 import { getChoicesRequirements } from "@/utils/choices";
+import type { RaceChoicesState } from "@/state/types";
+
+const ABILITY_KEYS: AbilityKey[] = ["str", "dex", "con", "int", "wis", "cha"];
 
 export interface ValidationItem {
   id: string;
@@ -93,9 +96,7 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   // Race ability choices
   if (race?.abilityBonuses.mode === "choose" && race.abilityBonuses.choose) {
     const choicesNeeded = race.abilityBonuses.choose.choices;
-    const chosen = Object.keys(char.raceAbilityChoices).filter(
-      (k) => (char.raceAbilityChoices as any)[k] > 0
-    ).length;
+    const chosen = ABILITY_KEYS.filter((key) => (char.raceAbilityChoices[key] ?? 0) > 0).length;
     if (chosen < choicesNeeded) {
       missing.push({
         id: "race-ability-choices",
@@ -108,7 +109,8 @@ export function validateCharacterCompleteness(char: CharacterState, useChoicesSt
   }
 
   // Race choices (e.g., Draconato ancestralidade)
-  if (char.race === "draconato" && !char.raceChoices.draconicAncestry) {
+  const raceChoices: RaceChoicesState = char.raceChoices ?? {};
+  if (char.race === "draconato" && !raceChoices.draconicAncestry) {
     missing.push({
       id: "draconato-ancestralidade",
       label: "Ancestralidade dracônica não escolhida",
