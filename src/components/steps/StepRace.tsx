@@ -292,17 +292,23 @@ export function StepRace() {
               <button
                 key={r.id}
                 onClick={() => handleSelectRace(r.id)}
-                className={`min-h-11 w-full rounded-lg border p-3 text-left transition-colors ${
+                className={`min-h-11 w-full rounded-lg border p-3 text-left transition-all duration-200 group ${
                   isSelected
-                    ? "border-primary bg-primary/10 ring-1 ring-primary/30"
-                    : "hover:border-muted-foreground/40 hover:bg-secondary"
+                    ? "border-primary/60 bg-primary/10 shadow-[0_0_0_1px_hsl(var(--primary)/0.2),0_4px_12px_hsl(var(--primary)/0.15)]"
+                    : "border-border/60 hover:border-gold/30 hover:bg-secondary/60 hover:shadow-[0_2px_8px_hsl(0_0%_0%/0.2)]"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{r.name}</span>
-                  {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                  <span className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                    {r.name}
+                  </span>
+                  {isSelected ? (
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  ) : (
+                    <span className="h-4 w-4 rounded-full border border-border/60 shrink-0 group-hover:border-gold/30 transition-colors" />
+                  )}
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{r.description}</p>
+                <p className="mt-1.5 text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">{r.description}</p>
               </button>
             );
           })}

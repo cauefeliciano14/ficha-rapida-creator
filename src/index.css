@@ -6,23 +6,23 @@
 
 @layer base {
   :root {
-    --background: 220 20% 10%;
-    --foreground: 36 20% 88%;
+    --background: 222 25% 8%;
+    --foreground: 36 25% 90%;
 
-    --card: 220 18% 14%;
-    --card-foreground: 36 20% 88%;
+    --card: 222 22% 12%;
+    --card-foreground: 36 25% 90%;
 
-    --popover: 220 18% 14%;
-    --popover-foreground: 36 20% 88%;
+    --popover: 222 22% 12%;
+    --popover-foreground: 36 25% 90%;
 
     --primary: 0 72% 51%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 18%;
-    --secondary-foreground: 36 20% 88%;
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 36 25% 90%;
 
-    --muted: 220 14% 20%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 222 18% 18%;
+    --muted-foreground: 222 12% 52%;
 
     --accent: 0 72% 51%;
     --accent-foreground: 0 0% 100%;
@@ -30,30 +30,31 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 22%;
-    --input: 220 14% 22%;
-    --ring: 0 72% 51%;
+    --border: 222 18% 20%;
+    --input: 222 18% 20%;
+    --ring: 43 74% 49%;
 
     --radius: 0.5rem;
 
     /* D&D themed gold accent */
     --gold: 43 74% 49%;
     --gold-foreground: 0 0% 8%;
-    --gold-muted: 43 40% 30%;
+    --gold-muted: 43 40% 28%;
+    --gold-bright: 43 90% 60%;
 
     /* Sheet-specific tokens */
-    --sheet-bg: 220 18% 12%;
-    --sheet-border: 220 14% 25%;
-    --sheet-header: 220 20% 8%;
+    --sheet-bg: 222 22% 10%;
+    --sheet-border: 222 18% 22%;
+    --sheet-header: 222 25% 7%;
 
-    --sidebar-background: 220 20% 8%;
-    --sidebar-foreground: 36 20% 88%;
+    --sidebar-background: 222 28% 6%;
+    --sidebar-foreground: 36 25% 90%;
     --sidebar-primary: 0 72% 51%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 16% 16%;
-    --sidebar-accent-foreground: 36 20% 88%;
-    --sidebar-border: 220 14% 18%;
-    --sidebar-ring: 0 72% 51%;
+    --sidebar-accent: 222 20% 14%;
+    --sidebar-accent-foreground: 36 25% 90%;
+    --sidebar-border: 222 18% 15%;
+    --sidebar-ring: 43 74% 49%;
 
     --success: 142 60% 40%;
     --success-foreground: 0 0% 100%;
@@ -61,8 +62,12 @@
     --info-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --locked: 220 10% 35%;
-    --locked-foreground: 220 10% 50%;
+    --locked: 222 12% 32%;
+    --locked-foreground: 222 10% 48%;
+
+    /* Header gradient */
+    --header-from: 222 28% 7%;
+    --header-to: 222 22% 11%;
   }
 }
 
@@ -74,6 +79,10 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, hsl(0 72% 51% / 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, hsl(43 74% 49% / 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
   }
 
   /* D&D display font for headers */
@@ -83,7 +92,8 @@
 
   /* Accessibility: visible focus ring */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-ring;
+    @apply outline-2 outline-offset-2;
+    outline-color: hsl(var(--gold));
   }
 
   /* Smooth scrolling for scroll-into-view */
@@ -93,8 +103,8 @@
 
   /* Custom scrollbar for dark theme */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
@@ -104,12 +114,28 @@
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
+    background: hsl(var(--gold-muted));
   }
 }
 
 @layer components {
-  /* D&D Sheet Styles */
+  /* ── Header ── */
+  .dnd-header {
+    background: linear-gradient(
+      to right,
+      hsl(var(--header-from)),
+      hsl(var(--header-to))
+    );
+    border-bottom: 1px solid hsl(var(--gold) / 0.15);
+    box-shadow: 0 2px 20px hsl(0 0% 0% / 0.4), 0 1px 0 hsl(var(--gold) / 0.08);
+  }
+
+  /* ── Logo glow ── */
+  .logo-glow {
+    filter: drop-shadow(0 0 6px hsl(var(--gold) / 0.5));
+  }
+
+  /* ── D&D Sheet Styles ── */
   .sheet-box {
     @apply rounded-lg border-2 border-border bg-card p-3 text-center transition-all duration-200;
   }
@@ -138,7 +164,7 @@
     color: hsl(var(--gold));
   }
 
-  /* Ability score diamond */
+  /* ── Ability score diamond ── */
   .ability-diamond {
     @apply relative flex flex-col items-center justify-center rounded-lg border-2 border-border p-2 transition-all duration-300;
     background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)));
@@ -151,7 +177,7 @@
     box-shadow: 0 4px 16px hsl(var(--gold) / 0.15);
   }
 
-  /* Interactive card */
+  /* ── Interactive card ── */
   .interactive-card {
     @apply rounded-lg border bg-card p-3 transition-all duration-200 cursor-pointer;
   }
@@ -167,12 +193,12 @@
     box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 4px 12px hsl(var(--primary) / 0.2);
   }
 
-  /* Progress bar with glow */
+  /* ── Progress bar with glow ── */
   .progress-glow {
     box-shadow: 0 0 8px hsl(var(--primary) / 0.4);
   }
 
-  /* Proficiency dot */
+  /* ── Proficiency dot ── */
   .prof-dot {
     @apply h-2.5 w-2.5 rounded-full border transition-colors duration-200;
   }
@@ -185,11 +211,160 @@
     @apply border-muted-foreground/30;
   }
 
-  /* Mobile bottom bar */
+  /* ── Mobile bottom bar ── */
   .mobile-bottom-bar {
     @apply fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur-sm;
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* ── Sidebar step item ── */
+  .sidebar-step-active {
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary) / 0.12),
+      hsl(var(--primary) / 0.06)
+    );
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow: inset 3px 0 0 hsl(var(--primary)), 0 2px 8px hsl(var(--primary) / 0.1);
+  }
+
+  .sidebar-step-done {
+    background: linear-gradient(
+      to right,
+      hsl(var(--success) / 0.08),
+      transparent
+    );
+  }
+
+  /* ── Gold divider ── */
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      hsl(var(--gold) / 0.4),
+      transparent
+    );
+  }
+
+  /* ── Stat mini card ── */
+  .stat-mini-card {
+    @apply flex flex-col items-center justify-center py-2 px-1 transition-all duration-200;
+    position: relative;
+  }
+
+  .stat-mini-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: hsl(var(--gold) / 0);
+    border-radius: 1px;
+    transition: background 0.2s;
+  }
+
+  .stat-mini-card:hover::after {
+    background: hsl(var(--gold) / 0.4);
+  }
+
+  /* ── Progress steps bar ── */
+  .progress-steps-bar {
+    height: 3px;
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary)),
+      hsl(var(--gold))
+    );
+    border-radius: 2px;
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.4);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Next button epic ── */
+  .btn-next-epic {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(0 72% 40%)
+    );
+    box-shadow: 0 4px 14px hsl(var(--primary) / 0.35), inset 0 1px 0 hsl(0 0% 100% / 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .btn-next-epic:hover:not(:disabled) {
+    box-shadow: 0 6px 20px hsl(var(--primary) / 0.5), inset 0 1px 0 hsl(0 0% 100% / 0.15);
+    transform: translateY(-1px);
+  }
+
+  .btn-next-epic:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
+  }
+
+  /* ── Identity header ── */
+  .identity-header-bg {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--card) / 0.95),
+      hsl(var(--card) / 0.85)
+    );
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid hsl(var(--gold) / 0.12);
+  }
+
+  /* ── Summary panel header ── */
+  .summary-identity-card {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card)),
+      hsl(var(--secondary) / 0.8)
+    );
+    border-bottom: 1px solid hsl(var(--gold) / 0.15);
+  }
+
+  /* ── Glow badge ── */
+  .glow-badge {
+    box-shadow: 0 0 8px hsl(var(--gold) / 0.3);
+  }
+
+  /* ── Step header bar ── */
+  .step-header-bar {
+    background: linear-gradient(
+      to right,
+      hsl(var(--card)),
+      hsl(var(--card) / 0.95)
+    );
+    border-bottom: 1px solid hsl(var(--border));
+    box-shadow: 0 2px 12px hsl(0 0% 0% / 0.2);
+  }
+}
+
+/* ── Keyframes ── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px hsl(var(--gold) / 0.2); }
+  50% { box-shadow: 0 0 12px hsl(var(--gold) / 0.5), 0 0 24px hsl(var(--gold) / 0.2); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: hsl(var(--gold) / 0.2); }
+  50% { border-color: hsl(var(--gold) / 0.6); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* ── Print Styles ── */

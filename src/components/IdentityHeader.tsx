@@ -2,7 +2,7 @@ import { useCharacterStore } from "@/state/characterStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Hash } from "lucide-react";
+import { User, Star } from "lucide-react";
 import { SUPPORTED_LEVEL_MESSAGE } from "@/config/builder";
 
 export function IdentityHeader() {
@@ -33,37 +33,73 @@ export function IdentityHeader() {
   };
 
   return (
-    <div id="identity-header-panel" className="border-b bg-card/80 backdrop-blur-sm px-3 py-3 sm:px-6">
+    <div id="identity-header-panel" className="identity-header-bg px-3 py-3 sm:px-6">
       <div className="flex flex-col sm:flex-row gap-3 sm:items-end max-w-2xl">
+        {/* Nome */}
         <div className="flex-1">
-          <Label htmlFor="character-name" className="text-[10px] uppercase tracking-widest text-gold/60 font-bold font-display flex items-center gap-1">
-            <User className="h-3 w-3" /> Nome do Personagem
+          <Label
+            htmlFor="character-name"
+            className="text-[10px] uppercase tracking-widest text-gold/70 font-bold font-display flex items-center gap-1.5 mb-1.5"
+          >
+            <User className="h-3 w-3" />
+            Nome do Personagem
           </Label>
-          <Input
-            id="character-name"
-            value={name}
-            onChange={(e) => handleNameChange(e.target.value)}
-            placeholder="Ex: Aelindra, a Maga"
-            autoComplete="off"
-            className="mt-1 bg-transparent border-border/50 focus:border-gold/50 transition-colors font-medium"
-          />
+          <div className="relative">
+            <Input
+              id="character-name"
+              value={name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="Ex: Aelindra, a Maga"
+              autoComplete="off"
+              className="bg-background/40 border-border/50 focus:border-gold/50 focus:ring-gold/20 transition-all font-medium placeholder:text-muted-foreground/40 h-10"
+            />
+            {name && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <Star className="h-3 w-3 text-gold/30" />
+              </div>
+            )}
+          </div>
         </div>
-        <div className="w-full sm:w-32">
-          <Label htmlFor="character-level" className="text-[10px] uppercase tracking-widest text-gold/60 font-bold font-display flex items-center gap-1">
-            <Hash className="h-3 w-3" /> Nível
+
+        {/* Nível */}
+        <div className="w-full sm:w-36">
+          <Label
+            htmlFor="character-level"
+            className="text-[10px] uppercase tracking-widest text-gold/70 font-bold font-display flex items-center gap-1.5 mb-1.5"
+          >
+            <span className="text-gold/70">⚔</span>
+            Nível
           </Label>
           <Select value={level.toString()} onValueChange={handleLevelChange}>
-            <SelectTrigger id="character-level" className="mt-1 bg-transparent border-border/50">
+            <SelectTrigger
+              id="character-level"
+              className="bg-background/40 border-border/50 focus:border-gold/50 focus:ring-gold/20 h-10"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">Nível 1</SelectItem>
-              <SelectItem value="2">Nível 2</SelectItem>
+              <SelectItem value="1">
+                <span className="flex items-center gap-2">
+                  <span className="text-gold/60 text-xs">I</span>
+                  Nível 1
+                </span>
+              </SelectItem>
+              <SelectItem value="2">
+                <span className="flex items-center gap-2">
+                  <span className="text-gold/60 text-xs">II</span>
+                  Nível 2
+                </span>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
-        </div>
-      <p className="mt-2 text-xs text-muted-foreground">{SUPPORTED_LEVEL_MESSAGE}</p>
+      </div>
+
+      {/* Hint */}
+      <p className="mt-2 text-[11px] text-muted-foreground/70 flex items-center gap-1">
+        <span className="inline-block w-1 h-1 rounded-full bg-gold/30" />
+        {SUPPORTED_LEVEL_MESSAGE}
+      </p>
     </div>
   );
 }

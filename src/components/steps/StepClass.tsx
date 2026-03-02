@@ -289,22 +289,27 @@ export function StepClass() {
               <button
                 key={cls.id}
                 onClick={() => handleSelect(cls.id)}
-                className={`w-full rounded-lg border p-3 text-left transition-colors ${
+                className={`w-full rounded-lg border p-3 text-left transition-all duration-200 group ${
                   isSelected
-                    ? "border-primary bg-primary/10"
-                    : "hover:border-muted-foreground/40 hover:bg-secondary"
+                    ? "border-primary/60 bg-primary/10 shadow-[0_0_0_1px_hsl(var(--primary)/0.2),0_4px_12px_hsl(var(--primary)/0.15)]"
+                    : "border-border/60 hover:border-gold/30 hover:bg-secondary/60 hover:shadow-[0_2px_8px_hsl(0_0%_0%/0.2)]"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{cls.name}</span>
-                  {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                  <span className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                    {cls.name}
+                  </span>
+                  {isSelected ? (
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  ) : (
+                    <span className="h-4 w-4 rounded-full border border-border/60 shrink-0 group-hover:border-gold/30 transition-colors" />
+                  )}
                 </div>
-                <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
-                  <span>d{cls.hitDie}</span>
-                  <span>•</span>
-                  <span>{cls.primaryAbility.join(", ")}</span>
+                <div className="mt-1.5 flex items-center gap-2 text-[10px]">
+                  <span className="rounded bg-secondary/80 px-1.5 py-0.5 font-bold text-gold/70 font-display">d{cls.hitDie}</span>
+                  <span className="text-muted-foreground">{cls.primaryAbility.join(", ")}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                <p className="mt-1.5 text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">
                   {cls.description}
                 </p>
               </button>
@@ -367,8 +372,9 @@ export function StepClass() {
             }}
           />
         ) : (
-          <div className="flex min-h-[200px] items-center justify-center text-muted-foreground">
-            <p>Selecione uma classe na lista ao lado.</p>
+          <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-gold/15 bg-secondary/10">
+            <div className="text-3xl opacity-30">⚔️</div>
+            <p className="text-sm text-muted-foreground/60 font-display">Selecione uma classe para começar</p>
           </div>
         )}
       </div>

@@ -117,12 +117,26 @@ export function StepBackground() {
           {sorted.map((bg) => {
             const isSelected = bgId === bg.id;
             return (
-              <button key={bg.id} onClick={() => handleSelect(bg.id)} className={`min-h-11 w-full rounded-lg border p-3 text-left transition-colors ${isSelected ? "border-primary bg-primary/10" : "hover:border-muted-foreground/40 hover:bg-secondary"}`}>
+              <button
+                key={bg.id}
+                onClick={() => handleSelect(bg.id)}
+                className={`min-h-11 w-full rounded-lg border p-3 text-left transition-all duration-200 group ${
+                  isSelected
+                    ? "border-primary/60 bg-primary/10 shadow-[0_0_0_1px_hsl(var(--primary)/0.2),0_4px_12px_hsl(var(--primary)/0.15)]"
+                    : "border-border/60 hover:border-gold/30 hover:bg-secondary/60 hover:shadow-[0_2px_8px_hsl(0_0%_0%/0.2)]"
+                }`}
+              >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{bg.name}</span>
-                  {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
+                  <span className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                    {bg.name}
+                  </span>
+                  {isSelected ? (
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  ) : (
+                    <span className="h-4 w-4 rounded-full border border-border/60 shrink-0 group-hover:border-gold/30 transition-colors" />
+                  )}
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{bg.description}</p>
+                <p className="mt-1.5 text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">{bg.description}</p>
               </button>
             );
           })}
@@ -133,7 +147,10 @@ export function StepBackground() {
         {selectedBg ? (
           <BackgroundDetails bg={selectedBg} bgLanguageRequired={bgLanguageRequired} requirements={requirements} selectedLanguages={char.choiceSelections.languages ?? []} onToggleLanguage={toggleLanguage} />
         ) : (
-          <div className="flex min-h-[200px] items-center justify-center text-muted-foreground"><p>Selecione um antecedente na lista ao lado.</p></div>
+          <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-gold/15 bg-secondary/10">
+            <div className="text-3xl opacity-30">📜</div>
+            <p className="text-sm text-muted-foreground/60 font-display">Selecione um antecedente para continuar</p>
+          </div>
         )}
       </div>
     </div>

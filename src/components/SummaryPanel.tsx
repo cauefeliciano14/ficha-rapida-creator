@@ -78,12 +78,13 @@ export function SummaryPanel() {
 
   return (
     <aside className="w-full xl:w-72 shrink-0 border-l flex flex-col overflow-hidden">
-      <div className="border-b bg-card p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Identidade</p>
-            <p className="truncate text-sm font-bold" aria-label="Nome do personagem">
-              {name?.trim() || "Sem nome"}
+      {/* Identity card */}
+      <div className="summary-identity-card p-3">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] uppercase tracking-widest text-gold/50 font-bold font-display mb-0.5">Personagem</p>
+            <p className="truncate text-sm font-bold text-foreground" aria-label="Nome do personagem">
+              {name?.trim() || <span className="text-muted-foreground italic font-normal text-xs">Sem nome</span>}
             </p>
           </div>
           <button
@@ -95,24 +96,22 @@ export function SummaryPanel() {
                 target.select();
               }
             }}
-            className="shrink-0 text-[11px] font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+            className="shrink-0 text-[10px] font-medium text-gold/60 hover:text-gold transition-colors underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold/50 rounded-sm px-1 py-0.5"
             aria-label="Editar identidade no topo da página"
           >
-            Editar identidade
+            Editar
           </button>
         </div>
-        <p className="mt-1 text-[10px] text-muted-foreground">
-          Edição disponível no cabeçalho superior para manter o foco e a navegação por etapas consistentes.
-        </p>
-        <div className="flex flex-wrap gap-1 mt-1.5 items-center">
+        <div className="flex flex-wrap gap-1 items-center">
           {race && <MiniTag>{race.name}{subrace ? ` (${subrace.name})` : ""}{raceLineage && race.id === "elfo" ? ` • ${race.raceChoice?.options.find((o) => o.id === raceLineage)?.name ?? raceLineage}` : ""}</MiniTag>}
-          {cls && <MiniTag>{cls.name} {level}</MiniTag>}
+          {cls && <MiniTag className="bg-primary/10 border-primary/20 text-primary/90">{cls.name} {level}</MiniTag>}
           {bg && <MiniTag>{bg.name}</MiniTag>}
-          {!race && !cls && <span className="text-[11px] text-muted-foreground italic">Nenhuma escolha feita</span>}
+          {!race && !cls && <span className="text-[11px] text-muted-foreground/60 italic">Nenhuma escolha feita</span>}
         </div>
       </div>
 
-      <div className="grid grid-cols-4 border-b bg-secondary/30">
+      {/* Stats bar */}
+      <div className="grid grid-cols-4 border-b" style={{ background: "hsl(var(--secondary) / 0.4)" }}>
         <StatMini label="CA" value={String(armorClass)} />
         <StatMini label="PV" value={String(hitPointsMax)} />
         <StatMini label="Desl." value={`${speed}m`} />
@@ -121,18 +120,18 @@ export function SummaryPanel() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
         <TabsList className="h-9 w-full rounded-none border-b bg-transparent p-0 justify-start gap-0">
-          <TabsTrigger value="stats" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs h-9 px-3">
+          <TabsTrigger value="stats" className="rounded-none border-b-2 border-transparent data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-gold text-xs h-9 px-3 text-muted-foreground hover:text-foreground transition-colors">
             <Activity className="h-3.5 w-3.5 mr-1" />Stats
           </TabsTrigger>
-          <TabsTrigger value="actions" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs h-9 px-3">
+          <TabsTrigger value="actions" className="rounded-none border-b-2 border-transparent data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-gold text-xs h-9 px-3 text-muted-foreground hover:text-foreground transition-colors">
             <Swords className="h-3.5 w-3.5 mr-1" />Ações
           </TabsTrigger>
           {isSpellcaster && (
-            <TabsTrigger value="spells" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs h-9 px-3">
+            <TabsTrigger value="spells" className="rounded-none border-b-2 border-transparent data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-gold text-xs h-9 px-3 text-muted-foreground hover:text-foreground transition-colors">
               <Wand2 className="h-3.5 w-3.5 mr-1" />Magias
             </TabsTrigger>
           )}
-          <TabsTrigger value="inventory" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs h-9 px-3">
+          <TabsTrigger value="inventory" className="rounded-none border-b-2 border-transparent data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-gold text-xs h-9 px-3 text-muted-foreground hover:text-foreground transition-colors">
             <Package className="h-3.5 w-3.5 mr-1" />Inv.
           </TabsTrigger>
         </TabsList>
@@ -236,8 +235,8 @@ const StatsTab = memo(function StatsTab({
           const total = finalScores[a];
           const mod = calcAbilityMod(total);
           return (
-            <div key={a} className="rounded-lg border bg-secondary/30 p-1.5 text-center">
-              <p className="text-[10px] uppercase text-muted-foreground font-semibold">{ABILITY_SHORT[a]}</p>
+            <div key={a} className="rounded-lg border border-border/60 bg-secondary/20 p-1.5 text-center hover:border-gold/30 hover:bg-secondary/40 transition-all duration-200">
+              <p className="text-[10px] uppercase text-gold/60 font-bold font-display tracking-wider">{ABILITY_SHORT[a]}</p>
               <p className="text-lg font-bold leading-none mt-1">{total}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{mod >= 0 ? "+" : ""}{mod}</p>
             </div>
@@ -549,21 +548,28 @@ const InventoryTab = memo(function InventoryTab({
 
 function StatMini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="text-center py-1.5 border-r last:border-r-0">
-      <p className="text-[11px] uppercase text-muted-foreground font-semibold tracking-wider">{label}</p>
-      <p className="text-sm font-bold">{value}</p>
+    <div className="stat-mini-card text-center border-r last:border-r-0">
+      <p className="text-[10px] uppercase text-gold/50 font-bold tracking-widest font-display">{label}</p>
+      <p className="text-sm font-bold text-foreground">{value}</p>
     </div>
   );
 }
 
-function MiniTag({ children }: { children: React.ReactNode }) {
-  return <span className="rounded bg-secondary px-1.5 py-0.5 text-[11px] font-medium">{children}</span>;
+function MiniTag({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={`rounded border border-border/40 bg-secondary/60 px-1.5 py-0.5 text-[11px] font-medium ${className ?? ""}`}>
+      {children}
+    </span>
+  );
 }
 
 function PanelSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[11px] uppercase text-muted-foreground font-semibold tracking-wider mb-1.5">{title}</p>
+      <div className="flex items-center gap-2 mb-2">
+        <p className="text-[10px] uppercase text-gold/50 font-bold tracking-widest font-display">{title}</p>
+        <div className="flex-1 h-px bg-border/40" />
+      </div>
       {children}
     </div>
   );
@@ -571,8 +577,8 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="rounded-lg border border-dashed bg-secondary/10 py-6 text-center">
-      <p className="text-xs text-muted-foreground">{text}</p>
+    <div className="rounded-lg border border-dashed border-border/40 bg-secondary/10 py-6 text-center">
+      <p className="text-xs text-muted-foreground/60 italic">{text}</p>
     </div>
   );
 }

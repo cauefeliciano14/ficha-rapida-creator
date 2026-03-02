@@ -41,19 +41,19 @@ const PoolChip = memo(function PoolChip({
       draggable
       onDragStart={(e) => onDragStart(e, value)}
       onClick={() => onClick(value)}
-      className={`cursor-grab active:cursor-grabbing select-none rounded-lg border-2 px-4 py-3 text-center transition-all hover:scale-105 hover:shadow-md ${
+      className={`cursor-grab active:cursor-grabbing select-none rounded-lg border-2 px-4 py-3 text-center transition-all duration-200 hover:scale-105 ${
         isSelected
-          ? "border-primary bg-primary/20 ring-2 ring-primary/30"
-          : "border-border bg-card hover:border-primary/50"
+          ? "border-primary bg-primary/20 shadow-[0_0_0_1px_hsl(var(--primary)/0.3),0_4px_14px_hsl(var(--primary)/0.2)]"
+          : "border-border/60 bg-card hover:border-gold/40 hover:bg-secondary/60 hover:shadow-[0_4px_12px_hsl(0_0%_0%/0.3)]"
       }`}
       role="button"
       aria-label={`Valor ${value} (modificador ${modStr})`}
     >
-      <div className="flex items-center gap-1.5">
-        <GripVertical className="h-3.5 w-3.5 text-muted-foreground/50" />
+      <div className="flex items-center gap-1.5 justify-center">
+        <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40" />
         <span className="text-xl font-bold">{value}</span>
       </div>
-      <span className={`text-xs font-medium ${mod >= 0 ? "text-success" : "text-destructive"}`}>
+      <span className={`text-xs font-bold ${mod >= 0 ? "text-success" : "text-destructive"}`}>
         {modStr}
       </span>
     </div>
@@ -95,20 +95,20 @@ const AbilitySlot = memo(function AbilitySlot({
         onDrop(ability);
       }}
       onClick={() => onClick(ability)}
-      className={`rounded-lg border-2 border-dashed p-4 text-center transition-all cursor-pointer min-h-[100px] flex flex-col items-center justify-center gap-0.5 ${
+      className={`rounded-lg border-2 border-dashed p-4 text-center transition-all duration-200 cursor-pointer min-h-[100px] flex flex-col items-center justify-center gap-0.5 ${
         isDragOver
-          ? "border-primary bg-primary/10 scale-[1.02]"
+          ? "border-primary bg-primary/10 scale-[1.02] shadow-[0_0_16px_hsl(var(--primary)/0.2)]"
           : assignedValue !== null
-          ? "border-primary/40 bg-primary/5"
-          : "border-muted-foreground/30 hover:border-primary/40 hover:bg-secondary/50"
+          ? "border-gold/30 bg-gold/5 shadow-[0_0_0_1px_hsl(var(--gold)/0.1)]"
+          : "border-border/40 hover:border-gold/30 hover:bg-secondary/40"
       }`}
       role="button"
       aria-label={`Slot ${ABILITY_LABELS[ability]}${assignedValue !== null ? `, valor ${assignedValue}` : ", vazio"}`}
     >
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
+      <p className="text-[10px] uppercase tracking-widest text-gold/60 font-bold font-display">
         {ABILITY_SHORT[ability]}
       </p>
-      <p className="text-xs text-muted-foreground">{ABILITY_LABELS[ability]}</p>
+      <p className="text-[10px] text-muted-foreground/60">{ABILITY_LABELS[ability]}</p>
       {assignedValue !== null ? (
         <>
           <div className="flex items-center gap-1 mt-1">

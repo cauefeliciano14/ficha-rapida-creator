@@ -151,35 +151,39 @@ function BuilderContent() {
         {/* Main content */}
         <div className="flex flex-1 flex-col overflow-hidden min-w-0">
           {/* Mobile step/summary toggles */}
-          <div className="border-b bg-card/80 backdrop-blur-sm px-3 py-2 md:hidden">
-            <div className="flex items-center justify-between gap-2">
+          <div className="border-b md:hidden" style={{ background: "hsl(var(--card) / 0.9)", backdropFilter: "blur(8px)", borderColor: "hsl(var(--gold) / 0.1)" }}>
+            <div className="flex items-center justify-between gap-2 px-3 py-2">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
-                    <ListChecks className="h-3.5 w-3.5" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 h-8 text-xs border-border/60 hover:border-gold/30 hover:bg-secondary/60"
+                  >
+                    <ListChecks className="h-3.5 w-3.5 text-gold/70" />
                     Etapas
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[85%] max-w-sm p-0">
-                  <SheetHeader className="border-b px-4 py-3 text-left">
-                    <SheetTitle className="text-base font-display">Etapas</SheetTitle>
+                  <SheetHeader className="border-b px-4 py-3 text-left" style={{ borderColor: "hsl(var(--gold) / 0.1)" }}>
+                    <SheetTitle className="text-base font-display text-gold">Etapas</SheetTitle>
                   </SheetHeader>
                   <SidebarSteps />
                 </SheetContent>
               </Sheet>
 
               {/* Mobile step indicator */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-1 justify-center">
                 {visibleSteps.map((step) => (
                   <button
                     key={step.id}
                     onClick={() => goToStep(step.id)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`rounded-full transition-all duration-300 ${
                       step.id === validStep
-                        ? "w-6 bg-primary"
+                        ? "h-2 w-6 bg-primary shadow-[0_0_6px_hsl(var(--primary)/0.5)]"
                         : completedSteps.includes(step.id)
-                        ? "w-2 bg-success"
-                        : "w-2 bg-muted"
+                        ? "h-2 w-2 bg-success/70"
+                        : "h-1.5 w-1.5 bg-border"
                     }`}
                     aria-label={`Etapa ${step.num}`}
                   />
@@ -188,14 +192,18 @@ function BuilderContent() {
 
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs">
-                    <PanelRight className="h-3.5 w-3.5" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 h-8 text-xs border-border/60 hover:border-gold/30 hover:bg-secondary/60"
+                  >
+                    <PanelRight className="h-3.5 w-3.5 text-gold/70" />
                     Resumo
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[85%] max-w-md p-0">
-                  <SheetHeader className="border-b px-4 py-3 text-left">
-                    <SheetTitle className="text-base font-display">Resumo</SheetTitle>
+                  <SheetHeader className="border-b px-4 py-3 text-left" style={{ borderColor: "hsl(var(--gold) / 0.1)" }}>
+                    <SheetTitle className="text-base font-display text-gold">Resumo</SheetTitle>
                   </SheetHeader>
                   <SummaryPanel />
                 </SheetContent>

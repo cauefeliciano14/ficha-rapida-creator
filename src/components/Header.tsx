@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCcw, Sword, Settings } from "lucide-react";
+import { RotateCcw, Swords, Settings, Shield, Save, CheckCircle2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,92 +41,138 @@ export function Header() {
 
   const isResetDisabled = confirmationText.trim().toUpperCase() !== RESET_CONFIRMATION_TEXT;
   const savedAtLabel = lastSavedAt
-    ? `Salvo ${new Date(lastSavedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+    ? `${new Date(lastSavedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
     : "";
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-card">
-      <div className="flex h-auto min-h-12 items-center justify-between px-3 py-2 sm:px-6">
-        <div className="flex items-center gap-2">
-          <Sword className="h-5 w-5 text-gold" />
-          <h1 className="text-sm font-bold tracking-wide font-display sm:text-base">
-            <span className="sm:hidden">D&D Builder</span>
-            <span className="hidden sm:inline">D&D 2024 Character Builder</span>
-          </h1>
+    <header className="sticky top-0 z-50 dnd-header">
+      <div className="flex h-auto min-h-14 items-center justify-between px-3 py-2 sm:px-6">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div className="relative flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-md" />
+            <Swords className="relative h-6 w-6 text-gold logo-glow" />
+          </div>
+          <div className="flex flex-col leading-none">
+            <h1 className="font-display font-bold tracking-wide text-foreground">
+              <span className="sm:hidden text-sm">D&D Builder</span>
+              <span className="hidden sm:inline text-base">D&D 2024 Character Builder</span>
+            </h1>
+            <span className="hidden sm:block text-[10px] text-gold/50 tracking-widest font-display uppercase">
+              Criador de Personagem
+            </span>
+          </div>
+          <div className="hidden sm:flex items-center gap-1 ml-1">
+            <span className="inline-flex items-center rounded-full border border-gold/20 bg-gold/5 px-2 py-0.5 text-[10px] font-medium text-gold/70 font-display tracking-wide">
+              2024
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right side actions */}
+        <div className="flex items-center gap-1 sm:gap-2">
           {/* Save status */}
-          <div className="hidden sm:flex items-center gap-1.5">
+          <div className="hidden sm:flex items-center gap-1.5 mr-1">
             {persistError ? (
-              <span className="text-[10px] text-destructive font-medium animate-fade-in">⚠ Erro ao salvar</span>
+              <span className="flex items-center gap-1 text-[10px] text-destructive font-medium animate-fade-in">
+                <Shield className="h-3 w-3" />
+                Erro ao salvar
+              </span>
             ) : savedAtLabel ? (
-              <span className="text-[10px] text-muted-foreground">{savedAtLabel}</span>
+              <span className="flex items-center gap-1 text-[10px] text-success/70">
+                <CheckCircle2 className="h-3 w-3" />
+                Salvo às {savedAtLabel}
+              </span>
             ) : null}
           </div>
 
+          {/* Settings */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="min-h-[44px] gap-1.5 px-2 sm:px-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="min-h-[40px] gap-1.5 px-2 sm:px-3 text-muted-foreground hover:text-gold hover:bg-gold/5 transition-colors"
+              >
                 <Settings className="h-4 w-4" />
-                <span className="hidden sm:inline text-xs">Home/Config</span>
+                <span className="hidden sm:inline text-xs">Configurações</span>
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="border-gold/20">
               <DialogHeader>
-                <DialogTitle>Home / Configurações do Builder</DialogTitle>
+                <DialogTitle className="font-display text-gold">Configurações do Builder</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <div className="rounded-lg border p-3">
-                  <p className="text-sm font-medium">Preferências</p>
-                  <p className="text-xs text-muted-foreground">Formato de exibição de atributos (placeholder funcional).</p>
-                  <div className="mt-2 flex gap-2">
-                    <Button size="sm" variant={preferences.abilityDisplay === "mod_first" ? "default" : "outline"} onClick={() => setPreferences({ abilityDisplay: "mod_first" })}>Modificador primeiro</Button>
-                    <Button size="sm" variant={preferences.abilityDisplay === "score_first" ? "default" : "outline"} onClick={() => setPreferences({ abilityDisplay: "score_first" })}>Valor primeiro</Button>
+                <div className="rounded-lg border border-border/60 bg-secondary/30 p-4">
+                  <p className="text-sm font-semibold text-foreground mb-1">Exibição de Atributos</p>
+                  <p className="text-xs text-muted-foreground mb-3">Como os valores de atributo são exibidos no resumo.</p>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant={preferences.abilityDisplay === "mod_first" ? "default" : "outline"}
+                      onClick={() => setPreferences({ abilityDisplay: "mod_first" })}
+                      className={preferences.abilityDisplay === "mod_first" ? "bg-primary" : "border-border/60"}
+                    >
+                      Modificador primeiro
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={preferences.abilityDisplay === "score_first" ? "default" : "outline"}
+                      onClick={() => setPreferences({ abilityDisplay: "score_first" })}
+                      className={preferences.abilityDisplay === "score_first" ? "bg-primary" : "border-border/60"}
+                    >
+                      Valor primeiro
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between rounded-lg border p-3">
+                <div className="flex items-center justify-between rounded-lg border border-border/60 bg-secondary/30 p-4">
                   <div>
-                    <Label htmlFor="beginner-help">Ajuda / Modo Iniciante</Label>
-                    <p className="text-xs text-muted-foreground">Exibe textos explicativos contextuais.</p>
+                    <Label htmlFor="beginner-help" className="text-sm font-semibold">Modo Iniciante</Label>
+                    <p className="text-xs text-muted-foreground mt-0.5">Exibe textos explicativos contextuais.</p>
                   </div>
-                  <Switch id="beginner-help" checked={preferences.beginnerHelp} onCheckedChange={(checked) => setPreferences({ beginnerHelp: checked })} />
+                  <Switch
+                    id="beginner-help"
+                    checked={preferences.beginnerHelp}
+                    onCheckedChange={(checked) => setPreferences({ beginnerHelp: checked })}
+                  />
                 </div>
-                <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
-                  Placeholder: controle de fontes e conteúdo (em breve).
+                <div className="rounded-lg border border-dashed border-gold/20 bg-gold/5 p-3 text-xs text-gold/60">
+                  <span className="font-display">Em breve:</span> controle de fontes e conteúdo adicional.
                 </div>
               </div>
             </DialogContent>
           </Dialog>
 
+          {/* Reset */}
           <AlertDialog onOpenChange={handleDialogOpenChange}>
             <AlertDialogTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
-                className="min-h-[36px] gap-1.5 px-2 text-muted-foreground hover:text-foreground sm:px-3"
+                className="min-h-[40px] gap-1.5 px-2 sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline text-xs">Reiniciar</span>
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="border-destructive/20">
               <AlertDialogHeader>
-                <AlertDialogTitle>Tem certeza que deseja reiniciar?</AlertDialogTitle>
+                <AlertDialogTitle className="font-display">Reiniciar personagem?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Isso apagará escolhas e progresso das etapas.
+                  Isso apagará todas as escolhas e o progresso das etapas. Esta ação não pode ser desfeita.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Para confirmar, digite <strong>{RESET_CONFIRMATION_TEXT}</strong> abaixo.
+                  Para confirmar, digite <strong className="text-foreground">{RESET_CONFIRMATION_TEXT}</strong> abaixo:
                 </p>
                 <input
                   type="text"
                   value={confirmationText}
                   onChange={(event) => setConfirmationText(event.target.value)}
-                  className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   aria-label="Digite OK para confirmar"
+                  placeholder="Digite OK"
                 />
               </div>
               <AlertDialogFooter>
@@ -134,7 +180,7 @@ export function Header() {
                 <AlertDialogAction
                   onClick={handleReset}
                   disabled={isResetDisabled}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-40"
                 >
                   Reiniciar mesmo assim
                 </AlertDialogAction>
@@ -143,7 +189,6 @@ export function Header() {
           </AlertDialog>
         </div>
       </div>
-
     </header>
   );
 }
