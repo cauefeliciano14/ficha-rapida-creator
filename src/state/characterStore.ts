@@ -7,6 +7,12 @@ import { perfTime } from "@/utils/perf";
 import { getChoicesRequirements } from "@/utils/choices";
 import { toast } from "@/hooks/use-toast";
 import { commonLanguages } from "@/data/languagesCommon";
+import type {
+  AppliedFeatState as AppliedFeat,
+  CharacterSpellsState,
+  ChoiceSelectionsState,
+  ClassFeatureChoicesState,
+} from "@/state/types";
 
 // ── Types ──
 
@@ -75,13 +81,6 @@ const DEFAULT_LEVELING: LevelingState = {
   choices: { subclassId: null, asiOrFeat: {} }, changesSummary: [],
 };
 
-export interface AppliedFeat {
-  featId: string;
-  levelTaken: number;
-  source: "levelUp" | "background";
-  choices?: { abilityIncreases?: Partial<Record<AbilityKey, number>> };
-}
-
 export type RaceChoicesState = Record<string, string>;
 
 export interface OriginSelectionState {
@@ -90,19 +89,6 @@ export interface OriginSelectionState {
   toolGranted: string | null;
   originFeat: string | null;
   startingEquipment: "A" | "B" | null;
-}
-
-export interface ChoiceSelectionsState {
-  classSkills: string[];
-  languages: string[];
-  tools: string[];
-  instruments: string[];
-  cantrips: string[];
-  spells: string[];
-  raceChoice: string | null;
-  classFeats: string[];
-  /** @deprecated legacy key */
-  skills?: string[];
 }
 
 export interface CharacterState {
@@ -141,14 +127,7 @@ export interface CharacterState {
   armorClass: number;
   speed: number;
   features: NormalizedFeature[];
-  spells: {
-    cantrips: string[];
-    prepared: string[];
-    slots: number[];
-    spellcastingAbility: string | null;
-    spellSaveDC: number;
-    spellAttackBonus: number;
-  };
+  spells: CharacterSpellsState;
   selectedCantrips: string[];
   selectedSpells: string[];
   equipment: string[];
@@ -159,7 +138,7 @@ export interface CharacterState {
   appliedFeats: AppliedFeat[];
   featAbilityBonuses: Record<AbilityKey, number>;
   flags: Record<string, number | boolean>;
-  classFeatureChoices: Record<string, string | string[]>;
+  classFeatureChoices: ClassFeatureChoicesState;
   choiceSelections: ChoiceSelectionsState;
   expertiseSkills: string[];
   skillMods: Record<string, SkillMod>;
@@ -306,6 +285,46 @@ function sanitizeChoiceSelections(char: CharacterState): CharacterState {
   };
 }
 
+type CharacterPatch = Partial<CharacterState>;
+
+function hasCharacterPatchChanges(current: CharacterState, partial: CharacterPatch): boolean {
+  const keys = Object.keys(partial) as Array<keyof CharacterPatch>;
+  return keys.some((key) => !Object.is(current[key], partial[key]));
+}
+
+type PersistedCharacterStateV4 = Partial<CharacterState> & {
+  choiceSelections?: Partial<ChoiceSelectionsState>;
+  raceChoices?: LegacyRaceChoicesState;
+};
+
+function migrateChoiceSelections(legacy: CharacterState, old?: Partial<ChoiceSelectionsState>): ChoiceSelectionsState {
+  const legacyRaceChoices = legacy.raceChoices as LegacyRaceChoicesState | undefined;
+  return {
+    classSkills: old?.classSkills ?? old?.skills ?? legacy.classSkillChoices ?? [],
+    languages: old?.languages ?? [],
+    tools: old?.tools ?? [],
+    instruments: old?.instruments ?? [],
+    cantrips: old?.cantrips ?? legacy.spells?.cantrips ?? [],
+    spells: old?.spells ?? legacy.spells?.prepared ?? [],
+    raceChoice: old?.raceChoice ?? legacyRaceChoices?.raceChoice?.optionId ?? null,
+    classFeats: old?.classFeats ?? [],
+  };
+}
+
+function migrateRaceChoices(legacyRaceState?: LegacyRaceChoicesState): RaceChoicesState {
+  const raceState = legacyRaceState ?? {};
+  const legacyRaceChoices: RaceChoicesState = { ...raceState };
+  if (raceState.dragonbornHeritage) legacyRaceChoices.draconicAncestry = raceState.dragonbornHeritage;
+  if (raceState.elfLineage) legacyRaceChoices.elvenLineage = raceState.elfLineage;
+  if (raceState.gnomeLineage) legacyRaceChoices.gnomishLineage = raceState.gnomeLineage;
+  if (raceState.giantAncestry) legacyRaceChoices.giantAncestry = raceState.giantAncestry;
+  if (raceState.infernalLegacy) legacyRaceChoices.infernalLegacy = raceState.infernalLegacy;
+  if (raceState.raceChoice?.kind && raceState.raceChoice.optionId) {
+    legacyRaceChoices[raceState.raceChoice.kind] = raceState.raceChoice.optionId;
+  }
+  return legacyRaceChoices;
+}
+
 // ── Store ──
 
 interface CharacterActions {
@@ -340,7 +359,7 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
       },
       patchCharacter: (partial) => {
         const current = get();
-        const hasChanges = Object.entries(partial).some(([key, value]) => !Object.is((current as any)[key], value));
+        const hasChanges = hasCharacterPatchChanges(current, partial);
         if (!hasChanges) return;
         const updated = sanitizeChoiceSelections({ ...get(), ...partial } as CharacterState);
         const derived = instrumentedRecalc(updated);
@@ -438,32 +457,13 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
     {
       name: "dnd-character-2024",
       version: 4,
-      migrate: (persistedState: any, version) => {
+      migrate: (persistedState: unknown, version) => {
         if (!persistedState || version >= 4) return persistedState;
         try {
           const legacy = persistedState as CharacterState;
-          const old = legacy.choiceSelections as any;
-          legacy.choiceSelections = {
-            classSkills: old?.classSkills ?? old?.skills ?? legacy.classSkillChoices ?? [],
-            languages: old?.languages ?? [],
-            tools: old?.tools ?? [],
-            instruments: old?.instruments ?? [],
-            cantrips: old?.cantrips ?? legacy.spells?.cantrips ?? [],
-            spells: old?.spells ?? legacy.spells?.prepared ?? [],
-            raceChoice: old?.raceChoice ?? (legacy.raceChoices as any)?.raceChoice?.optionId ?? null,
-            classFeats: old?.classFeats ?? [],
-          };
-          const legacyRaceState: any = legacy.raceChoices ?? {};
-          const legacyRaceChoices: Record<string, string> = { ...(legacyRaceState ?? {}) };
-          if (legacyRaceState?.dragonbornHeritage) legacyRaceChoices.draconicAncestry = legacyRaceState.dragonbornHeritage;
-          if (legacyRaceState?.elfLineage) legacyRaceChoices.elvenLineage = legacyRaceState.elfLineage;
-          if (legacyRaceState?.gnomeLineage) legacyRaceChoices.gnomishLineage = legacyRaceState.gnomeLineage;
-          if (legacyRaceState?.giantAncestry) legacyRaceChoices.giantAncestry = legacyRaceState.giantAncestry;
-          if (legacyRaceState?.infernalLegacy) legacyRaceChoices.infernalLegacy = legacyRaceState.infernalLegacy;
-          if (legacyRaceState?.raceChoice?.kind && legacyRaceState?.raceChoice?.optionId) {
-            legacyRaceChoices[legacyRaceState.raceChoice.kind] = legacyRaceState.raceChoice.optionId;
-          }
-          legacy.raceChoices = legacyRaceChoices;
+          const persisted = persistedState as PersistedCharacterStateV4;
+          legacy.choiceSelections = migrateChoiceSelections(legacy, persisted.choiceSelections);
+          legacy.raceChoices = migrateRaceChoices(persisted.raceChoices);
           legacy.raceLineage = legacy.choiceSelections.raceChoice;
           legacy.selectedCantrips = legacy.choiceSelections.cantrips;
           legacy.selectedSpells = legacy.choiceSelections.spells;
@@ -503,6 +503,6 @@ export function replaceFeatures(
   removeTypes: Array<"race" | "subrace" | "class" | "subclass" | "background">,
   add: NormalizedFeature[]
 ): NormalizedFeature[] {
-  const filtered = current.filter((f) => !removeTypes.includes(f.sourceType as any));
+  const filtered = current.filter((f) => !removeTypes.includes(f.sourceType));
   return [...filtered, ...add];
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useCallback } from "react";
 import { useBuilderStore } from "@/state/builderStore";
 import { useCharacterStore, mergeUnique } from "@/state/characterStore";
 import { getCanonicalRaceChoiceKeyFromSources, getChoicesRequirements, type ChoiceOption } from "@/utils/choices";
+import type { ChoiceSelectionsState } from "@/state/types";
 import { classes } from "@/data/classes";
 import { backgrounds } from "@/data/backgrounds";
 import { races } from "@/data/races";
@@ -36,7 +37,7 @@ interface ExpertiseConfig {
   key: string;
   label: string;
   count: number;
-  filter: (skill: string, proficientSkills: string[], cls: any) => boolean;
+  filter: (skill: string, proficientSkills: string[]) => boolean;
   minLevel: number;
 }
 
@@ -129,9 +130,9 @@ export function StepChoices() {
   const isSpellcaster = isSpellcastingClass(selectedClassId) || requirements.buckets.cantrips.requiredCount > 0 || requirements.buckets.spells.requiredCount > 0;
 
   // ── Expertise ──
-  const race = useMemo(() => races.find((r: any) => r.id === raceId), [raceId]);
-  const subrace = useMemo(() => race?.subraces?.find((sr: any) => sr.id === subraceId), [race, subraceId]);
-  const bg = useMemo(() => backgrounds.find((b: any) => b.id === backgroundId), [backgroundId]);
+  const race = useMemo(() => races.find((r) => r.id === raceId), [raceId]);
+  const subrace = useMemo(() => race?.subraces?.find((sr) => sr.id === subraceId), [race, subraceId]);
+  const bg = useMemo(() => backgrounds.find((b) => b.id === backgroundId), [backgroundId]);
 
   const bgSkills = bg?.skills ?? [];
   const raceSkills = race?.proficiencies?.skills ?? [];
@@ -224,7 +225,7 @@ export function StepChoices() {
       return fallback.prepared || requirements.buckets.spells.requiredCount;
     }
     if (sc.type === "prepared") return Math.max(1, abilityMod + level);
-    const knownData = (sc as any).spellsKnownAtLevel;
+    const knownData = "spellsKnownAtLevel" in sc ? sc.spellsKnownAtLevel : undefined;
     if (knownData) {
       let limit = 0;
       for (const [l, c] of Object.entries(knownData).map(([l, c]) => [Number(l), c as number] as [number, number]).sort((a, b) => a[0] - b[0])) {
@@ -315,9 +316,12 @@ export function StepChoices() {
     else if (selected.size < requirements.buckets[bucket].requiredCount) selected.add(id);
 
     const next = [...selected];
-    const newSelections = { ...choiceSelections };
-    if (bucket === "raceChoice") newSelections.raceChoice = next[0] ?? null;
-    else (newSelections as any)[bucket] = next;
+    const newSelections: ChoiceSelectionsState = { ...choiceSelections };
+    if (bucket === "raceChoice") {
+      newSelections.raceChoice = next[0] ?? null;
+    } else {
+      newSelections[bucket] = next;
+    }
 
     const raceChoiceKey = getCanonicalRaceChoiceKeyFromSources(requirements.buckets.raceChoice.sources);
     const nextRaceChoices = bucket === "raceChoice"
@@ -353,11 +357,19 @@ export function StepChoices() {
   const spellsMissing = useMemo(() => {
     if (!isSpellcaster) return [];
     const missing: string[] = [];
-    if (cantripsLimit > 0 && selectedCantrips.length < cantripsLimit) {
-      missing.push(`Truques: ${selectedCantrips.length}/${cantripsLimit}`);
+    if (cantripsLimit > 0 && selectedCantrips.length !== cantripsLimit) {
+      if (selectedCantrips.length > cantripsLimit) {
+        missing.push(`Truques excedentes: remova ${selectedCantrips.length - cantripsLimit}`);
+      } else {
+        missing.push(`Truques: ${selectedCantrips.length}/${cantripsLimit}`);
+      }
     }
-    if (preparedLimit > 0 && selectedPrepared.length < preparedLimit) {
-      missing.push(`Magias ${spellTypeLabel.toLowerCase()}: ${selectedPrepared.length}/${preparedLimit}`);
+    if (preparedLimit > 0 && selectedPrepared.length !== preparedLimit) {
+      if (selectedPrepared.length > preparedLimit) {
+        missing.push(`Magias excedentes: remova ${selectedPrepared.length - preparedLimit}`);
+      } else {
+        missing.push(`Magias ${spellTypeLabel.toLowerCase()}: ${selectedPrepared.length}/${preparedLimit}`);
+      }
     }
     return missing;
   }, [isSpellcaster, cantripsLimit, preparedLimit, selectedCantrips.length, selectedPrepared.length, spellTypeLabel]);
