@@ -16,7 +16,10 @@
     "validate:backgrounds": "vitest run src/test/backgroundsIntegrity.test.ts",
     "validate:docs-deps": "node scripts/validateDocsDeps.mjs",
     "extract:races": "node scripts/extract_races_from_docx.mjs",
-    "validate:races": "node scripts/validate_races_against_docx.mjs"
+    "validate:races": "node scripts/validate_races_against_docx.mjs",
+    "extract:classes": "node scripts/extract_classes_from_docx.mjs",
+    "generate:classes": "node scripts/generate_classes_ts.mjs",
+    "validate:classes": "node scripts/validate_classes_against_docx.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
