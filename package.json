@@ -19,7 +19,9 @@
     "validate:races": "node scripts/validate_races_against_docx.mjs",
     "extract:classes": "node scripts/extract_classes_from_docx.mjs",
     "generate:classes": "node scripts/generate_classes_ts.mjs",
-    "validate:classes": "node scripts/validate_classes_against_docx.mjs"
+    "validate:classes": "node scripts/validate_classes_against_docx.mjs",
+    "extract:all": "node scripts/extract_all_from_docx.mjs",
+    "validate:all-docx": "npm run extract:all && node scripts/validate_classes_against_docx.mjs && node scripts/validate_races_against_docx.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
