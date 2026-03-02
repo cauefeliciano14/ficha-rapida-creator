@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate:spells": "node scripts/validateSpells.mjs",
-    "validate:backgrounds": "vitest run src/test/backgroundsIntegrity.test.ts",
+    "validate:backgrounds": "npm run validate:backgrounds:integrity && npm run validate:backgrounds:canon",
     "validate:docs-deps": "node scripts/validateDocsDeps.mjs",
     "extract:races": "node scripts/extract_races_from_docx.mjs",
     "validate:races": "node scripts/validate_races_against_docx.mjs",
@@ -25,6 +25,8 @@
     "extract:starting-equipment": "node scripts/extract_starting_equipment_from_docx.mjs",
     "validate:items": "node scripts/validate_items_against_docx.mjs",
     "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs",
+    "validate:backgrounds:integrity": "vitest run src/test/backgroundsIntegrity.test.ts",
+    "validate:backgrounds:canon": "node scripts/validate_backgrounds_2024.mjs"
     "validate:catalog": "node scripts/validate_catalog_integrity.mjs",
     "validate": "npm run validate:docs-deps && npm run validate:catalog"
   },
