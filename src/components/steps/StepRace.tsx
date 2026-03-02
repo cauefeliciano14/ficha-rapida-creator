@@ -49,6 +49,11 @@ export function StepRace() {
   const raceLanguageRequired = raceLanguageSource ? Number(raceLanguageSource.split(":").pop()) || 0 : 0;
   const raceChoiceKey = getCanonicalRaceChoiceKeyFromSources(requirements.buckets.raceChoice.sources);
   const hasRaceChoiceSource = raceChoiceKey.length > 0;
+  const basicLanguages = useMemo(() => {
+    if (!selectedRace) return [] as string[];
+    return mergeUnique(selectedRace.languages, selectedSubrace?.languages ?? []).sort((a, b) => a.localeCompare(b, "pt-BR"));
+  }, [selectedRace, selectedSubrace]);
+  const shouldShowBasicLanguages = basicLanguages.length > 0 || raceLanguageRequired > 0;
 
   // === Compute combined bonuses from fixed race + subrace + choices ===
   const computeRacialBonuses = useCallback(
@@ -410,20 +415,20 @@ export function StepRace() {
               </Section>
 
               {/* Languages */}
-              <Section title="Idiomas">
-                <div className="flex flex-wrap gap-2">
-                  {selectedRace.languages
-                    .sort((a, b) => a.localeCompare(b, "pt-BR"))
-                    .map((l) => (
+              {shouldShowBasicLanguages && (
+                <Section title="Idiomas Básicos">
+                  <div className="flex flex-wrap gap-2">
+                    {basicLanguages.map((l) => (
                       <span key={l} className="rounded bg-secondary px-2 py-1 text-sm">{l}</span>
                     ))}
-                  {selectedSubrace && selectedSubrace.languages.length > 0 && (
-                    selectedSubrace.languages.map((l) => (
-                      <span key={l} className="rounded bg-secondary px-2 py-1 text-sm">{l}</span>
-                    ))
-                  )}
-                </div>
-              </Section>
+                    {raceLanguageRequired > 0 && (
+                      <span className="rounded border border-info/40 bg-info/10 px-2 py-1 text-xs font-medium text-info">
+                        +{raceLanguageRequired} idioma(s) pendente(s)
+                      </span>
+                    )}
+                  </div>
+                </Section>
+              )}
 
               {/* Proficiencies */}
               {(

@@ -683,35 +683,56 @@ function ClassDetails({
         )}
 
         {/* Class features grouped by level */}
-        {cls.featuresByLevel
-          .filter((fl) => fl.level <= level)
-          .sort((a, b) => a.level - b.level)
-          .map((fl) => (
-            <Section key={fl.level} title={`Características de Classe de ${cls.name} (Nível ${fl.level})`}>
-              {fl.features.map((f) => {
-                const key = `${fl.level}-${f.name}`;
-                const isOpen = expandedFeatures[key] ?? true;
-                return (
-                  <div key={key} className="mb-2 rounded-md border bg-secondary/40">
-                    <button
-                      onClick={() => onToggleFeature(key)}
-                      className="flex w-full items-center justify-between p-3"
-                    >
-                      <span className="font-medium text-sm">{f.name}</span>
-                      {isOpen ? (
-                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </button>
-                    {isOpen && (
-                      <p className="px-3 pb-3 text-xs text-muted-foreground">{f.description}</p>
+        <Section title={`Características de Classe de ${cls.name}`}>
+          {cls.featuresByLevel
+            .filter((fl) => fl.level <= level)
+            .sort((a, b) => a.level - b.level)
+            .map((fl) => {
+              const levelKey = `level-${fl.level}`;
+              const levelOpen = expandedFeatures[levelKey] ?? true;
+              return (
+                <div key={fl.level} className="mb-2 rounded-md border bg-secondary/30">
+                  <button
+                    onClick={() => onToggleFeature(levelKey)}
+                    className="flex w-full items-center justify-between p-3"
+                  >
+                    <span className="font-semibold text-sm">Nível {fl.level}</span>
+                    {levelOpen ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     )}
-                  </div>
-                );
-              })}
-            </Section>
-          ))}
+                  </button>
+                  {levelOpen && (
+                    <div className="space-y-2 px-3 pb-3">
+                      {fl.features.map((f) => {
+                        const key = `${fl.level}-${f.name}`;
+                        const isOpen = expandedFeatures[key] ?? true;
+                        return (
+                          <div key={key} className="rounded-md border bg-card/80">
+                            <button
+                              onClick={() => onToggleFeature(key)}
+                              className="flex w-full items-center justify-between p-3"
+                            >
+                              <span className="font-medium text-sm">{f.name}</span>
+                              {isOpen ? (
+                                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </button>
+                            {isOpen && (
+                              <p className="px-3 pb-3 text-xs text-muted-foreground">{f.description}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </Section>
 
         {level >= 2 && (
           <p className="text-xs text-muted-foreground italic mt-1 mb-4">
