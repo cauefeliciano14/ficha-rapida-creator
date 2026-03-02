@@ -83,13 +83,6 @@ function parseFeatNameToId() {
   return map;
 }
 
-function normalizeFeatName(name) {
-  return name
-    .replace(/\s+/g, ' ')
-    .replace(/\((Clérigo|Druida|Mago)\)/i, (_, g1) => `(${g1.charAt(0).toUpperCase()}${g1.slice(1).toLowerCase()})`)
-    .trim();
-}
-
 function listToText(items) {
   return (items || []).map((i) => `${i.itemId} x${i.qty}`).join(', ');
 }
@@ -128,8 +121,7 @@ for (const ex of extracted) {
     errors.push(`[${ex.name}] perícias divergentes: extraído='${expectedSkills}' atual='${actualSkills}'`);
   }
 
-  const normalizedFeat = normalizeFeatName(ex.originFeat);
-  const expectedFeatId = featByName.get(normalizedFeat);
+  const expectedFeatId = featByName.get(ex.originFeat);
   if (!expectedFeatId) {
     status.feat = 'FAIL';
     errors.push(`[${ex.name}] talento não mapeado no feats.ts: '${ex.originFeat}'`);
@@ -138,10 +130,13 @@ for (const ex of extracted) {
     errors.push(`[${ex.name}] talento divergente: esperado='${expectedFeatId}' atual='${ac.originFeatId}'`);
   }
 
-  const toolChoices = ex.grantChoices.tool?.requiredCount ? `choice:${ex.grantChoices.tool.options.join(',')}` : '';
-  const expectedTools = ex.toolsGranted.length ? ex.toolsGranted.join('|') : toolChoices;
+  const expectedTools = ex.toolsGranted.length
+    ? ex.toolsGranted.join('|')
+    : ex.grantChoices.tool?.requiredCount === 1 && ex.grantChoices.tool.options?.length === 1
+      ? `Escolha um tipo de ${ex.grantChoices.tool.options[0]} (veja o capítulo 6)`
+      : '';
   const actualTools = (ac.toolsGranted || []).join('|');
-  if (expectedTools && expectedTools !== actualTools && !(toolChoices && actualTools.startsWith('Escolha um tipo de'))) {
+  if (expectedTools !== actualTools) {
     status.tools = 'FAIL';
     errors.push(`[${ex.name}] ferramentas divergentes: extraído='${expectedTools}' atual='${actualTools}'`);
   }
