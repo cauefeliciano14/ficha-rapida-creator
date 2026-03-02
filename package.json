@@ -27,6 +27,8 @@
     "validate:starting-equipment": "node scripts/validate_starting_equipment_against_docx.mjs",
     "validate:backgrounds:integrity": "vitest run src/test/backgroundsIntegrity.test.ts",
     "validate:backgrounds:canon": "node scripts/validate_backgrounds_2024.mjs"
+    "validate:catalog": "node scripts/validate_catalog_integrity.mjs",
+    "validate": "npm run validate:docs-deps && npm run validate:catalog"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -158,7 +158,7 @@ function resolveCasterSpellLimit(character: CharacterState, classId: string) {
   const cls = classes.find((c) => c.id === classId);
   if (!cls?.spellcasting) return { cantrips: 0, spells: 0, options: [] as { id: string; name: string; level: number }[] };
   const classSpells = spellsByClassId[classId] ?? [];
-  const options = classSpells.filter((s) => s.level <= Math.min(2, character.level)).map((s) => ({ id: s.id, name: s.name, level: s.level }));
+  const options = classSpells.filter((s) => s.level <= character.level).map((s) => ({ id: s.id, name: s.name, level: s.level }));
   let cantrips = 0;
   for (let lvl = character.level; lvl >= 1; lvl -= 1) {
     if (cls.spellcasting.cantripsKnownAtLevel?.[lvl] != null) { cantrips = cls.spellcasting.cantripsKnownAtLevel[lvl]; break; }
