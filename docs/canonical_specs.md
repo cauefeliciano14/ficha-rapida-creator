@@ -1,278 +1,252 @@
 # CANONICAL_SPECS — Fonte Operacional do Projeto
 
-Este arquivo é a fonte interna definitiva para regras e nomenclaturas do projeto.
-Qualquer implementação deve seguir exclusivamente este documento.
-Nenhuma regra pode ser inventada fora deste escopo.
+Este documento é a referência interna definitiva para regras, nomenclaturas e contagens operacionais do projeto.
+Toda implementação deve seguir exclusivamente este arquivo (recorte: **PHB 2024, níveis 1 e 2**).
 
-Recorte válido: PHB 2024 — apenas nível 1 e 2.
+## Fontes de referência
 
----
-
-# 📘 CANONICAL SPECS — PHB 2024 (Recorte Nível 1–2)
-
-Fonte absoluta:
-DnD 5.5 - Livro do Jogador (2024).pdf
-
-Documento operacional:
-D&D 5.5 - Livro do Jogador (2024) 5.1.docx
+- **Fonte absoluta:** `DnD 5.5 - Livro do Jogador (2024).pdf`
+- **Documento operacional:** `D&D 5.5 - Livro do Jogador (2024) 5.1.docx`
 
 ---
 
-# 1️⃣ RAÇAS (10)
+## 1) Raças (10)
 
-## Anão
+### Anão
 - Tamanho: Médio
 - Deslocamento: 9m
 - Visão no Escuro
 - Resistência a Veneno
 - Idiomas: Comum + Anão
-- NÃO possui sub-raça obrigatória
+- Sem sub-raça obrigatória
 
-## Elfo
+### Elfo
 - Tamanho: Médio
 - Deslocamento: 9m
 - Visão no Escuro
 - Idiomas: Comum + Élfico
+- Escolha obrigatória (`raceChoice.requiredCount = 1`):
+  - Alto Elfo
+  - Elfo Silvestre
+  - Drow
 
-Escolha obrigatória (raceChoice.requiredCount = 1):
-- Alto Elfo
-- Elfo Silvestre
-- Drow
-
-## Halfling
+### Halfling
 - Tamanho: Pequeno
 - Deslocamento: 7,5m
 - Sorte
 - Idiomas: Comum + Halfling
-- NÃO possui sub-raça obrigatória
+- Sem sub-raça obrigatória
 
-## Humano
+### Humano
 - Tamanho: Médio
 - Deslocamento: 9m
 - Versátil
 - Idiomas: Comum + 1 idioma à escolha
+- Choice Engine: `languages.requiredCount += 1 (source: race:humano)`
 
-Choice Engine:
-languages.requiredCount += 1 (source: race:humano)
-
-## Gnomo
+### Gnomo
 - Tamanho: Pequeno
 - Deslocamento: 9m
 - Visão no Escuro
 - Idiomas: Comum + Gnômico
+- Escolha obrigatória (`raceChoice.requiredCount = 1`):
+  - Gnomo das Rochas
+  - Gnomo do Bosque
 
-Escolha obrigatória:
-- Gnomo das Rochas
-- Gnomo do Bosque
+### Draconato
+- Escolha obrigatória (`raceChoice.requiredCount = 1`):
+  - Ancestralidade Dracônica (define resistência + sopro)
 
-raceChoice.requiredCount = 1
+### Golias
+- Escolha obrigatória (`raceChoice.requiredCount = 1`):
+  - Gigante da Colina
+  - Gigante da Pedra
+  - Gigante da Geada
+  - Gigante das Nuvens
+  - Gigante de Fogo
+  - Gigante da Tempestade
 
-## Draconato
-Escolha obrigatória:
-- Ancestralidade Dracônica (define resistência + sopro)
-
-raceChoice.requiredCount = 1
-
-## Golias
-Escolha obrigatória:
-- Gigante da Colina
-- Gigante da Pedra
-- Gigante da Geada
-- Gigante das Nuvens
-- Gigante de Fogo
-- Gigante da Tempestade
-
-raceChoice.requiredCount = 1
-
-## Orc
+### Orc
 - Tamanho: Médio
 - Deslocamento: 9m
 - Visão no Escuro
 - Idiomas: Comum + Orc
-- NÃO possui sub-raça obrigatória
+- Sem sub-raça obrigatória
 
-## Tiefling
+### Tiefling
 - Tamanho: Médio
 - Deslocamento: 9m
 - Resistência a Fogo
 - Idiomas: Comum + Infernal
-- NÃO possui sub-raça obrigatória
+- Sem sub-raça obrigatória
 
-## Meio-Elfo
-NÃO existe no PHB 2024
+### Meio-Elfo
+- Não existe no PHB 2024
 
 ---
 
-# 2️⃣ ANTECEDENTES (16)
+## 2) Antecedentes (16)
 
 Lista canônica:
-Acólito
-Artesão
-Artista
-Charlatão
-Criminoso
-Eremita
-Forasteiro
-Gladiador
-Guarda
-Marinheiro
-Mercador
-Nobre
-Órfão
-Sábio
-Soldado
-Viajante
+- Acólito
+- Artesão
+- Artista
+- Charlatão
+- Criminoso
+- Eremita
+- Forasteiro
+- Gladiador
+- Guarda
+- Marinheiro
+- Mercador
+- Nobre
+- Órfão
+- Sábio
+- Soldado
+- Viajante
 
 Cada antecedente concede:
 - 2 perícias fixas
 - 1 Talento de Origem
 - Equipamentos iniciais
 
-Alguns concedem:
+Alguns antecedentes também concedem:
 - 1 idioma à escolha
 - 1 ferramenta de artesão à escolha
 - 1 instrumento musical à escolha
 
-Choice Engine deve detectar:
-- "um idioma à sua escolha"
-- "uma ferramenta à sua escolha"
-- "um instrumento musical à sua escolha"
+Choice Engine deve detectar strings como:
+- “um idioma à sua escolha”
+- “uma ferramenta à sua escolha”
+- “um instrumento musical à sua escolha”
 
 ---
 
-# 3️⃣ CLASSES (12)
+## 3) Classes (12)
 
-Bárbaro
-Bardo
-Bruxo
-Clérigo
-Druida
-Feiticeiro
-Guardião
-Guerreiro
-Ladino
-Mago
-Monge
-Paladino
+- Bárbaro
+- Bardo
+- Bruxo
+- Clérigo
+- Druida
+- Feiticeiro
+- Guardião
+- Guerreiro
+- Ladino
+- Mago
+- Monge
+- Paladino
 
 ---
 
-# 4️⃣ PERÍCIAS POR CLASSE (nível 1)
+## 4) Perícias por classe (nível 1)
 
-Bárbaro: escolha 2
-Bardo: escolha 3
-Bruxo: escolha 2
-Clérigo: escolha 2
-Druida: escolha 2
-Feiticeiro: escolha 2
-Guardião: escolha 3
-Guerreiro: escolha 2
-Ladino: escolha 4
-Mago: escolha 2
-Monge: escolha 2
-Paladino: escolha 2
+- Bárbaro: escolha 2
+- Bardo: escolha 3
+- Bruxo: escolha 2
+- Clérigo: escolha 2
+- Druida: escolha 2
+- Feiticeiro: escolha 2
+- Guardião: escolha 3
+- Guerreiro: escolha 2
+- Ladino: escolha 4
+- Mago: escolha 2
+- Monge: escolha 2
+- Paladino: escolha 2
 
 Choice Engine:
-skills.requiredCount += classSkillCount
+- `skills.requiredCount += classSkillCount`
 
 ---
 
-# 5️⃣ CONJURAÇÃO (Recorte Nível 1–2)
+## 5) Conjuração (recorte nível 1–2)
 
-Classes conjuradoras nível 1:
-Bardo
-Bruxo
-Clérigo
-Druida
-Feiticeiro
-Mago
+### Classes conjuradoras no nível 1
+- Bardo
+- Bruxo
+- Clérigo
+- Druida
+- Feiticeiro
+- Mago
 
-Classes que começam no nível 2:
-Paladino
-Guardião
+### Classes que iniciam conjuração no nível 2
+- Paladino
+- Guardião
 
-## Truques (nível 1)
+### Truques no nível 1
+- Bardo: 2
+- Bruxo: 2
+- Clérigo: 3
+- Druida: 2
+- Feiticeiro: 4
+- Mago: 3
 
-Bardo: 2
-Bruxo: 2
-Clérigo: 3
-Druida: 2
-Feiticeiro: 4
-Mago: 3
-
-## Magias Conhecidas / Preparadas
-
-Mago: 6 no grimório
-Feiticeiro: 2 conhecidas
-Bardo: 4 conhecidas
-Bruxo: 2 conhecidas
-Clérigo/Druida: preparadas = modificador + nível
-Paladino: começa nível 2
-Guardião: começa nível 2
+### Magias conhecidas / preparadas
+- Mago: 6 no grimório
+- Feiticeiro: 2 conhecidas
+- Bardo: 4 conhecidas
+- Bruxo: 2 conhecidas
+- Clérigo/Druida: preparadas = modificador + nível
+- Paladino: começa no nível 2
+- Guardião: começa no nível 2
 
 Choice Engine:
-cantrips.requiredCount = conforme classe
-spells.requiredCount = conforme classe e nível
+- `cantrips.requiredCount = conforme classe`
+- `spells.requiredCount = conforme classe e nível`
 
 ---
 
-# 6️⃣ TALENTOS (Capítulo 5 — Recorte Operacional)
+## 6) Talentos (capítulo 5 — recorte operacional)
 
-## Talentos de Origem
-Cada antecedente concede 1 talento de origem obrigatório.
+### Talentos de Origem
+- Cada antecedente concede 1 talento de origem obrigatório.
 
-## Estilo de Luta
-
-Guerreiro:
-- Nível 1: escolher 1 talento da categoria "fighting_style"
-
-Guardião:
-- Nível 2: escolher 1 talento "fighting_style"
-  OU opção alternativa "Combatente Druídico"
+### Estilo de Luta
+- **Guerreiro:**
+  - Nível 1: escolher 1 talento da categoria `fighting_style`
+- **Guardião:**
+  - Nível 2: escolher 1 talento `fighting_style`
+  - OU opção alternativa `Combatente Druídico`
 
 Choice Engine:
-feats.requiredCount += 1 (source: class)
+- `feats.requiredCount += 1 (source: class)`
 
 ---
 
-# 7️⃣ BARDO — INSTRUMENTOS
+## 7) Bardo — instrumentos
 
-Bardo deve escolher 3 instrumentos musicais.
+- Bardo deve escolher 3 instrumentos musicais.
 
 Choice Engine:
-instruments.requiredCount += 3 (source: class:bardo)
+- `instruments.requiredCount += 3 (source: class:bardo)`
 
 ---
 
-# 8️⃣ EQUIPAMENTO INICIAL
+## 8) Equipamento inicial
 
-Cada classe deve possuir:
-- Opção A
-- Opção B
-- OU alternativa em ouro
-
-Antecedentes concedem equipamentos fixos.
-
-Nenhuma escolha de equipamento ocorre antes da etapa "Equipamentos".
-
-Se algum equipamento estiver ausente:
-Auditoria DEV deve gerar ERROR.
+- Cada classe deve possuir:
+  - Opção A
+  - Opção B
+  - OU alternativa em ouro
+- Antecedentes concedem equipamentos fixos.
+- Nenhuma escolha de equipamento ocorre antes da etapa **Equipamentos**.
+- Se algum equipamento estiver ausente, a auditoria DEV deve gerar `ERROR`.
 
 ---
 
-# 9️⃣ IDIOMAS À ESCOLHA
+## 9) Idiomas à escolha
 
 Detectados em:
 - Humano
-- Alguns Antecedentes
+- Alguns antecedentes
 - Possíveis talentos
 
 Choice Engine:
-languages.requiredCount += X
+- `languages.requiredCount += X`
 
 ---
 
-# 🔟 FERRAMENTAS / INSTRUMENTOS À ESCOLHA
+## 10) Ferramentas / instrumentos à escolha
 
 Detectados em:
 - Bardo
@@ -281,26 +255,24 @@ Detectados em:
 - Outros antecedentes
 
 Choice Engine:
-tools.requiredCount += X
-instruments.requiredCount += X
+- `tools.requiredCount += X`
+- `instruments.requiredCount += X`
 
 ---
 
-# 1️⃣1️⃣ REGRAS DE UX
+## 11) Regras de UX
 
-- Escolhas de:
-  - Perícias
-  - Truques
-  - Magias
-  - Idiomas
-  - Ferramentas
-  - Instrumentos
-  - Talentos obrigatórios
-
-Devem ocorrer na etapa "Equipamentos".
+As escolhas abaixo devem ocorrer na etapa **Equipamentos**:
+- Perícias
+- Truques
+- Magias
+- Idiomas
+- Ferramentas
+- Instrumentos
+- Talentos obrigatórios
 
 Se houver pendência:
-- Etapa Equipamentos fica bloqueada.
+- Etapa **Equipamentos** fica bloqueada.
 
 Ficha:
 - Somente revisão final.
@@ -308,9 +280,9 @@ Ficha:
 
 ---
 
-# 1️⃣2️⃣ RESTRIÇÕES DO PROJETO
+## 12) Restrições do projeto
 
-- Apenas nível 1 e 2
+- Apenas níveis 1 e 2
 - Nenhuma progressão 3–20
 - Nada acima do nível 2 gera escolha ativa
-- Tudo deve funcionar por ID, nunca por name
+- Tudo deve funcionar por ID, nunca por `name`
