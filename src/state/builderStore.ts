@@ -13,6 +13,11 @@ export type StepId =
   | "choices"
   | "sheet";
 
+export interface BuilderPreferences {
+  abilityDisplay: "mod_first" | "score_first";
+  beginnerHelp: boolean;
+}
+
 export interface StepDef {
   id: StepId;
   num: number;
@@ -38,6 +43,7 @@ interface BuilderState {
   requiredMissing: Record<string, string[]>;
   choicesRequirements: ChoicesRequirements | null;
   lastSavedAt: string | null;
+  preferences: BuilderPreferences;
   goToStep: (step: StepId) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -47,6 +53,7 @@ interface BuilderState {
   resetBuilder: () => void;
   getVisibleSteps: () => StepDef[];
   updateChoicesRequirements: () => void;
+  setPreferences: (preferences: Partial<BuilderPreferences>) => void;
 }
 
 const DEFAULT_BUILDER = {
@@ -56,6 +63,7 @@ const DEFAULT_BUILDER = {
   requiredMissing: {} as Record<string, string[]>,
   choicesRequirements: null as ChoicesRequirements | null,
   lastSavedAt: null as string | null,
+  preferences: { abilityDisplay: "mod_first", beginnerHelp: true } as BuilderPreferences,
 };
 
 export const useBuilderStore = create<BuilderState>()(
@@ -97,6 +105,8 @@ export const useBuilderStore = create<BuilderState>()(
         const requirements = getChoicesRequirements(character);
         set({ choicesRequirements: requirements });
       },
+      setPreferences: (preferences) =>
+        set((s) => ({ preferences: { ...s.preferences, ...preferences } })),
     }),
     { name: "dnd-builder-ui-2024" }
   )

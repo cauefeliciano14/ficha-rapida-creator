@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User, Hash } from "lucide-react";
+import { SUPPORTED_LEVEL_MESSAGE } from "@/config/builder";
 
 export function IdentityHeader() {
   const name = useCharacterStore((s) => s.name);
@@ -61,7 +62,8 @@ export function IdentityHeader() {
             </SelectContent>
           </Select>
         </div>
-      </div>
+        </div>
+      <p className="mt-2 text-xs text-muted-foreground">{SUPPORTED_LEVEL_MESSAGE}</p>
     </div>
   );
 }

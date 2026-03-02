@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCcw, Sword } from "lucide-react";
+import { RotateCcw, Sword, Settings } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +12,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useCharacterStore } from "@/state/characterStore";
 import { useBuilderStore } from "@/state/builderStore";
 
@@ -23,6 +26,8 @@ export function Header() {
   const lastSavedAt = useCharacterStore((s) => s.lastSavedAt);
   const persistError = useCharacterStore((s) => s.persistError);
   const resetBuilder = useBuilderStore((s) => s.resetBuilder);
+  const preferences = useBuilderStore((s) => s.preferences);
+  const setPreferences = useBuilderStore((s) => s.setPreferences);
 
   const handleReset = () => {
     resetCharacter();
@@ -59,6 +64,40 @@ export function Header() {
               <span className="text-[10px] text-muted-foreground">{savedAtLabel}</span>
             ) : null}
           </div>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="min-h-[44px] gap-1.5 px-2 sm:px-3">
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline text-xs">Home/Config</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Home / Configurações do Builder</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="rounded-lg border p-3">
+                  <p className="text-sm font-medium">Preferências</p>
+                  <p className="text-xs text-muted-foreground">Formato de exibição de atributos (placeholder funcional).</p>
+                  <div className="mt-2 flex gap-2">
+                    <Button size="sm" variant={preferences.abilityDisplay === "mod_first" ? "default" : "outline"} onClick={() => setPreferences({ abilityDisplay: "mod_first" })}>Modificador primeiro</Button>
+                    <Button size="sm" variant={preferences.abilityDisplay === "score_first" ? "default" : "outline"} onClick={() => setPreferences({ abilityDisplay: "score_first" })}>Valor primeiro</Button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border p-3">
+                  <div>
+                    <Label htmlFor="beginner-help">Ajuda / Modo Iniciante</Label>
+                    <p className="text-xs text-muted-foreground">Exibe textos explicativos contextuais.</p>
+                  </div>
+                  <Switch id="beginner-help" checked={preferences.beginnerHelp} onCheckedChange={(checked) => setPreferences({ beginnerHelp: checked })} />
+                </div>
+                <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
+                  Placeholder: controle de fontes e conteúdo (em breve).
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           <AlertDialog onOpenChange={handleDialogOpenChange}>
             <AlertDialogTrigger asChild>

@@ -6,6 +6,8 @@ import { getChoicesRequirements } from "@/utils/choices";
 import { instruments } from "@/data/instruments";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { MAX_SUPPORTED_LEVEL, SUPPORTED_LEVEL_MESSAGE } from "@/config/builder";
 
 function hasAttributeBonus(cls: ClassData): boolean {
   return Array.isArray(cls.attributeBonus) && cls.attributeBonus.length > 0;
@@ -49,8 +51,6 @@ export function StepClass() {
   const backgroundId = useCharacterStore((s) => s.background);
   const datasetsVersion = `${classes.length}:${instruments.length}`;
   const requirements = useMemo(() => getChoicesRequirements(useCharacterStore.getState()), [classId, raceId, backgroundId, level, choiceSelections, datasetsVersion]);
-
-  const MAX_SUPPORTED_LEVEL = 20;
 
   // --- Level handler ---
   const handleLevelChange = useCallback((newLevel: number) => {
@@ -245,12 +245,13 @@ export function StepClass() {
           <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
             Nível Inicial
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 rounded-lg border bg-card p-1 gap-1 w-full">
+          <p className="mb-2 text-xs text-muted-foreground">{SUPPORTED_LEVEL_MESSAGE}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-2 rounded-lg border bg-card p-1 gap-1 w-full">
             {Array.from({ length: MAX_SUPPORTED_LEVEL }, (_, index) => index + 1).map((lvl) => (
               <button
                 key={lvl}
                 onClick={() => handleLevelChange(lvl)}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`min-h-11 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   level === lvl
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -265,12 +266,11 @@ export function StepClass() {
         <h2 className="mb-3 text-lg font-bold">1. Escolha sua Classe</h2>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
+          <Input
             placeholder="Buscar classe..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-md border bg-secondary py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            className="h-11 w-full bg-secondary py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground"
           />
           {isFiltering && (
             <Loader2 className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin text-muted-foreground" />

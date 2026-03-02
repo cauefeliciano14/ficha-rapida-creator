@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
@@ -110,13 +111,13 @@ export function StepBackground() {
         <h2 className="mb-3 text-lg font-bold">2. Origem</h2>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar antecedente..." className="w-full rounded-md border bg-secondary py-2 pl-9 pr-3 text-sm" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar antecedente..." className="h-11 w-full bg-secondary py-2 pl-9 pr-3 text-sm" />
         </div>
         <div className="space-y-2">
           {sorted.map((bg) => {
             const isSelected = bgId === bg.id;
             return (
-              <button key={bg.id} onClick={() => handleSelect(bg.id)} className={`w-full rounded-lg border p-3 text-left transition-colors ${isSelected ? "border-primary bg-primary/10" : "hover:border-muted-foreground/40 hover:bg-secondary"}`}>
+              <button key={bg.id} onClick={() => handleSelect(bg.id)} className={`min-h-11 w-full rounded-lg border p-3 text-left transition-colors ${isSelected ? "border-primary bg-primary/10" : "hover:border-muted-foreground/40 hover:bg-secondary"}`}>
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{bg.name}</span>
                   {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
