@@ -14,7 +14,9 @@
     "test:watch": "vitest",
     "validate:spells": "node scripts/validateSpells.mjs",
     "validate:backgrounds": "vitest run src/test/backgroundsIntegrity.test.ts",
-    "validate:docs-deps": "node scripts/validateDocsDeps.mjs"
+    "validate:docs-deps": "node scripts/validateDocsDeps.mjs",
+    "extract:races": "node scripts/extract_races_from_docx.mjs",
+    "validate:races": "node scripts/validate_races_against_docx.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
