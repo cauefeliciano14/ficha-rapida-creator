@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { VALIDATION_ITEM_IDS, validateCharacterCompleteness } from "@/utils/validation";
 import { INCOMPLETE_CHAR, FIGHTER_HUMAN_L1, MISSING_SUBRACE, WIZARD_ELF_L1, makeCharacter } from "@/test/fixtures";
+import * as choicesUtils from "@/utils/choices";
 
 describe("validateCharacterCompleteness", () => {
   it("incomplete character has multiple missing items", () => {
@@ -173,6 +174,7 @@ describe("validateCharacterCompleteness", () => {
     });
     const result = validateCharacterCompleteness(char);
     expect(result.missing.some((m) => m.id === "clerigo-ordem-divina")).toBe(true);
+    expect(result.missing.find((m) => m.id === "clerigo-ordem-divina")?.stepId).toBe("equipment");
   });
 
   it("cleric WITH divine order passes that check", () => {
@@ -201,6 +203,53 @@ describe("validateCharacterCompleteness", () => {
     });
     const result = validateCharacterCompleteness(char);
     expect(result.missing.some((m) => m.id === "druida-ordem-primal")).toBe(true);
+  });
+
+  it("guardião nível 2 sem explorador hábil especialista gera pendência via adapter", () => {
+    const char = makeCharacter({
+      class: "guardiao",
+      level: 2,
+      race: "humano",
+      background: "soldado",
+      classFeatureChoices: {},
+      abilityGeneration: { ...makeCharacter().abilityGeneration, method: "standard", confirmed: true },
+    });
+    const result = validateCharacterCompleteness(char);
+    expect(result.missing.some((m) => m.id === "expertise-guardiao:exploradorHabil:especialista")).toBe(true);
+  });
+
+  it("pendência racial vinda do adapter cai no step de raça", () => {
+    const spy = vi.spyOn(choicesUtils, "getChoicesRequirements").mockReturnValue({
+      needsStep: false,
+      buckets: {
+        classSkills: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        languages: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        tools: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        instruments: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        cantrips: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        spells: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        raceChoice: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+        classFeats: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+      },
+      skills: { requiredCount: 0, selectedIds: [], options: [], pendingCount: 0, sources: [] },
+      mandatory: {
+        bySource: {
+          class: [],
+          race: [{ id: "race-choice", label: "Escolha racial obrigatória pendente", source: "race:draconato:draconicAncestry", requiredCount: 1, selectedCount: 0, pendingCount: 1 }],
+          background: [],
+        },
+        pending: [{ id: "race-choice", label: "Escolha racial obrigatória pendente", source: "race:draconato:draconicAncestry", requiredCount: 1, selectedCount: 0, pendingCount: 1 }],
+      },
+    } as any);
+
+    const char = makeCharacter({
+      race: "draconato",
+      raceChoices: {},
+      abilityGeneration: { ...makeCharacter().abilityGeneration, method: "standard", confirmed: true },
+    });
+    const result = validateCharacterCompleteness(char);
+    expect(result.missing.some((m) => m.id === "race-choice" && m.stepId === "race")).toBe(true);
+    spy.mockRestore();
   });
 
   // ── Expertise validation ──
