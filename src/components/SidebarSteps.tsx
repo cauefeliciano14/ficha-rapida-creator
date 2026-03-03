@@ -57,12 +57,12 @@ export function SidebarSteps() {
       {/* Header Section */}
       <div className="px-4 pt-5 pb-4 border-b border-sidebar-border">
         <div className="mb-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gold/60 font-display mb-3">
+          <p className="dashboard-section-title mb-3 text-gold/70">
             Sua Jornada
           </p>
           <div className="flex items-center justify-between gap-2 mb-2.5">
             <span className="text-xs text-foreground/80 font-medium">Progresso</span>
-            <span className="text-[11px] font-bold text-primary/90 font-display bg-primary/10 px-2.5 py-1 rounded-full">
+            <span className="dashboard-kpi-value text-[11px] text-primary/90 font-display bg-primary/10 px-2.5 py-1 rounded-full">
               {doneCount}/{totalSteps}
             </span>
           </div>
@@ -108,14 +108,14 @@ export function SidebarSteps() {
                 onClick={() => goToStep(step.id)}
                 aria-current={isActive ? "step" : undefined}
                 aria-label={`${step.num}. ${step.label}${isDone ? " — concluído" : ""}`}
-                className={`group relative flex items-start gap-3 rounded-2xl px-3 py-3 text-left transition-all duration-300 w-full ${
+                className={`group relative dashboard-card-base dashboard-card-interactive flex items-start gap-3 px-3 py-3 text-left w-full ${
                   isActive
                     ? "sidebar-step-active"
                     : isDone
                     ? "sidebar-step-done hover:bg-success/5"
                     : isNextUp
-                    ? "border border-dashed border-gold/15 text-muted-foreground hover:border-gold/30 hover:text-foreground hover:bg-sidebar-accent/80"
-                    : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground border border-transparent"
+                    ? "border-dashed border-gold/15 text-muted-foreground hover:border-gold/30 hover:text-foreground hover:bg-sidebar-accent/80"
+                    : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground"
                 }`}
               >
                 {/* Step Icon/Number */}
