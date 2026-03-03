@@ -40,7 +40,7 @@ interface ExpertiseConfig {
   key: string;
   label: string;
   count: number;
-  filter: (skill: string, proficientSkills: string[]) => boolean;
+  filter: (skill: string, proficientSkills: string[], cls?: any) => boolean;
   minLevel: number;
 }
 

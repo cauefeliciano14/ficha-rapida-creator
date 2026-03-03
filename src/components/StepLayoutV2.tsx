@@ -57,7 +57,7 @@ export function StepLayoutV2({
     <div className="flex flex-col h-full">
       {/* Header Section */}
       {(title || description) && (
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border/40 bg-gradient-to-b from-card/80 to-card/40">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-border/30 bg-gradient-to-b from-card/60 to-card/30">
           {title && (
             <h2 className="text-lg sm:text-xl font-bold text-foreground font-display mb-1">
               {title}
@@ -75,7 +75,7 @@ export function StepLayoutV2({
       <div className="flex flex-col md:flex-row gap-0 flex-1 overflow-hidden">
         {/* List Panel */}
         {listPanel ? (
-          <aside className="w-full md:w-80 md:shrink-0 border-b md:border-b-0 md:border-r border-border/40 overflow-y-auto">
+          <aside className="w-full md:w-80 md:shrink-0 border-b md:border-b-0 md:border-r border-border/30 overflow-y-auto">
             {isLoadingList ? (
               <div className="p-4 space-y-2" aria-label="Carregando opções">
                 <Skeleton className="h-11 w-full rounded-lg" />
@@ -107,7 +107,7 @@ export function StepLayoutV2({
 
       {/* Footer Section */}
       {footerSection && (
-        <div className="border-t border-border/40 bg-card/40 p-4 sm:p-6">
+        <div className="border-t border-border/30 bg-card/30 p-4 sm:p-6">
           {footerSection}
         </div>
       )}
@@ -191,7 +191,7 @@ export function SelectionCard({
         isSelected
           ? "card-selection-selected"
           : "card-selection-unselected"
-      } ${isActive ? "ring-2 ring-gold/30" : ""}`}
+      } ${isActive ? "ring-2 ring-gold/20" : ""}`}
     >
       <div className="flex items-start gap-3">
         {/* Icon */}
@@ -228,7 +228,7 @@ export function SelectionCard({
           )}
 
           {hasPending && (
-            <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-warning/10 border border-warning/20">
+            <div className="mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-warning/8 border border-warning/15">
               <span className="text-warning/70 text-xs">⚠️</span>
               <span className="text-[10px] text-warning/70 font-medium">Pendências</span>
             </div>

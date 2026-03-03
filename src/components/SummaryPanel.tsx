@@ -77,7 +77,7 @@ export function SummaryPanel() {
   );
 
   return (
-    <aside className="w-full xl:w-72 shrink-0 border-l flex flex-col overflow-hidden">
+    <aside className="w-full xl:w-72 shrink-0 border-l border-border/40 flex flex-col overflow-hidden">
       {/* Identity card */}
       <div className="summary-identity-card p-3">
         <div className="flex items-start justify-between gap-2 mb-2">
@@ -111,7 +111,7 @@ export function SummaryPanel() {
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-4 border-b" style={{ background: "hsl(var(--secondary) / 0.4)" }}>
+      <div className="grid grid-cols-4 border-b border-border/30" style={{ background: "hsl(var(--secondary) / 0.3)" }}>
         <StatMini label="CA" value={String(armorClass)} />
         <StatMini label="PV" value={String(hitPointsMax)} />
         <StatMini label="Desl." value={`${speed}m`} />
@@ -235,7 +235,7 @@ const StatsTab = memo(function StatsTab({
           const total = finalScores[a];
           const mod = calcAbilityMod(total);
           return (
-            <div key={a} className="rounded-lg border border-border/60 bg-secondary/20 p-1.5 text-center hover:border-gold/30 hover:bg-secondary/40 transition-all duration-200">
+            <div key={a} className="rounded-2xl border border-border/40 bg-secondary/15 p-2 text-center hover:border-gold/20 hover:bg-secondary/30 transition-all duration-300">
               <p className="text-[10px] uppercase text-gold/60 font-bold font-display tracking-wider">{ABILITY_SHORT[a]}</p>
               <p className="text-lg font-bold leading-none mt-1">{total}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{mod >= 0 ? "+" : ""}{mod}</p>
@@ -335,7 +335,7 @@ const ActionsTab = memo(function ActionsTab({ attacks, features }: { attacks: At
       {attacks.length > 0 ? (
         <div className="space-y-2">
           {attacks.map((atk) => (
-            <div key={atk.weaponId} className="rounded-lg border bg-secondary/30 p-2.5">
+            <div key={atk.weaponId} className="rounded-2xl border border-border/40 bg-secondary/20 p-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{atk.name}</span>
                 {!atk.proficient && (

@@ -292,6 +292,8 @@ function hasCharacterPatchChanges(current: CharacterState, partial: CharacterPat
   return keys.some((key) => !Object.is(current[key], partial[key]));
 }
 
+type LegacyRaceChoicesState = Record<string, any>;
+
 type PersistedCharacterStateV4 = Partial<CharacterState> & {
   choiceSelections?: Partial<ChoiceSelectionsState>;
   raceChoices?: LegacyRaceChoicesState;
@@ -500,7 +502,7 @@ export function mergeUnique<T>(...arrays: T[][]): T[] {
 /** Remove features by sourceType, then add new ones */
 export function replaceFeatures(
   current: NormalizedFeature[],
-  removeTypes: Array<"race" | "subrace" | "class" | "subclass" | "background">,
+  removeTypes: Array<NormalizedFeature["sourceType"]>,
   add: NormalizedFeature[]
 ): NormalizedFeature[] {
   const filtered = current.filter((f) => !removeTypes.includes(f.sourceType));
