@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { MAX_SUPPORTED_LEVEL, SUPPORTED_LEVEL_MESSAGE } from "@/config/builder";
+import { CollapsibleSection, HighlightCard, InfoTooltip } from "@/components/class-detail-primitives";
 
 function hasAttributeBonus(cls: ClassData): boolean {
   return Array.isArray(cls.attributeBonus) && cls.attributeBonus.length > 0;
@@ -264,6 +265,12 @@ export function StepClass() {
         </section>
 
         <h2 className="mb-3 text-lg font-bold">1. Escolha sua Classe</h2>
+        <div className="mb-3">
+          <InfoTooltip
+            label="O que é uma classe?"
+            description="A classe define o estilo principal do personagem: dado de vida, proficiências, conjuração e as características que ele ganha por nível."
+          />
+        </div>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -415,6 +422,7 @@ function ClassDetails({
 }: ClassDetailsProps) {
   const isSpellcaster = cls.spellcasting !== null;
   const avgHitPointsPerLevel = Math.floor(cls.hitDie / 2) + 1;
+  const definingHighlights = (cls.featuresByLevel.find((fl) => fl.level === 1)?.features ?? []).slice(0, 3);
 
   return (
     <div>
@@ -457,50 +465,68 @@ function ClassDetails({
           </div>
         </Section>
 
+        <Section title="Habilidades definidoras">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {definingHighlights.length > 0 ? (
+              definingHighlights.map((feature) => (
+                <HighlightCard key={feature.name} title={feature.name} description={feature.description} />
+              ))
+            ) : (
+              <HighlightCard
+                title="Integração de destaques pronta"
+                description="Quando os dados de habilidades definidoras estiverem disponíveis, este bloco exibirá os principais destaques da classe automaticamente."
+                fallback
+              />
+            )}
+          </div>
+        </Section>
+
         {/* Conjuração — logo após Traços Básicos */}
         {isSpellcaster && cls.spellcasting && (
           <Section title="Conjuração">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-              <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Atributo de Conjuração</p>
-                <p className="mt-1 text-lg font-bold">{cls.spellcasting.ability}</p>
+            <CollapsibleSection title="Detalhes de conjuração" defaultOpen>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Atributo de Conjuração</p>
+                  <p className="mt-1 text-lg font-bold">{cls.spellcasting.ability}</p>
+                </div>
+                <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Tipo</p>
+                  <p className="mt-1 text-lg font-bold">
+                    {cls.spellcasting.type === "prepared" ? "Magias Preparadas" : cls.spellcasting.type === "known" ? "Magias Conhecidas" : "Magia de Pacto"}
+                  </p>
+                </div>
               </div>
-              <div className="rounded-lg border border-primary/35 bg-primary/10 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/90">Tipo</p>
-                <p className="mt-1 text-lg font-bold">
-                  {cls.spellcasting.type === "prepared" ? "Magias Preparadas" : cls.spellcasting.type === "known" ? "Magias Conhecidas" : "Magia de Pacto"}
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-              <div>
-                <span className="text-muted-foreground">Truques no Nível {level}:</span>{" "}
-                <span className="font-bold">
-                  {(() => {
-                    const entries = Object.entries(cls.spellcasting!.cantripsKnownAtLevel)
-                      .map(([l, c]) => [Number(l), c] as [number, number])
-                      .sort((a, b) => a[0] - b[0]);
-                    let lim = 0;
-                    for (const [l, c] of entries) { if (level >= l) lim = c; }
-                    return lim;
-                  })()}
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Fórmula:</span>{" "}
-                <span className="font-medium text-xs">{cls.spellcasting.spellsPreparedFormula}</span>
-              </div>
-              {cls.spellcasting.spellSlotsByLevel[level] && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Espaços:</span>{" "}
+                  <span className="text-muted-foreground">Truques no Nível {level}:</span>{" "}
                   <span className="font-bold">
-                    {Object.entries(cls.spellcasting.spellSlotsByLevel[level])
-                      .map(([lvl, slots]) => `${slots}× ${lvl}º`)
-                      .join(", ")}
+                    {(() => {
+                      const entries = Object.entries(cls.spellcasting!.cantripsKnownAtLevel)
+                        .map(([l, c]) => [Number(l), c] as [number, number])
+                        .sort((a, b) => a[0] - b[0]);
+                      let lim = 0;
+                      for (const [l, c] of entries) { if (level >= l) lim = c; }
+                      return lim;
+                    })()}
                   </span>
                 </div>
-              )}
-            </div>
+                <div>
+                  <span className="text-muted-foreground">Fórmula:</span>{" "}
+                  <span className="font-medium text-xs">{cls.spellcasting.spellsPreparedFormula}</span>
+                </div>
+                {cls.spellcasting.spellSlotsByLevel[level] && (
+                  <div>
+                    <span className="text-muted-foreground">Espaços:</span>{" "}
+                    <span className="font-bold">
+                      {Object.entries(cls.spellcasting.spellSlotsByLevel[level])
+                        .map(([lvl, slots]) => `${slots}× ${lvl}º`)
+                        .join(", ")}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </CollapsibleSection>
             <p className="mt-3 text-xs text-muted-foreground italic">
               A seleção de magias será feita na etapa "Escolhas".
             </p>
@@ -582,27 +608,29 @@ function ClassDetails({
           <p className="text-sm text-muted-foreground">
             Você escolherá seu equipamento inicial na etapa <span className="font-medium">5. Equipamentos</span>.
           </p>
-          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {cls.equipmentChoices.map((choice) => (
-              <div key={choice.id} className="rounded-lg border p-4 bg-secondary/40">
-                <div className="flex items-center gap-2 mb-1">
-                  <Package className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium text-sm">{choice.label}</span>
+          <CollapsibleSection title="Ver opções de equipamento" defaultOpen>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {cls.equipmentChoices.map((choice) => (
+                <div key={choice.id} className="rounded-lg border p-4 bg-secondary/40">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Package className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">{choice.label}</span>
+                  </div>
+                  {choice.items.length > 0 ? (
+                    <ul className="ml-6 text-xs text-muted-foreground space-y-0.5">
+                      {choice.items.map((item) => (
+                        <li key={item}>• {item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="ml-6 text-xs text-muted-foreground">
+                      {choice.gold} PO para comprar equipamento
+                    </p>
+                  )}
                 </div>
-                {choice.items.length > 0 ? (
-                  <ul className="ml-6 text-xs text-muted-foreground space-y-0.5">
-                    {choice.items.map((item) => (
-                      <li key={item}>• {item}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="ml-6 text-xs text-muted-foreground">
-                    {choice.gold} PO para comprar equipamento
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </CollapsibleSection>
         </Section>
 
         {/* ── Cleric: Divine Order ── */}
@@ -677,54 +705,56 @@ function ClassDetails({
 
         {/* Class features grouped by level */}
         <Section title={`Características de Classe de ${cls.name}`}>
-          {cls.featuresByLevel
-            .filter((fl) => fl.level <= level)
-            .sort((a, b) => a.level - b.level)
-            .map((fl) => {
-              const levelKey = `level-${fl.level}`;
-              const levelOpen = expandedFeatures[levelKey] ?? true;
-              return (
-                <div key={fl.level} className="mb-2 rounded-md border bg-secondary/30">
-                  <button
-                    onClick={() => onToggleFeature(levelKey)}
-                    className="flex w-full items-center justify-between p-3"
-                  >
-                    <span className="font-semibold text-sm">Nível {fl.level}</span>
-                    {levelOpen ? (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </button>
-                  {levelOpen && (
-                    <div className="space-y-2 px-3 pb-3">
-                      {fl.features.map((f) => {
-                        const key = `${fl.level}-${f.name}`;
-                        const isOpen = expandedFeatures[key] ?? true;
-                        return (
-                          <div key={key} className="rounded-md border bg-card/80">
-                            <button
-                              onClick={() => onToggleFeature(key)}
-                              className="flex w-full items-center justify-between p-3"
-                            >
-                              <span className="font-medium text-sm">{f.name}</span>
-                              {isOpen ? (
-                                <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <CollapsibleSection title="Expandir características por nível" defaultOpen>
+            {cls.featuresByLevel
+              .filter((fl) => fl.level <= level)
+              .sort((a, b) => a.level - b.level)
+              .map((fl) => {
+                const levelKey = `level-${fl.level}`;
+                const levelOpen = expandedFeatures[levelKey] ?? true;
+                return (
+                  <div key={fl.level} className="mb-2 rounded-md border bg-secondary/30">
+                    <button
+                      onClick={() => onToggleFeature(levelKey)}
+                      className="flex w-full items-center justify-between p-3"
+                    >
+                      <span className="font-semibold text-sm">Nível {fl.level}</span>
+                      {levelOpen ? (
+                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </button>
+                    {levelOpen && (
+                      <div className="space-y-2 px-3 pb-3">
+                        {fl.features.map((f) => {
+                          const key = `${fl.level}-${f.name}`;
+                          const isOpen = expandedFeatures[key] ?? true;
+                          return (
+                            <div key={key} className="rounded-md border bg-card/80">
+                              <button
+                                onClick={() => onToggleFeature(key)}
+                                className="flex w-full items-center justify-between p-3"
+                              >
+                                <span className="font-medium text-sm">{f.name}</span>
+                                {isOpen ? (
+                                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </button>
+                              {isOpen && (
+                                <p className="px-3 pb-3 text-xs text-muted-foreground">{f.description}</p>
                               )}
-                            </button>
-                            {isOpen && (
-                              <p className="px-3 pb-3 text-xs text-muted-foreground">{f.description}</p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </CollapsibleSection>
         </Section>
 
         {level >= 2 && (
