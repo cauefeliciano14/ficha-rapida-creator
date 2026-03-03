@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import {
   Info, CheckCircle2, Wand2, Swords, Coins, Package,
   Activity, AlertTriangle,
@@ -61,7 +61,8 @@ export function SummaryPanel() {
 
   const completedSteps = useBuilderStore((s) => s.completedSteps);
   const requiredMissing = useBuilderStore((s) => s.requiredMissing);
-  const visibleSteps = useBuilderStore((s) => s.visibleSteps);
+  const visibleSteps = useBuilderStore((s) => s.getVisibleSteps());
+  const currentStep = useBuilderStore((s) => s.currentStep);
   const goToStep = useBuilderStore((s) => s.goToStep);
 
   const race = useMemo(() => races.find((r) => r.id === raceId), [raceId]);
@@ -75,6 +76,30 @@ export function SummaryPanel() {
     () => getFinalAbilityScores(abilityScores, racialBonuses, backgroundBonuses, asiBonuses, featAbilityBonuses),
     [abilityScores, racialBonuses, backgroundBonuses, asiBonuses, featAbilityBonuses]
   );
+
+  const pendingRequiredCount = useMemo(
+    () => visibleSteps.reduce((acc, step) => acc + (requiredMissing[step.id]?.length ?? 0), 0),
+    [visibleSteps, requiredMissing]
+  );
+
+  const completedVisibleCount = useMemo(
+    () => completedSteps.filter((id) => visibleSteps.some((step) => step.id === id)).length,
+    [completedSteps, visibleSteps]
+  );
+
+  const pendingNonBlockingCount = useMemo(
+    () => visibleSteps.filter((step) => !completedSteps.includes(step.id) && (requiredMissing[step.id]?.length ?? 0) === 0).length,
+    [visibleSteps, completedSteps, requiredMissing]
+  );
+
+  const configuredSpellsCount = spellsState.cantrips.length + spellsState.prepared.length;
+  const configuredEquipmentCount = [equippedArmor, equippedShield, ...equippedWeapons].filter(Boolean).length;
+
+  const sheetHealth = pendingRequiredCount > 0
+    ? { label: "Bloqueios pendentes", tone: "danger" as const }
+    : pendingNonBlockingCount > 0
+    ? { label: "Pendências não bloqueantes", tone: "warning" as const }
+    : { label: "Ficha pronta", tone: "success" as const };
 
   return (
     <aside className="w-full xl:w-72 shrink-0 border-l border-border/40 flex flex-col overflow-hidden">
@@ -116,6 +141,17 @@ export function SummaryPanel() {
         <StatMini label="PV" value={String(hitPointsMax)} />
         <StatMini label="Desl." value={`${speed}m`} />
         <StatMini label="Prof." value={`+${proficiencyBonus}`} />
+      </div>
+
+      <div className="p-2.5 border-b border-border/30 bg-secondary/10 space-y-2">
+        <div className="grid grid-cols-2 gap-1.5">
+          <KpiMiniCard label="Pendências totais" value={String(pendingRequiredCount + pendingNonBlockingCount)} accent={pendingRequiredCount > 0 ? "danger" : "default"} />
+          <KpiMiniCard label="Etapas" value={`${completedVisibleCount}/${visibleSteps.length}`} accent="default" highlightKey={currentStep} />
+          <KpiMiniCard label="Bônus prof." value={`+${proficiencyBonus}`} accent="default" />
+          <KpiMiniCard label="Magias/Equip." value={`${configuredSpellsCount}/${configuredEquipmentCount}`} accent="default" />
+        </div>
+
+        <HealthWidget tone={sheetHealth.tone} label={sheetHealth.label} />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
@@ -579,6 +615,61 @@ function EmptyState({ text }: { text: string }) {
   return (
     <div className="dashboard-card-base border-dashed bg-secondary/10 py-6 text-center">
       <p className="text-xs text-muted-foreground/60 italic">{text}</p>
+    </div>
+  );
+}
+
+function KpiMiniCard({
+  label,
+  value,
+  accent,
+  highlightKey,
+}: {
+  label: string;
+  value: string;
+  accent: "default" | "danger";
+  highlightKey?: string;
+}) {
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    setPulse(true);
+    const timeout = window.setTimeout(() => setPulse(false), 450);
+    return () => window.clearTimeout(timeout);
+  }, [value, highlightKey]);
+
+  return (
+    <div
+      className={`dashboard-card-base p-2 transition-all duration-300 ${
+        accent === "danger" ? "border-danger/25 bg-danger/5" : "bg-background/50"
+      } ${pulse ? "ring-1 ring-primary/40 shadow-[0_0_0_1px_hsl(var(--primary)/0.2)]" : ""}`}
+    >
+      <p className="dashboard-section-title text-[10px] leading-tight">{label}</p>
+      <p className="dashboard-kpi-value text-sm mt-1 tabular-nums transition-all duration-300">{value}</p>
+    </div>
+  );
+}
+
+function HealthWidget({ tone, label }: { tone: "success" | "warning" | "danger"; label: string }) {
+  const styles = {
+    success: "text-success bg-success/10 border-success/25",
+    warning: "text-warning bg-warning/10 border-warning/25",
+    danger: "text-danger bg-danger/10 border-danger/25",
+  };
+
+  const dotStyles = {
+    success: "bg-success",
+    warning: "bg-warning",
+    danger: "bg-danger",
+  };
+
+  return (
+    <div className={`dashboard-card-base px-2 py-1.5 border ${styles[tone]} transition-colors duration-300`}>
+      <p className="text-[10px] uppercase tracking-wide font-semibold opacity-80">Saúde da ficha</p>
+      <div className="flex items-center gap-2 mt-0.5">
+        <span className={`h-2 w-2 rounded-full ${dotStyles[tone]} shadow-sm`} />
+        <p className="text-[11px] font-medium">{label}</p>
+      </div>
     </div>
   );
 }
