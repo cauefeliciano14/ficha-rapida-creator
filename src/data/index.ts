@@ -4,7 +4,7 @@
  */
 
 // ── Raw data ──
-export { classes, classesById, type ClassData, type SubclassData, type SpellcastingData, type EquipmentChoice } from "./classes";
+export { classes, type ClassData, type SubclassData, type SpellcastingData, type EquipmentChoice } from "./classes";
 export { races, racesById, type RaceData, type Subrace, type RaceTrait } from "./races";
 export { backgrounds, backgroundsById, type Background } from "./backgrounds";
 export { spells, getSpellSchools, type SpellData } from "./spells";

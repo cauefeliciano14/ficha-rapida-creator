@@ -12,7 +12,7 @@ import type { CharacterState } from "@/state/characterStore";
 import type { ChoiceSelectionsState } from "@/state/types";
 import { calcAbilityMod, getFinalAbilityScores, type AbilityKey } from "@/utils/calculations";
 
-export interface ChoiceOption { id: string; name: string; }
+export interface ChoiceOption { id: string; name: string; level?: number; }
 export interface ChoiceBucket {
   requiredCount: number;
   selectedIds: string[];

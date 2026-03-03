@@ -22,7 +22,6 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
   const isLast = currentIdx >= visibleSteps.length - 1;
   const stepLabel = visibleSteps[currentIdx]?.label || stepId;
   const stepNum = visibleSteps[currentIdx]?.num ?? currentIdx + 1;
-  const totalSteps = visibleSteps.length;
 
   const visibleMissing = currentMissing.slice(0, 3);
   const hasMoreMissing = currentMissing.length > 3;
@@ -33,27 +32,27 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
 
   const missingSummary = (
     <div className="text-xs text-info flex items-center gap-2 min-w-0" aria-live="polite">
-      <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning/80" aria-hidden="true" />
+      <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning/70" aria-hidden="true" />
       <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
-        <span className="font-medium text-warning/80">{summaryLabel}:</span>
+        <span className="font-medium text-warning/70">{summaryLabel}:</span>
         {visibleMissing.map((item, index) => (
-          <span key={`${item}-${index}`} className="truncate max-w-[180px] lg:max-w-[220px] text-muted-foreground">
+          <span key={`${item}-${index}`} className="truncate max-w-[180px] lg:max-w-[220px] text-muted-foreground/80">
             {item}
             {index < visibleMissing.length - 1 ? "," : ""}
           </span>
         ))}
-        {hasMoreMissing && <span className="text-muted-foreground/60">+{currentMissing.length - visibleMissing.length}</span>}
+        {hasMoreMissing && <span className="text-muted-foreground/50">+{currentMissing.length - visibleMissing.length}</span>}
       </div>
     </div>
   );
 
   const detailsContent = (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       <p className="text-xs font-medium text-muted-foreground">Pendências desta etapa</p>
-      <ul className="space-y-1.5 text-sm">
+      <ul className="space-y-2 text-sm">
         {currentMissing.map((item, index) => (
           <li key={`${item}-${index}`} className="flex items-start gap-2 text-foreground">
-            <span className="text-warning/60 mt-0.5 shrink-0">•</span>
+            <span className="text-warning/50 mt-0.5 shrink-0">•</span>
             {item}
           </li>
         ))}
@@ -62,14 +61,14 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
   );
 
   return (
-    <div className="sticky top-0 z-10 step-header-bar px-4 py-3 sm:px-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="sticky top-0 z-10 step-header-bar px-4 py-3.5 sm:px-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
       {/* Left: title + missing */}
       <div className="flex min-w-0 flex-col gap-1.5">
         {/* Step label row */}
         <div className="flex items-start justify-between gap-2 sm:items-center sm:gap-4">
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-3 min-w-0">
             {/* Step counter badge */}
-            <span className="shrink-0 inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/15 border border-primary/30 text-[11px] font-bold text-primary font-display">
+            <span className="shrink-0 inline-flex items-center justify-center h-7 w-7 rounded-xl bg-primary/10 border border-primary/25 text-[11px] font-bold text-primary font-display">
               {stepNum}
             </span>
             <h1
@@ -80,21 +79,21 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
               {stepLabel}
             </h1>
             {canNext && !isLast && (
-              <Sparkles className="h-3.5 w-3.5 text-gold/50 shrink-0 animate-pulse" />
+              <Sparkles className="h-3.5 w-3.5 text-gold/40 shrink-0 animate-pulse" />
             )}
           </div>
 
           {/* Mobile missing badge */}
           {showMissingSummary && isMobile && (
             <div className="flex shrink-0 items-center gap-1.5">
-              <div className="inline-flex items-center gap-1 rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning/80 border border-warning/20" aria-live="polite">
+              <div className="inline-flex items-center gap-1 rounded-full bg-warning/8 px-2.5 py-1 text-xs font-medium text-warning/70 border border-warning/15" aria-live="polite">
                 <AlertTriangle className="h-3 w-3" aria-hidden="true" />
                 <span>{mobileSummaryLabel}</span>
               </div>
               <Sheet>
                 <SheetTrigger asChild>
                   <button
-                    className="inline-flex min-h-[36px] items-center gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary"
+                    className="inline-flex min-h-[36px] items-center gap-1 rounded-xl px-2 text-xs font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary"
                     type="button"
                     aria-label="Ver todas as pendências"
                   >
@@ -102,7 +101,7 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
                     <ChevronDown className="h-3.5 w-3.5" />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="bottom" className="max-h-[70vh] overflow-y-auto">
+                <SheetContent side="bottom" className="max-h-[70vh] overflow-y-auto rounded-t-3xl">
                   <SheetHeader>
                     <SheetTitle className="font-display">Pendências para continuar</SheetTitle>
                   </SheetHeader>
@@ -120,7 +119,7 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
             <Popover>
               <PopoverTrigger asChild>
                 <button
-                  className="inline-flex min-h-[32px] w-fit items-center gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="inline-flex min-h-[32px] w-fit items-center gap-1 rounded-xl px-2 text-xs font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary hover:text-foreground"
                   type="button"
                   aria-label="Expandir lista completa de pendências"
                 >
@@ -128,7 +127,7 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
                   <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-80 border-border/60">
+              <PopoverContent align="start" className="w-80 rounded-2xl">
                 {detailsContent}
               </PopoverContent>
             </Popover>
@@ -137,26 +136,26 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
 
         {/* Enter hint */}
         {showEnterHint && !isMobile && (
-          <p className="text-[10px] text-muted-foreground/50 flex items-center gap-1">
-            <kbd className="inline-flex items-center rounded border border-border/60 bg-secondary px-1 py-0.5 text-[9px] font-mono">Enter</kbd>
+          <p className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
+            <kbd className="inline-flex items-center rounded-lg border border-border/40 bg-secondary/50 px-1.5 py-0.5 text-[9px] font-mono">Enter</kbd>
             para avançar
           </p>
         )}
       </div>
 
       {/* Right: navigation buttons */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2.5 shrink-0">
         {/* Step progress indicator */}
-        <div className="hidden sm:flex items-center gap-1 mr-1">
+        <div className="hidden sm:flex items-center gap-1.5 mr-1">
           {visibleSteps.map((s, i) => (
             <div
               key={s.id}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              className={`rounded-full transition-all duration-300 ${
                 s.id === stepId
-                  ? "w-4 bg-primary"
+                  ? "w-5 h-2 bg-primary"
                   : i < currentIdx
-                  ? "w-1.5 bg-success/60"
-                  : "w-1.5 bg-border"
+                  ? "w-2 h-2 bg-success/50"
+                  : "w-2 h-2 bg-border/60"
               }`}
             />
           ))}
@@ -165,7 +164,7 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
         <button
           onClick={prevStep}
           disabled={isFirst}
-          className="flex min-h-[38px] items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-medium transition-all duration-200 border border-border/60 hover:bg-secondary hover:border-border disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex min-h-[40px] items-center justify-center gap-1.5 rounded-xl px-3.5 text-sm font-medium transition-all duration-300 border border-border/40 hover:bg-secondary hover:border-border/60 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="h-4 w-4" />
           <span className="hidden sm:inline">Voltar</span>
@@ -174,12 +173,12 @@ export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = fa
         <button
           onClick={nextStep}
           disabled={isLast || !canNext}
-          className={`flex min-h-[38px] items-center justify-center gap-1.5 rounded-lg px-4 text-sm font-semibold transition-all duration-200 ${
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-xl px-5 text-sm font-semibold transition-all duration-300 ${
             canNext && !isLast
               ? "btn-next-epic text-primary-foreground"
               : isLast && canNext
-              ? "bg-success text-success-foreground hover:bg-success/90"
-              : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+              ? "bg-success text-success-foreground hover:bg-success/90 rounded-xl"
+              : "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-40"
           }`}
         >
           {isLast ? "Finalizar" : "Próximo"}
