@@ -54,6 +54,8 @@ interface BuilderState {
   getVisibleSteps: () => StepDef[];
   updateChoicesRequirements: () => void;
   setPreferences: (preferences: Partial<BuilderPreferences>) => void;
+  setBeginnerHelp: (value: boolean) => void;
+  toggleBeginnerHelp: () => void;
 }
 
 const DEFAULT_BUILDER = {
@@ -107,6 +109,20 @@ export const useBuilderStore = create<BuilderState>()(
       },
       setPreferences: (preferences) =>
         set((s) => ({ preferences: { ...s.preferences, ...preferences } })),
+      setBeginnerHelp: (value) =>
+        set((s) => ({
+          preferences: {
+            ...s.preferences,
+            beginnerHelp: value,
+          },
+        })),
+      toggleBeginnerHelp: () =>
+        set((s) => ({
+          preferences: {
+            ...s.preferences,
+            beginnerHelp: !s.preferences.beginnerHelp,
+          },
+        })),
     }),
     { name: "dnd-builder-ui-2024" }
   )
