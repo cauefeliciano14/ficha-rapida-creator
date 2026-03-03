@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { IdentityHeader } from "@/components/IdentityHeader";
 import { SidebarSteps } from "@/components/SidebarSteps";
@@ -106,6 +107,13 @@ function BuilderContent() {
   }, [currentStep, validStep, goToStep]);
 
   const currentIdx = visibleSteps.findIndex((s) => s.id === validStep);
+  const previousIdxRef = useRef(currentIdx);
+  const navigationDirection = currentIdx >= previousIdxRef.current ? 1 : -1;
+
+  useEffect(() => {
+    previousIdxRef.current = currentIdx;
+  }, [currentIdx]);
+
   const isLast = currentIdx >= visibleSteps.length - 1;
   const currentMissing = requiredMissing[validStep] ?? [];
   const isCurrentComplete = completedSteps.includes(validStep);
@@ -219,17 +227,23 @@ function BuilderContent() {
               currentMissing={currentMissing}
               showEnterHint={canNext && !isLast}
             />
-            <div
-              ref={activeStepContainerRef}
-              tabIndex={-1}
-              data-active-step-container="true"
-              className="animate-fade-in"
-              key={validStep}
-            >
-              <Suspense fallback={<StepFallback />}>
-                <StepComponent />
-              </Suspense>
-            </div>
+            <AnimatePresence initial={false} mode="wait" custom={navigationDirection}>
+              <motion.div
+                ref={activeStepContainerRef}
+                tabIndex={-1}
+                data-active-step-container="true"
+                key={validStep}
+                custom={navigationDirection}
+                initial={{ opacity: 0, x: navigationDirection > 0 ? 24 : -24, y: 8 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                exit={{ opacity: 0, x: navigationDirection > 0 ? -24 : 24, y: -8 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Suspense fallback={<StepFallback />}>
+                  <StepComponent />
+                </Suspense>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 
