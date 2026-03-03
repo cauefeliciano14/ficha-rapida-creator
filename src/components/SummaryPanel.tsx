@@ -21,6 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { CollapsibleSection, SkillsGrouped, StatsGrid } from "@/components/summary/SummaryStatsSections";
 
 export function SummaryPanel() {
   const [activeTab, setActiveTab] = useState("stats");
@@ -237,48 +238,31 @@ const StatsTab = memo(function StatsTab({
   requiredMissing: Record<string, string[]>;
   goToStep: (step: StepId) => void;
 }) {
+  const safeLanguages = Array.isArray(languages) ? languages : [];
+  const safeSavingThrows = Array.isArray(savingThrows) ? savingThrows : [];
+  const safeSkills = Array.isArray(skills) ? skills : [];
+  const safeVisibleSteps = Array.isArray(visibleSteps) ? visibleSteps : [];
+
   const sortedLanguages = useMemo(
-    () => [...languages].sort((a, b) => a.localeCompare(b, "pt-BR")),
-    [languages]
+    () => [...safeLanguages].sort((a, b) => a.localeCompare(b, "pt-BR")),
+    [safeLanguages]
   );
 
   const savesData = useMemo(
     () => ABILITIES.map((a) => {
       const mod = calcAbilityMod(finalScores[a]);
-      const prof = savingThrows.some(
+      const prof = safeSavingThrows.some(
         (st) => st.toLowerCase().startsWith(ABILITY_LABELS[a].toLowerCase().substring(0, 3))
       );
       const total = mod + (prof ? proficiencyBonus : 0);
       return { a, prof, total };
     }),
-    [finalScores, savingThrows, proficiencyBonus]
-  );
-
-  const skillsData = useMemo(
-    () => ALL_SKILLS.map((skill) => {
-      const mod = calcAbilityMod(finalScores[skill.ability]);
-      const prof = skills.includes(skill.name);
-      const total = mod + (prof ? proficiencyBonus : 0);
-      return { skill, prof, total };
-    }),
-    [finalScores, skills, proficiencyBonus]
+    [finalScores, safeSavingThrows, proficiencyBonus]
   );
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-1.5">
-        {ABILITIES.map((a) => {
-          const total = finalScores[a];
-          const mod = calcAbilityMod(total);
-          return (
-            <div key={a} className="dashboard-card-base dashboard-card-interactive p-2 text-center">
-              <p className="dashboard-section-title text-[10px]">{ABILITY_SHORT[a]}</p>
-              <p className="dashboard-kpi-value text-lg mt-1">{total}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{mod >= 0 ? "+" : ""}{mod}</p>
-            </div>
-          );
-        })}
-      </div>
+      <StatsGrid scores={finalScores} />
 
       <PanelSection title="Testes de Resistência">
         <div className="space-y-0.5">
@@ -298,24 +282,14 @@ const StatsTab = memo(function StatsTab({
         </div>
       </PanelSection>
 
-      <PanelSection title="Perícias">
-        <div className="space-y-0.5">
-          {skillsData.map(({ skill, prof, total }) => (
-            <div key={skill.name} className={`flex items-center gap-1.5 text-[11px] py-0.5 ${prof ? "text-foreground" : "text-muted-foreground/60"}`}>
-              {prof ? (
-                <CheckCircle2 className="h-2.5 w-2.5 text-success shrink-0" />
-              ) : (
-                <span className="h-2.5 w-2.5 rounded-full border border-muted-foreground/20 shrink-0" />
-              )}
-              <span className="flex-1 truncate">{skill.name}</span>
-              <span className="text-[11px] text-muted-foreground/70 mr-1 font-medium">{ABILITY_SHORT[skill.ability]}</span>
-              <span className={`font-mono font-bold text-[11px] w-5 text-right ${prof ? "" : "text-muted-foreground/40"}`}>
-                {total >= 0 ? "+" : ""}{total}
-              </span>
-            </div>
-          ))}
-        </div>
-      </PanelSection>
+      <CollapsibleSection title="Perícias" defaultOpen={safeSkills.length > 0 || ALL_SKILLS.length <= 6}>
+        <SkillsGrouped
+          allSkills={ALL_SKILLS}
+          selectedSkills={safeSkills}
+          finalScores={finalScores}
+          proficiencyBonus={proficiencyBonus ?? 0}
+        />
+      </CollapsibleSection>
 
       {sortedLanguages.length > 0 && (
         <PanelSection title="Idiomas">
@@ -329,9 +303,9 @@ const StatsTab = memo(function StatsTab({
 
       <PanelSection title="Pendências">
         <ul className="space-y-1">
-          {visibleSteps.map((step) => {
+          {safeVisibleSteps.map((step) => {
             const isDone = completedSteps.includes(step.id);
-            const missing = requiredMissing[step.id] ?? [];
+            const missing = (requiredMissing ?? {})[step.id] ?? [];
             return (
               <li key={step.id}>
                 <button
