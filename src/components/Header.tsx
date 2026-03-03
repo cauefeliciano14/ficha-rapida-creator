@@ -44,7 +44,7 @@ export function Header() {
       <div className="flex h-auto min-h-16 items-center justify-between px-4 py-2.5 sm:px-6">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20">
+          <div className="dashboard-card-base dashboard-card-elevated relative flex items-center justify-center h-10 w-10 bg-primary/10 border-primary/20 p-0">
             <div className="absolute inset-0 rounded-2xl bg-primary/10 blur-lg" />
             <Swords className="relative h-5 w-5 text-gold logo-glow" />
           </div>
@@ -53,14 +53,14 @@ export function Header() {
               <span className="sm:hidden text-sm">D&D Builder</span>
               <span className="hidden sm:inline text-base">D&D 2024 Character Builder</span>
             </h1>
-            <span className="hidden sm:block text-[10px] text-gold/40 tracking-widest font-display uppercase">
+            <span className="dashboard-section-title hidden sm:block text-[10px] text-gold/60">
               Criador de Personagem
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-1 ml-1">
-            <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-2.5 py-0.5 text-[10px] font-semibold text-primary/80 tracking-wide">
-              2024
-            </span>
+              <span className="dashboard-kpi-value inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-2.5 py-0.5 text-[10px] font-semibold text-primary/80 tracking-wide">
+                2024
+              </span>
           </div>
         </div>
 
@@ -87,7 +87,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="min-h-[40px] gap-1.5 px-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all duration-300"
+                className="dashboard-card-base dashboard-card-interactive min-h-[40px] gap-1.5 px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/5"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline text-xs">Reiniciar</span>

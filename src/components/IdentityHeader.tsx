@@ -40,7 +40,7 @@ export function IdentityHeader() {
           <div className="flex-1">
             <Label
               htmlFor="character-name"
-              className="text-[10px] uppercase tracking-widest text-gold/60 font-bold font-display flex items-center gap-1.5 mb-2"
+              className="dashboard-section-title flex items-center gap-1.5 mb-2 text-gold/70"
             >
               <User className="h-3.5 w-3.5" />
               Nome do Personagem
@@ -52,7 +52,7 @@ export function IdentityHeader() {
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="Ex: Aelindra, a Maga"
                 autoComplete="off"
-                className="bg-secondary/20 border-border/30 hover:border-gold/15 focus:border-gold/40 focus:ring-gold/15 transition-all duration-300 font-medium placeholder:text-muted-foreground/30 h-11 text-sm rounded-xl"
+                className="dashboard-card-interactive bg-secondary/20 border-border/40 hover:border-gold/20 focus:border-gold/40 focus:ring-gold/15 font-medium placeholder:text-muted-foreground/30 h-11 text-sm rounded-xl"
               />
               {name && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -66,7 +66,7 @@ export function IdentityHeader() {
           <div className="w-full sm:w-40">
             <Label
               htmlFor="character-level"
-              className="text-[10px] uppercase tracking-widest text-gold/60 font-bold font-display flex items-center gap-1.5 mb-2"
+              className="dashboard-section-title flex items-center gap-1.5 mb-2 text-gold/70"
             >
               <span className="text-base">⚔️</span>
               Nível
@@ -74,7 +74,7 @@ export function IdentityHeader() {
             <Select value={level.toString()} onValueChange={handleLevelChange}>
               <SelectTrigger
                 id="character-level"
-                className="bg-secondary/20 border-border/30 hover:border-gold/15 focus:border-gold/40 focus:ring-gold/15 h-11 text-sm rounded-xl"
+                className="dashboard-card-interactive bg-secondary/20 border-border/40 hover:border-gold/20 focus:border-gold/40 focus:ring-gold/15 h-11 text-sm rounded-xl"
               >
                 <SelectValue />
               </SelectTrigger>

@@ -79,10 +79,10 @@ export function SummaryPanel() {
   return (
     <aside className="w-full xl:w-72 shrink-0 border-l border-border/40 flex flex-col overflow-hidden">
       {/* Identity card */}
-      <div className="summary-identity-card p-3">
+      <div className="summary-identity-card dashboard-card-base dashboard-card-elevated p-3">
         <div className="flex items-start justify-between gap-2 mb-2">
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] uppercase tracking-widest text-gold/50 font-bold font-display mb-0.5">Personagem</p>
+            <p className="dashboard-section-title mb-0.5">Personagem</p>
             <p className="truncate text-sm font-bold text-foreground" aria-label="Nome do personagem">
               {name?.trim() || <span className="text-muted-foreground italic font-normal text-xs">Sem nome</span>}
             </p>
@@ -235,9 +235,9 @@ const StatsTab = memo(function StatsTab({
           const total = finalScores[a];
           const mod = calcAbilityMod(total);
           return (
-            <div key={a} className="rounded-2xl border border-border/40 bg-secondary/15 p-2 text-center hover:border-gold/20 hover:bg-secondary/30 transition-all duration-300">
-              <p className="text-[10px] uppercase text-gold/60 font-bold font-display tracking-wider">{ABILITY_SHORT[a]}</p>
-              <p className="text-lg font-bold leading-none mt-1">{total}</p>
+            <div key={a} className="dashboard-card-base dashboard-card-interactive p-2 text-center">
+              <p className="dashboard-section-title text-[10px]">{ABILITY_SHORT[a]}</p>
+              <p className="dashboard-kpi-value text-lg mt-1">{total}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{mod >= 0 ? "+" : ""}{mod}</p>
             </div>
           );
@@ -335,7 +335,7 @@ const ActionsTab = memo(function ActionsTab({ attacks, features }: { attacks: At
       {attacks.length > 0 ? (
         <div className="space-y-2">
           {attacks.map((atk) => (
-            <div key={atk.weaponId} className="rounded-2xl border border-border/40 bg-secondary/20 p-3">
+            <div key={atk.weaponId} className="dashboard-card-base dashboard-card-elevated p-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{atk.name}</span>
                 {!atk.proficient && (
@@ -350,7 +350,7 @@ const ActionsTab = memo(function ActionsTab({ attacks, features }: { attacks: At
               <div className="grid grid-cols-3 gap-2 mt-1.5 text-center">
                 <div>
                   <p className="text-[11px] uppercase text-muted-foreground font-semibold">Ataque</p>
-                  <p className="text-sm font-bold text-primary">{atk.attackBonus >= 0 ? "+" : ""}{atk.attackBonus}</p>
+                  <p className="dashboard-kpi-value text-primary">{atk.attackBonus >= 0 ? "+" : ""}{atk.attackBonus}</p>
                 </div>
                 <div>
                   <p className="text-[11px] uppercase text-muted-foreground font-semibold">Dano</p>
@@ -411,17 +411,17 @@ const SpellsTab = memo(function SpellsTab({
   return (
     <>
       <div className="grid grid-cols-3 gap-1.5">
-        <div className="rounded-lg border bg-secondary/30 p-2 text-center">
+        <div className="dashboard-card-base p-2 text-center">
           <p className="text-[11px] uppercase text-muted-foreground font-semibold">CD</p>
-          <p className="text-lg font-bold">{spells.spellSaveDC}</p>
+          <p className="dashboard-kpi-value text-lg">{spells.spellSaveDC}</p>
         </div>
-        <div className="rounded-lg border bg-secondary/30 p-2 text-center">
+        <div className="dashboard-card-base p-2 text-center">
           <p className="text-[11px] uppercase text-muted-foreground font-semibold">Ataque</p>
-          <p className="text-lg font-bold">+{spells.spellAttackBonus}</p>
+          <p className="dashboard-kpi-value text-lg">+{spells.spellAttackBonus}</p>
         </div>
-        <div className="rounded-lg border bg-secondary/30 p-2 text-center">
+        <div className="dashboard-card-base p-2 text-center">
           <p className="text-[11px] uppercase text-muted-foreground font-semibold">Atributo</p>
-          <p className="text-sm font-bold">{spellcastingAbility?.substring(0, 3) ?? "—"}</p>
+          <p className="dashboard-kpi-value">{spellcastingAbility?.substring(0, 3) ?? "—"}</p>
         </div>
       </div>
 
@@ -492,12 +492,12 @@ const InventoryTab = memo(function InventoryTab({
 }) {
   return (
     <>
-      <div className="flex items-center justify-between rounded-lg border bg-secondary/30 p-2.5">
+      <div className="dashboard-card-base dashboard-card-elevated flex items-center justify-between p-2.5">
         <div className="flex items-center gap-1.5">
           <Coins className="h-4 w-4 text-warning" />
           <span className="text-sm font-medium">Ouro</span>
         </div>
-        <span className="text-sm font-bold text-warning">{goldGp} PO</span>
+        <span className="dashboard-kpi-value text-warning">{goldGp} PO</span>
       </div>
 
       {(equippedArmor || equippedShield) && (
@@ -549,8 +549,8 @@ const InventoryTab = memo(function InventoryTab({
 function StatMini({ label, value }: { label: string; value: string }) {
   return (
     <div className="stat-mini-card text-center border-r last:border-r-0">
-      <p className="text-[10px] uppercase text-gold/50 font-bold tracking-widest font-display">{label}</p>
-      <p className="text-sm font-bold text-foreground">{value}</p>
+      <p className="dashboard-section-title text-[10px] text-gold/65">{label}</p>
+      <p className="dashboard-kpi-value">{value}</p>
     </div>
   );
 }
@@ -567,7 +567,7 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <p className="text-[10px] uppercase text-gold/50 font-bold tracking-widest font-display">{title}</p>
+        <p className="dashboard-section-title">{title}</p>
         <div className="flex-1 h-px bg-border/40" />
       </div>
       {children}
@@ -577,7 +577,7 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
 
 function EmptyState({ text }: { text: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-border/40 bg-secondary/10 py-6 text-center">
+    <div className="dashboard-card-base border-dashed bg-secondary/10 py-6 text-center">
       <p className="text-xs text-muted-foreground/60 italic">{text}</p>
     </div>
   );

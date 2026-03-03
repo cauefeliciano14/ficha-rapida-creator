@@ -57,7 +57,7 @@ export function StepLayoutV2({
     <div className="flex flex-col h-full">
       {/* Header Section */}
       {(title || description) && (
-        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-border/30 bg-gradient-to-b from-card/60 to-card/30">
+        <div className="dashboard-card-base rounded-none border-x-0 border-t-0 px-4 sm:px-6 py-4 sm:py-5 bg-gradient-to-b from-card/60 to-card/30">
           {title && (
             <h2 className="text-lg sm:text-xl font-bold text-foreground font-display mb-1">
               {title}
@@ -75,7 +75,7 @@ export function StepLayoutV2({
       <div className="flex flex-col md:flex-row gap-0 flex-1 overflow-hidden">
         {/* List Panel */}
         {listPanel ? (
-          <aside className="w-full md:w-80 md:shrink-0 border-b md:border-b-0 md:border-r border-border/30 overflow-y-auto">
+          <aside className="w-full md:w-80 md:shrink-0 border-b md:border-b-0 md:border-r border-border/30 overflow-y-auto bg-card/20">
             {isLoadingList ? (
               <div className="p-4 space-y-2" aria-label="Carregando opções">
                 <Skeleton className="h-11 w-full rounded-lg" />
@@ -107,7 +107,7 @@ export function StepLayoutV2({
 
       {/* Footer Section */}
       {footerSection && (
-        <div className="border-t border-border/30 bg-card/30 p-4 sm:p-6">
+        <div className="dashboard-card-base rounded-none border-x-0 border-b-0 bg-card/30 p-4 sm:p-6">
           {footerSection}
         </div>
       )}
@@ -143,7 +143,7 @@ export function DetailSection({ title, description, children, icon }: DetailSect
       <div className="mb-3">
         <div className="flex items-center gap-2 mb-1">
           {icon && <div className="text-xl">{icon}</div>}
-          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <h3 className="dashboard-section-title text-xs sm:text-sm text-gold/80">{title}</h3>
         </div>
         {description && (
           <p className="text-xs text-muted-foreground/70 ml-7">{description}</p>
