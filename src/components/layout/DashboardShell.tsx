@@ -1,27 +1,17 @@
-import { useMemo, useRef, type ReactNode, type RefObject } from "react";
+import { useMemo, type ReactNode, type RefObject } from "react";
 import { races } from "@/data/races";
 import { classes } from "@/data/classes";
 import { SidebarSteps } from "@/components/SidebarSteps";
 import { SummaryPanel } from "@/components/SummaryPanel";
 import { StepHeader } from "@/components/StepHeader";
+import { CommandCenter } from "@/components/CommandCenter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Download,
-  FileUp,
-  ListChecks,
-  Printer,
-  Share2,
-  Shield,
-  Sword,
-  LayoutDashboard,
-} from "lucide-react";
-import { useCharacterStore, type CharacterState } from "@/state/characterStore";
+import { ListChecks, Shield, Sword, LayoutDashboard } from "lucide-react";
+import { useCharacterStore } from "@/state/characterStore";
 import type { StepDef, StepId } from "@/state/builderStore";
-import { downloadCharacterJSON, exportSharePayload, readFileAsJSON, sharePayloadToBase64, validateImportPayload } from "@/utils/export";
-import { useToast } from "@/hooks/use-toast";
 
 interface DashboardShellProps {
   validStep: StepId;
@@ -47,8 +37,6 @@ export function DashboardShell({
   children,
 }: DashboardShellProps) {
   const char = useCharacterStore();
-  const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const raceName = useMemo(() => races.find((r) => r.id === char.race)?.name ?? "—", [char.race]);
   const className = useMemo(() => classes.find((c) => c.id === char.class)?.name ?? "—", [char.class]);
@@ -59,42 +47,6 @@ export function DashboardShell({
   const progress = Math.round((completedSteps.length / Math.max(visibleSteps.length, 1)) * 100);
   const completedCount = completedSteps.length;
   const pendingCount = Math.max(visibleSteps.length - completedCount, 0);
-
-  const handleExport = () => {
-    downloadCharacterJSON(char);
-    toast({ title: "Exportado", description: "Arquivo JSON baixado com sucesso." });
-  };
-
-  const handleShare = async () => {
-    const payload = exportSharePayload(char);
-    const b64 = sharePayloadToBase64(payload);
-    await navigator.clipboard.writeText(b64);
-    toast({ title: "Compartilhado", description: "Payload copiado para a área de transferência." });
-  };
-
-  const handleImportClick = () => fileInputRef.current?.click();
-
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const raw = await readFileAsJSON(file);
-      const result = validateImportPayload(raw);
-      if (!result.success) {
-        toast({ title: "Erro na importação", description: result.errors.join("\n"), variant: "destructive" });
-        return;
-      }
-      if (result.data) {
-        char.patchCharacter(result.data as Partial<CharacterState>);
-        char.recalc();
-      }
-      toast({ title: "Importado", description: "Personagem importado com sucesso." });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Falha ao importar.";
-      toast({ title: "Erro", description: message, variant: "destructive" });
-    }
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
 
   return (
     <div className="flex flex-1 overflow-hidden md:flex-row flex-col">
@@ -148,7 +100,10 @@ export function DashboardShell({
                 <SheetHeader>
                   <SheetTitle className="text-base font-display text-gold">Dashboard</SheetTitle>
                 </SheetHeader>
-                <div className="mt-4 space-y-3">{renderCards()}</div>
+                <div className="mt-4 space-y-3">
+                  <CommandCenter />
+                  {renderCards()}
+                </div>
               </SheetContent>
             </Sheet>
           </div>
@@ -157,6 +112,7 @@ export function DashboardShell({
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6" data-step-scroll="true">
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
             <div className="xl:col-span-8 space-y-3">
+              <CommandCenter />
               <StepHeader
                 stepId={validStep}
                 canNext={canNext}
@@ -214,17 +170,6 @@ export function DashboardShell({
             <p><strong>Nível:</strong> {char.level}</p>
             <p><strong>Raça:</strong> {raceName}</p>
             <p><strong>Classe:</strong> {className}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-base">Ações rápidas</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" onClick={handleExport}><Download className="h-4 w-4" />Exportar</Button>
-            <Button variant="outline" size="sm" onClick={handleImportClick}><FileUp className="h-4 w-4" />Importar</Button>
-            <Button variant="outline" size="sm" onClick={() => window.open("/print", "_blank")}><Printer className="h-4 w-4" />Imprimir</Button>
-            <Button variant="outline" size="sm" onClick={handleShare}><Share2 className="h-4 w-4" />Compartilhar</Button>
-            <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleImport} />
           </CardContent>
         </Card>
 
