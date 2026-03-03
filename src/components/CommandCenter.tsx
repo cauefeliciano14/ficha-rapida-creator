@@ -33,6 +33,8 @@ export function CommandCenter() {
 
   const character = useCharacterStore();
   const resetBuilder = useBuilderStore((s) => s.resetBuilder);
+  const beginnerHelp = useBuilderStore((s) => s.preferences.beginnerHelp);
+  const setBeginnerHelp = useBuilderStore((s) => s.setBeginnerHelp);
   const savedAtLabel = character.lastSavedAt
     ? new Date(character.lastSavedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
     : "";
@@ -105,6 +107,26 @@ export function CommandCenter() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex items-center rounded-xl border border-border/60 bg-muted/30 p-1">
+            <Button
+              type="button"
+              variant={beginnerHelp ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 px-3"
+              onClick={() => setBeginnerHelp(true)}
+            >
+              Novato
+            </Button>
+            <Button
+              type="button"
+              variant={!beginnerHelp ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 px-3"
+              onClick={() => setBeginnerHelp(false)}
+            >
+              Veterano
+            </Button>
+          </div>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="h-4 w-4" />Exportar
           </Button>
