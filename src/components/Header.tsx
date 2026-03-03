@@ -1,16 +1,17 @@
 import { Swords } from "lucide-react";
+import { BeginnerToggle } from "@/components/BeginnerToggle";
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 dnd-header">
-      <div className="flex h-auto min-h-16 items-center justify-between px-4 py-2.5 sm:px-6">
-        <div className="flex items-center gap-3">
+      <div className="flex h-auto min-h-16 items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="dashboard-card-base dashboard-card-elevated relative flex h-10 w-10 items-center justify-center border-primary/20 bg-primary/10 p-0">
             <div className="absolute inset-0 rounded-2xl bg-primary/10 blur-lg" />
             <Swords className="relative h-5 w-5 text-gold logo-glow" />
           </div>
-          <div className="flex flex-col gap-0.5 leading-none">
-            <h1 className="font-display font-bold tracking-wide text-foreground">
+          <div className="min-w-0 flex flex-col gap-0.5 leading-none">
+            <h1 className="truncate font-display font-bold tracking-wide text-foreground">
               <span className="text-sm sm:hidden">D&D Builder</span>
               <span className="hidden text-base sm:inline">D&D 2024 Character Builder</span>
             </h1>
@@ -21,6 +22,10 @@ export function Header() {
               2024
             </span>
           </div>
+        </div>
+
+        <div className="flex shrink-0 items-center justify-end sm:min-w-[184px]">
+          <BeginnerToggle />
         </div>
       </div>
     </header>
