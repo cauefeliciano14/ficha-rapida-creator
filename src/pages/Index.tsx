@@ -1,16 +1,20 @@
-import { Suspense, useEffect, useRef, type LazyExoticComponent, type ComponentType } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { Suspense } from "react";
 import { CatalogGate } from "@/components/CatalogGate";
-import { useEnterToNextStep } from "@/hooks/useEnterToNextStep";
-import { useBuilderStore, type StepId } from "@/state/builderStore";
+import { useBuilderStore } from "@/state/builderStore";
 import { classes } from "@/data/classes";
 import { backgrounds } from "@/data/backgrounds";
 import { races } from "@/data/races";
 import { validateCatalog } from "@/utils/validateCatalog";
 import { lazyWithRetry } from "@/utils/lazyWithRetry";
 import { Loader2 } from "lucide-react";
-import { BuilderShell } from "@/components/layout/BuilderShell";
-import { DashboardShell } from "@/components/layout/DashboardShell";
+import { SinglePageShell } from "@/components/layout/SinglePageShell";
+import { SidebarNav, SECTIONS } from "@/components/SidebarNav";
+import { SummaryPanel } from "@/components/SummaryPanel";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { ListChecks, LayoutDashboard } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const catalogResult = validateCatalog({
   classIds: classes.map((c) => c.id),
@@ -51,117 +55,101 @@ const StepSheet = lazyWithRetry(
   "StepSheet",
 );
 
-const STEP_COMPONENTS: Record<StepId, LazyExoticComponent<ComponentType>> = {
-  class: StepClass,
-  origin: StepBackground,
-  race: StepRace,
-  abilities: StepAbilityMethod,
-  equipment: StepEquipment,
-  choices: StepChoices,
-  sheet: StepSheet,
+const SECTION_COMPONENTS: Record<string, { Component: React.LazyExoticComponent<React.ComponentType>; icon: string }> = {
+  class: { Component: StepClass, icon: "⚔️" },
+  origin: { Component: StepBackground, icon: "📜" },
+  race: { Component: StepRace, icon: "🧬" },
+  abilities: { Component: StepAbilityMethod, icon: "💪" },
+  equipment: { Component: StepEquipment, icon: "🛡️" },
+  choices: { Component: StepChoices, icon: "✅" },
+  sheet: { Component: StepSheet, icon: "📋" },
 };
 
 function StepFallback() {
   return (
-    <div className="flex items-center justify-center h-64 animate-fade-in">
-      <div className="flex flex-col items-center gap-3">
-        <Loader2 className="h-6 w-6 animate-spin text-gold/60" />
-        <p className="text-xs text-muted-foreground">Carregando...</p>
-      </div>
+    <div className="flex items-center justify-center h-32 animate-fade-in">
+      <Loader2 className="h-5 w-5 animate-spin text-gold/60" />
     </div>
   );
 }
 
-function BuilderContent() {
-  const currentStep = useBuilderStore((s) => s.currentStep);
+function MobileToolbar() {
+  return (
+    <div className="lg:hidden sticky top-0 z-30 border-b border-border/30 px-3 py-2 flex items-center justify-between gap-2" style={{ background: "hsl(var(--card) / 0.9)", backdropFilter: "blur(12px)" }}>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-1.5 h-9 text-xs rounded-xl">
+            <ListChecks className="h-3.5 w-3.5 text-gold/60" />
+            Seções
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[80%] max-w-xs p-0 rounded-r-3xl">
+          <SheetHeader className="border-b px-4 py-3.5 text-left">
+            <SheetTitle className="text-base font-display text-gold">Seções</SheetTitle>
+          </SheetHeader>
+          <SidebarNav />
+        </SheetContent>
+      </Sheet>
+
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-1.5 h-9 text-xs rounded-xl">
+            <LayoutDashboard className="h-3.5 w-3.5 text-gold/60" />
+            Resumo
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-[90%] max-w-md overflow-y-auto p-0">
+          <SheetHeader className="border-b px-4 py-3.5">
+            <SheetTitle className="text-base font-display text-gold">Resumo</SheetTitle>
+          </SheetHeader>
+          <SummaryPanel />
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function SinglePageBuilder() {
   const completedSteps = useBuilderStore((s) => s.completedSteps);
-  const requiredMissing = useBuilderStore((s) => s.requiredMissing);
-  const nextStep = useBuilderStore((s) => s.nextStep);
-  const goToStep = useBuilderStore((s) => s.goToStep);
-  const getVisibleSteps = useBuilderStore((s) => s.getVisibleSteps);
-
-  const visibleSteps = getVisibleSteps();
-  const fallbackStep = visibleSteps[0]?.id ?? "class";
-  const isKnownStep = currentStep in STEP_COMPONENTS;
-  const isVisibleStep = visibleSteps.some((step) => step.id === currentStep);
-  const validStep = isKnownStep && isVisibleStep ? currentStep : fallbackStep;
-
-  useEffect(() => {
-    if (validStep !== currentStep) {
-      goToStep(validStep as StepId);
-    }
-  }, [currentStep, validStep, goToStep]);
-
-  const currentIdx = visibleSteps.findIndex((s) => s.id === validStep);
-  const previousIdxRef = useRef(currentIdx);
-  const navigationDirection = currentIdx >= previousIdxRef.current ? 1 : -1;
-
-  useEffect(() => {
-    previousIdxRef.current = currentIdx;
-  }, [currentIdx]);
-
-  const isLast = currentIdx >= visibleSteps.length - 1;
-  const currentMissing = requiredMissing[validStep] ?? [];
-  const isCurrentComplete = completedSteps.includes(validStep);
-  const canNext = isCurrentComplete && currentMissing.length === 0;
-
-  const StepComponent = STEP_COMPONENTS[validStep];
-  const activeStepContainerRef = useRef<HTMLDivElement>(null);
-
-  useEnterToNextStep({
-    canGoNext: canNext && !isLast,
-    goNext: nextStep,
-    containerRef: activeStepContainerRef,
-  });
-
-  useEffect(() => {
-    const scroller = document.querySelector("[data-step-scroll='true']") as HTMLElement | null;
-    if (scroller) {
-      scroller.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    setTimeout(() => {
-      const headerTitle = document.querySelector("[data-step-header-title]") as HTMLElement | null;
-      if (headerTitle) headerTitle.focus();
-    }, 300);
-  }, [currentStep, validStep]);
 
   return (
-    <BuilderShell>
-      <DashboardShell
-        validStep={validStep}
-        visibleSteps={visibleSteps}
-        completedSteps={completedSteps}
-        goToStep={goToStep}
-        currentMissing={currentMissing}
-        canNext={canNext}
-        isLast={isLast}
-        activeStepContainerRef={activeStepContainerRef}
+    <>
+      <MobileToolbar />
+      <SinglePageShell
+        sidebar={<SidebarNav />}
+        summary={<SummaryPanel />}
       >
-        <AnimatePresence initial={false} mode="wait" custom={navigationDirection}>
-          <motion.div
-            key={validStep}
-            custom={navigationDirection}
-            initial={{ opacity: 0, x: navigationDirection > 0 ? 24 : -24, y: 8 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: navigationDirection > 0 ? -24 : 24, y: -8 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Suspense fallback={<StepFallback />}>
-              <StepComponent />
-            </Suspense>
-          </motion.div>
-        </AnimatePresence>
-      </DashboardShell>
-    </BuilderShell>
+        {SECTIONS.map((sec) => {
+          const def = SECTION_COMPONENTS[sec.id];
+          if (!def) return null;
+          const { Component } = def;
+          const isDone = completedSteps.includes(sec.id as any);
+
+          return (
+            <CollapsibleSection
+              key={sec.id}
+              sectionId={sec.id}
+              title={sec.label}
+              icon={<span className="text-base">{sec.icon}</span>}
+              isComplete={isDone}
+              defaultOpen={sec.id === "class"}
+              statusLabel={isDone ? "Completo" : undefined}
+            >
+              <Suspense fallback={<StepFallback />}>
+                <Component />
+              </Suspense>
+            </CollapsibleSection>
+          );
+        })}
+      </SinglePageShell>
+    </>
   );
 }
 
 const Index = () => {
   return (
     <CatalogGate issues={catalogResult.issues}>
-      <BuilderContent />
+      <SinglePageBuilder />
     </CatalogGate>
   );
 };

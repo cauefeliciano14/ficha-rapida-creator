@@ -327,6 +327,44 @@ function migrateRaceChoices(legacyRaceState?: LegacyRaceChoicesState): RaceChoic
   return legacyRaceChoices;
 }
 
+// ── Auto-reset dependent data when primary selections change ──
+
+function getAutoResetPatch(changedKey: string, _current: CharacterState): Partial<CharacterState> {
+  switch (changedKey) {
+    case 'class':
+      return {
+        classSkillChoices: [],
+        classEquipmentChoice: null,
+        equipment: [],
+        inventory: [],
+        equipped: { armor: null, shield: null, weapons: [] },
+        selectedCantrips: [],
+        selectedSpells: [],
+        classFeatureChoices: {},
+        spells: { cantrips: [], prepared: [], slots: [], spellcastingAbility: null, spellSaveDC: 0, spellAttackBonus: 0 },
+        subclass: null,
+      };
+    case 'race':
+      return {
+        raceChoices: {},
+        raceLineage: null,
+        raceAbilityChoices: {},
+        racialBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
+      };
+    case 'background':
+      return {
+        backgroundBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
+        backgroundAbilityChoices: {},
+        backgroundEquipmentChoice: null,
+        backgroundEquipmentItems: [],
+        backgroundGold: 0,
+        backgroundToolChoice: null,
+      };
+    default:
+      return {};
+  }
+}
+
 // ── Store ──
 
 interface CharacterActions {
@@ -355,7 +393,8 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
       ...DEFAULT_CHARACTER,
       setField: (key, value) => {
         if (Object.is(get()[key], value)) return;
-        const updated = sanitizeChoiceSelections({ ...get(), [key]: value } as CharacterState);
+        const autoReset = getAutoResetPatch(key as string, get());
+        const updated = sanitizeChoiceSelections({ ...get(), ...autoReset, [key]: value } as CharacterState);
         const derived = instrumentedRecalc(updated);
         set({ ...updated, ...derived, ...markSavedMeta() } as Partial<CharacterState & CharacterActions>);
       },
@@ -363,7 +402,17 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
         const current = get();
         const hasChanges = hasCharacterPatchChanges(current, partial);
         if (!hasChanges) return;
-        const updated = sanitizeChoiceSelections({ ...get(), ...partial } as CharacterState);
+        let autoReset: Partial<CharacterState> = {};
+        if ('class' in partial && partial.class !== current.class) {
+          autoReset = { ...autoReset, ...getAutoResetPatch('class', current) };
+        }
+        if ('race' in partial && partial.race !== current.race) {
+          autoReset = { ...autoReset, ...getAutoResetPatch('race', current) };
+        }
+        if ('background' in partial && partial.background !== current.background) {
+          autoReset = { ...autoReset, ...getAutoResetPatch('background', current) };
+        }
+        const updated = sanitizeChoiceSelections({ ...get(), ...autoReset, ...partial } as CharacterState);
         const derived = instrumentedRecalc(updated);
         set({ ...updated, ...derived, ...markSavedMeta() } as Partial<CharacterState & CharacterActions>);
       },

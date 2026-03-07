@@ -1,19 +1,15 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { CheckCircle2, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const sectionVariants = cva("rounded-2xl border px-4", {
+const sectionVariants = cva("rounded-2xl border px-4 transition-all duration-300", {
   variants: {
     variant: {
-      default: "border-border bg-card",
-      muted: "border-border/70 bg-secondary/20",
-      primary: "border-primary/30 bg-primary/5",
+      default: "border-border/50 bg-card/70 backdrop-blur-sm",
+      muted: "border-border/40 bg-secondary/20",
+      primary: "border-primary/20 bg-primary/5",
     },
   },
   defaultVariants: {
@@ -28,6 +24,12 @@ interface CollapsibleSectionProps extends VariantProps<typeof sectionVariants> {
   icon?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Show a green checkmark when section is complete */
+  isComplete?: boolean;
+  /** Section anchor id for scroll-to navigation */
+  sectionId?: string;
+  /** Status label shown next to title */
+  statusLabel?: string;
 }
 
 interface SimpleCollapsibleProps {
@@ -45,20 +47,73 @@ export function CollapsibleSection({
   icon,
   children,
   className,
+  isComplete,
+  sectionId,
+  statusLabel,
 }: CollapsibleSectionProps) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <Accordion type="single" collapsible defaultValue={defaultOpen ? "section" : undefined} className={cn(sectionVariants({ variant }), className)}>
-      <AccordionItem value="section" className="border-b-0">
-        <AccordionTrigger className="py-3 hover:no-underline">
-          <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
-            {icon && <span className="shrink-0 text-muted-foreground">{icon}</span>}
-            <span className="truncate text-sm font-semibold">{title}</span>
-            {badge && <span className="shrink-0">{badge}</span>}
-          </div>
-        </AccordionTrigger>
-        <AccordionContent className="pb-3 pt-0 text-sm">{children}</AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <div
+      id={sectionId}
+      data-section-id={sectionId}
+      className={cn(
+        sectionVariants({ variant }),
+        open && "border-gold/15 shadow-[0_4px_24px_hsl(0_0%_0%/0.15)]",
+        isComplete && !open && "border-success/20",
+        className
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2 py-3.5 text-left hover:opacity-90 transition-opacity"
+        aria-expanded={open}
+      >
+        {/* Icon */}
+        {icon && <span className="shrink-0 text-muted-foreground">{icon}</span>}
+
+        {/* Completion indicator */}
+        {isComplete && (
+          <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+        )}
+
+        {/* Title */}
+        <span className="truncate text-sm font-semibold flex-1">{title}</span>
+
+        {/* Status label */}
+        {statusLabel && (
+          <span className="text-[10px] font-medium text-muted-foreground/60 shrink-0">
+            {statusLabel}
+          </span>
+        )}
+
+        {/* Badge */}
+        {badge && <span className="shrink-0">{badge}</span>}
+
+        {/* Chevron */}
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 text-muted-foreground/50 shrink-0 transition-transform duration-300",
+            open && "rotate-180"
+          )}
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pb-4 pt-0 text-sm">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
