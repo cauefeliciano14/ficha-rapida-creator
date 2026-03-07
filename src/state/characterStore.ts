@@ -327,6 +327,44 @@ function migrateRaceChoices(legacyRaceState?: LegacyRaceChoicesState): RaceChoic
   return legacyRaceChoices;
 }
 
+// ── Auto-reset dependent data when primary selections change ──
+
+function getAutoResetPatch(changedKey: string, _current: CharacterState): Partial<CharacterState> {
+  switch (changedKey) {
+    case 'class':
+      return {
+        classSkillChoices: [],
+        classEquipmentChoice: null,
+        equipment: [],
+        inventory: [],
+        equipped: { armor: null, shield: null, weapons: [] },
+        selectedCantrips: [],
+        selectedSpells: [],
+        classFeatureChoices: {},
+        spells: { cantrips: [], prepared: [], slots: [], spellcastingAbility: null, spellSaveDC: 0, spellAttackBonus: 0 },
+        subclass: null,
+      };
+    case 'race':
+      return {
+        raceChoices: {},
+        raceLineage: null,
+        raceAbilityChoices: {},
+        racialBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
+      };
+    case 'background':
+      return {
+        backgroundBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
+        backgroundAbilityChoices: {},
+        backgroundEquipmentChoice: null,
+        backgroundEquipmentItems: [],
+        backgroundGold: 0,
+        backgroundToolChoice: null,
+      };
+    default:
+      return {};
+  }
+}
+
 // ── Store ──
 
 interface CharacterActions {
