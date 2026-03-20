@@ -1,0 +1,61 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detailList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 0;
+}
+
+.navButton {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 12px;
+  text-align: left;
+}
+
+.navButtonActive {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-border);
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.12);
+}
+
+.navHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.navLabel {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.stepBadge {
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  font-weight: 700;
+}
+
+.badgeComplete {
+  background: var(--color-success-bg);
+  color: #4ade80;
+}
+
+.badgePending {
+  background: var(--color-accent-subtle);
+  color: #fb923c;
+}
+
+.badgeIdle {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-muted);
+}

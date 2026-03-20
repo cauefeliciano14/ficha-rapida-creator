@@ -1,190 +1,112 @@
-import { AlertTriangle, ChevronDown, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
-import { useBuilderStore, type StepId } from "@/state/builderStore";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
+import React, { useState } from 'react';
+import { FANTASY_NAMES } from '../data/fantasyNames';
+import styles from './StepHeader.module.css';
 
-interface StepHeaderProps {
-  stepId: StepId;
-  canNext: boolean;
-  currentMissing: string[];
-  showEnterHint?: boolean;
+export interface StepHeaderProps {
+  onPrev?: () => void;
+  onNext: () => void;
+  canAdvance: boolean;
+  characterName: string;
+  setCharacterName: (name: string) => void;
+  portrait: string | null;
+  onPortraitClick: () => void;
 }
 
-export function StepHeader({ stepId, canNext, currentMissing, showEnterHint = false }: StepHeaderProps) {
-  const visibleSteps = useBuilderStore((s) => s.getVisibleSteps());
-  const nextStep = useBuilderStore((s) => s.nextStep);
-  const prevStep = useBuilderStore((s) => s.prevStep);
-  const isMobile = useIsMobile();
+export const StepHeader = ({
+  onPrev,
+  onNext,
+  canAdvance,
+  characterName,
+  setCharacterName,
+  portrait,
+  onPortraitClick,
+}: StepHeaderProps) => {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  const currentIdx = visibleSteps.findIndex((s) => s.id === stepId);
-  const isFirst = currentIdx <= 0;
-  const isLast = currentIdx >= visibleSteps.length - 1;
-  const stepLabel = visibleSteps[currentIdx]?.label || stepId;
-  const stepNum = visibleSteps[currentIdx]?.num ?? currentIdx + 1;
-
-  const visibleMissing = currentMissing.slice(0, 3);
-  const hasMoreMissing = currentMissing.length > 3;
-  const summaryLabel =
-    currentMissing.length === 1 ? "1 pendência para continuar" : `${currentMissing.length} pendências para continuar`;
-  const mobileSummaryLabel = currentMissing.length === 1 ? "1 pendência" : `${currentMissing.length} pendências`;
-  const showMissingSummary = !canNext && currentMissing.length > 0;
-
-  const missingSummary = (
-    <div className="text-xs text-info flex items-center gap-2 min-w-0" aria-live="polite">
-      <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-warning/70" aria-hidden="true" />
-      <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
-        <span className="font-medium text-warning/70">{summaryLabel}:</span>
-        {visibleMissing.map((item, index) => (
-          <span key={`${item}-${index}`} className="truncate max-w-[180px] lg:max-w-[220px] text-muted-foreground/80">
-            {item}
-            {index < visibleMissing.length - 1 ? "," : ""}
-          </span>
-        ))}
-        {hasMoreMissing && <span className="text-muted-foreground/50">+{currentMissing.length - visibleMissing.length}</span>}
-      </div>
-    </div>
-  );
-
-  const detailsContent = (
-    <div className="space-y-2.5">
-      <p className="text-xs font-medium text-muted-foreground">Pendências desta etapa</p>
-      <ul className="space-y-2 text-sm">
-        {currentMissing.map((item, index) => (
-          <li key={`${item}-${index}`} className="flex items-start gap-2 text-foreground">
-            <span className="text-warning/50 mt-0.5 shrink-0">•</span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  const generateNames = () => {
+    const shuffled = [...FANTASY_NAMES].sort(() => 0.5 - Math.random());
+    setSuggestions(shuffled.slice(0, 3));
+  };
 
   return (
-    <div className="sticky top-0 z-10 step-header-bar px-4 py-3.5 sm:px-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-      {/* Left: title + missing */}
-      <div className="flex min-w-0 flex-col gap-1.5">
-        {/* Step label row */}
-        <div className="flex items-start justify-between gap-2 sm:items-center sm:gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            {/* Step counter badge */}
-            <span className="shrink-0 inline-flex items-center justify-center h-7 w-7 rounded-xl bg-primary/10 border border-primary/25 text-[11px] font-bold text-primary font-display">
-              {stepNum}
-            </span>
-            <h1
-              className="text-lg font-semibold font-display min-w-0 truncate text-foreground"
-              data-step-header-title
-              tabIndex={-1}
-            >
-              {stepLabel}
-            </h1>
-            {canNext && !isLast && (
-              <Sparkles className="h-3.5 w-3.5 text-gold/40 shrink-0 animate-pulse" />
-            )}
-          </div>
+    <div className={styles.wrapper}>
+      <div className={styles.topRow}>
+        {onPrev ? (
+          <button onClick={onPrev} className={styles.btnBack}>
+            &laquo; Voltar
+          </button>
+        ) : (
+          <div className={styles.spacer} />
+        )}
 
-          {/* Mobile missing badge */}
-          {showMissingSummary && isMobile && (
-            <div className="flex shrink-0 items-center gap-1.5">
-              <div className="inline-flex items-center gap-1 rounded-full bg-warning/8 px-2.5 py-1 text-xs font-medium text-warning/70 border border-warning/15" aria-live="polite">
-                <AlertTriangle className="h-3 w-3" aria-hidden="true" />
-                <span>{mobileSummaryLabel}</span>
-              </div>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <button
-                    className="inline-flex min-h-[36px] items-center gap-1 rounded-xl px-2 text-xs font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary"
-                    type="button"
-                    aria-label="Ver todas as pendências"
-                  >
-                    ver
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  </button>
-                </SheetTrigger>
-                <SheetContent side="bottom" className="max-h-[70vh] overflow-y-auto rounded-t-3xl">
-                  <SheetHeader>
-                    <SheetTitle className="font-display">Pendências para continuar</SheetTitle>
-                  </SheetHeader>
-                  <div className="px-4 pb-6 pt-2">{detailsContent}</div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          )}
+        <div className={styles.advanceArea}>
+          <button
+            onClick={onNext}
+            className={canAdvance ? styles.btnAdvance : `${styles.btnAdvance} ${styles.btnAdvanceDisabled}`}
+            disabled={!canAdvance}
+          >
+            Avançar &raquo;
+          </button>
         </div>
-
-        {/* Desktop missing summary */}
-        {showMissingSummary && !isMobile && (
-          <div className="flex items-center gap-1">
-            {missingSummary}
-            <Popover>
-              <PopoverTrigger asChild>
-                <button
-                  className="inline-flex min-h-[32px] w-fit items-center gap-1 rounded-xl px-2 text-xs font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary hover:text-foreground"
-                  type="button"
-                  aria-label="Expandir lista completa de pendências"
-                >
-                  {hasMoreMissing ? "ver todas" : "detalhes"}
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="w-80 rounded-2xl">
-                {detailsContent}
-              </PopoverContent>
-            </Popover>
-          </div>
-        )}
-
-        {/* Enter hint */}
-        {showEnterHint && !isMobile && (
-          <p className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
-            <kbd className="inline-flex items-center rounded-lg border border-border/40 bg-secondary/50 px-1.5 py-0.5 text-[9px] font-mono">Enter</kbd>
-            para avançar
-          </p>
-        )}
       </div>
 
-      {/* Right: navigation buttons */}
-      <div className="flex items-center gap-2.5 shrink-0">
-        {/* Step progress indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 mr-1">
-          {visibleSteps.map((s, i) => (
-            <div
-              key={s.id}
-              className={`rounded-full transition-all duration-300 ${
-                s.id === stepId
-                  ? "w-5 h-2 bg-primary"
-                  : i < currentIdx
-                  ? "w-2 h-2 bg-success/50"
-                  : "w-2 h-2 bg-border/60"
-              }`}
-            />
-          ))}
+      <div className={styles.identityRow}>
+        <div className={styles.portraitColumn}>
+          <button
+            type="button"
+            className={`${styles.portraitButton} ${portrait ? styles.portraitButtonFilled : ''}`.trim()}
+            onClick={onPortraitClick}
+            aria-label="Escolher retrato do personagem"
+          >
+            {portrait ? (
+              <img
+                src={`/imgs/portrait_caracter/${portrait}`}
+                alt={characterName ? `Retrato de ${characterName}` : 'Retrato do personagem'}
+                className={styles.portraitImage}
+              />
+            ) : (
+              <span className={styles.portraitPlaceholder}>Sem retrato</span>
+            )}
+          </button>
+          <span className={styles.portraitLabel}>Retrato</span>
         </div>
 
-        <button
-          onClick={prevStep}
-          disabled={isFirst}
-          className="flex min-h-[40px] items-center justify-center gap-1.5 rounded-xl px-3.5 text-sm font-medium transition-all duration-300 border border-border/40 hover:bg-secondary hover:border-border/60 disabled:opacity-30 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">Voltar</span>
-        </button>
+        <div className={styles.nameColumn}>
+          <label className={styles.characterNameLabel} htmlFor="character-name-input">
+            Nome do personagem
+          </label>
+          <input
+            id="character-name-input"
+            type="text"
+            className={styles.characterNameInput}
+            value={characterName}
+            onChange={(e) => setCharacterName(e.target.value)}
+            placeholder="Digite o nome do personagem"
+          />
+          <div className={styles.suggestionsContainer}>
+            <button type="button" className={styles.suggestionsLink} onClick={generateNames}>
+              Mostrar sugestões{suggestions.length > 0 ? ':' : ''}
+            </button>
 
-        <button
-          onClick={nextStep}
-          disabled={isLast || !canNext}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-xl px-5 text-sm font-semibold transition-all duration-300 ${
-            canNext && !isLast
-              ? "btn-next-epic text-primary-foreground"
-              : isLast && canNext
-              ? "bg-success text-success-foreground hover:bg-success/90 rounded-xl"
-              : "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-40"
-          }`}
-        >
-          {isLast ? "Finalizar" : "Próximo"}
-          <ChevronRight className="h-4 w-4" />
-        </button>
+            {suggestions.length > 0 && (
+              <div className={styles.suggestionsDisplay}>
+                {suggestions.map((suggestion, index) => (
+                  <React.Fragment key={suggestion}>
+                    <button
+                      type="button"
+                      className={styles.suggestionItem}
+                      onClick={() => setCharacterName(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
+                    {index < suggestions.length - 1 ? <span className={styles.suggestionSeparator}>•</span> : null}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};

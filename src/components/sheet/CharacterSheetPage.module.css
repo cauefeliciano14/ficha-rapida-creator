@@ -1,0 +1,67 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.1fr) minmax(0, 1.5fr) minmax(12rem, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.heroIdentity,
+.heroAbilities,
+.heroStats,
+.supportColumn,
+.skillsColumn,
+.tabsCard {
+  min-width: 0;
+}
+
+.supportGrid {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.9fr) minmax(12rem, 1.2fr) minmax(11rem, 1fr) minmax(11rem, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.supportColumn {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.skillsColumn {
+  display: grid;
+  align-content: start;
+}
+
+.tabsCard {
+  background: rgba(17, 18, 24, 0.4);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+@media (max-width: 1320px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  }
+
+  .heroStats {
+    grid-column: 1 / -1;
+  }
+
+  .supportGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .heroGrid,
+  .supportGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
