@@ -1,29 +1,19 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import PrintSheet from "./pages/PrintSheet";
-import NotFound from "./pages/NotFound";
+import { GlossaryTooltipProvider } from './components/GlossaryTooltip';
+import { CharacterProvider } from './context/CharacterContext';
+import { WizardProvider } from './context/WizardContext';
+import { CreatorShell } from './features/creator/CreatorShell';
+import './index.css';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/print" element={<PrintSheet />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <CharacterProvider>
+      <WizardProvider>
+        <GlossaryTooltipProvider>
+          <CreatorShell />
+        </GlossaryTooltipProvider>
+      </WizardProvider>
+    </CharacterProvider>
+  );
+}
 
 export default App;

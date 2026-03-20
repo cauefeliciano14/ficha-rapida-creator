@@ -1,0 +1,198 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--space-sm) 0 12px;
+  margin: 0 -18px var(--space-md);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--surface-header);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btnBack {
+  background: transparent;
+  border: 1px solid var(--border-input-hover);
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btnBack:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: none;
+  box-shadow: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.advanceArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.btnAdvance {
+  background: transparent;
+  border: 1px solid rgba(249, 115, 22, 0.6);
+  color: var(--color-accent);
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.btnAdvance:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+.btnAdvanceDisabled {
+  background: var(--color-accent-bg-hover);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  color: rgba(249, 115, 22, 0.4);
+  cursor: not-allowed;
+}
+
+.btnAdvanceDisabled:hover {
+  background: var(--color-accent-bg-hover);
+  border-color: rgba(249, 115, 22, 0.2);
+  transform: none;
+  box-shadow: none;
+}
+
+.identityRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.portraitColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.portraitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  min-width: 88px;
+  height: 88px;
+  padding: 0;
+  border-radius: 18px;
+  border: 1px dashed var(--border-input-hover);
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.portraitButtonFilled {
+  border-style: solid;
+}
+
+.portraitImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portraitPlaceholder {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+
+.portraitLabel {
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.nameColumn {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.characterNameLabel {
+  color: var(--text-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.characterNameInput {
+  width: 100%;
+}
+
+.suggestionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.suggestionsLink,
+.suggestionItem {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.suggestionsDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.suggestionSeparator {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 640px) {
+  .identityRow {
+    flex-direction: column;
+  }
+
+  .portraitButton {
+    width: 72px;
+    min-width: 72px;
+    height: 72px;
+  }
+}
