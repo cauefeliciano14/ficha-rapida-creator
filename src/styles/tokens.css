@@ -1,82 +1,88 @@
 /* ═══════════════════════════════════════════════════
-   Design Tokens — Single source of truth for the app
+   Design Tokens — Glassmorphism Modern
    ═══════════════════════════════════════════════════ */
 
 :root {
-  /* ── Colors: Primary (purple) ── */
-  --color-primary: #9d4edd;
-  --color-primary-hover: #7b2cbf;
-  --color-primary-light: #e0aaff;
-  --color-primary-glow: rgba(157, 78, 221, 0.4);
-  --color-primary-subtle: rgba(157, 78, 221, 0.15);
+  /* ── Colors: Primary (cyan-blue) ── */
+  --color-primary: hsl(210, 100%, 60%);
+  --color-primary-hover: hsl(210, 100%, 50%);
+  --color-primary-light: hsl(200, 100%, 80%);
+  --color-primary-glow: hsla(210, 100%, 60%, 0.4);
+  --color-primary-subtle: hsla(210, 100%, 60%, 0.12);
 
-  /* ── Colors: Accent (orange) ── */
-  --color-accent: #f97316;
-  --color-accent-hover: #ea580c;
-  --color-accent-light: #fdba74;
-  --color-accent-glow: rgba(249, 115, 22, 0.4);
-  --color-accent-subtle: rgba(249, 115, 22, 0.15);
-  --color-accent-bg: rgba(249, 115, 22, 0.05);
-  --color-accent-bg-hover: rgba(249, 115, 22, 0.1);
-  --color-accent-border: rgba(249, 115, 22, 0.3);
-  --color-accent-border-strong: rgba(249, 115, 22, 0.5);
+  /* ── Colors: Accent (vibrant orange-amber) ── */
+  --color-accent: hsl(25, 95%, 55%);
+  --color-accent-hover: hsl(25, 95%, 45%);
+  --color-accent-light: hsl(30, 100%, 72%);
+  --color-accent-glow: hsla(25, 95%, 55%, 0.4);
+  --color-accent-subtle: hsla(25, 95%, 55%, 0.12);
+  --color-accent-bg: hsla(25, 95%, 55%, 0.06);
+  --color-accent-bg-hover: hsla(25, 95%, 55%, 0.1);
+  --color-accent-border: hsla(25, 95%, 55%, 0.4);
+  --color-accent-border-strong: hsla(25, 95%, 55%, 0.6);
 
   /* ── Semantic Colors ── */
-  --color-error: #ef4444;
-  --color-error-light: #fca5a5;
-  --color-error-bg: rgba(239, 68, 68, 0.08);
-  --color-error-border: rgba(239, 68, 68, 0.25);
-  --color-error-btn-bg: rgba(239, 68, 68, 0.2);
+  --color-error: hsl(0, 84%, 60%);
+  --color-error-light: hsl(0, 93%, 82%);
+  --color-error-bg: hsla(0, 84%, 60%, 0.08);
+  --color-error-border: hsla(0, 84%, 60%, 0.25);
+  --color-error-btn-bg: hsla(0, 84%, 60%, 0.2);
 
-  --color-success: #22c55e;
-  --color-success-light: #86efac;
-  --color-success-bg: rgba(34, 197, 94, 0.2);
-  --color-success-border: rgba(34, 197, 94, 0.4);
+  --color-success: hsl(142, 71%, 45%);
+  --color-success-light: hsl(142, 77%, 73%);
+  --color-success-bg: hsla(142, 71%, 45%, 0.15);
+  --color-success-border: hsla(142, 71%, 45%, 0.4);
 
-  --color-info: #38bdf8;
-  --color-info-light: #93c5fd;
+  --color-info: hsl(199, 92%, 60%);
+  --color-info-light: hsl(213, 93%, 78%);
 
-  --color-magic: #a78bfa;
-  --color-magic-bg: rgba(167, 139, 250, 0.2);
-  --color-magic-border: rgba(167, 139, 250, 0.4);
+  --color-magic: hsl(263, 90%, 74%);
+  --color-magic-bg: hsla(263, 90%, 74%, 0.15);
+  --color-magic-border: hsla(263, 90%, 74%, 0.35);
 
-  /* ── Surfaces ── */
-  --surface-base: #0d0b14;
-  --surface-card: rgba(26, 22, 37, 0.6);
-  --surface-elevated: rgba(26, 27, 35, 0.8);
-  --surface-input: #111218;
-  --surface-input-hover: rgba(26, 27, 35, 0.8);
-  --surface-overlay: rgba(0, 0, 0, 0.6);
-  --surface-tooltip: rgba(20, 21, 28, 0.95);
-  --surface-dark: #1a1b23;
-  --surface-dark-alt: #13141b;
-  --surface-subtle: rgba(255, 255, 255, 0.03);
-  --surface-subtle-hover: rgba(255, 255, 255, 0.05);
-  --surface-ghost: rgba(255, 255, 255, 0.05);
-  --surface-row-alt: rgba(255, 255, 255, 0.02);
-  --surface-accordion: rgba(30, 32, 45, 0.4);
-  --surface-header: rgba(13, 11, 20, 0.9);
-  --surface-name-container: rgba(13, 11, 20, 0.4);
+  /* ── Surfaces — Deep space with purple undertones ── */
+  --surface-base: hsl(252, 30%, 6%);
+  --surface-card: hsla(250, 25%, 14%, 0.55);
+  --surface-elevated: hsla(250, 20%, 16%, 0.75);
+  --surface-input: hsl(250, 22%, 10%);
+  --surface-input-hover: hsla(250, 20%, 16%, 0.8);
+  --surface-overlay: hsla(0, 0%, 0%, 0.65);
+  --surface-tooltip: hsla(250, 25%, 12%, 0.95);
+  --surface-dark: hsl(250, 22%, 11%);
+  --surface-dark-alt: hsl(252, 25%, 8%);
+  --surface-subtle: hsla(0, 0%, 100%, 0.03);
+  --surface-subtle-hover: hsla(0, 0%, 100%, 0.06);
+  --surface-ghost: hsla(0, 0%, 100%, 0.04);
+  --surface-row-alt: hsla(0, 0%, 100%, 0.02);
+  --surface-accordion: hsla(250, 20%, 18%, 0.4);
+  --surface-header: hsla(252, 30%, 6%, 0.92);
+  --surface-name-container: hsla(252, 30%, 6%, 0.4);
+
+  /* Glass surface */
+  --glass-bg: hsla(250, 25%, 14%, 0.42);
+  --glass-border: hsla(0, 0%, 100%, 0.1);
+  --glass-blur: 20px;
+  --glass-highlight: linear-gradient(135deg, hsla(0, 0%, 100%, 0.08) 0%, hsla(0, 0%, 100%, 0) 60%);
 
   /* ── Borders ── */
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-faint: rgba(255, 255, 255, 0.04);
-  --border-input: rgba(255, 255, 255, 0.1);
-  --border-input-hover: rgba(255, 255, 255, 0.2);
-  --border-accent: rgba(249, 115, 22, 0.5);
-  --border-accent-subtle: rgba(249, 115, 22, 0.15);
-  --border-primary: rgba(157, 78, 221, 0.5);
-  --border-separator: rgba(255, 255, 255, 0.06);
+  --border-default: hsla(0, 0%, 100%, 0.08);
+  --border-subtle: hsla(0, 0%, 100%, 0.05);
+  --border-faint: hsla(0, 0%, 100%, 0.03);
+  --border-input: hsla(0, 0%, 100%, 0.1);
+  --border-input-hover: hsla(0, 0%, 100%, 0.2);
+  --border-accent: hsla(25, 95%, 55%, 0.45);
+  --border-accent-subtle: hsla(25, 95%, 55%, 0.15);
+  --border-primary: hsla(210, 100%, 60%, 0.45);
+  --border-separator: hsla(0, 0%, 100%, 0.06);
 
   /* ── Text ── */
-  --text-primary: #f8f9fa;
-  --text-secondary: #e2e8f0;
-  --text-muted: #adb5bd;
-  --text-dim: #94a3b8;
-  --text-faint: #64748b;
-  --text-bright: #f1f5f9;
-  --text-body: #cbd5e1;
+  --text-primary: hsl(210, 40%, 97%);
+  --text-secondary: hsl(214, 32%, 91%);
+  --text-muted: hsl(218, 10%, 70%);
+  --text-dim: hsl(215, 16%, 60%);
+  --text-faint: hsl(215, 16%, 47%);
+  --text-bright: hsl(210, 40%, 96%);
+  --text-body: hsl(213, 27%, 84%);
 
   /* ── Spacing Scale ── */
   --space-xs: 4px;
@@ -85,11 +91,11 @@
   --space-lg: 24px;
   --space-xl: 32px;
 
-  /* ── Border Radii ── */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 20px;
+  /* ── Border Radii — Rounded & organic ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-pill: 9999px;
 
   /* ── Z-Index Scale ── */
@@ -100,15 +106,17 @@
   --z-tooltip: 1100;
 
   /* ── Shadows ── */
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-elevated: 0 20px 50px rgba(0, 0, 0, 0.7), 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-glow-accent: 0 0 10px rgba(249, 115, 22, 0.4);
-  --shadow-glow-primary: 0 4px 12px rgba(157, 78, 221, 0.4);
-  --shadow-input: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-focus-accent: 0 0 0 2px rgba(249, 115, 22, 0.15);
+  --shadow-card: 0 8px 32px hsla(0, 0%, 0%, 0.35), 0 0 1px hsla(0, 0%, 100%, 0.05);
+  --shadow-elevated: 0 20px 60px hsla(0, 0%, 0%, 0.6), 0 4px 20px hsla(0, 0%, 0%, 0.4);
+  --shadow-glow-accent: 0 0 16px hsla(25, 95%, 55%, 0.35);
+  --shadow-glow-primary: 0 4px 16px hsla(210, 100%, 60%, 0.35);
+  --shadow-input: 0 4px 12px hsla(0, 0%, 0%, 0.2);
+  --shadow-focus-accent: 0 0 0 3px hsla(25, 95%, 55%, 0.15);
+  --shadow-glass: 0 8px 32px hsla(0, 0%, 0%, 0.25), inset 0 1px 0 hsla(0, 0%, 100%, 0.05);
 
   /* ── Transitions ── */
   --transition-speed: 0.3s;
   --transition-fast: 0.15s;
   --transition-base: 0.25s;
+  --transition-smooth: cubic-bezier(0.25, 0.8, 0.25, 1);
 }
