@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import backgroundsData from "../../data/backgrounds.json";
 import talentsData from "../../data/talents.json";
 import {
@@ -7,14 +7,16 @@ import {
   countVisibleTalentChoices,
 } from "../TalentChoices";
 import { ToolProficiencyCard } from "../ToolProficiencyCard";
-import { ValidationBanner } from "../ValidationBanner";
 import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
+import bgStyles from "./BackgroundStep.module.css";
 import { formatDice, getSkillParts } from "../../utils/formatting";
 import { useCharacter, ATTR_METADATA } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
 
 export const BackgroundStep: React.FC = () => {
+  const detailsRef = useRef<HTMLDivElement | null>(null);
+
   const {
     character,
     setCharacter,
@@ -29,7 +31,6 @@ export const BackgroundStep: React.FC = () => {
     handleChoiceChange,
     handleTalentSelectionChange,
     allSelections,
-    stepSelections,
     validationResult,
   } = useCharacter();
 
@@ -43,18 +44,15 @@ export const BackgroundStep: React.FC = () => {
       onPrev={() => setCurrentStep(0)}
       onNext={() => setCurrentStep(2)}
       canAdvance={canAdvance}
-      activeStep={2}
-      onStepClick={setCurrentStep}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))
       }
       portrait={character.portrait}
       onPortraitClick={() => setIsPortraitModalOpen(true)}
-      selections={stepSelections}
+      impactSection="background"
     >
       <div className={styles.stepContent}>
-        <ValidationBanner errors={validationErrors} />
         <div className={styles.sectionIntro}>
           <div className={styles.sectionTitleRow}>
             <span className={styles.sectionIcon}>✦</span>
@@ -76,7 +74,9 @@ export const BackgroundStep: React.FC = () => {
                   className={`${styles.selectionButton} ${isSelected ? styles.selectionButtonActive : ""}`.trim()}
                   onClick={() => {
                     setSelectedBackground(bg);
-                    window.scrollTo(0, 0);
+                    requestAnimationFrame(() => {
+                      detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    });
                     setAttrChoiceMode("");
                     setAttrPlus1("");
                     setAttrPlus2("");
@@ -87,119 +87,41 @@ export const BackgroundStep: React.FC = () => {
                   }}
                 >
                   <span className={styles.selectionButtonName}>{bg.name}</span>
-                  <span className={styles.selectionButtonMarker}>{isSelected ? 'Selecionada' : 'Ver'}</span>
+                  {isSelected && <span className={styles.selectionButtonMarker}>✓</span>}
                 </button>
               );
             })}
           </div>
 
-          <div className={styles.selectionDetails}>
+          <div className={styles.selectionDetails} ref={detailsRef}>
             {selectedBackground ? (
               <div id="background-details" className={styles.selectionDetails}>
-                {/* Info Card */}
-                <div
-                  style={{
-                    background: "rgba(17, 18, 24, 0.6)",
-                    backdropFilter: "blur(8px)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: "10px",
-                    padding: "16px 20px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                  }}
-                >
-                  <h3
-                    style={{
-                      margin: "0 0 4px 0",
-                      color: "#fff",
-                      fontSize: "1.5rem",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    {selectedBackground.name}
-                  </h3>
-                  <p
-                    style={{
-                      color: "#cbd5e1",
-                      fontSize: "0.9rem",
-                      margin: 0,
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {selectedBackground.description}
-                  </p>
-                  <hr
-                    style={{
-                      border: "none",
-                      borderTop: "1px solid rgba(255,255,255,0.06)",
-                      margin: "8px 0",
-                    }}
-                  />
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(200px, 1fr))",
-                      gap: "12px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: "rgba(249,115,22,0.05)",
-                        border: "1px solid rgba(249,115,22,0.15)",
-                        padding: "10px 14px",
-                        borderRadius: "8px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "4px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: "#f97316",
-                          fontWeight: 700,
-                          fontSize: "0.65rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
+                <div className={`${styles.summaryCardBase} ${styles.selectionPanel} ${bgStyles.detailsCard}`}>
+                  <div className={bgStyles.detailsHeading}>
+                    <h3 className={bgStyles.detailsTitle}>
+                      {selectedBackground.name}
+                    </h3>
+                    <p className={bgStyles.detailsDescription}>
+                      {selectedBackground.description}
+                    </p>
+                  </div>
+                  <hr className={bgStyles.detailsDivider} />
+                  <div className={bgStyles.detailsGrid}>
+                    <div className={bgStyles.metaCard}>
+                      <span className={bgStyles.metaCardLabel}>
                         Proficiências em Perícias
                       </span>
-                      <span
-                        style={{
-                          color: "#e2e8f0",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          display: "flex",
-                          gap: "12px",
-                          flexWrap: "wrap",
-                        }}
-                      >
+                      <span className={bgStyles.skillList}>
                         {selectedBackground.skillProficiencies.map(
                           (s: string) => {
                             const { name, attr } = getSkillParts(s);
                             return (
-                              <span
-                                key={s}
-                                style={{
-                                  display: "flex",
-                                  alignItems: "baseline",
-                                  gap: "4px",
-                                }}
-                              >
-                                <strong style={{ color: "#f97316" }}>
+                              <span key={s} className={bgStyles.skillItem}>
+                                <strong className={bgStyles.skillName}>
                                   {name}
                                 </strong>
                                 {attr && (
-                                  <span
-                                    style={{
-                                      opacity: 0.5,
-                                      fontSize: "0.75rem",
-                                      fontWeight: 400,
-                                    }}
-                                  >
+                                  <span className={bgStyles.skillAttr}>
                                     ({attr})
                                   </span>
                                 )}
@@ -219,8 +141,7 @@ export const BackgroundStep: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Accordions: Talent + Attribute side by side */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', alignItems: 'start' }}>
+                <div className={bgStyles.accordionGrid}>
 
                 {/* Talent Accordion */}
                 {(() => {
@@ -235,71 +156,23 @@ export const BackgroundStep: React.FC = () => {
                   );
                   return (
                     <details
-                      style={{
-                        background: "rgba(17, 18, 24, 0.6)",
-                        backdropFilter: "blur(8px)",
-                        border: isTalentChoicesComplete
-                          ? "1px solid rgba(255,255,255,0.07)"
-                          : "1px solid rgba(249,115,22,0.5)",
-                        borderRadius: "10px",
-                      }}
+                      className={`${bgStyles.accordion} ${!isTalentChoicesComplete ? bgStyles.accordionIncomplete : ""}`.trim()}
                     >
-                      <summary
-                        style={{
-                          padding: "12px 18px",
-                          cursor: "pointer",
-                          listStyle: "none",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          userSelect: "none",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                          }}
-                        >
+                      <summary className={bgStyles.accordionSummary}>
+                        <span className={bgStyles.summaryLead}>
                           {!isTalentChoicesComplete && (
                             <span
                               title="Ação necessária no talento de origem"
-                              style={{
-                                width: "20px",
-                                height: "20px",
-                                borderRadius: "50%",
-                                background: "#f97316",
-                                color: "#000",
-                                fontWeight: 900,
-                                fontSize: "0.75rem",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                flexShrink: 0,
-                              }}
+                              className={bgStyles.alertBadge}
                             >
                               !
                             </span>
                           )}
-                          <span>
-                            <span
-                              style={{
-                                color: "#f1f5f9",
-                                fontWeight: 600,
-                                fontSize: "0.95rem",
-                                display: "block",
-                              }}
-                            >
+                          <span className={bgStyles.summaryText}>
+                            <span className={bgStyles.summaryTitle}>
                               {selectedBackground.talent}
                             </span>
-                            <span
-                              style={{
-                                fontSize: "0.7rem",
-                                lineHeight: 1,
-                                display: "block",
-                              }}
-                            >
+                            <span className={bgStyles.summaryMeta}>
                               {(() => {
                                 const visible = countVisibleTalentChoices(
                                   selectedBackground.talent,
@@ -309,47 +182,30 @@ export const BackgroundStep: React.FC = () => {
                                 );
                                 return visible > 0 ? (
                                   <span
-                                    style={{
-                                      color: isTalentChoicesComplete
-                                        ? "#64748b"
-                                        : "#f97316",
-                                    }}
+                                    className={
+                                      isTalentChoicesComplete
+                                        ? bgStyles.summaryMetaMuted
+                                        : bgStyles.summaryMetaAccent
+                                    }
                                   >
                                     {visible} Escolha{visible > 1 ? "s" : ""} —
                                   </span>
                                 ) : null;
                               })()}
-                              <span style={{ color: "#64748b" }}>
+                              <span className={bgStyles.summaryMetaMuted}>
                                 Talento de Origem
                               </span>
                             </span>
                           </span>
                         </span>
                         <span
-                          className="summary-chevron"
-                          style={{
-                            color: "#f97316",
-                            fontSize: "0.8rem",
-                            opacity: 0.7,
-                          }}
+                          className={`summary-chevron ${bgStyles.summaryChevron}`}
                         >
                           ▼
                         </span>
                       </summary>
-                      <div
-                        style={{
-                          padding: "0 18px 14px 18px",
-                          borderTop: "1px solid rgba(255,255,255,0.06)",
-                        }}
-                      >
-                        <p
-                          style={{
-                            color: "#64748b",
-                            fontStyle: "italic",
-                            fontSize: "0.8rem",
-                            margin: "10px 0 8px 0",
-                          }}
-                        >
+                      <div className={bgStyles.accordionBody}>
+                        <p className={bgStyles.benefitsLabel}>
                           Benefícios do Talento
                         </p>
                         {talent &&
@@ -368,24 +224,10 @@ export const BackgroundStep: React.FC = () => {
                             }
 
                             return (
-                              <p
-                                key={i}
-                                style={{
-                                  color: "#94a3b8",
-                                  fontSize: "0.85rem",
-                                  margin: "4px 0",
-                                  lineHeight: 1.6,
-                                }}
-                              >
+                              <p key={i} className={bgStyles.benefitText}>
                                 {boldPart ? (
                                   <>
-                                    <strong
-                                      style={{
-                                        color: "#e2e8f0",
-                                        fontStyle: "italic",
-                                        fontWeight: 700,
-                                      }}
-                                    >
+                                    <strong className={bgStyles.benefitStrong}>
                                       {boldPart}
                                     </strong>{" "}
                                     {formatDice(restText)}
@@ -419,35 +261,15 @@ export const BackgroundStep: React.FC = () => {
 
                 {/* Attribute Points Accordion */}
                 <details
-                  style={{
-                    background: "rgba(17, 18, 24, 0.6)",
-                    backdropFilter: "blur(8px)",
-                    border:
-                      attrChoiceMode &&
-                      (attrChoiceMode === "triple" || (attrPlus1 && attrPlus2))
-                        ? "1px solid rgba(255,255,255,0.07)"
-                        : "1px solid rgba(249,115,22,0.5)",
-                    borderRadius: "10px",
-                  }}
+                  className={`${bgStyles.accordion} ${
+                    attrChoiceMode &&
+                    (attrChoiceMode === "triple" || (attrPlus1 && attrPlus2))
+                      ? ""
+                      : bgStyles.accordionIncomplete
+                  }`.trim()}
                 >
-                  <summary
-                    style={{
-                      padding: "12px 18px",
-                      cursor: "pointer",
-                      listStyle: "none",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      userSelect: "none",
-                    }}
-                  >
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
+                  <summary className={bgStyles.accordionSummary}>
+                    <span className={bgStyles.summaryLead}>
                       {!(
                         attrChoiceMode &&
                         (attrChoiceMode === "triple" ||
@@ -455,100 +277,51 @@ export const BackgroundStep: React.FC = () => {
                       ) && (
                         <span
                           title="Escolha seu bônus de atributo"
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            background: "#f97316",
-                            color: "#000",
-                            fontWeight: 900,
-                            fontSize: "0.75rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                          }}
+                          className={bgStyles.alertBadge}
                         >
                           !
                         </span>
                       )}
-                      <span>
-                        <span
-                          style={{
-                            color: "#f1f5f9",
-                            fontWeight: 600,
-                            fontSize: "0.95rem",
-                            display: "block",
-                          }}
-                        >
+                      <span className={bgStyles.summaryText}>
+                        <span className={bgStyles.summaryTitle}>
                           Bônus de Atributo
                         </span>
-                        <span
-                          style={{
-                            fontSize: "0.7rem",
-                            lineHeight: 1,
-                            display: "block",
-                          }}
-                        >
+                        <span className={bgStyles.summaryMeta}>
                           <span
-                            style={{
-                              color:
-                                attrChoiceMode &&
-                                (attrChoiceMode === "triple" ||
-                                  (attrPlus1 && attrPlus2))
-                                  ? "#64748b"
-                                  : "#f97316",
-                            }}
+                            className={
+                              attrChoiceMode &&
+                              (attrChoiceMode === "triple" ||
+                                (attrPlus1 && attrPlus2))
+                                ? bgStyles.summaryMetaMuted
+                                : bgStyles.summaryMetaAccent
+                            }
                           >
                             1 Escolha —{" "}
                           </span>
-                          <span style={{ color: "#64748b" }}>Antecedente</span>
+                          <span className={bgStyles.summaryMetaMuted}>
+                            Antecedente
+                          </span>
                         </span>
                       </span>
                     </span>
                     <span
-                      className="summary-chevron"
-                      style={{
-                        color: "#f97316",
-                        fontSize: "0.8rem",
-                        opacity: 0.7,
-                      }}
+                      className={`summary-chevron ${bgStyles.summaryChevron}`}
                     >
                       ▼
                     </span>
                   </summary>
-                  <div
-                    style={{
-                      padding: "24px 32px",
-                      borderTop: "1px solid rgba(255,255,255,0.06)",
-                    }}
-                  >
-                    <p
-                      style={{
-                        color: "#94a3b8",
-                        fontSize: "0.85rem",
-                        margin: "0 0 16px 0",
-                        lineHeight: 1.6,
-                      }}
-                    >
+                  <div className={bgStyles.attributeBody}>
+                    <p className={bgStyles.attributeDescription}>
                       O Antecedente{" "}
-                      <strong style={{ color: "#f1f5f9" }}>
+                      <strong className={bgStyles.attributeNameStrong}>
                         {selectedBackground.name}
                       </strong>{" "}
                       permite que você aumente atributos específicos. Nenhum
                       aumento pode elevar um atributo acima de 20.
                     </p>
 
-                    <div style={{ marginBottom: "16px" }}>
-                      <label
-                        style={{
-                          color: "#e2e8f0",
-                          fontSize: "0.85rem",
-                          fontWeight: "bold",
-                          display: "block",
-                          marginBottom: "8px",
-                        }}
-                      >
+                    <div className={bgStyles.fieldBlock}>
+                      <label className={bgStyles.fieldLabel}>
                         Padrão de Bônus:
                       </label>
                       <select
@@ -571,28 +344,13 @@ export const BackgroundStep: React.FC = () => {
                     </div>
 
                     {attrChoiceMode === "triple" && (
-                      <div
-                        style={{
-                          padding: "12px",
-                          background: "rgba(249,115,22,0.05)",
-                          border: "1px solid rgba(249,115,22,0.2)",
-                          borderRadius: "8px",
-                        }}
-                      >
-                        <p
-                          style={{
-                            color: "#f1f5f9",
-                            fontSize: "0.85rem",
-                            margin: 0,
-                          }}
-                        >
-                          <span
-                            style={{ color: "#f97316", fontWeight: "bold" }}
-                          >
+                      <div className={bgStyles.appliedBonusCard}>
+                        <p className={bgStyles.appliedBonusText}>
+                          <span className={bgStyles.appliedBonusHighlight}>
                             ✓ Aplicado:
                           </span>{" "}
                           +1 em{" "}
-                          <strong style={{ color: "#fff" }}>
+                          <strong className={bgStyles.appliedBonusStrong}>
                             {selectedBackground.attributeValues
                               .map((a: string) => ATTR_METADATA[a]?.full || a)
                               .join(", ")}
@@ -603,35 +361,12 @@ export const BackgroundStep: React.FC = () => {
                     )}
 
                     {attrChoiceMode === "double" && (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "12px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "12px",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <div style={{ flex: 1, minWidth: "180px" }}>
-                            <label
-                              style={{
-                                color: "#94a3b8",
-                                fontSize: "0.78rem",
-                                display: "block",
-                                marginBottom: "6px",
-                              }}
-                            >
+                      <div className={bgStyles.selectFields}>
+                        <div className={bgStyles.selectGrid}>
+                          <div className={bgStyles.selectField}>
+                            <label className={bgStyles.selectLabel}>
                               Atributo para{" "}
-                              <span
-                                style={{ color: "#f97316", fontWeight: "bold" }}
-                              >
-                                +1
-                              </span>
+                              <span className={bgStyles.selectValueAccent}>+1</span>
                               :
                             </label>
                             <select
@@ -657,21 +392,10 @@ export const BackgroundStep: React.FC = () => {
                               )}
                             </select>
                           </div>
-                          <div style={{ flex: 1, minWidth: "180px" }}>
-                            <label
-                              style={{
-                                color: "#94a3b8",
-                                fontSize: "0.78rem",
-                                display: "block",
-                                marginBottom: "6px",
-                              }}
-                            >
+                          <div className={bgStyles.selectField}>
+                            <label className={bgStyles.selectLabel}>
                               Atributo para{" "}
-                              <span
-                                style={{ color: "#f97316", fontWeight: "bold" }}
-                              >
-                                +2
-                              </span>
+                              <span className={bgStyles.selectValueAccent}>+2</span>
                               :
                             </label>
                             <select
@@ -703,20 +427,12 @@ export const BackgroundStep: React.FC = () => {
                   </div>
                 </details>
 
-                </div>{/* end side-by-side grid */}
+                </div>
               </div>
             ) : (
-              <div className={styles.selectionPlaceholder}>
-                <span
-                  style={{
-                    fontSize: "2.5rem",
-                    marginBottom: "12px",
-                    opacity: 0.5,
-                  }}
-                >
-                  📖
-                </span>
-                <p style={{ margin: 0 }}>
+              <div className={`${styles.selectionPlaceholder} ${styles.placeholderPanel}`}>
+                <span className={bgStyles.placeholderIcon}>📖</span>
+                <p className={bgStyles.placeholderText}>
                   Selecione um antecedente para ver os detalhes
                 </p>
               </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import speciesData from "../../data/species.json";
 import { SpeciesDetails } from "../SpeciesDetails";
-import { ValidationBanner } from "../ValidationBanner";
 import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
@@ -17,7 +16,6 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
     character,
     setCharacter,
     handleSelectSpecies,
-    stepSelections,
     validationResult,
   } = useCharacter();
 
@@ -31,18 +29,15 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
       onPrev={() => setCurrentStep(1)}
       onNext={() => setCurrentStep(3)}
       canAdvance={canAdvance}
-      activeStep={3}
-      onStepClick={setCurrentStep}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))
       }
       portrait={character.portrait}
       onPortraitClick={() => setIsPortraitModalOpen(true)}
-      selections={stepSelections}
+      impactSection="species"
     >
       <div className={styles.stepContent}>
-        <ValidationBanner errors={validationErrors} />
         <div className={styles.sectionIntro}>
           <div className={styles.sectionTitleRow}>
             <span className={styles.sectionIcon}>✦</span>
@@ -54,18 +49,19 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
         </div>
 
         <div className={styles.selectionLayout}>
-          <div className={styles.selectionRail}>
+          <div className={styles.selectionRail} style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
             {speciesData.species.map((sp: any) => {
               const isSelected = character.species?.id === sp.id;
               return (
                 <button
                   key={sp.id}
+                  style={{ minHeight: '44px', padding: '10px 12px' }}
                   type="button"
                   className={`${styles.selectionButton} ${isSelected ? styles.selectionButtonActive : ""}`.trim()}
                   onClick={() => handleSelectSpecies(sp)}
                 >
                   <span className={styles.selectionButtonName}>{sp.name}</span>
-                  <span className={styles.selectionButtonMarker}>{isSelected ? 'Selecionada' : 'Ver'}</span>
+                  {isSelected && <span className={styles.selectionButtonMarker}>✓</span>}
                 </button>
               );
             })}
@@ -80,7 +76,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
                 languagesData={languagesData}
               />
             ) : (
-              <div className={styles.selectionPlaceholder}>
+              <div className={`${styles.selectionPlaceholder} ${styles.placeholderPanel}`}>
                 <span
                   style={{
                     fontSize: "2.5rem",

@@ -11,6 +11,7 @@
   min-height: 0;
 }
 
+.stepRoot,
 .stepContent {
   display: flex;
   flex-direction: column;
@@ -50,45 +51,46 @@
 
 /* ── Selection layout (Origin + Species) ── */
 .selectionLayout {
-  display: grid;
-  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .selectionRail {
+  --selection-rail-min: 160px;
+  --selection-rail-min-mobile: 130px;
   display: grid;
-  gap: 6px;
-  align-content: start;
-  position: sticky;
-  top: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(var(--selection-rail-min), 1fr));
+  gap: 12px;
+  align-items: stretch;
 }
 
 .selectionButton {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   background: rgba(26, 27, 35, 0.8);
   color: #e2e8f0;
   cursor: pointer;
   text-align: left;
+  min-height: 52px;
   transition: border-color 0.18s ease, background 0.18s ease;
 }
 
 .selectionButton:hover {
-  border-color: rgba(249,115,22,0.45);
-  background: rgba(249,115,22,0.04);
+  border-color: rgba(249, 115, 22, 0.45);
+  background: rgba(249, 115, 22, 0.04);
 }
 
 .selectionButtonActive {
-  background: linear-gradient(135deg, rgba(249,115,22,0.16), rgba(249,115,22,0.07));
-  border-color: rgba(249,115,22,0.6);
-  box-shadow: 0 6px 18px rgba(249,115,22,0.12);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.16), rgba(249, 115, 22, 0.07));
+  border-color: rgba(249, 115, 22, 0.6);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.12);
   color: #fff;
 }
 
@@ -104,6 +106,7 @@
   flex-shrink: 0;
 }
 
+.detailsColumn,
 .selectionDetails {
   display: flex;
   flex-direction: column;
@@ -111,15 +114,18 @@
   min-width: 0;
 }
 
+.placeholderPanel,
 .selectionPlaceholder,
+.summaryCardBase,
 .selectionPanel {
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   background: rgba(17, 18, 24, 0.5);
 }
 
+.placeholderPanel,
 .selectionPlaceholder {
-  min-height: 16rem;
+  min-height: 10rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,27 +136,23 @@
   font-size: 0.9rem;
 }
 
+.selectionPlaceholder {
+  min-height: 16rem;
+}
+
+.summaryCardBase,
 .selectionPanel {
   padding: clamp(16px, 2vw, 22px);
 }
 
-@media (max-width: 860px) {
-  .selectionLayout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .selectionRail {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    position: static;
-  }
-}
-
 @media (max-width: 600px) {
+
+  .stepRoot,
   .stepContent {
     padding-right: 0;
   }
 
   .selectionRail {
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--selection-rail-min-mobile), 1fr));
   }
 }
