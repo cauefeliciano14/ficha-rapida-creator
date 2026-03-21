@@ -1,6 +1,5 @@
 import React from "react";
 import { AttributesStep } from "../AttributesStep";
-import { ValidationBanner } from "../ValidationBanner";
 import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
@@ -12,7 +11,6 @@ export const AttributesStepWrapper: React.FC = () => {
     setCharacter,
     getAttributeBonus,
     selectedBackground,
-    stepSelections,
     validationResult,
   } = useCharacter();
 
@@ -26,16 +24,13 @@ export const AttributesStepWrapper: React.FC = () => {
       onPrev={() => setCurrentStep(2)}
       onNext={() => setCurrentStep(4)}
       canAdvance={canAdvance}
-      activeStep={4}
-      onStepClick={setCurrentStep}
       characterName={character.name}
       setCharacterName={(n) => setCharacter((prev) => ({ ...prev, name: n }))}
       portrait={character.portrait}
       onPortraitClick={() => setIsPortraitModalOpen(true)}
-      selections={stepSelections}
+      impactSection="attributes"
     >
       <div className={styles.stepContent}>
-        <ValidationBanner errors={validationErrors} />
         <div
           style={{
             marginBottom: "24px",

@@ -1,6 +1,5 @@
 import React from "react";
 import { EquipmentStep } from "../EquipmentStep";
-import { ValidationBanner } from "../ValidationBanner";
 import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
@@ -12,7 +11,6 @@ export const EquipmentStepWrapper: React.FC = () => {
     setCharacter,
     selectedBackground,
     derivedSheet,
-    stepSelections,
     validationResult,
   } = useCharacter();
 
@@ -26,18 +24,15 @@ export const EquipmentStepWrapper: React.FC = () => {
       onPrev={() => setCurrentStep(3)}
       onNext={() => setCurrentStep(5)}
       canAdvance={canAdvance}
-      activeStep={5}
-      onStepClick={setCurrentStep}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))
       }
       portrait={character.portrait}
       onPortraitClick={() => setIsPortraitModalOpen(true)}
-      selections={stepSelections}
+      impactSection="equipment"
     >
       <div className={styles.stepContent}>
-        <ValidationBanner errors={validationErrors} />
         <div style={{ marginBottom: "24px" }}>
           <h2
             style={{

@@ -6,13 +6,18 @@
 
 .heroGrid {
   display: grid;
-  grid-template-columns: minmax(12rem, 1.1fr) minmax(0, 1.5fr) minmax(12rem, 1fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 1fr);
   gap: 16px;
   align-items: start;
 }
 
-.heroIdentity,
-.heroAbilities,
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
 .heroStats,
 .supportColumn,
 .skillsColumn,
@@ -22,7 +27,7 @@
 
 .supportGrid {
   display: grid;
-  grid-template-columns: minmax(11rem, 0.9fr) minmax(12rem, 1.2fr) minmax(11rem, 1fr) minmax(11rem, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   align-items: start;
 }
@@ -40,18 +45,14 @@
 
 .tabsCard {
   background: rgba(17, 18, 24, 0.4);
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 16px;
 }
 
 @media (max-width: 1320px) {
   .heroGrid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
-  }
-
-  .heroStats {
-    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .supportGrid {
@@ -60,6 +61,7 @@
 }
 
 @media (max-width: 860px) {
+
   .heroGrid,
   .supportGrid {
     grid-template-columns: minmax(0, 1fr);
