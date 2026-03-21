@@ -1,7 +1,6 @@
 @import "./styles/tokens.css";
 
 :root {
-  /* Legacy aliases — kept for any third-party or uncovered references */
   --primary: var(--color-primary);
   --secondary: var(--color-accent);
   --bg-color: var(--surface-base);
@@ -9,7 +8,6 @@
   --border: var(--border-default);
   --text-main: var(--text-primary);
   --text-muted: var(--text-muted);
-
   --transition-speed: var(--transition-speed);
   --radius: var(--radius-lg);
 }
@@ -19,27 +17,15 @@ body {
   padding: 0;
   background-color: var(--surface-base);
   background-image:
-    radial-gradient(
-      circle at 15% 50%,
-      var(--color-primary-subtle),
-      transparent 25%
-    ),
-    radial-gradient(circle at 85% 30%, rgba(249, 115, 22, 0.1), transparent 25%);
+    radial-gradient(ellipse at 10% 30%, hsla(263, 90%, 50%, 0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 20%, hsla(210, 100%, 50%, 0.06), transparent 45%),
+    radial-gradient(ellipse at 50% 80%, hsla(25, 95%, 55%, 0.04), transparent 40%);
   background-attachment: fixed;
   color: var(--text-primary);
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Open Sans",
-    "Helvetica Neue",
-    sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -55,34 +41,38 @@ body {
   min-height: 0;
 }
 
-/* Glassmorphism Panels */
+/* ── Glass Panel Utility ───────────────────────────────────────────────── */
 .glass-panel {
-  background: var(--surface-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-glass);
+  position: relative;
 }
 
-h1,
-h2,
-h3,
-h4 {
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-highlight);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ── Typography ────────────────────────────────────────────────────────── */
+h1, h2, h3, h4 {
   font-family: "Outfit", sans-serif;
   margin-top: 0;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 h1 {
   font-size: 2.5rem;
-  background: linear-gradient(
-    90deg,
-    var(--color-primary-light),
-    var(--color-accent)
-  );
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -90,6 +80,7 @@ h1 {
   margin-bottom: 2rem;
 }
 
+/* ── Global Button Reset ───────────────────────────────────────────────── */
 button {
   background: var(--color-primary);
   color: white;
@@ -100,24 +91,24 @@ button {
   font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-speed);
+  transition: all 0.25s var(--transition-smooth);
 }
 
 button:hover {
   background: var(--color-primary-hover);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-glow-primary);
 }
 
 button:disabled {
-  background: #343a40;
-  color: #6c757d;
+  background: hsla(218, 10%, 30%, 0.6);
+  color: var(--text-faint);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-/* Grid Layouts for Selections */
+/* ── Grid Layouts ──────────────────────────────────────────────────────── */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -125,33 +116,50 @@ button:disabled {
   margin-top: 1.5rem;
 }
 
-/* Selectable Card */
+/* ── Selectable Card ───────────────────────────────────────────────────── */
 .selectable-card {
-  background: var(--surface-subtle);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
   padding: 20px;
   cursor: pointer;
-  transition: all var(--transition-speed);
+  transition: all 0.3s var(--transition-smooth);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.selectable-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-highlight);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .selectable-card:hover {
-  background: var(--surface-subtle-hover);
-  border-color: var(--border-primary);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: hsla(0, 0%, 100%, 0.05);
+  border-color: hsla(210, 100%, 60%, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px hsla(0, 0%, 0%, 0.3);
+}
+
+.selectable-card:hover::before {
+  opacity: 1;
 }
 
 .selectable-card.selected {
   border-color: var(--color-accent);
   background: var(--color-accent-bg);
+  box-shadow: 0 0 24px hsla(25, 95%, 55%, 0.1);
 }
 
 .selectable-card h3 {
   margin-bottom: 10px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .selectable-card p {
@@ -166,7 +174,7 @@ button:disabled {
   text-overflow: ellipsis;
 }
 
-/* Wizard Controls */
+/* ── Wizard Controls ───────────────────────────────────────────────────── */
 .wizard-controls {
   display: flex;
   justify-content: space-between;
@@ -175,11 +183,12 @@ button:disabled {
   border-top: 1px solid var(--border-default);
 }
 
+/* ── Layout Container ──────────────────────────────────────────────────── */
 .layout-container {
-  max-width: 1400px;
+  max-width: 1440px;
   width: 100%;
   margin: 0 auto;
-  padding: clamp(10px, 2vh, 40px) 2vw;
+  padding: clamp(12px, 2vh, 40px) 2vw;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -187,7 +196,7 @@ button:disabled {
   min-height: 100dvh;
 }
 
-/* Steps Indicator */
+/* ── Steps Indicator ───────────────────────────────────────────────────── */
 .steps-indicator {
   display: flex;
   justify-content: center;
@@ -200,13 +209,13 @@ button:disabled {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  background: hsla(0, 0%, 100%, 0.15);
+  transition: all 0.3s var(--transition-smooth);
 }
 
 .step-dot.active {
   background: var(--color-accent);
-  box-shadow: var(--shadow-glow-accent);
+  box-shadow: 0 0 12px var(--color-accent-glow);
   transform: scale(1.3);
 }
 
@@ -217,23 +226,17 @@ button:disabled {
 .step-line {
   height: 2px;
   width: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: hsla(0, 0%, 100%, 0.08);
 }
 
-/* Animations */
+/* ── Animations ────────────────────────────────────────────────────────── */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease forwards;
+  animation: fadeIn 0.4s var(--transition-smooth) forwards;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -241,7 +244,7 @@ button:disabled {
   min-height: 0;
 }
 
-/* Classes Grid */
+/* ── Classes Grid (legacy) ─────────────────────────────────────────────── */
 .classes-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -250,53 +253,35 @@ button:disabled {
   min-height: 0;
 }
 
-@media (max-width: 1024px) {
-  .classes-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-@media (max-width: 768px) {
-  .classes-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 480px) {
-  .classes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+@media (max-width: 1024px) { .classes-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 768px) { .classes-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 480px) { .classes-grid { grid-template-columns: repeat(2, 1fr); } }
 
 .class-card {
-  background: var(--surface-elevated);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--border-subtle);
-  border-radius: clamp(8px, 2vh, 16px);
-  padding: clamp(10px, 1.5vh, 20px) clamp(10px, 1.2vw, 20px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(12px, 1.5vh, 20px) clamp(12px, 1.2vw, 20px);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.35s var(--transition-smooth);
   position: relative;
   display: flex;
   flex-direction: column;
   min-height: 160px;
   text-align: left;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .class-card::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  inset: 0;
+  background: var(--glass-highlight);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease;
   pointer-events: none;
   border-radius: inherit;
   z-index: 0;
@@ -306,56 +291,42 @@ button:disabled {
   opacity: 1;
 }
 
-/* Glow laranja vindo de trás do card */
 .class-card::after {
   content: "";
   position: absolute;
   inset: -4px;
   border-radius: inherit;
   background: transparent;
-  box-shadow: 0 0 28px 10px var(--color-accent-glow);
+  box-shadow: 0 0 30px 10px var(--color-accent-glow);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.4s ease;
   z-index: -1;
   pointer-events: none;
 }
 
 .class-card:hover::after {
-  opacity: 1;
+  opacity: 0.6;
 }
 
 .class-card:hover {
-  transform: scale(1.04);
+  transform: scale(1.03) translateY(-2px);
   box-shadow: var(--shadow-elevated);
-  border-color: var(--color-accent-border);
+  border-color: var(--border-accent);
 }
 
 @keyframes cardSelect {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.06);
-    box-shadow:
-      0 0 0 4px var(--color-accent-glow),
-      0 20px 50px rgba(0, 0, 0, 0.6);
-  }
-  70% {
-    transform: scale(0.98);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  40% { transform: scale(1.05); box-shadow: 0 0 0 4px var(--color-accent-glow), 0 20px 50px hsla(0, 0%, 0%, 0.5); }
+  70% { transform: scale(0.98); }
+  100% { transform: scale(1); }
 }
 
 .class-card.selected {
   border-color: var(--color-accent);
-  background: rgba(249, 115, 22, 0.07);
-  box-shadow:
-    0 0 0 2px var(--color-accent-glow),
-    0 12px 30px rgba(0, 0, 0, 0.5);
+  background: hsla(25, 95%, 55%, 0.07);
+  box-shadow: 0 0 0 2px var(--color-accent-glow), 0 12px 30px hsla(0, 0%, 0%, 0.4);
   outline: none !important;
-  animation: cardSelect 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  animation: cardSelect 0.45s var(--transition-smooth) forwards;
 }
 
 .class-card:focus,
@@ -373,7 +344,7 @@ button:disabled {
 
 .class-card h3 {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(1.1rem, 2.2vh, 1.4rem);
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -400,18 +371,13 @@ button:disabled {
   transform: translate(-50%, -50%);
   width: 140%;
   height: 140%;
-  background: radial-gradient(
-    circle,
-    var(--color-accent-glow) 0%,
-    transparent 60%
-  );
+  background: radial-gradient(circle, var(--color-accent-glow) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: -1;
   border-radius: 50%;
 }
 
-/* Removed redundant radial glow */
 .class-card:hover .class-icon-placeholder::after,
 .class-card.selected .class-icon-placeholder::after {
   opacity: 0;
@@ -427,24 +393,22 @@ button:disabled {
 
 .class-card:hover .class-icon-image {
   transform: scale(1.15) rotate(5deg);
-  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.8)) brightness(1.2);
+  filter: drop-shadow(0 0 8px hsla(25, 95%, 55%, 0.7)) brightness(1.2);
 }
 
 .class-card.selected .class-icon-image {
-  filter: drop-shadow(0 0 12px rgba(249, 115, 22, 1)) brightness(1.3);
+  filter: drop-shadow(0 0 12px hsla(25, 95%, 55%, 0.9)) brightness(1.3);
   transform: scale(1.1);
 }
 
 .class-card p {
-  color: #a1a1aa;
+  color: var(--text-muted);
   font-size: clamp(0.65rem, 1.2vh, 0.88rem);
   line-height: 1.5;
   margin: 0;
   flex-grow: 1;
   font-weight: 400;
   word-break: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
 }
 
 .class-card-chevron {
@@ -455,9 +419,7 @@ button:disabled {
   font-weight: bold;
   font-size: clamp(1rem, 2vh, 1.4rem);
   opacity: 0.7;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .class-card:hover .class-card-chevron {
@@ -466,7 +428,7 @@ button:disabled {
 }
 
 .page-title {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: clamp(1.2rem, 2.5vh, 1.6rem);
   font-weight: 500;
   margin-bottom: 1.5vh;
@@ -485,32 +447,36 @@ button:disabled {
   flex-shrink: 0;
 }
 
+/* ── Advance Button ────────────────────────────────────────────────────── */
 .btn-avancar {
   background-color: transparent !important;
-  border: 1px solid var(--border-input-hover) !important;
+  border: 1px solid hsla(0, 0%, 100%, 0.15) !important;
   color: var(--text-secondary) !important;
   padding: 12px 32px !important;
-  border-radius: 30px !important;
+  border-radius: var(--radius-pill) !important;
   display: flex;
   align-items: center;
   gap: 12px;
   font-weight: 500 !important;
   font-size: 1.05rem !important;
-  transition: all var(--transition-speed) !important;
+  transition: all 0.3s var(--transition-smooth) !important;
+  backdrop-filter: blur(8px);
 }
 
 .btn-avancar:hover:not(:disabled) {
-  background-color: var(--surface-subtle-hover) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  color: #ffffff !important;
+  background-color: hsla(0, 0%, 100%, 0.06) !important;
+  border-color: hsla(0, 0%, 100%, 0.3) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 0 20px hsla(0, 0%, 100%, 0.05);
 }
 
 .btn-avancar:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
-  border-color: var(--border-input) !important;
+  border-color: hsla(0, 0%, 100%, 0.08) !important;
 }
 
+/* ── Help Tooltip ──────────────────────────────────────────────────────── */
 .help-tooltip {
   position: relative;
   display: inline-flex;
@@ -525,10 +491,10 @@ button:disabled {
   width: 28px;
   height: 28px;
   min-width: 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(249, 115, 22, 0.28);
-  background: rgba(249, 115, 22, 0.14);
-  color: #fdba74;
+  border-radius: var(--radius-pill);
+  border: 1px solid hsla(25, 95%, 55%, 0.25);
+  background: hsla(25, 95%, 55%, 0.1);
+  color: var(--color-accent-light);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -536,13 +502,15 @@ button:disabled {
   font-weight: 700;
   padding: 0;
   box-shadow: none;
+  transition: all 0.2s var(--transition-smooth);
 }
 
 .help-tooltip-trigger:hover,
 .help-tooltip-trigger:focus-visible {
-  background: rgba(249, 115, 22, 0.22);
-  border-color: rgba(249, 115, 22, 0.45);
+  background: hsla(25, 95%, 55%, 0.18);
+  border-color: hsla(25, 95%, 55%, 0.4);
   transform: translateY(-1px);
+  box-shadow: 0 0 12px hsla(25, 95%, 55%, 0.15);
 }
 
 .help-tooltip-trigger-chip {
@@ -550,7 +518,7 @@ button:disabled {
   min-width: 0;
   height: auto;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.74rem;
   letter-spacing: 0.03em;
 }
@@ -562,17 +530,15 @@ button:disabled {
   min-width: min(320px, 82vw);
   max-width: min(360px, 82vw);
   background: var(--surface-tooltip);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-lg);
-  box-shadow:
-    var(--shadow-elevated),
-    0 0 0 1px var(--border-subtle);
+  box-shadow: var(--shadow-elevated), 0 0 0 1px var(--border-subtle);
   text-align: left;
   animation: tooltipEntrance 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   z-index: var(--z-tooltip);
-  padding: 12px 14px;
+  padding: 14px 16px;
 }
 
 .help-tooltip-title {
@@ -588,6 +554,7 @@ button:disabled {
   line-height: 1.55;
 }
 
+/* ── Modal ─────────────────────────────────────────────────────────────── */
 .app-modal-surface {
   position: relative;
   width: min(800px, 92vw);
@@ -596,7 +563,9 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: var(--surface-card);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-elevated);
@@ -604,23 +573,13 @@ button:disabled {
 }
 
 @keyframes tooltipEntrance {
-  0% {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.96); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes overlayFadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .modal-overlay {
@@ -630,54 +589,47 @@ button:disabled {
   right: 0;
   bottom: 0;
   background: var(--surface-overlay);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: var(--z-overlay);
-  animation: overlayFadeIn 0.4s ease forwards;
+  animation: overlayFadeIn 0.35s ease forwards;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
 
-/* Custom Scrollbar */
+/* ── Custom Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(26, 27, 35, 0.5);
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-accent-border-strong);
-  border-radius: 4px;
+  background: hsla(0, 0%, 100%, 0.12);
+  border-radius: var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 115, 22, 0.8);
+  background: hsla(0, 0%, 100%, 0.2);
 }
 
-/* ── Global accordion interactivity cues ── */
+/* ── Accordion ─────────────────────────────────────────────────────────── */
 details > summary {
   list-style: none;
-  transition: background 0.18s ease;
+  transition: background 0.2s ease;
 }
-details > summary::-webkit-details-marker {
-  display: none;
-}
-details > summary:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-details[open] > summary {
-  background: rgba(255, 255, 255, 0.025);
-}
-/* Rotating chevron for SpeciesDetails Accordion and App.tsx summary-chevron */
+details > summary::-webkit-details-marker { display: none; }
+details > summary:hover { background: hsla(0, 0%, 100%, 0.04); }
+details[open] > summary { background: hsla(0, 0%, 100%, 0.025); }
+
 .accordion-chevron,
 .summary-chevron {
-  transition: transform 0.25s ease;
+  transition: transform 0.25s var(--transition-smooth);
   display: inline-block;
 }
 details[open] > summary .accordion-chevron,
@@ -686,42 +638,20 @@ details[open] > summary .summary-chevron {
 }
 
 @keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Dice Rolling Animation */
+/* ── Dice Animation ────────────────────────────────────────────────────── */
 @keyframes diceRoll {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  15% {
-    transform: rotate(50deg) scale(1.15);
-  }
-  30% {
-    transform: rotate(-35deg) scale(0.92);
-  }
-  45% {
-    transform: rotate(55deg) scale(1.1);
-  }
-  60% {
-    transform: rotate(-25deg) scale(0.96);
-  }
-  75% {
-    transform: rotate(30deg) scale(1.05);
-  }
-  90% {
-    transform: rotate(-8deg) scale(1);
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
-  }
+  0% { transform: rotate(0deg) scale(1); }
+  15% { transform: rotate(50deg) scale(1.15); }
+  30% { transform: rotate(-35deg) scale(0.92); }
+  45% { transform: rotate(55deg) scale(1.1); }
+  60% { transform: rotate(-25deg) scale(0.96); }
+  75% { transform: rotate(30deg) scale(1.05); }
+  90% { transform: rotate(-8deg) scale(1); }
+  100% { transform: rotate(0deg) scale(1); }
 }
 
 .dice-rolling {
@@ -729,10 +659,10 @@ details[open] > summary .summary-chevron {
   animation: diceRoll 0.7s ease-in-out infinite;
 }
 
-/* Premium Select Styling */
+/* ── Premium Select ────────────────────────────────────────────────────── */
 .premium-select {
   appearance: none;
-  background-color: rgba(17, 18, 24, 0.6);
+  background-color: var(--surface-input);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-input);
@@ -744,7 +674,7 @@ details[open] > summary .summary-chevron {
   font-weight: 500;
   width: 100%;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s var(--transition-smooth);
   box-shadow: var(--shadow-input);
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
@@ -760,9 +690,7 @@ details[open] > summary .summary-chevron {
 .premium-select:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow:
-    0 0 0 1px var(--color-accent),
-    0 4px 16px rgba(249, 115, 22, 0.15);
+  box-shadow: var(--shadow-focus-accent), 0 4px 16px hsla(25, 95%, 55%, 0.1);
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='18 15 12 9 6 15'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
@@ -784,24 +712,24 @@ details[open] > summary .summary-chevron {
   font-style: italic;
 }
 
-/* Header Name Section Redesign - Refined for Dark Theme */
+/* ── Character Name Input ──────────────────────────────────────────────── */
 .character-name-input {
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: hsla(0, 0%, 0%, 0.25) !important;
   border: 1px solid var(--border-input) !important;
-  border-radius: var(--radius-sm) !important;
-  padding: 8px 12px !important;
+  border-radius: var(--radius-md) !important;
+  padding: 8px 14px !important;
   color: var(--text-primary) !important;
   font-size: 1.1rem !important;
   width: 100%;
   max-width: 450px;
   outline: none;
-  transition: all 0.2s;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.25s var(--transition-smooth);
+  box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.2) !important;
 }
 
 .character-name-input:focus {
   border-color: var(--color-accent) !important;
-  background: rgba(0, 0, 0, 0.3) !important;
+  background: hsla(0, 0%, 0%, 0.35) !important;
   box-shadow: var(--shadow-focus-accent) !important;
 }
 
@@ -855,11 +783,12 @@ details[open] > summary .summary-chevron {
 
 .suggestion-separator {
   margin: 0 10px;
-  color: #475569;
+  color: var(--text-faint);
   font-size: 0.8rem;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
+/* ── Portrait Picker ───────────────────────────────────────────────────── */
 .portrait-picker-header {
   display: flex;
   align-items: flex-start;
@@ -869,7 +798,7 @@ details[open] > summary .summary-chevron {
 }
 
 .portrait-picker-header h2 {
-  color: #f97316;
+  color: var(--color-accent);
   margin-bottom: 8px;
 }
 
@@ -886,23 +815,24 @@ details[open] > summary .summary-chevron {
   padding: 4px 10px;
   line-height: 1;
   font-size: 1.5rem;
+  border-radius: var(--radius-md);
 }
 
 .portrait-picker-close:hover {
   color: var(--text-primary);
+  background: hsla(0, 0%, 100%, 0.05);
 }
 
 .portrait-picker-tip {
   margin: 0 20px;
   padding: 10px 12px;
   border-radius: var(--radius-md);
-  background: rgba(249, 115, 22, 0.08);
-  border: 1px solid rgba(249, 115, 22, 0.18);
-  color: #fed7aa;
+  background: hsla(25, 95%, 55%, 0.06);
+  border: 1px solid hsla(25, 95%, 55%, 0.15);
+  color: var(--color-accent-light);
   font-size: 0.82rem;
 }
 
-/* Portrait Picker Modal Styles */
 .portrait-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -918,20 +848,21 @@ details[open] > summary .summary-chevron {
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s var(--transition-smooth);
   background: var(--surface-dark);
   padding: 0;
   box-shadow: none;
 }
 
 .portrait-item:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
   border-color: var(--color-accent);
+  box-shadow: 0 0 16px hsla(25, 95%, 55%, 0.15);
 }
 
 .portrait-item.selected {
   border-color: var(--color-accent);
-  box-shadow: 0 0 10px var(--color-accent-border);
+  box-shadow: 0 0 16px var(--color-accent-glow);
 }
 
 .portrait-item img {
@@ -940,31 +871,27 @@ details[open] > summary .summary-chevron {
   object-fit: cover;
 }
 
-/* ── Microinterações: Transição de etapas ───────────────────────────────── */
-
-/* Fade-in com leve deslocamento horizontal (para frente) */
+/* ── Step Transitions ──────────────────────────────────────────────────── */
 @keyframes stepEnterForward {
   from { opacity: 0; transform: translateX(12px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Fade-in com leve deslocamento horizontal (para trás) */
 @keyframes stepEnterBack {
   from { opacity: 0; transform: translateX(-12px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Pulse discreto para badges de pendência */
 @keyframes badgePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
-  50%       { box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18); }
+  0%, 100% { box-shadow: 0 0 0 0 hsla(25, 95%, 55%, 0); }
+  50%       { box-shadow: 0 0 0 4px hsla(25, 95%, 55%, 0.15); }
 }
 
 .badge-pulse {
   animation: badgePulse 2.4s ease-in-out infinite;
 }
 
-/* Indicador de autosave */
+/* ── Save Indicator ────────────────────────────────────────────────────── */
 @keyframes savedFade {
   0%   { opacity: 0; transform: translateY(4px); }
   15%  { opacity: 1; transform: translateY(0); }
@@ -974,43 +901,36 @@ details[open] > summary .summary-chevron {
 
 .saved-indicator {
   position: fixed;
-  bottom: 20px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #86efac;
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success-light);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 999px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
   pointer-events: none;
   z-index: var(--z-tooltip);
   animation: savedFade 2.2s ease-out forwards;
+  backdrop-filter: blur(12px);
 }
 
-/* Hover mais rico para cards selectionáveis */
-.selectable-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-}
-
-/* Inputs com transição de foco mais suave */
+/* ── Focus States ──────────────────────────────────────────────────────── */
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.12);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--shadow-focus-accent);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ── Accessibility: Reduced Motion ── */
+/* ── Accessibility ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
