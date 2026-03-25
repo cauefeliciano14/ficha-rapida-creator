@@ -1,5 +1,5 @@
 .shellFrame {
-  max-width: 1520px;
+  max-width: 1500px;
   width: 100%;
 }
 
@@ -15,10 +15,10 @@
 
   display: grid;
   grid-template-columns:
-    minmax(200px, 230px)
+    minmax(200px, 220px)
     minmax(0, 1fr)
-    minmax(230px, 270px);
-  gap: clamp(14px, 1.5vw, 22px);
+    minmax(220px, 260px);
+  gap: clamp(12px, 1.4vw, 20px);
   flex: 1;
   min-height: 0;
   align-items: start;
@@ -29,12 +29,12 @@
   grid-template-columns:
     var(--creator-collapsed-rail-size)
     minmax(0, 1fr)
-    minmax(230px, 270px);
+    minmax(220px, 260px);
 }
 
 .shellSummaryCollapsed {
   grid-template-columns:
-    minmax(200px, 230px)
+    minmax(200px, 220px)
     minmax(0, 1fr)
     var(--creator-collapsed-rail-size);
 }
@@ -46,7 +46,11 @@
     var(--creator-collapsed-rail-size);
 }
 
-/* ── Glass panel base ─────────────────────────────────────────────────────── */
+.shellFullSheet {
+  display: block;
+}
+
+/* ── Column base styles ───────────────────────────────────────────────────── */
 .sidebar,
 .summary,
 .main {
@@ -56,29 +60,14 @@
 
 .sidebar,
 .summary {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: 18px;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: rgba(17, 18, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 16px;
-  transition: padding 0.25s var(--transition-smooth), background 0.25s ease;
-  box-shadow: var(--shadow-glass);
-  overflow: hidden;
-}
-
-/* Subtle highlight shimmer on panels */
-.sidebar::before,
-.summary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--glass-highlight);
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
+  transition: padding 0.22s ease;
 }
 
 .main {
@@ -87,29 +76,27 @@
 }
 
 .mainInner {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: clamp(18px, 2vw, 24px);
+  background: rgba(17, 18, 24, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: clamp(16px, 1.8vw, 20px);
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-glass);
-  position: relative;
-  overflow: hidden;
 }
 
-.mainInner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--glass-highlight);
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
+/* Modificadores para Tela Cheia (Ficha) */
+.mainFullSheet {
+  margin: calc(-1 * clamp(12px, 1.4vw, 20px));
+  margin-top: -16px;
+}
+
+.mainInnerFullSheet {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
 }
 
 /* ── Collapsed panel state ───────────────────────────────────────────────── */
@@ -129,23 +116,21 @@
   min-height: var(--creator-collapsed-control-size);
   background: transparent;
   border: none;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   color: var(--text-muted);
   cursor: pointer;
   font-size: var(--creator-collapsed-control-font-size);
   margin-bottom: 10px;
   padding: 0;
-  transition: color 0.2s;
+  transition: color 0.15s;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;
 }
 
 .collapseToggle:hover {
   color: var(--color-accent-light);
 }
 
-/* Collapsed strip */
+/* Collapsed strip — only shows the toggle */
 .collapsedStrip {
   display: flex;
   flex-direction: column;
@@ -161,21 +146,20 @@
   width: var(--creator-collapsed-control-size);
   min-width: var(--creator-collapsed-control-size);
   height: var(--creator-collapsed-control-size);
-  background: hsla(0, 0%, 100%, 0.05);
-  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   color: var(--text-muted);
   cursor: pointer;
   font-size: var(--creator-collapsed-control-font-size);
-  transition: all 0.2s var(--transition-smooth);
+  transition: background 0.15s, color 0.15s;
   padding: 0;
 }
 
 .collapsedExpandBtn:hover {
-  background: hsla(25, 95%, 55%, 0.12);
+  background: rgba(249, 115, 22, 0.1);
   color: var(--color-accent-light);
-  border-color: hsla(25, 95%, 55%, 0.3);
-  box-shadow: var(--shadow-glow-accent);
+  border-color: rgba(249, 115, 22, 0.25);
 }
 
 .collapsedStepDot {
@@ -190,45 +174,43 @@
   font-weight: 700;
   line-height: 1;
   padding: 0;
-  transition: all 0.2s var(--transition-smooth);
 }
 
 .collapsedDotComplete {
   background: var(--color-success-bg);
-  color: hsl(142, 69%, 58%);
+  color: #4ade80;
 }
 
 .collapsedDotPending {
   background: var(--color-accent-subtle);
-  color: hsl(25, 95%, 65%);
+  color: #fb923c;
 }
 
 .collapsedDotIdle {
-  background: hsla(215, 16%, 60%, 0.12);
+  background: rgba(148, 163, 184, 0.12);
   color: var(--text-muted);
 }
 
 .collapsedDotActive {
-  background: hsla(25, 95%, 55%, 0.2);
+  background: rgba(249, 115, 22, 0.25);
   color: var(--color-accent);
-  border: 1px solid hsla(25, 95%, 55%, 0.4);
-  box-shadow: 0 0 12px hsla(25, 95%, 55%, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.4);
 }
 
 /* ── Responsive breakpoints ─────────────────────────────────────────────── */
 @media (max-width: 1280px) {
   .shell {
     grid-template-columns:
-      minmax(180px, 210px)
+      minmax(180px, 200px)
       minmax(0, 1fr)
-      minmax(210px, 250px);
+      minmax(200px, 240px);
   }
 }
 
 @media (max-width: 1060px) {
   .shell {
     grid-template-columns:
-      minmax(170px, 200px)
+      minmax(170px, 190px)
       minmax(0, 1fr);
   }
 
@@ -240,7 +222,7 @@
   .shellSidebarCollapsed,
   .shellSummaryCollapsed,
   .shellBothCollapsed {
-    grid-template-columns: minmax(170px, 200px) minmax(0, 1fr);
+    grid-template-columns: minmax(170px, 190px) minmax(0, 1fr);
   }
 }
 

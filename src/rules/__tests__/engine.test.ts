@@ -148,8 +148,8 @@ describe('Golden Test 3 — Paladino Anão (Guarda)', () => {
 
   const sheet = deriveSheet(choices);
 
-  it('MaxHP = 12 (base 10 + CON mod 2)', () => expect(sheet.maxHP).toBe(12));
-  it('Iniciativa = -1 (DEX 8)', () => expect(sheet.initiative).toBe(-1));
+  it('MaxHP = 13 (base 10 + CON mod 2 + tenacidade anã)', () => expect(sheet.maxHP).toBe(13));
+  it('Iniciativa = +1 (DEX 8 + talento Alerta)', () => expect(sheet.initiative).toBe(1));
   it('CA sem armadura = 9 (10 - 1)', () => expect(sheet.armorClass).toBe(9));
   it('Bônus de Proficiência = +2', () => expect(sheet.proficiencyBonus).toBe(2));
   it('É conjurador', () => expect(sheet.isCaster).toBe(true));
@@ -197,7 +197,7 @@ describe('Golden Test 4 — Ladino Pequenino (Criminoso)', () => {
 
   it('MaxHP = 9 (base 8 + CON mod 1)', () => expect(sheet.maxHP).toBe(9));
   it('CA sem armadura = 13 (10 + DEX +3)', () => expect(sheet.armorClass).toBe(13));
-  it('Iniciativa = +3', () => expect(sheet.initiative).toBe(3));
+  it('Iniciativa = +5 (DEX + talento Alerta)', () => expect(sheet.initiative).toBe(5));
   it('Bônus de Proficiência = +2', () => expect(sheet.proficiencyBonus).toBe(2));
   it('Não é conjurador', () => expect(sheet.isCaster).toBe(false));
   it('Hit Die = 1d8', () => expect(sheet.hitDie).toBe('1d8'));
@@ -358,6 +358,60 @@ describe('Ferramenta do antecedente escolhida', () => {
 // Escolhas de espécie — humano perícia extra, elfo truque racial
 // ===========================================================================
 describe('Escolhas de espécie no engine', () => {
+
+  it('aasimar recebe resistências celestiais e truque Luz', () => {
+    const sheet = deriveSheet(makeChoices({ speciesId: 'aasimar' }));
+    expect(sheet.derivedDefenses).toEqual(expect.arrayContaining(['Resistência a Necrótico', 'Resistência a Radiante']));
+    expect(sheet.racialCantrips).toContain('Luz');
+  });
+
+  it('gnomo do bosque ganha magia preparada racial sustentada na ficha', () => {
+    const sheet = deriveSheet(makeChoices({
+      speciesId: 'gnomo',
+      speciesLineage: 'gnomo-do-bosque',
+      featureChoices: { gnomo: 'gnomo-do-bosque' },
+    }));
+    expect(sheet.racialCantrips).toContain('Ilusão Menor');
+    expect(sheet.bonusPreparedSpells).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Falar com Animais', source: 'species' }),
+    ]));
+  });
+
+  it('talento Habilidoso adiciona perícias e ferramentas à ficha', () => {
+    const sheet = deriveSheet(makeChoices({
+      backgroundId: 'charlatao',
+      talentSelections: {
+        Habilidoso: {
+          pick1: 'Percepção',
+          pick2: 'Ferramentas de Ladrão',
+          pick3: 'Atletismo',
+        },
+      },
+    }));
+    expect(sheet.skillProficiencies).toEqual(expect.arrayContaining(['Percepção', 'Atletismo']));
+    expect(sheet.toolProficiencies).toContain('Ferramentas de Ladrão');
+  });
+
+  it('iniciado em magia adiciona truques e magia preparada extra', () => {
+    const sheet = deriveSheet(makeChoices({
+      backgroundId: 'acolito',
+      talentSelections: {
+        'Iniciado em Magia (Clérigo)': {
+          spellcastingAbility: 'Sabedoria',
+          cantrip1: 'Luz',
+          cantrip2: 'Taumaturgia',
+          level1Spell: 'Bênção',
+        },
+      },
+    }));
+    expect(sheet.bonusCantrips).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Luz', source: 'talent' }),
+      expect.objectContaining({ name: 'Taumaturgia', source: 'talent' }),
+    ]));
+    expect(sheet.bonusPreparedSpells).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Bênção', source: 'talent' }),
+    ]));
+  });
   it('humano com perícia extra → aparece em skillProficiencies', () => {
     const sheet = deriveSheet(makeChoices({
       classId: 'guerreiro',
@@ -398,5 +452,56 @@ describe('Escolhas de espécie no engine', () => {
       speciesChoices: { draconato: 'vermelho' },
     }));
     expect(sheet.derivedDefenses).toContain('Resistência a Ígneo');
+  });
+
+  it('golias com ancestralidade escolhida → traço derivado aparece na ficha', () => {
+    const sheet = deriveSheet(makeChoices({
+      speciesId: 'golias',
+      speciesChoices: { golias: 'pedra' },
+      featureChoices: { golias: 'pedra' },
+    }));
+    expect(sheet.derivedTraits).toEqual(expect.arrayContaining([
+      expect.stringContaining('Porte Poderoso'),
+      expect.stringContaining('Resistência da Pedra'),
+    ]));
+  });
+
+  it('orc → traços de nível 1 ficam registrados como efeitos derivados', () => {
+    const sheet = deriveSheet(makeChoices({ speciesId: 'orc' }));
+    expect(sheet.specialSenses).toContain('Visão no Escuro (36 metros)');
+    expect(sheet.derivedTraits).toEqual(expect.arrayContaining([
+      expect.stringContaining('Pico de Adrenalina'),
+      expect.stringContaining('Vigor Implacável'),
+    ]));
+  });
+
+  it('pequenino → traços raciais relevantes aparecem como efeitos derivados', () => {
+    const sheet = deriveSheet(makeChoices({ speciesId: 'pequenino' }));
+    expect(sheet.derivedTraits).toEqual(expect.arrayContaining([
+      expect.stringContaining('Corajoso'),
+      expect.stringContaining('Sorte'),
+      expect.stringContaining('Furtividade Natural'),
+    ]));
+  });
+
+  it('anão → adiciona PV por nível e sentido especial de sismiconsciência', () => {
+    const sheet = deriveSheet(makeChoices({ speciesId: 'anao' }));
+    expect(sheet.maxHP).toBe(1);
+    expect(sheet.specialSenses).toContain('Sismiconsciência (18 metros, por 10 minutos ao tocar pedra)');
+  });
+
+  it('humano com Atacante Selvagem → talento aplicado gera nota derivada', () => {
+    const sheet = deriveSheet(makeChoices({
+      speciesId: 'humano',
+      featureChoices: {
+        'humano-talent': 'Atacante Selvagem',
+      },
+    }));
+    expect(sheet.activeTalents).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Atacante Selvagem', source: 'species' }),
+    ]));
+    expect(sheet.derivedTraits).toEqual(expect.arrayContaining([
+      expect.stringContaining('rolar os dados de dano da arma duas vezes'),
+    ]));
   });
 });
