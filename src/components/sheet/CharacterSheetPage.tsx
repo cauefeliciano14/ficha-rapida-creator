@@ -274,7 +274,7 @@ export function CharacterSheetPage({
           {/* PB + Speed */}
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             {statCard('PROFICIÊNCIA', signedMod(derivedSheet.proficiencyBonus))}
-            {statCard('DESLOCAMENTO', derivedSheet.speed + 'm')}
+            {statCard('DESLOC.', derivedSheet.speed.replace('metros', 'mts').replace('metro', 'mt'))}
           </div>
 
           {/* Heroic Inspiration */}
