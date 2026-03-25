@@ -277,6 +277,8 @@ export function CharacterSheetPage({
             <AbilityScoreCards
               finalAttributes={derivedSheet.finalAttributes}
               modifiers={derivedSheet.modifiers}
+              baseAttributes={baseAttributes}
+              bonusDistribution={bonusDistribution}
               onRoll={diceRoll}
             />
           </div>
