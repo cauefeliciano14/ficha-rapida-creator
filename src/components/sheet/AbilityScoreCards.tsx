@@ -15,24 +15,33 @@ function signedMod(n: number): string {
 interface AbilityScoreCardsProps {
   finalAttributes: Record<string, number>;
   modifiers: Record<string, number>;
+  onRoll?: (label: string, type: string, modifier: number) => void;
 }
 
-export function AbilityScoreCards({ finalAttributes, modifiers }: AbilityScoreCardsProps) {
+export function AbilityScoreCards({ finalAttributes, modifiers, onRoll }: AbilityScoreCardsProps) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px', alignItems: 'stretch' }}>
-      {ABILITY_LABELS.map(({ key, label }) => {
+      {ABILITY_LABELS.map(({ key, label, abbr }) => {
         const score = finalAttributes[key] ?? 8;
         const mod = modifiers[key] ?? 0;
         return (
-          <div key={key} style={{
-            position: 'relative',
-            width: '64px',
-            height: '76px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <div
+            key={key}
+            onClick={() => onRoll?.(label, `${abbr} CHECK`, mod)}
+            style={{
+              position: 'relative',
+              width: '64px',
+              height: '76px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: onRoll ? 'pointer' : 'default',
+              transition: 'transform 0.1s',
+            }}
+            onMouseEnter={e => { if (onRoll) e.currentTarget.style.transform = 'scale(1.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+          >
             {/* Hexagon Border Hack */}
             <div style={{
               position: 'absolute',

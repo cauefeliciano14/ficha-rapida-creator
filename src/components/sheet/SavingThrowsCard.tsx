@@ -6,6 +6,11 @@ const ATTR_LABELS: Record<string, string> = {
   inteligencia: 'Inteligência', sabedoria: 'Sabedoria', carisma: 'Carisma',
 };
 
+const ATTR_ABBR: Record<string, string> = {
+  forca: 'FOR', destreza: 'DES', constituicao: 'CON',
+  inteligencia: 'INT', sabedoria: 'SAB', carisma: 'CAR',
+};
+
 function signedMod(n: number): string {
   return n >= 0 ? `+${n}` : `${n}`;
 }
@@ -14,9 +19,10 @@ interface SavingThrowsCardProps {
   derivedSavingThrows: DerivedSavingThrow[];
   modifiers?: Record<string, number>;
   proficiencyBonus?: number;
+  onRoll?: (label: string, type: string, modifier: number) => void;
 }
 
-export function SavingThrowsCard({ derivedSavingThrows, modifiers, proficiencyBonus }: SavingThrowsCardProps) {
+export function SavingThrowsCard({ derivedSavingThrows, modifiers, proficiencyBonus, onRoll }: SavingThrowsCardProps) {
   const [hoveredST, setHoveredST] = useState<string | null>(null);
 
   return (
@@ -31,16 +37,22 @@ export function SavingThrowsCard({ derivedSavingThrows, modifiers, proficiencyBo
           return (
             <div
               key={st.attribute}
+              onClick={() => onRoll?.(
+                ATTR_LABELS[st.attribute] ?? st.attribute,
+                `${ATTR_ABBR[st.attribute] ?? shortLabel} SAVE`,
+                st.modifier
+              )}
               style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'space-between',
                 position: 'relative',
                 height: '36px',
-                cursor: 'default',
+                cursor: onRoll ? 'pointer' : 'default',
+                transition: 'transform 0.1s',
               }}
-              onMouseEnter={() => setHoveredST(st.attribute)}
-              onMouseLeave={() => setHoveredST(null)}
+              onMouseEnter={(e) => { setHoveredST(st.attribute); if (onRoll) e.currentTarget.style.transform = 'scale(1.03)'; }}
+              onMouseLeave={(e) => { setHoveredST(null); e.currentTarget.style.transform = 'scale(1)'; }}
             >
               {/* Hexagon Border */}
               <div style={{
@@ -117,6 +129,9 @@ export function SavingThrowsCard({ derivedSavingThrows, modifiers, proficiencyBo
                     )}
                     {' = '}
                     <span style={{ color: '#f1f5f9', fontWeight: 700 }}>{signedMod(st.modifier)}</span>
+                  </div>
+                  <div style={{ fontSize: '0.6rem', color: '#64748b', marginTop: '4px' }}>
+                    🎲 Clique para rolar
                   </div>
                 </div>
               )}
