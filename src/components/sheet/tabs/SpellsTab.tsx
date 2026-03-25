@@ -81,25 +81,6 @@ export function SpellsTab({
     .filter(l => (slots as Record<number, number>)[l] > 0)
     .sort((a, b) => a - b);
 
-  const handleSpendSlot = (level: number) => {
-    onUpdatePlayState(prev => ({
-      ...prev,
-      spentSpellSlots: {
-        ...prev.spentSpellSlots,
-        [level]: (prev.spentSpellSlots[level] ?? 0) + 1,
-      },
-    }));
-  };
-
-  const handleRestoreSlot = (level: number) => {
-    onUpdatePlayState(prev => ({
-      ...prev,
-      spentSpellSlots: {
-        ...prev.spentSpellSlots,
-        [level]: Math.max(0, (prev.spentSpellSlots[level] ?? 0) - 1),
-      },
-    }));
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
