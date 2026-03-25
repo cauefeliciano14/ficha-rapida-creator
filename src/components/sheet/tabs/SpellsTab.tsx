@@ -430,8 +430,6 @@ function filterPillStyle(active: boolean) {
   } as const;
 }
 
-  return {
-    background: enabled ? background : 'rgba(255,255,255,0.03)',
     border: `1px solid ${enabled ? border : '#7f1d1d'}`,
     borderRadius: '4px',
     color: enabled ? color : '#475569',
