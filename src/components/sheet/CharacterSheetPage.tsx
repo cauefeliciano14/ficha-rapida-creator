@@ -11,6 +11,8 @@ import { ConditionsCard } from './ConditionsCard';
 import { DefensesCard } from './DefensesCard';
 import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
+import { DiceRollToast } from './DiceRollToast';
+import { useDiceRoller } from './useDiceRoller';
 import styles from './CharacterSheetPage.module.css';
 
 interface Feature { level: number; name: string; description: string }
@@ -70,6 +72,7 @@ export function CharacterSheetPage({
   onEquipArmor,
   onEquipShield,
 }: CharacterSheetPageProps) {
+  const { rolls, roll: diceRoll, dismiss: dismissRoll } = useDiceRoller();
   const [shortRestOpen, setShortRestOpen] = useState(false);
   const [hdCount, setHdCount] = useState('1');
   const [hpInput, setHpInput] = useState('');
@@ -201,6 +204,7 @@ export function CharacterSheetPage({
 
   return (
     <div className={styles.page}>
+      <DiceRollToast rolls={rolls} characterName={characterName} onDismiss={dismissRoll} />
       
       {/* ===== TOP BAR (DASHBOARD SUPERIOR) ===== */}
       <div className={styles.topBar}>
@@ -268,6 +272,7 @@ export function CharacterSheetPage({
             <AbilityScoreCards
               finalAttributes={derivedSheet.finalAttributes}
               modifiers={derivedSheet.modifiers}
+              onRoll={diceRoll}
             />
           </div>
 
@@ -375,6 +380,7 @@ export function CharacterSheetPage({
               derivedSavingThrows={derivedSheet.derivedSavingThrows}
               modifiers={derivedSheet.modifiers}
               proficiencyBonus={derivedSheet.proficiencyBonus}
+              onRoll={diceRoll}
             />
           </div>
           
@@ -411,6 +417,7 @@ export function CharacterSheetPage({
               skills={derivedSheet.skills}
               modifiers={derivedSheet.modifiers}
               proficiencyBonus={derivedSheet.proficiencyBonus}
+              onRoll={diceRoll}
             />
           </div>
 

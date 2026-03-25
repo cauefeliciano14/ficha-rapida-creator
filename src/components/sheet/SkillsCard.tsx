@@ -19,9 +19,10 @@ interface SkillsCardProps {
   skills: DerivedSkill[];
   modifiers?: Record<string, number>;
   proficiencyBonus?: number;
+  onRoll?: (label: string, type: string, modifier: number) => void;
 }
 
-export function SkillsCard({ skills, modifiers, proficiencyBonus }: SkillsCardProps) {
+export function SkillsCard({ skills, modifiers, proficiencyBonus, onRoll }: SkillsCardProps) {
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
   return (
@@ -43,6 +44,7 @@ export function SkillsCard({ skills, modifiers, proficiencyBonus }: SkillsCardPr
           return (
             <div
               key={skill.label}
+              onClick={() => onRoll?.(skill.label, `${ATTR_ABBR[skill.attribute] ?? ''} CHECK`, skill.modifier)}
               style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
@@ -50,7 +52,7 @@ export function SkillsCard({ skills, modifiers, proficiencyBonus }: SkillsCardPr
                 background: hoveredSkill === skill.label ? 'rgba(255,255,255,0.03)' : 'transparent',
                 borderBottom: '1px solid rgba(255,255,255,0.03)',
                 position: 'relative',
-                cursor: 'default',
+                cursor: onRoll ? 'pointer' : 'default',
               }}
               onMouseEnter={() => setHoveredSkill(skill.label)}
               onMouseLeave={() => setHoveredSkill(null)}
@@ -124,6 +126,9 @@ export function SkillsCard({ skills, modifiers, proficiencyBonus }: SkillsCardPr
                     )}
                     {' = '}
                     <span style={{ color: '#f1f5f9', fontWeight: 700 }}>{signedMod(skill.modifier)}</span>
+                  </div>
+                  <div style={{ fontSize: '0.6rem', color: '#64748b', marginTop: '4px' }}>
+                    🎲 Clique para rolar
                   </div>
                 </div>
               )}

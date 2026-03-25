@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { D6_CONDITIONS } from '../../rules/calculators/sheet';
 
 interface ConditionsCardProps {
@@ -8,88 +7,57 @@ interface ConditionsCardProps {
 }
 
 export function ConditionsCard({ activeConditions, onAdd, onRemove }: ConditionsCardProps) {
-  const [selected, setSelected] = useState('');
-
-  const available = D6_CONDITIONS.filter(c => !activeConditions.includes(c));
-
-  const handleAdd = () => {
-    if (selected && !activeConditions.includes(selected)) {
-      onAdd(selected);
-      setSelected('');
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {activeConditions.length === 0 && (
-          <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Adicionar ativas...</div>
-        )}
-        {activeConditions.map(c => (
-          <div key={c} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            background: 'rgba(248,113,113,0.15)',
-            border: '1px solid rgba(248,113,113,0.3)',
-            borderRadius: '12px',
-            padding: '2px 8px',
-          }}>
-            <span style={{ fontSize: '0.75rem', color: '#f1f5f9' }}>{c}</span>
-            <button
-              onClick={() => onRemove(c)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#f87171',
-                cursor: 'pointer',
-                padding: '0 2px',
-                fontSize: '0.7rem',
-                lineHeight: 1,
-              }}
-            >
-              ✕
-            </button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      {D6_CONDITIONS.map(condition => {
+        const isActive = activeConditions.includes(condition);
+        return (
+          <div
+            key={condition}
+            onClick={() => isActive ? onRemove(condition) : onAdd(condition)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '4px 8px',
+              cursor: 'pointer',
+              borderBottom: '1px solid rgba(255,255,255,0.03)',
+              background: isActive ? 'rgba(248,113,113,0.08)' : 'transparent',
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
+            onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.85rem', color: isActive ? '#f87171' : '#94a3b8' }}>
+                {condition}
+              </span>
+            </div>
+            
+            {/* Toggle switch */}
+            <div style={{
+              width: '36px',
+              height: '20px',
+              borderRadius: '10px',
+              background: isActive ? '#991b1b' : 'rgba(255,255,255,0.1)',
+              position: 'relative',
+              transition: 'background 0.2s',
+              flexShrink: 0,
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: '2px',
+                left: isActive ? '18px' : '2px',
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                background: isActive ? '#f87171' : '#475569',
+                transition: 'left 0.2s, background 0.2s',
+              }} />
+            </div>
           </div>
-        ))}
-      </div>
-
-      <div style={{ display: 'flex', gap: '6px' }}>
-        <select
-          value={selected}
-          onChange={e => setSelected(e.target.value)}
-          style={{
-            flex: 1,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '6px',
-            color: selected ? '#f1f5f9' : '#64748b',
-            padding: '4px 8px',
-            fontSize: '0.8rem',
-          }}
-        >
-          <option value="">Adicionar condição…</option>
-          {available.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        <button
-          onClick={handleAdd}
-          disabled={!selected}
-          style={{
-            background: 'rgba(167,139,250,0.15)',
-            border: '1px solid rgba(167,139,250,0.3)',
-            borderRadius: '6px',
-            color: selected ? '#a78bfa' : '#475569',
-            padding: '4px 10px',
-            fontSize: '0.8rem',
-            cursor: selected ? 'pointer' : 'default',
-          }}
-        >
-          +
-        </button>
-      </div>
+        );
+      })}
     </div>
   );
 }
