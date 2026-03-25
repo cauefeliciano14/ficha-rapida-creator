@@ -9,6 +9,7 @@ import { ProficienciesCard } from './ProficienciesCard';
 import { SkillsCard } from './SkillsCard';
 import { ConditionsCard } from './ConditionsCard';
 import { DefensesCard } from './DefensesCard';
+import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
 import styles from './CharacterSheetPage.module.css';
 
@@ -312,8 +313,21 @@ export function CharacterSheetPage({
                 <input type="number" min="0" value={tempInput} onChange={e => setTempInput(e.target.value)} placeholder="Temp" style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
                 <button onClick={handleSetTemp} style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '6px', color: '#38bdf8', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>TEMP</button>
               </div>
+              </div>
+
+              {/* Death Saves - only show when HP is 0 or always available */}
+              {playState.currentHp === 0 && (
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '8px', paddingTop: '4px' }}>
+                  <div style={{ fontSize: '0.6rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '2px' }}>
+                    TESTES CONTRA A MORTE
+                  </div>
+                  <DeathSavesCard
+                    deathSaves={playState.deathSaves}
+                    onUpdatePlayState={onUpdatePlayState}
+                  />
+                </div>
+              )}
             </div>
-          </div>
 
         </div>
 
@@ -357,7 +371,11 @@ export function CharacterSheetPage({
         <div className={styles.colLeft}>
           <div className={styles.redBox}>
             <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
-            <SavingThrowsCard derivedSavingThrows={derivedSheet.derivedSavingThrows} />
+            <SavingThrowsCard
+              derivedSavingThrows={derivedSheet.derivedSavingThrows}
+              modifiers={derivedSheet.modifiers}
+              proficiencyBonus={derivedSheet.proficiencyBonus}
+            />
           </div>
           
           <div className={styles.redBox}>
@@ -389,7 +407,11 @@ export function CharacterSheetPage({
           {/* Coluna da Esquerda do Painel Direito (Skills) */}
           <div className={styles.redBox} style={{ width: '250px', flexShrink: 0 }}>
             <div className={styles.sectionHeader}>PERÍCIAS ⚙</div>
-            <SkillsCard skills={derivedSheet.skills} />
+            <SkillsCard
+              skills={derivedSheet.skills}
+              modifiers={derivedSheet.modifiers}
+              proficiencyBonus={derivedSheet.proficiencyBonus}
+            />
           </div>
 
           {/* Coluna da Direita do Painel Direito (Tabs) */}
