@@ -6,7 +6,6 @@ import { getSpeciesTraits, getSpeciesName } from '../../rules/data/speciesRules'
 import { ITEM_COST_MAP } from '../../data/itemCostMap';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
-import type { BackgroundBonusDistribution, AttributeKey } from '../../rules/types/CharacterChoices';
 
 export const CharacterSheetStep: React.FC = () => {
   const {
