@@ -204,6 +204,7 @@ export function CharacterSheetPage({
 
   return (
     <div className={styles.page}>
+      <DiceRollToast rolls={rolls} characterName={characterName} onDismiss={dismissRoll} />
       
       {/* ===== TOP BAR (DASHBOARD SUPERIOR) ===== */}
       <div className={styles.topBar}>
@@ -271,6 +272,7 @@ export function CharacterSheetPage({
             <AbilityScoreCards
               finalAttributes={derivedSheet.finalAttributes}
               modifiers={derivedSheet.modifiers}
+              onRoll={diceRoll}
             />
           </div>
 
@@ -378,6 +380,7 @@ export function CharacterSheetPage({
               derivedSavingThrows={derivedSheet.derivedSavingThrows}
               modifiers={derivedSheet.modifiers}
               proficiencyBonus={derivedSheet.proficiencyBonus}
+              onRoll={diceRoll}
             />
           </div>
           
@@ -414,6 +417,7 @@ export function CharacterSheetPage({
               skills={derivedSheet.skills}
               modifiers={derivedSheet.modifiers}
               proficiencyBonus={derivedSheet.proficiencyBonus}
+              onRoll={diceRoll}
             />
           </div>
 
