@@ -17,6 +17,7 @@ export const CharacterSheetStep: React.FC = () => {
     setPlayState,
     selectedBackground,
     validationResult,
+    choices,
   } = useCharacter();
 
   const {
