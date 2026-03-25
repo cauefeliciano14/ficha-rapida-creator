@@ -428,3 +428,4 @@ function filterPillStyle(active: boolean) {
     cursor: 'pointer',
     transition: 'background 0.2s',
   } as const;
+}
