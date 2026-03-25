@@ -430,7 +430,6 @@ function filterPillStyle(active: boolean) {
   } as const;
 }
 
-function slotButtonStyle(enabled: boolean, background: string, border: string, color: string) {
   return {
     background: enabled ? background : 'rgba(255,255,255,0.03)',
     border: `1px solid ${enabled ? border : '#7f1d1d'}`,
