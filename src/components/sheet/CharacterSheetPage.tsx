@@ -136,6 +136,9 @@ export function CharacterSheetPage({
     }
   };
 
+  // Temp HP is used in the HP panel below
+  void handleSetTemp;
+
   const handleAddCondition = (condition: string) => {
     onUpdatePlayState((prev) => ({
       ...prev,
