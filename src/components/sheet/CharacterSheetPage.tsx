@@ -136,9 +136,6 @@ export function CharacterSheetPage({
     }
   };
 
-  // Temp HP is used in the HP panel below
-  void handleSetTemp;
-
   const handleAddCondition = (condition: string) => {
     onUpdatePlayState((prev) => ({
       ...prev,
@@ -308,9 +305,12 @@ export function CharacterSheetPage({
               </div>
 
               <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <input type="number" min="0" value={hpInput} onChange={e => setHpInput(e.target.value)} style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
-                <button onClick={handleHeal} style={{ flex: 1, background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '6px', color: '#4ade80', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Curar</button>
-                <button onClick={handleDamage} style={{ flex: 1, background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: '6px', color: '#f87171', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Dano</button>
+                <input type="number" min="0" value={hpInput} onChange={e => setHpInput(e.target.value)} placeholder="HP" style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
+                <button onClick={handleHeal} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '6px', color: '#4ade80', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>CURAR</button>
+                <button onClick={handleDamage} style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: '6px', color: '#f87171', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>DANO</button>
+                <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+                <input type="number" min="0" value={tempInput} onChange={e => setTempInput(e.target.value)} placeholder="Temp" style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
+                <button onClick={handleSetTemp} style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '6px', color: '#38bdf8', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>TEMP</button>
               </div>
             </div>
           </div>
