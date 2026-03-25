@@ -124,43 +124,74 @@ export function SpellsTab({
         <div style={{
           background: 'rgba(17,18,24,0.6)',
           border: '1px solid rgba(255,255,255,0.07)',
-          borderRadius: '10px',
+          borderRadius: '6px',
           padding: '12px 14px',
         }}>
-          <div style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 600, letterSpacing: '0.08em', marginBottom: '10px' }}>
+          <div style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.08em', marginBottom: '10px' }}>
             ESPAÇOS DE MAGIA
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {slotLevels.map(level => {
               const total = (slots as Record<number, number>)[level] ?? 0;
               const spent = playState.spentSpellSlots[level] ?? 0;
-              const remaining = total - spent;
               return (
                 <div key={level} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#94a3b8', minWidth: '60px' }}>
-                    {level}º círculo
+                  <span style={{ fontSize: '0.75rem', color: '#f1f5f9', fontWeight: 800, minWidth: '22px' }}>
+                    {level}º
                   </span>
-                  <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
-                    {Array.from({ length: total }, (_, i) => (
-                      <div key={i} style={{
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%',
-                        border: '2px solid rgba(167,139,250,0.4)',
-                        background: i < remaining ? 'rgba(167,139,250,0.4)' : 'transparent',
-                        transition: 'background 0.2s',
-                      }} />
-                    ))}
+                  <div style={{ display: 'flex', gap: '6px', flex: 1 }}>
+                    {Array.from({ length: total }, (_, i) => {
+                      const isUsed = i < spent;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            if (isUsed) {
+                              // Clicking a used slot restores it
+                              onUpdatePlayState(prev => ({
+                                ...prev,
+                                spentSpellSlots: {
+                                  ...prev.spentSpellSlots,
+                                  [level]: Math.max(0, (prev.spentSpellSlots[level] ?? 0) - 1),
+                                },
+                              }));
+                            } else {
+                              // Clicking an available slot spends it
+                              onUpdatePlayState(prev => ({
+                                ...prev,
+                                spentSpellSlots: {
+                                  ...prev.spentSpellSlots,
+                                  [level]: (prev.spentSpellSlots[level] ?? 0) + 1,
+                                },
+                              }));
+                            }
+                          }}
+                          style={{
+                            width: '22px',
+                            height: '22px',
+                            borderRadius: '4px',
+                            border: `2px solid ${isUsed ? '#475569' : '#991b1b'}`,
+                            background: isUsed ? 'transparent' : '#991b1b',
+                            cursor: 'pointer',
+                            padding: 0,
+                            transition: 'all 0.15s',
+                            boxShadow: isUsed ? 'none' : '0 0 6px rgba(153,27,27,0.4)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                          title={isUsed ? `Restaurar slot ${level}º círculo` : `Gastar slot ${level}º círculo`}
+                        >
+                          {isUsed && (
+                            <span style={{ color: '#475569', fontSize: '0.7rem', fontWeight: 900 }}>✕</span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: '#475569', minWidth: '40px' }}>
-                    {remaining}/{total}
+                  <span style={{ fontSize: '0.7rem', color: '#64748b', minWidth: '32px', textAlign: 'right' }}>
+                    {total - spent}/{total}
                   </span>
-                  <button onClick={() => handleSpendSlot(level)} disabled={remaining <= 0} style={slotButtonStyle(remaining > 0, 'rgba(248,113,113,0.15)', 'rgba(248,113,113,0.2)', '#f87171')}>
-                    Gastar
-                  </button>
-                  <button onClick={() => handleRestoreSlot(level)} disabled={spent <= 0} style={slotButtonStyle(spent > 0, 'rgba(74,222,128,0.1)', 'rgba(74,222,128,0.2)', '#4ade80')}>
-                    Restaurar
-                  </button>
                 </div>
               );
             })}
