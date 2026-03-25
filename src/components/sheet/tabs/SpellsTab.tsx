@@ -69,7 +69,7 @@ function componentsAbbrev(comp: string): string {
   return parts.join('/');
 }
 
-function getSpellEffect(sp: SpellInfo, spellAttackBonus: number, modValue: number): { text: string; isAttack: boolean; saveDC?: string } {
+function getSpellEffect(sp: SpellInfo, _spellAttackBonus: number, modValue: number): { text: string; isAttack: boolean; saveDC?: string } {
   const desc = sp.description?.toLowerCase() ?? '';
   const dmg = sp.damage;
 
@@ -188,7 +188,6 @@ export function SpellsTab({
   }
 
   const slots = derivedSheet.spellSlots ?? {};
-  const slotLevels = Object.keys(slots).map(Number).filter(l => (slots as Record<number, number>)[l] > 0).sort((a, b) => a - b);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
