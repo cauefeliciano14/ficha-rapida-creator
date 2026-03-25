@@ -18,7 +18,7 @@ import styles from './CharacterSheetPage.module.css';
 
 interface Feature { level: number; name: string; description: string }
 interface Trait { title: string; description: string }
-interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string }
+interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string; weight?: string }
 
 interface CharacterSheetPageProps {
   characterName: string;
