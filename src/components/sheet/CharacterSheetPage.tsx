@@ -72,6 +72,7 @@ export function CharacterSheetPage({
   onEquipArmor,
   onEquipShield,
 }: CharacterSheetPageProps) {
+  const { rolls, roll: diceRoll, dismiss: dismissRoll } = useDiceRoller();
   const [shortRestOpen, setShortRestOpen] = useState(false);
   const [hdCount, setHdCount] = useState('1');
   const [hpInput, setHpInput] = useState('');
