@@ -652,67 +652,7 @@ export const SpeciesDetails: React.FC<SpeciesDetailsProps> = ({ character, setCh
         {species.id === 'humano' && <HumanoTamanho choices={choices} setChoice={setChoice} />}
         {species.id === 'tiferino' && <TiferinoTamanho choices={choices} setChoice={setChoice} />}
 
-        {/* Languages accordion (moved up for better visibility) */}
-        <details style={{ ...accordionWrap, border: manualLangs.length < 2 ? '1px solid rgba(249,115,22,0.5)' : '1px solid rgba(255,255,255,0.06)' }}>
-          <summary style={summaryBase}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-              {manualLangs.length < 2 && badgeCircle}
-              <span>Idiomas</span>
-            </div>
-            <span style={{ fontSize: '0.75rem', color: manualLangs.length === 2 ? '#10b981' : '#64748b', fontWeight: 400 }}>
-              {manualLangs.length === 2 ? '✓ 2 selecionados' : `${manualLangs.length}/2 escolhidos ▾`}
-            </span>
-          </summary>
-          <div style={{ padding: '0 16px 16px 16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <p style={{ margin: 0, fontSize: '0.875rem', color: '#cbd5e1', lineHeight: 1.6 }}>
-              Seu personagem conhece pelo menos três idiomas: <strong style={{ color: '#f1f5f9' }}>Comum</strong> e mais dois idiomas à sua escolha da tabela abaixo.
-            </p>
-            {classLangs.length > 0 && (
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {classLangs.map(l => (
-                  <span key={l} style={{ padding: '5px 12px', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '20px', fontSize: '0.8rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    ✓ {allLangs.find((x: any) => x.id === l)?.name || l}
-                    <span style={{ fontSize: '0.65rem', background: '#f97316', color: '#000', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 'bold' }}>Da Classe</span>
-                  </span>
-                ))}
-              </div>
-            )}
-            <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
-                <thead>
-                  <tr><th style={thStyle}>Idioma</th><th style={thStyle}>Origem</th></tr>
-                </thead>
-                <tbody>
-                  {(languagesData.common || []).map((lang: any, i: number) => (
-                    <tr key={lang.id} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
-                      <td style={{ padding: '7px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)', color: '#e2e8f0' }}>{lang.name}</td>
-                      <td style={{ padding: '7px 14px', borderBottom: '1px solid rgba(255,255,255,0.04)', color: '#94a3b8' }}>{lang.origin}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {([0, 1] as const).map(idx => (
-                <select key={idx} className="premium-select"
-                  value={manualLangs[idx] || ''}
-                  onChange={e => handleLangDropdown(idx, e.target.value)}
-                  style={{ ...selectStyle, border: manualLangs[idx] ? '1px solid rgba(249,115,22,0.5)' : '1px solid rgba(255,255,255,0.15)', color: manualLangs[idx] ? '#fff' : '#64748b' }}
-                >
-                  <option value="">– Escolha um idioma comum –</option>
-                  {selectableLangs
-                    .filter((l: any) => !manualLangs.includes(l.id) || manualLangs[idx] === l.id)
-                    .map((lang: any) => <option key={lang.id} value={lang.id}>{lang.name}</option>)}
-                </select>
-              ))}
-            </div>
-            <div style={{ fontSize: '0.8rem', color: manualLangs.length === 2 ? '#10b981' : '#f97316', textAlign: 'right' }}>
-              {manualLangs.length === 2 ? '✓ 2 idiomas selecionados' : `Escolha mais ${2 - manualLangs.length} idioma${2 - manualLangs.length > 1 ? 's' : ''}`}
-            </div>
-          </div>
-        </details>
-
-        {/* Lineage/ancestry sections (before or between traits) */}
+        {/* Lineage/ancestry sections */}
         {species.id === 'aasimar' && species.lineage && <AasimarRevelacao species={species} />}
         {species.id === 'draconato' && species.lineage && <DraconatoLineage species={species} choices={choices} setChoice={setChoice} />}
         {species.id === 'elfo' && species.lineage && <ElfoLinhagem species={species} choices={choices} setChoice={setChoice} />}
