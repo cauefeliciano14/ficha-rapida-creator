@@ -3,6 +3,7 @@ import type { DerivedSheet } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../../types/playState';
 import spellsAll from '../../../data/spells/spells_all.json';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ABILITY_LABELS: Record<string, string> = {
   inteligencia: 'Inteligência', sabedoria: 'Sabedoria', carisma: 'Carisma',
   forca: 'Força', destreza: 'Destreza', constituicao: 'Constituição',
