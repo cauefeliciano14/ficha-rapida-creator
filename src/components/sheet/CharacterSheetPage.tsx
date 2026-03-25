@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DerivedSheet } from '../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../types/playState';
+import type { BackgroundBonusDistribution } from '../../rules/types/CharacterChoices';
 import { SheetHeader } from './SheetHeader';
 import { AbilityScoreCards } from './AbilityScoreCards';
 import { SavingThrowsCard } from './SavingThrowsCard';
@@ -17,7 +18,7 @@ import styles from './CharacterSheetPage.module.css';
 
 interface Feature { level: number; name: string; description: string }
 interface Trait { title: string; description: string }
-interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string }
+interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string; weight?: string }
 
 interface CharacterSheetPageProps {
   characterName: string;
@@ -42,6 +43,8 @@ interface CharacterSheetPageProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
+  baseAttributes: Record<string, number>;
+  bonusDistribution: BackgroundBonusDistribution | null;
 }
 
 function signedMod(n: number): string {
@@ -71,6 +74,8 @@ export function CharacterSheetPage({
   hasShieldEquipped,
   onEquipArmor,
   onEquipShield,
+  baseAttributes,
+  bonusDistribution,
 }: CharacterSheetPageProps) {
   const { rolls, roll: diceRoll, dismiss: dismissRoll } = useDiceRoller();
   const [shortRestOpen, setShortRestOpen] = useState(false);
@@ -272,6 +277,8 @@ export function CharacterSheetPage({
             <AbilityScoreCards
               finalAttributes={derivedSheet.finalAttributes}
               modifiers={derivedSheet.modifiers}
+              baseAttributes={baseAttributes}
+              bonusDistribution={bonusDistribution}
               onRoll={diceRoll}
             />
           </div>

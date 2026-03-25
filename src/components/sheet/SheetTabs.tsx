@@ -23,7 +23,7 @@ const TABS: Array<{ id: TabId; label: string }> = [
 
 interface Feature { level: number; name: string; description: string }
 interface Trait { title: string; description: string }
-interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string }
+interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string; weight?: string }
 
 interface SheetTabsProps {
   derivedSheet: DerivedSheet;

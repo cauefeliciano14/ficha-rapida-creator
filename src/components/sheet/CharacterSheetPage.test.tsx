@@ -65,6 +65,8 @@ function renderSheet(choices: CharacterChoices, spellState?: { learnedCantrips?:
         hasShieldEquipped={false}
         onEquipArmor={() => {}}
         onEquipShield={() => {}}
+        baseAttributes={choices.baseAttributes}
+        bonusDistribution={choices.backgroundBonusDistribution}
       />
     );
   });

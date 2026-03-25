@@ -3,7 +3,7 @@ import classDetailsData from '../../data/classDetails.json';
 import { CharacterSheetPage } from '../sheet/CharacterSheetPage';
 import { StepLayout } from './StepLayout';
 import { getSpeciesTraits, getSpeciesName } from '../../rules/data/speciesRules';
-import { ITEM_COST_MAP } from '../../data/itemCostMap';
+import { ITEM_COST_MAP, ITEM_WEIGHT_MAP } from '../../data/itemCostMap';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 
@@ -17,6 +17,7 @@ export const CharacterSheetStep: React.FC = () => {
     setPlayState,
     selectedBackground,
     validationResult,
+    choices,
   } = useCharacter();
 
   const {
@@ -66,6 +67,7 @@ export const CharacterSheetStep: React.FC = () => {
         inventory={character.equipment.inventory.map((item: any) => ({
           ...item,
           cost: item.cost ?? ITEM_COST_MAP.get(item.name),
+          weight: item.weight ?? ITEM_WEIGHT_MAP.get(item.name),
         }))}
         learnedCantrips={character.spells.learnedCantrips}
         preparedSpells={character.spells.preparedSpells}
@@ -78,6 +80,8 @@ export const CharacterSheetStep: React.FC = () => {
         hasShieldEquipped={character.equipment.hasShieldEquipped}
         onEquipArmor={(armorId) => setCharacter(prev => ({ ...prev, equipment: { ...prev.equipment, equippedArmorId: armorId } }))}
         onEquipShield={(equipped) => setCharacter(prev => ({ ...prev, equipment: { ...prev.equipment, hasShieldEquipped: equipped } }))}
+        baseAttributes={choices.baseAttributes}
+        bonusDistribution={choices.backgroundBonusDistribution}
       />
     </StepLayout>
   );
