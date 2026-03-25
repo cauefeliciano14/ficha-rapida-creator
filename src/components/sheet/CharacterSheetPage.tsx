@@ -43,6 +43,8 @@ interface CharacterSheetPageProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
+  baseAttributes: Record<string, number>;
+  bonusDistribution: BackgroundBonusDistribution | null;
 }
 
 function signedMod(n: number): string {
@@ -72,6 +74,8 @@ export function CharacterSheetPage({
   hasShieldEquipped,
   onEquipArmor,
   onEquipShield,
+  baseAttributes,
+  bonusDistribution,
 }: CharacterSheetPageProps) {
   const { rolls, roll: diceRoll, dismiss: dismissRoll } = useDiceRoller();
   const [shortRestOpen, setShortRestOpen] = useState(false);
