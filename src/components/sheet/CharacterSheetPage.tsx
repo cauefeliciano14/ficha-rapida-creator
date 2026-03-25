@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DerivedSheet } from '../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../types/playState';
+import type { BackgroundBonusDistribution } from '../../rules/types/CharacterChoices';
 import { SheetHeader } from './SheetHeader';
 import { AbilityScoreCards } from './AbilityScoreCards';
 import { SavingThrowsCard } from './SavingThrowsCard';
