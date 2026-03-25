@@ -79,6 +79,8 @@ export const CharacterSheetStep: React.FC = () => {
         hasShieldEquipped={character.equipment.hasShieldEquipped}
         onEquipArmor={(armorId) => setCharacter(prev => ({ ...prev, equipment: { ...prev.equipment, equippedArmorId: armorId } }))}
         onEquipShield={(equipped) => setCharacter(prev => ({ ...prev, equipment: { ...prev.equipment, hasShieldEquipped: equipped } }))}
+        baseAttributes={choices.baseAttributes}
+        bonusDistribution={choices.backgroundBonusDistribution}
       />
     </StepLayout>
   );
