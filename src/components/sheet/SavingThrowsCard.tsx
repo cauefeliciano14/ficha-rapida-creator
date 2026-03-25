@@ -40,6 +40,21 @@ export function SavingThrowsCard({ derivedSavingThrows }: SavingThrowsCardProps)
                 zIndex: 2,
               }} />
 
+              {/* Proficiency dot */}
+              <div style={{
+                position: 'absolute',
+                left: '-6px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                background: isProf ? '#dc2626' : 'transparent',
+                border: isProf ? 'none' : '2px solid rgba(255,255,255,0.2)',
+                boxShadow: isProf ? '0 0 8px rgba(220,38,38,0.6)' : 'none',
+                zIndex: 5,
+              }} />
+
               <div style={{ position: 'relative', zIndex: 3, display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', padding: '0 14px' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#f1f5f9' }}>
                   {shortLabel}
@@ -56,6 +71,17 @@ export function SavingThrowsCard({ derivedSavingThrows }: SavingThrowsCardProps)
             </div>
           );
         })}
+      </div>
+      
+      {/* Subtitle like D&D Beyond */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginTop: '12px', 
+        fontSize: '0.7rem', 
+        color: '#64748b', 
+        fontStyle: 'italic' 
+      }}>
+        Modificadores de Testes de Resistência
       </div>
     </div>
   );
