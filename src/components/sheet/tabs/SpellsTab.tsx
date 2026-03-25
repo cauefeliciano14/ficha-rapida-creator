@@ -428,13 +428,3 @@ function filterPillStyle(active: boolean) {
     cursor: 'pointer',
     transition: 'background 0.2s',
   } as const;
-}
-    borderRadius: '4px',
-    color: enabled ? color : '#475569',
-    padding: '2px 8px',
-    fontSize: '0.65rem',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    cursor: enabled ? 'pointer' : 'default',
-  } as const;
-}
