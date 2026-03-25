@@ -429,8 +429,6 @@ function filterPillStyle(active: boolean) {
     transition: 'background 0.2s',
   } as const;
 }
-
-    border: `1px solid ${enabled ? border : '#7f1d1d'}`,
     borderRadius: '4px',
     color: enabled ? color : '#475569',
     padding: '2px 8px',
