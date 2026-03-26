@@ -326,20 +326,124 @@
 }
 
 @media (max-width: 900px) {
-  .combatRow,
-  .statusRow {
-    flex-wrap: wrap;
+  .page {
+    padding: 10px;
   }
+
+  .combatRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .abilityGroup {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .miniStatsGroup {
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .inspBox {
+    align-self: center;
+  }
+
+  .hpSection {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .statusRow {
+    flex-direction: column;
+  }
+
+  .combatStats {
+    justify-content: center;
+    width: 100%;
+  }
+
   .panelsGroup {
     flex-direction: column;
   }
+
   .bottomGrid {
     flex-direction: column;
   }
+
   .colLeft,
   .colMiddle,
   .colRight {
     width: 100%;
     min-width: 0;
+  }
+
+  .hpActions {
+    flex-wrap: wrap;
+  }
+
+  .headerRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .restButtons {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .restBtn {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+
+  .shortRestPanel {
+    flex-wrap: wrap;
+  }
+
+  .statCard {
+    height: 64px;
+    width: 64px;
+  }
+
+  .statCardValue {
+    font-size: 1.1rem;
+  }
+}
+
+/* Extra-small mobile */
+@media (max-width: 420px) {
+  .page {
+    padding: 6px;
+  }
+
+  .container {
+    gap: 12px;
+  }
+
+  .statCard {
+    height: 56px;
+    width: 56px;
+  }
+
+  .statCardValue {
+    font-size: 1rem;
+  }
+
+  .statCardLabel {
+    font-size: 0.45rem;
+  }
+
+  .sectionHeader {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+  }
+
+  .redBox {
+    padding: 12px 8px;
   }
 }
