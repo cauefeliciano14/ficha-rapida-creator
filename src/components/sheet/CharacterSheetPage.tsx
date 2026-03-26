@@ -181,29 +181,9 @@ export function CharacterSheetPage({
   const hpColor = hpPercent > 50 ? '#4ade80' : hpPercent > 25 ? '#fbbf24' : '#f87171';
 
   const statCard = (label: string, value: string, isShield: boolean = false) => (
-    <div
-      style={{
-        background: 'rgba(14, 14, 18, 0.9)',
-        border: '2px solid #991b1b',
-        borderRadius: isShield ? '16px 16px 4px 4px' : '4px',
-        padding: '8px 10px',
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        height: '76px',
-        width: '76px',
-        boxSizing: 'border-box',
-        gap: '4px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.5)',
-      }}
-    >
-      <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#f1f5f9', lineHeight: 1 }}>
-        {value}
-      </div>
-      <div style={{ fontSize: '0.55rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.05em' }}>
-        {label}
-      </div>
+    <div className={`${styles.statCard} ${isShield ? styles.statCardShield : ''}`}>
+      <div className={styles.statCardValue}>{value}</div>
+      <div className={styles.statCardLabel}>{label}</div>
     </div>
   );
 
@@ -211,11 +191,10 @@ export function CharacterSheetPage({
     <div className={styles.page}>
       <DiceRollToast rolls={rolls} characterName={characterName} onDismiss={dismissRoll} />
       
-      {/* ===== TOP BAR (DASHBOARD SUPERIOR) ===== */}
-      <div className={styles.topBar}>
-        
-        {/* ROW 1: Portrait e Rests */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%', marginBottom: '16px' }}>
+      <div className={styles.container}>
+
+        {/* === ROW 1: Header + Rest Buttons === */}
+        <div className={styles.headerRow}>
           <SheetHeader
             name={characterName}
             portrait={portrait}
@@ -223,57 +202,38 @@ export function CharacterSheetPage({
             className={className}
             level={characterLevel}
           />
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className={styles.restButtons}>
             <button
+              className={`${styles.restBtn} ${shortRestOpen ? styles.restBtnActive : ''}`}
               onClick={() => setShortRestOpen(prev => !prev)}
-              style={{
-                background: shortRestOpen ? 'rgba(153,27,27,0.3)' : 'rgba(14,14,18,0.8)',
-                border: `1px solid ${shortRestOpen ? '#dc2626' : '#991b1b'}`,
-                borderRadius: '4px',
-                color: shortRestOpen ? '#fca5a5' : '#e2e8f0',
-                padding: '4px 16px',
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                fontWeight: 700,
-              }}
             >
               DESCANSO CURTO
             </button>
-            <button
-              onClick={handleLongRest}
-              style={{
-                background: 'rgba(14,14,18,0.8)',
-                border: '1px solid #991b1b',
-                borderRadius: '4px',
-                color: '#e2e8f0',
-                padding: '4px 16px',
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                fontWeight: 700,
-              }}
-            >
+            <button className={styles.restBtn} onClick={handleLongRest}>
               DESCANSO LONGO
             </button>
           </div>
         </div>
 
-        {/* Short Rest Overlay */}
+        {/* Short Rest Panel */}
         {shortRestOpen && (
-          <div className={styles.redBox} style={{ padding: '12px 16px', marginBottom: '16px' }}>
+          <div className={styles.redBox} style={{ padding: '12px 16px' }}>
             <div className={styles.sectionHeader}>DESCANSO CURTO</div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className={styles.shortRestPanel}>
               <span style={{ fontSize: '0.85rem', color: '#e2e8f0' }}>Dado(s):</span>
-              <input type="number" min="1" value={hdCount} onChange={e => setHdCount(e.target.value)} style={{ width: '60px', background: 'rgba(0,0,0,0.3)', border: '1px solid #7f1d1d', borderRadius: '4px', color: '#f1f5f9', padding: '6px 10px' }} />
-              <button onClick={handleShortRest} style={{ background: '#991b1b', border: 'none', borderRadius: '4px', color: 'white', padding: '6px 14px', cursor: 'pointer', fontWeight: 600 }}>Recuperar PV</button>
+              <input type="number" min="1" value={hdCount} onChange={e => setHdCount(e.target.value)}
+                className={styles.hpInput} style={{ width: '60px' }} />
+              <button onClick={handleShortRest}
+                style={{ background: '#991b1b', border: 'none', borderRadius: '4px', color: 'white', padding: '6px 14px', cursor: 'pointer', fontWeight: 600 }}>
+                Recuperar PV
+              </button>
             </div>
           </div>
         )}
 
-        {/* ROW 2: Stats Row - Abilities, PB, Speed, Heroic Insp, HP */}
-        <div className={styles.statsRow}>
-
-          {/* Atributos */}
-          <div style={{ width: '380px', display: 'flex', alignItems: 'center' }}>
+        {/* === ROW 2: Attributes + PB/Speed + Inspiration + HP === */}
+        <div className={styles.combatRow}>
+          <div className={styles.abilityGroup}>
             <AbilityScoreCards
               finalAttributes={derivedSheet.finalAttributes}
               modifiers={derivedSheet.modifiers}
@@ -283,77 +243,64 @@ export function CharacterSheetPage({
             />
           </div>
 
-          {/* PB + Speed */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className={styles.miniStatsGroup}>
             {statCard('PROFICIÊNCIA', signedMod(derivedSheet.proficiencyBonus))}
             {statCard('DESLOC.', derivedSheet.speed.replace('metros', 'mts').replace('metro', 'mt'))}
           </div>
 
-          {/* Heroic Inspiration */}
-          <div className={styles.redBox} style={{ width: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 8px' }}>
+          <div className={`${styles.redBox} ${styles.inspBox}`} style={{ width: '52px', padding: '16px 8px' }}>
             <div className={styles.sectionHeader} style={{ fontSize: '0.55rem', padding: '4px 6px' }}>INSP.<br/>HEROICA</div>
-            <div style={{ width: '24px', height: '24px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid #7f1d1d' }}></div>
+            <div style={{ width: '24px', height: '24px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid #7f1d1d' }} />
           </div>
 
-          {/* HP Panel */}
-          <div style={{ flex: 1 }}>
-            <div className={styles.redBox} style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column' }}>
+          <div className={styles.hpSection}>
+            <div className={styles.redBox} style={{ padding: '12px 14px' }}>
               <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px' }}>
-                 <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800 }}>ATUAL</span>
-                 <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800 }}>MÁXIMO</span>
-                 <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800 }}>TEMP</span>
+              <div className={styles.hpLabels}>
+                <span className={styles.hpLabelText}>ATUAL</span>
+                <span className={styles.hpLabelText}>MÁXIMO</span>
+                <span className={styles.hpLabelText}>TEMP</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '8px' }}>
+              <div className={styles.hpValues}>
                 <span style={{ fontSize: '1.6rem', fontWeight: 900, color: hpColor }}>{playState.currentHp}</span>
                 <span style={{ color: '#475569', fontSize: '1.2rem', fontWeight: 900 }}>/</span>
                 <span style={{ fontSize: '1.3rem', color: '#cbd5e1', fontWeight: 800 }}>{effectiveMaxHP}</span>
                 <span style={{ fontSize: '1.2rem', color: '#cbd5e1', fontWeight: 800 }}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
               </div>
 
-              <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', marginBottom: '10px' }}>
-                <div style={{ height: '100%', width: `${Math.min(hpPercent, 100)}%`, background: hpColor, borderRadius: '2px', transition: 'width 0.3s ease' }} />
+              <div className={styles.hpBar}>
+                <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
               </div>
 
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <input type="number" min="0" value={hpInput} onChange={e => setHpInput(e.target.value)} placeholder="HP" style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
-                <button onClick={handleHeal} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '6px', color: '#4ade80', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>CURAR</button>
-                <button onClick={handleDamage} style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: '6px', color: '#f87171', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>DANO</button>
-                <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
-                <input type="number" min="0" value={tempInput} onChange={e => setTempInput(e.target.value)} placeholder="Temp" style={{ width: '50px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#f1f5f9', padding: '4px 6px', fontSize: '0.8rem' }} />
-                <button onClick={handleSetTemp} style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '6px', color: '#38bdf8', padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>TEMP</button>
+              <div className={styles.hpActions}>
+                <input type="number" min="0" value={hpInput} onChange={e => setHpInput(e.target.value)} placeholder="HP" className={styles.hpInput} />
+                <button onClick={handleHeal} className={`${styles.hpActionBtn} ${styles.healBtn}`}>CURAR</button>
+                <button onClick={handleDamage} className={`${styles.hpActionBtn} ${styles.damageBtn}`}>DANO</button>
+                <div className={styles.divider} />
+                <input type="number" min="0" value={tempInput} onChange={e => setTempInput(e.target.value)} placeholder="Temp" className={styles.hpInput} />
+                <button onClick={handleSetTemp} className={`${styles.hpActionBtn} ${styles.tempBtn}`}>TEMP</button>
               </div>
-              </div>
-
-              {/* Death Saves - only show when HP is 0 or always available */}
-              {playState.currentHp === 0 && (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '8px', paddingTop: '4px' }}>
-                  <div style={{ fontSize: '0.6rem', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '2px' }}>
-                    TESTES CONTRA A MORTE
-                  </div>
-                  <DeathSavesCard
-                    deathSaves={playState.deathSaves}
-                    onUpdatePlayState={onUpdatePlayState}
-                  />
-                </div>
-              )}
             </div>
 
+            {playState.currentHp === 0 && (
+              <div className={styles.deathSavesSection}>
+                <div className={styles.deathSavesLabel}>TESTES CONTRA A MORTE</div>
+                <DeathSavesCard deathSaves={playState.deathSaves} onUpdatePlayState={onUpdatePlayState} />
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* ROW 3: Sub-Row - Iniciativa, AC, Defesas, Condições */}
-        <div className={styles.subRow}>
-
-          {/* Iniciativa + AC */}
-          <div className={styles.subRowStatGroup}>
+        {/* === ROW 3: Initiative + AC + Defenses + Conditions === */}
+        <div className={styles.statusRow}>
+          <div className={styles.combatStats}>
             {statCard('INICIATIVA', signedMod(derivedSheet.initiative))}
-            {statCard('CLASSE ARMADURA', String(derivedSheet.armorClass), true)}
+            {statCard('CLASSE\nARMADURA', String(derivedSheet.armorClass), true)}
           </div>
 
-          {/* Defesas + Condições */}
-          <div className={styles.subRowPanels}>
+          <div className={styles.panelsGroup}>
             <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
               <div className={styles.sectionHeader}>DEFESAS</div>
               <DefensesCard
@@ -372,53 +319,42 @@ export function CharacterSheetPage({
               />
             </div>
           </div>
-
-        </div>
-      </div>
-
-      {/* ===== BOTTOM PANELS (SUB-PAINÉIS) ===== */}
-      <div className={styles.mainGrid} style={{ marginTop: '24px' }}>
-        
-        {/* Painel Esquerdo (Sub-painel 1) */}
-        <div className={styles.colLeft}>
-          <div className={styles.redBox}>
-            <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
-            <SavingThrowsCard
-              derivedSavingThrows={derivedSheet.derivedSavingThrows}
-              modifiers={derivedSheet.modifiers}
-              proficiencyBonus={derivedSheet.proficiencyBonus}
-              onRoll={diceRoll}
-            />
-          </div>
-          
-          <div className={styles.redBox}>
-            <div className={styles.sectionHeader}>SENTIDOS ⚙</div>
-            <SensesCard
-              passivePerception={derivedSheet.passivePerception}
-              passiveInvestigation={derivedSheet.passiveInvestigation}
-              passiveInsight={derivedSheet.passiveInsight}
-              specialSenses={derivedSheet.specialSenses}
-            />
-          </div>
-          
-          <div className={styles.redBox}>
-            <div className={styles.sectionHeader}>PROFICIÊNCIAS E TREINAMENTO ⚙</div>
-            <ProficienciesCard
-              skillProficiencies={derivedSheet.skillProficiencies}
-              armorProficiencies={derivedSheet.armorProficiencies}
-              weaponProficiencies={derivedSheet.weaponProficiencies}
-              toolProficiencies={derivedSheet.toolProficiencies}
-              languages={derivedSheet.languages}
-            />
-          </div>
         </div>
 
-        {/* Painel Direito (Sub-painel 2 - Maior) */}
-        {/* Usarei um agrupamento flex para Skins e Abas na direita, assumindo o restante da tela */}
-        <div style={{ flex: 1, display: 'flex', gap: '16px', minWidth: 0 }}>
-          
-          {/* Coluna da Esquerda do Painel Direito (Skills) */}
-          <div className={styles.redBox} style={{ width: '250px', flexShrink: 0 }}>
+        {/* === ROW 4: Bottom Grid === */}
+        <div className={styles.bottomGrid}>
+          <div className={styles.colLeft}>
+            <div className={styles.redBox}>
+              <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
+              <SavingThrowsCard
+                derivedSavingThrows={derivedSheet.derivedSavingThrows}
+                modifiers={derivedSheet.modifiers}
+                proficiencyBonus={derivedSheet.proficiencyBonus}
+                onRoll={diceRoll}
+              />
+            </div>
+            <div className={styles.redBox}>
+              <div className={styles.sectionHeader}>SENTIDOS ⚙</div>
+              <SensesCard
+                passivePerception={derivedSheet.passivePerception}
+                passiveInvestigation={derivedSheet.passiveInvestigation}
+                passiveInsight={derivedSheet.passiveInsight}
+                specialSenses={derivedSheet.specialSenses}
+              />
+            </div>
+            <div className={styles.redBox}>
+              <div className={styles.sectionHeader}>PROFICIÊNCIAS E TREINAMENTO ⚙</div>
+              <ProficienciesCard
+                skillProficiencies={derivedSheet.skillProficiencies}
+                armorProficiencies={derivedSheet.armorProficiencies}
+                weaponProficiencies={derivedSheet.weaponProficiencies}
+                toolProficiencies={derivedSheet.toolProficiencies}
+                languages={derivedSheet.languages}
+              />
+            </div>
+          </div>
+
+          <div className={`${styles.redBox} ${styles.colMiddle}`}>
             <div className={styles.sectionHeader}>PERÍCIAS ⚙</div>
             <SkillsCard
               skills={derivedSheet.skills}
@@ -428,8 +364,7 @@ export function CharacterSheetPage({
             />
           </div>
 
-          {/* Coluna da Direita do Painel Direito (Tabs) */}
-          <div className={styles.redBox} style={{ flex: 1, padding: '20px 12px', minWidth: '400px' }}>
+          <div className={`${styles.redBox} ${styles.colRight}`} style={{ padding: '20px 12px' }}>
             <SheetTabs
               derivedSheet={derivedSheet}
               playState={playState}
