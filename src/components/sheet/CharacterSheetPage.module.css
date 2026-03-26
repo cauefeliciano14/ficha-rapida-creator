@@ -16,32 +16,145 @@
   background-attachment: fixed;
 }
 
-.mainGrid {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 16px;
+.container {
   max-width: 1400px;
   margin: 0 auto;
-}
-
-.topBar {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1400px;
-  margin: 0 auto;
+}
+
+/* === ROW 1: Header + Rest Buttons === */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
 }
 
-/* Red Theme Global Box */
+.restButtons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.restBtn {
+  background: rgba(14, 14, 18, 0.8);
+  border: 1px solid #991b1b;
+  border-radius: 4px;
+  color: #e2e8f0;
+  padding: 4px 16px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.restBtn:hover {
+  background: rgba(153, 27, 27, 0.2);
+}
+
+.restBtnActive {
+  background: rgba(153, 27, 27, 0.3);
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+/* === ROW 2: Attributes + Stats + HP === */
+.combatRow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.abilityGroup {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.miniStatsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.miniStatsRow {
+  display: flex;
+  gap: 8px;
+}
+
+.inspBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hpSection {
+  flex: 1;
+  min-width: 280px;
+}
+
+/* === ROW 3: Initiative + AC + Defenses + Conditions === */
+.statusRow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.combatStats {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: stretch;
+}
+
+.panelsGroup {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* === ROW 4: Bottom 3-Column Layout === */
+.bottomGrid {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.colLeft {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.colMiddle {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.colRight {
+  flex: 1;
+  min-width: 400px;
+}
+
+/* === Red Theme Box === */
 .redBox {
   background: rgba(14, 14, 18, 0.9);
   border: 2px solid #991b1b;
   border-radius: 6px;
   padding: 16px;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
 }
 
 .sectionHeader {
@@ -61,88 +174,171 @@
   z-index: 2;
 }
 
-.colLeft {
-  width: 280px;
+/* === Stat Card (Initiative, AC, PB, Speed) === */
+.statCard {
+  background: rgba(14, 14, 18, 0.9);
+  border: 2px solid #991b1b;
+  border-radius: 4px;
+  padding: 8px 10px;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  flex-shrink: 0;
+  justify-content: center;
+  height: 76px;
+  width: 76px;
+  box-sizing: border-box;
+  gap: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-.colMiddle {
-  width: 250px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex-shrink: 0;
+.statCardShield {
+  border-radius: 16px 16px 4px 4px;
 }
 
-.colRight {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 440px;
+.statCardValue {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #f1f5f9;
+  line-height: 1;
 }
 
-.statsRow {
-  display: flex;
-  gap: 16px;
-  align-items: stretch;
-  width: 100%;
+.statCardLabel {
+  font-size: 0.55rem;
+  color: #94a3b8;
+  font-weight: 800;
+  letter-spacing: 0.05em;
 }
 
-.subRow {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  width: 100%;
-}
-
-.subRowStatGroup {
+/* === Short Rest Panel === */
+.shortRestPanel {
   display: flex;
   gap: 8px;
   align-items: center;
-  flex-shrink: 0;
 }
 
-.subRowPanels {
+/* === HP Panel internals === */
+.hpLabels {
   display: flex;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
+  justify-content: space-between;
+  padding: 0 4px;
 }
 
-.statGroupRight {
+.hpLabelText {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.hpValues {
   display: flex;
-  gap: 12px;
   align-items: center;
-  justify-content: flex-end;
-  flex: 1;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-bottom: 8px;
 }
 
-/* Tablets and small desktops */
+.hpBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+.hpBarFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.hpActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.hpInput {
+  width: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #f1f5f9;
+  padding: 4px 6px;
+  font-size: 0.8rem;
+}
+
+.hpActionBtn {
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.healBtn {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.damageBtn {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.tempBtn {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.deathSavesSection {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 8px;
+  padding-top: 4px;
+}
+
+.deathSavesLabel {
+  font-size: 0.6rem;
+  color: #94a3b8;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+/* === Responsive === */
 @media (max-width: 1300px) {
-  .mainGrid {
-    grid-template-columns: 280px 1fr;
+  .bottomGrid {
+    flex-wrap: wrap;
   }
   .colRight {
-    grid-column: 1 / -1;
+    min-width: 100%;
   }
 }
 
-/* Mobile */
 @media (max-width: 900px) {
-  .mainGrid {
-    grid-template-columns: 1fr;
-  }
-  .statsRow {
+  .combatRow,
+  .statusRow {
     flex-wrap: wrap;
   }
-  .subRow {
-    flex-wrap: wrap;
-  }
-  .subRowPanels {
+  .panelsGroup {
     flex-direction: column;
   }
-}
+  .bottomGrid {
+    flex-direction: column;
+  }
+  .colLeft,
+  .colMiddle,
+  .colRight {
+    width: 100%;
+    min-width: 0;
+  }
+}
