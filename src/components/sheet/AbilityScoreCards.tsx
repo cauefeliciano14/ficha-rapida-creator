@@ -28,7 +28,7 @@ export function AbilityScoreCards({ finalAttributes, modifiers, baseAttributes, 
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px', alignItems: 'stretch' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(56px, 1fr))', gap: '8px', alignItems: 'stretch', width: '100%' }}>
         {ABILITY_LABELS.map(({ key, label, abbr }) => {
           const score = finalAttributes[key] ?? 8;
           const mod = modifiers[key] ?? 0;
