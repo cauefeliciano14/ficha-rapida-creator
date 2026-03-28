@@ -13,6 +13,7 @@ import { DefensesCard } from './DefensesCard';
 import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
 import { DiceRollToast } from './DiceRollToast';
+import { SpellSlotsPanel } from './tabs/SpellSlotsPanel';
 import { useDiceRoller } from './useDiceRoller';
 import styles from './CharacterSheetPage.module.css';
 
@@ -320,6 +321,15 @@ export function CharacterSheetPage({
             </div>
           </div>
         </div>
+
+        {/* === Spell Slots Panel (casters only) === */}
+        {derivedSheet.isCaster && derivedSheet.spellSlots && Object.keys(derivedSheet.spellSlots).length > 0 && (
+          <SpellSlotsPanel
+            spellSlots={derivedSheet.spellSlots}
+            spentSpellSlots={playState.spentSpellSlots}
+            onUpdatePlayState={onUpdatePlayState}
+          />
+        )}
 
         {/* === ROW 4: Bottom Grid === */}
         <div className={styles.bottomGrid}>

@@ -32,9 +32,13 @@ interface ActionsTabProps {
   weaponAttacks: WeaponAttack[];
   playState: CharacterPlayState;
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
+  isCaster?: boolean;
+  spellAttackBonus?: number;
+  spellSaveDC?: number;
+  spellcastingAbility?: string;
 }
 
-export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState }: ActionsTabProps) {
+export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCaster, spellAttackBonus, spellSaveDC, spellcastingAbility }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
@@ -182,6 +186,58 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState }: Acti
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Spell Attack Summary for casters */}
+      {isCaster && (filter === 'all' || filter === 'attack') && (
+        <div style={{
+          background: 'rgba(17,18,24,0.6)',
+          border: '1px solid rgba(153,27,27,0.3)',
+          borderRadius: '6px',
+          padding: '12px 14px',
+        }}>
+          <div style={{ fontSize: '0.7rem', color: '#dc2626', fontWeight: 800, letterSpacing: '0.05em', marginBottom: '10px' }}>
+            ATAQUE MÁGICO
+          </div>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 700, marginBottom: '4px' }}>ATRIBUTO</div>
+              <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: 700, textTransform: 'capitalize' }}>
+                {spellcastingAbility?.substring(0, 3).toUpperCase() ?? '—'}
+              </div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 700, marginBottom: '4px' }}>ACERTO</div>
+              <span style={{
+                display: 'inline-block',
+                border: '1px solid #991b1b',
+                borderRadius: '20px',
+                padding: '2px 10px',
+                fontSize: '0.9rem',
+                fontWeight: 900,
+                color: '#f1f5f9',
+                background: 'rgba(0,0,0,0.5)',
+              }}>
+                {signedMod(spellAttackBonus ?? 0)}
+              </span>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 700, marginBottom: '4px' }}>CD DE MAGIA</div>
+              <span style={{
+                display: 'inline-block',
+                border: '1px solid #7f1d1d',
+                borderRadius: '4px',
+                padding: '2px 10px',
+                fontSize: '0.9rem',
+                fontWeight: 900,
+                color: '#f1f5f9',
+                background: 'rgba(0,0,0,0.4)',
+              }}>
+                {spellSaveDC ?? 0}
+              </span>
+            </div>
+          </div>
         </div>
       )}
 
