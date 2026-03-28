@@ -44,6 +44,7 @@ interface SheetTabsProps {
   backgroundSkills?: string[];
   backgroundTool?: string;
   backgroundEquipment?: string;
+  onRoll?: (label: string, type: string, modifier: number) => void;
 }
 
 export function SheetTabs({
@@ -65,6 +66,7 @@ export function SheetTabs({
   hasShieldEquipped,
   onEquipArmor,
   onEquipShield,
+  onRoll,
 }: SheetTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('actions');
 
@@ -112,6 +114,7 @@ export function SheetTabs({
           spellAttackBonus={derivedSheet.spellAttackBonus}
           spellSaveDC={derivedSheet.spellSaveDC}
           spellcastingAbility={derivedSheet.spellcastingAbility}
+          onRoll={onRoll}
         />
       )}
       {activeTab === 'spells' && (

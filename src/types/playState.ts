@@ -6,10 +6,18 @@ export interface CustomAction {
 }
 
 export interface CurrencyPouch {
-  po: number;  // peças de ouro
-  pp: number;  // peças de prata
-  pe: number;  // peças de electrum
-  pc: number;  // peças de cobre
+  po: number;
+  pp: number;
+  pe: number;
+  pc: number;
+}
+
+export interface ClassResource {
+  id: string;
+  name: string;
+  maxUses: number;
+  usedCount: number;
+  rechargeOn: 'short' | 'long';
 }
 
 export interface CharacterPlayState {
@@ -24,6 +32,7 @@ export interface CharacterPlayState {
   equippedItemIds: string[];
   attunedItemIds: string[];
   customActions: CustomAction[];
+  classResources: ClassResource[];
   currency: CurrencyPouch;
   notes: string;
   extras: string;
@@ -41,6 +50,7 @@ export const DEFAULT_PLAY_STATE: CharacterPlayState = {
   equippedItemIds: [],
   attunedItemIds: [],
   customActions: [],
+  classResources: [],
   currency: { po: 0, pp: 0, pe: 0, pc: 0 },
   notes: '',
   extras: '',
