@@ -114,6 +114,7 @@ export function SheetTabs({
           spellAttackBonus={derivedSheet.spellAttackBonus}
           spellSaveDC={derivedSheet.spellSaveDC}
           spellcastingAbility={derivedSheet.spellcastingAbility}
+          onRoll={onRoll}
         />
       )}
       {activeTab === 'spells' && (
