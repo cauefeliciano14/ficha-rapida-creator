@@ -410,6 +410,7 @@ export function CharacterSheetPage({
               hasShieldEquipped={hasShieldEquipped}
               onEquipArmor={onEquipArmor}
               onEquipShield={onEquipShield}
+              onRoll={diceRoll}
             />
           </div>
         </div>
