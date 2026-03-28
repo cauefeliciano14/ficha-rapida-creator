@@ -6,10 +6,18 @@ export interface CustomAction {
 }
 
 export interface CurrencyPouch {
-  po: number;  // peças de ouro
-  pp: number;  // peças de prata
-  pe: number;  // peças de electrum
-  pc: number;  // peças de cobre
+  po: number;
+  pp: number;
+  pe: number;
+  pc: number;
+}
+
+export interface ClassResource {
+  id: string;
+  name: string;
+  maxUses: number;
+  usedCount: number;
+  rechargeOn: 'short' | 'long';
 }
 
 export interface CharacterPlayState {
