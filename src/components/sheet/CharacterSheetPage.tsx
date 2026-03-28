@@ -322,6 +322,15 @@ export function CharacterSheetPage({
           </div>
         </div>
 
+        {/* === Spell Slots Panel (casters only) === */}
+        {derivedSheet.isCaster && derivedSheet.spellSlots && Object.keys(derivedSheet.spellSlots).length > 0 && (
+          <SpellSlotsPanel
+            spellSlots={derivedSheet.spellSlots}
+            spentSpellSlots={playState.spentSpellSlots}
+            onUpdatePlayState={onUpdatePlayState}
+          />
+        )}
+
         {/* === ROW 4: Bottom Grid === */}
         <div className={styles.bottomGrid}>
           <div className={styles.colLeft}>
