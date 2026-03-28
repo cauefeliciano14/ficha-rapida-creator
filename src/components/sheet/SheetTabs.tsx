@@ -108,6 +108,10 @@ export function SheetTabs({
           weaponAttacks={derivedSheet.weaponAttacks}
           playState={playState}
           onUpdatePlayState={onUpdatePlayState}
+          isCaster={derivedSheet.isCaster}
+          spellAttackBonus={derivedSheet.spellAttackBonus}
+          spellSaveDC={derivedSheet.spellSaveDC}
+          spellcastingAbility={derivedSheet.spellcastingAbility}
         />
       )}
       {activeTab === 'spells' && (
