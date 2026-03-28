@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { CharacterPlayState } from '../../../types/playState';
 import { getArmorByName } from '../../../rules/data/armorRules';
+import { CurrencyPanel } from './CurrencyPanel';
 
 interface InventoryItem {
   name: string;
@@ -125,7 +126,12 @@ export function InventoryTab({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Summary bar */}
+      {/* Currency Panel */}
+      <CurrencyPanel
+        currency={playState.currency ?? { po: 0, pp: 0, pe: 0, pc: 0 }}
+        onUpdatePlayState={onUpdatePlayState}
+      />
+
       <div style={{
         display: 'flex',
         gap: '16px',
