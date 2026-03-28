@@ -32,9 +32,13 @@ interface ActionsTabProps {
   weaponAttacks: WeaponAttack[];
   playState: CharacterPlayState;
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
+  isCaster?: boolean;
+  spellAttackBonus?: number;
+  spellSaveDC?: number;
+  spellcastingAbility?: string;
 }
 
-export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState }: ActionsTabProps) {
+export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCaster, spellAttackBonus, spellSaveDC, spellcastingAbility }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
