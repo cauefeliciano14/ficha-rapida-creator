@@ -96,6 +96,7 @@ export function CharacterSheetPage({
       spentSpellSlots: {},
       activeConditions: [],
       deathSaves: { successes: 0, failures: 0 },
+      classResources: (prev.classResources ?? []).map(r => ({ ...r, usedCount: 0 })),
     }));
   };
 
@@ -106,6 +107,9 @@ export function CharacterSheetPage({
     onUpdatePlayState(prev => ({
       ...prev,
       currentHp: Math.min(prev.currentHp + Math.max(1, total), effectiveMaxHP),
+      classResources: (prev.classResources ?? []).map(r =>
+        r.rechargeOn === 'short' ? { ...r, usedCount: 0 } : r
+      ),
     }));
     setShortRestOpen(false);
     setHdCount('1');
