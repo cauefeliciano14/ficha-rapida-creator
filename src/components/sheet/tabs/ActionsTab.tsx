@@ -132,14 +132,14 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCast
         }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'minmax(120px, 1fr) 70px 70px 90px minmax(100px, 1fr)',
+            gridTemplateColumns: '36px minmax(120px, 1fr) 70px 70px 90px minmax(100px, 1fr)',
             padding: '2px 8px 4px 8px',
             background: 'transparent',
             borderBottom: '1px solid rgba(255,255,255,0.05)',
             gap: '8px'
           }}>
-            {['ATAQUE', 'ALCANCE', 'ACERTO/CD', 'DANO', 'NOTAS'].map((h, i) => (
-              <div key={h} style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800, textAlign: i > 0 && i < 4 ? 'center' : 'left' }}>
+            {['', 'ATAQUE', 'ALCANCE', 'ACERTO/CD', 'DANO', 'NOTAS'].map((h, i) => (
+              <div key={h || 'roll'} style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 800, textAlign: i > 1 && i < 5 ? 'center' : 'left' }}>
                 {h}
               </div>
             ))}
@@ -147,12 +147,36 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCast
           {filteredAttacks.map((atk, i) => (
             <div key={i} style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(120px, 1fr) 70px 70px 90px minmax(100px, 1fr)',
+              gridTemplateColumns: '36px minmax(120px, 1fr) 70px 70px 90px minmax(100px, 1fr)',
               padding: '8px',
               borderBottom: i < filteredAttacks.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
               alignItems: 'center',
               gap: '8px'
             }}>
+              {/* Roll button */}
+              <button
+                onClick={() => onRoll?.(atk.weaponName, 'Ataque', atk.attackBonus)}
+                title={`Rolar ataque: ${atk.weaponName}`}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  background: 'rgba(153,27,27,0.2)',
+                  border: '1px solid #991b1b',
+                  borderRadius: '4px',
+                  color: '#dc2626',
+                  fontSize: '0.75rem',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(153,27,27,0.4)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(153,27,27,0.2)'; }}
+              >
+                🎲
+              </button>
               <div>
                 <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: 700 }}>{atk.weaponName}</div>
                 <div style={{ fontSize: '0.65rem', color: '#64748b' }}>
