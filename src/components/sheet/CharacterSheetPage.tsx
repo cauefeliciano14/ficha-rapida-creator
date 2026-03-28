@@ -13,6 +13,7 @@ import { DefensesCard } from './DefensesCard';
 import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
 import { DiceRollToast } from './DiceRollToast';
+import { SpellSlotsPanel } from './tabs/SpellSlotsPanel';
 import { useDiceRoller } from './useDiceRoller';
 import styles from './CharacterSheetPage.module.css';
 
