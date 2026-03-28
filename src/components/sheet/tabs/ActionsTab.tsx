@@ -36,9 +36,10 @@ interface ActionsTabProps {
   spellAttackBonus?: number;
   spellSaveDC?: number;
   spellcastingAbility?: string;
+  onRoll?: (label: string, type: string, modifier: number) => void;
 }
 
-export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCaster, spellAttackBonus, spellSaveDC, spellcastingAbility }: ActionsTabProps) {
+export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCaster, spellAttackBonus, spellSaveDC, spellcastingAbility, onRoll }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');

@@ -249,9 +249,25 @@ export function CharacterSheetPage({
             {statCard('DESLOC.', derivedSheet.speed.replace('metros', 'mts').replace('metro', 'mt'))}
           </div>
 
-          <div className={`${styles.redBox} ${styles.inspBox}`} style={{ width: '52px', padding: '16px 8px' }}>
+          <div
+            className={`${styles.redBox} ${styles.inspBox}`}
+            style={{ width: '52px', padding: '16px 8px', cursor: 'pointer' }}
+            onClick={() => onUpdatePlayState(prev => ({ ...prev, heroicInspiration: !prev.heroicInspiration }))}
+            title={playState.heroicInspiration ? 'Remover Inspiração Heroica' : 'Ganhar Inspiração Heroica'}
+          >
             <div className={styles.sectionHeader} style={{ fontSize: '0.55rem', padding: '4px 6px' }}>INSP.<br/>HEROICA</div>
-            <div style={{ width: '24px', height: '24px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid #7f1d1d' }} />
+            <div style={{
+              width: '28px',
+              height: '28px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.3rem',
+              transition: 'all 0.2s',
+              filter: playState.heroicInspiration ? 'drop-shadow(0 0 6px #fbbf24)' : 'none',
+            }}>
+              {playState.heroicInspiration ? '◆' : '◇'}
+            </div>
           </div>
 
           <div className={styles.hpSection}>

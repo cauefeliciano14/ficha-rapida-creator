@@ -13,8 +13,8 @@ const COINS: Array<{ key: keyof CurrencyPouch; label: string; abbr: string; colo
   { key: 'pc', label: 'Cobre', abbr: 'PC', color: '#f97316' },
 ];
 
-// Conversion rates to copper (base unit)
-const TO_COPPER: Record<keyof CurrencyPouch, number> = { po: 100, pp: 10, pe: 50, pc: 1 };
+
+
 
 function totalInGold(c: CurrencyPouch): number {
   return c.po + c.pp / 10 + c.pe / 2 + c.pc / 100;
