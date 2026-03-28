@@ -50,6 +50,7 @@ export const DEFAULT_PLAY_STATE: CharacterPlayState = {
   equippedItemIds: [],
   attunedItemIds: [],
   customActions: [],
+  classResources: [],
   currency: { po: 0, pp: 0, pe: 0, pc: 0 },
   notes: '',
   extras: '',
