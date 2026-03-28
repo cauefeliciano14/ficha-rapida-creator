@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { WeaponAttack } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState, CustomAction } from '../../../types/playState';
+import { ClassResourcesPanel } from './ClassResourcesPanel';
 
 type FilterId = 'all' | 'attack' | 'action' | 'bonus' | 'reaction' | 'other' | 'limited';
 
