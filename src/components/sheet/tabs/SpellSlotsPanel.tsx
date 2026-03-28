@@ -7,9 +7,8 @@ interface SpellSlotsPanelProps {
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
 }
 
-function signedMod(n: number): string {
-  return n >= 0 ? `+${n}` : `${n}`;
-}
+
+
 
 export function SpellSlotsPanel({ spellSlots, spentSpellSlots, onUpdatePlayState }: SpellSlotsPanelProps) {
   const levels = Object.entries(spellSlots)
