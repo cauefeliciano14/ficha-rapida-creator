@@ -375,6 +375,14 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCast
         </>
       )}
 
+      {/* Class Resources */}
+      {(filter === 'all' || filter === 'limited') && (
+        <ClassResourcesPanel
+          classResources={playState.classResources ?? []}
+          onUpdatePlayState={onUpdatePlayState}
+        />
+      )}
+
       {filteredAttacks.length === 0 && filteredCustom.length === 0 && (
         <div style={{ color: '#475569', fontSize: '0.85rem', textAlign: 'center', padding: '16px' }}>
           Nenhuma ação nesta categoria.
