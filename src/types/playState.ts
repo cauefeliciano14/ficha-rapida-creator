@@ -5,6 +5,13 @@ export interface CustomAction {
   description: string;
 }
 
+export interface CurrencyPouch {
+  po: number;  // peças de ouro
+  pp: number;  // peças de prata
+  pe: number;  // peças de electrum
+  pc: number;  // peças de cobre
+}
+
 export interface CharacterPlayState {
   currentHp: number;
   maxHpOverride: number | null;
@@ -17,6 +24,7 @@ export interface CharacterPlayState {
   equippedItemIds: string[];
   attunedItemIds: string[];
   customActions: CustomAction[];
+  currency: CurrencyPouch;
   notes: string;
   extras: string;
 }
@@ -33,6 +41,7 @@ export const DEFAULT_PLAY_STATE: CharacterPlayState = {
   equippedItemIds: [],
   attunedItemIds: [],
   customActions: [],
+  currency: { po: 0, pp: 0, pe: 0, pc: 0 },
   notes: '',
   extras: '',
 };
