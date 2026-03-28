@@ -32,6 +32,7 @@ export interface CharacterPlayState {
   equippedItemIds: string[];
   attunedItemIds: string[];
   customActions: CustomAction[];
+  classResources: ClassResource[];
   currency: CurrencyPouch;
   notes: string;
   extras: string;
