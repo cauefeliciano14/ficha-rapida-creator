@@ -239,7 +239,7 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, isCast
             </div>
           </div>
         </div>
-      )
+      )}
 
       {/* Actions in Combat */}
       {(filter === 'all' || filter === 'action') && (
