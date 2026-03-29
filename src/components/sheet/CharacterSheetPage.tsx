@@ -415,6 +415,7 @@ export function CharacterSheetPage({
               onEquipArmor={onEquipArmor}
               onEquipShield={onEquipShield}
               onRoll={diceRoll}
+              strengthScore={derivedSheet.finalAttributes?.forca ?? 10}
             />
           </div>
         </div>

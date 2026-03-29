@@ -39,6 +39,7 @@ interface SheetTabsProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
+  strengthScore?: number;
   backgroundName?: string;
   backgroundDescription?: string;
   backgroundSkills?: string[];
@@ -67,6 +68,7 @@ export function SheetTabs({
   onEquipArmor,
   onEquipShield,
   onRoll,
+  strengthScore,
 }: SheetTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('actions');
 
@@ -135,6 +137,7 @@ export function SheetTabs({
           hasShieldEquipped={hasShieldEquipped}
           onEquipArmor={onEquipArmor}
           onEquipShield={onEquipShield}
+          strengthScore={strengthScore}
         />
       )}
       {activeTab === 'features' && (

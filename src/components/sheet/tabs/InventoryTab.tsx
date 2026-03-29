@@ -48,6 +48,7 @@ interface InventoryTabProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
+  strengthScore?: number;
 }
 
 export function InventoryTab({
@@ -58,6 +59,7 @@ export function InventoryTab({
   hasShieldEquipped = false,
   onEquipArmor,
   onEquipShield,
+  strengthScore = 10,
 }: InventoryTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [search, setSearch] = useState('');
@@ -96,6 +98,11 @@ export function InventoryTab({
     return inventory.reduce((sum, item) => sum + parseWeight(item.weight) * (item.quantity ?? 1), 0);
   }, [inventory]);
 
+  const carryCapacity = strengthScore * 15;
+  const carryPercent = carryCapacity > 0 ? Math.min((totalWeight / carryCapacity) * 100, 100) : 0;
+  const isEncumbered = totalWeight > carryCapacity;
+  const isHeavilyEncumbered = totalWeight > carryCapacity * 2;
+
   const totalGold = useMemo(() => {
     return inventory.reduce((sum, item) => sum + parseCostToGold(item.cost) * (item.quantity ?? 1), 0);
   }, [inventory]);
@@ -132,6 +139,52 @@ export function InventoryTab({
         onUpdatePlayState={onUpdatePlayState}
       />
 
+      {/* Carrying Capacity Bar */}
+      <div style={{
+        background: 'rgba(14,14,18,0.7)',
+        borderRadius: '6px',
+        border: `1px solid ${isEncumbered ? 'rgba(248,113,113,0.3)' : 'rgba(255,255,255,0.06)'}`,
+        padding: '10px 14px',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800 }}>CAPACIDADE DE CARGA</span>
+            {isHeavilyEncumbered && (
+              <span style={{ fontSize: '0.6rem', color: '#f87171', fontWeight: 800, background: 'rgba(248,113,113,0.15)', padding: '1px 6px', borderRadius: '3px' }}>
+                ⚠ SOBRECARGA PESADA
+              </span>
+            )}
+            {isEncumbered && !isHeavilyEncumbered && (
+              <span style={{ fontSize: '0.6rem', color: '#fbbf24', fontWeight: 800, background: 'rgba(251,191,36,0.15)', padding: '1px 6px', borderRadius: '3px' }}>
+                ⚠ SOBRECARREGADO
+              </span>
+            )}
+          </div>
+          <span style={{ fontSize: '0.8rem', fontWeight: 900, color: isEncumbered ? '#f87171' : '#f1f5f9' }}>
+            {totalWeight.toFixed(1).replace('.', ',')} / {carryCapacity} lb
+          </span>
+        </div>
+        <div style={{
+          height: '6px',
+          background: 'rgba(255,255,255,0.06)',
+          borderRadius: '3px',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${carryPercent}%`,
+            background: isHeavilyEncumbered ? '#f87171' : isEncumbered ? '#fbbf24' : '#4ade80',
+            borderRadius: '3px',
+            transition: 'width 0.3s, background 0.3s',
+          }} />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+          <span style={{ fontSize: '0.6rem', color: '#475569' }}>0</span>
+          <span style={{ fontSize: '0.6rem', color: '#475569' }}>FOR × 15 = {carryCapacity} lb</span>
+        </div>
+      </div>
+
+      {/* Stats row */}
       <div style={{
         display: 'flex',
         gap: '16px',
@@ -142,13 +195,6 @@ export function InventoryTab({
         border: '1px solid rgba(255,255,255,0.06)',
         flexWrap: 'wrap',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800 }}>PESO</span>
-          <span style={{ fontSize: '1rem', fontWeight: 900, color: '#f1f5f9' }}>
-            {totalWeight.toFixed(1).replace('.', ',')} kg
-          </span>
-        </div>
-        <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800 }}>OURO</span>
           <span style={{ fontSize: '1rem', fontWeight: 900, color: '#fbbf24' }}>
