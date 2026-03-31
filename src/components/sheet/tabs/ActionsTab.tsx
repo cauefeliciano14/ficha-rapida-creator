@@ -17,7 +17,8 @@ const FILTERS: Array<{ id: FilterId; label: string }> = [
   { id: 'limited',  label: 'USO LIMITADO' },
 ];
 
-const _TYPE_LABELS: Record<string, string> = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const TYPE_LABELS: Record<string, string> = {
   action: 'Ação', bonus: 'Ação Bônus', reaction: 'Reação', other: 'Outro', limited: 'Uso Limitado',
 };
 

@@ -70,7 +70,8 @@ export function DiceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Chamado pelo DiceTray quando todos os dados pararem
-  const _handleAllSettled = useCallback(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleAllSettled = useCallback(() => {
     setSettled(true);
   }, []);
 

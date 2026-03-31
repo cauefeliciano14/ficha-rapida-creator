@@ -119,7 +119,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
       }
     }
     for (const appliedTalent of appliedTalentEffects) {
-      const talentBonus = appliedTalent?.attributeBonuses?.[attr];
+      const talentBonus = (appliedTalent?.attributeBonuses as Record<string, number> | undefined)?.[attr];
       if (talentBonus && talentBonus > 0) {
         rows.push({ label: appliedTalent.name, value: talentBonus });
       }
