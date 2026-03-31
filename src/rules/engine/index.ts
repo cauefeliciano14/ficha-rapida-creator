@@ -111,7 +111,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const attributeBreakdowns: Record<string, { label: string; value: number }[]> = {};
   for (const attr of Object.keys(choices.baseAttributes)) {
     const rows: { label: string; value: number }[] = [];
-    rows.push({ label: 'Base', value: choices.baseAttributes[attr] ?? 0 });
+    rows.push({ label: 'Base', value: (choices.baseAttributes as Record<string, number>)[attr] ?? 0 });
     if (choices.backgroundBonusDistribution) {
       const bonus = choices.backgroundBonusDistribution.distribution[attr as keyof typeof choices.backgroundBonusDistribution.distribution];
       if (bonus && bonus > 0) {
