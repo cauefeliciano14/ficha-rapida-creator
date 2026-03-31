@@ -3,21 +3,23 @@ export interface CustomAction {
   name: string;
   type: 'action' | 'bonus' | 'reaction' | 'other' | 'limited';
   description: string;
+  maxUses?: number;
+  usesSpent?: number;
+  resetOn?: 'short' | 'long';
 }
 
-export interface CurrencyPouch {
-  po: number;
-  pp: number;
-  pe: number;
-  pc: number;
-}
-
-export interface ClassResource {
+export interface CustomCounter {
   id: string;
   name: string;
-  maxUses: number;
-  usedCount: number;
-  rechargeOn: 'short' | 'long';
+  current: number;
+  max: number;
+  resetOn: 'short' | 'long' | 'manual';
+}
+
+export interface Container {
+  id: string;
+  name: string;
+  capacityKg: number;
 }
 
 export interface CharacterPlayState {
@@ -29,13 +31,32 @@ export interface CharacterPlayState {
   activeDefenses: string[];
   deathSaves: { successes: number; failures: number };
   spentSpellSlots: Record<number, number>;
+  spentHitDice: number;
   equippedItemIds: string[];
   attunedItemIds: string[];
   customActions: CustomAction[];
-  classResources: ClassResource[];
-  currency: CurrencyPouch;
   notes: string;
   extras: string;
+  diceHistory: Array<{
+    label: string;
+    total: number;
+    type: 'check' | 'save' | 'attack' | 'damage';
+    timestamp: number;
+  }>;
+  /** XP acumulado */
+  xp: number;
+  /** Habilidades com Expertise (proficiência dupla) */
+  expertiseSkills: string[];
+  /** Contadores de recursos de classe e personalizados */
+  customCounters: CustomCounter[];
+  /** Itens adicionados manualmente na ficha */
+  sheetItems: Array<{ id: string; name: string; quantity: number; notes?: string; weight?: number; containerId?: string }>;
+  /** Containers (mochilas, sacos, etc.) */
+  containers: Container[];
+  /** Nome da magia em concentração ativa (null = nenhuma) */
+  concentratingOn: string | null;
+  /** Nível de exaustão (0-10 nas regras 2024) */
+  exhaustionLevel: number;
 }
 
 export const DEFAULT_PLAY_STATE: CharacterPlayState = {
@@ -47,11 +68,18 @@ export const DEFAULT_PLAY_STATE: CharacterPlayState = {
   activeDefenses: [],
   deathSaves: { successes: 0, failures: 0 },
   spentSpellSlots: {},
+  spentHitDice: 0,
   equippedItemIds: [],
   attunedItemIds: [],
   customActions: [],
-  classResources: [],
-  currency: { po: 0, pp: 0, pe: 0, pc: 0 },
   notes: '',
   extras: '',
+  diceHistory: [],
+  xp: 0,
+  expertiseSkills: [],
+  customCounters: [],
+  sheetItems: [],
+  containers: [],
+  concentratingOn: null,
+  exhaustionLevel: 0,
 };

@@ -1,7 +1,12 @@
-import { useState } from 'react';
-import type { DerivedSheet } from '../../rules/types/DerivedSheet';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { DerivedSheet, DerivedSkill, DerivedSavingThrow, WeaponAttack } from '../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../types/playState';
-import type { BackgroundBonusDistribution } from '../../rules/types/CharacterChoices';
+import type { DiceRollResult, AdvantageMode } from '../../utils/diceRoller';
+import type { CharacterAppearance, PersonalityTraits, CharacterIdentityUpdate } from '../../types/character';
+import { rollD20Check, rollDamage } from '../../utils/diceRoller';
+import { useDice } from '../../context/DiceContext';
+import { signedMod } from '../../utils/format';
+import { ATTR_ABBR } from '../../utils/attributeConstants';
 import { SheetHeader } from './SheetHeader';
 import { AbilityScoreCards } from './AbilityScoreCards';
 import { SavingThrowsCard } from './SavingThrowsCard';
@@ -12,14 +17,30 @@ import { ConditionsCard } from './ConditionsCard';
 import { DefensesCard } from './DefensesCard';
 import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
-import { DiceRollToast } from './DiceRollToast';
-import { SpellSlotsPanel } from './tabs/SpellSlotsPanel';
-import { useDiceRoller } from './useDiceRoller';
+import { SheetSidebar } from './SheetSidebar';
+import { DiceResultPanel, AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
+import { ExhaustionTracker } from './ExhaustionTracker';
+import { CollapsibleSection } from './CollapsibleSection';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { RestModal } from './RestModal';
+import { LevelUpModal } from './LevelUpModal';
+import { AddClassModal } from './AddClassModal';
+import type { ClassLevel } from '../../types/multiclass';
 import styles from './CharacterSheetPage.module.css';
 
+/* ── Sidebar state ── */
+type SidebarState =
+  | { type: 'skill'; skill: DerivedSkill; result: DiceRollResult }
+  | { type: 'save'; save: DerivedSavingThrow; result: DiceRollResult }
+  | { type: 'ability'; key: string; label: string; score: number; modifier: number }
+  | { type: 'attack'; attack: WeaponAttack; hitResult: DiceRollResult; damageResult: DiceRollResult }
+  | { type: 'history' }
+  | null;
+
+/* ── Types ── */
 interface Feature { level: number; name: string; description: string }
 interface Trait { title: string; description: string }
-interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string; weight?: string }
+interface InventoryItem { name: string; quantity?: number; notes?: string; cost?: string }
 
 interface CharacterSheetPageProps {
   characterName: string;
@@ -35,6 +56,7 @@ interface CharacterSheetPageProps {
   inventory: InventoryItem[];
   learnedCantrips: string[];
   preparedSpells: string[];
+  onUpdatePreparedSpells?: (spells: string[]) => void;
   backgroundName?: string;
   backgroundDescription?: string;
   backgroundSkills?: string[];
@@ -44,12 +66,37 @@ interface CharacterSheetPageProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
-  baseAttributes: Record<string, number>;
-  bonusDistribution: BackgroundBonusDistribution | null;
+  alignment?: string | null;
+  currency?: { cp: number; sp: number; ep: number; gp: number; pp: number };
+  onUpdateCurrency?: (currency: { cp: number; sp: number; ep: number; gp: number; pp: number }) => void;
+  /** Campos de identidade */
+  backstory?: string;
+  appearance?: CharacterAppearance;
+  personalityTraits?: PersonalityTraits;
+  faith?: string;
+  lifestyle?: string;
+  organizations?: string;
+  onUpdateIdentity?: (update: CharacterIdentityUpdate) => void;
+  onSetLevel?: (level: number) => void;
+  classId?: string;
+  subclassName?: string;
+  classLevels?: ClassLevel[];
+  onAddClass?: (classId: string, className: string) => void;
+  onLevelUpClass?: (classId: string) => void;
 }
 
-function signedMod(n: number): string {
-  return n >= 0 ? `+${n}` : `${n}`;
+const MAX_DICE_HISTORY = 20;
+
+// XP necessário para cada nível (índice 0 = nível 1)
+const XP_TABLE = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
+
+function getLevelFromXP(xp: number): number {
+  let level = 1;
+  for (let i = 1; i < XP_TABLE.length; i++) {
+    if (xp >= XP_TABLE[i]) level = i + 1;
+    else break;
+  }
+  return Math.min(level, 20);
 }
 
 export function CharacterSheetPage({
@@ -66,6 +113,7 @@ export function CharacterSheetPage({
   inventory,
   learnedCantrips,
   preparedSpells,
+  onUpdatePreparedSpells,
   backgroundName,
   backgroundDescription,
   backgroundSkills,
@@ -75,46 +123,105 @@ export function CharacterSheetPage({
   hasShieldEquipped,
   onEquipArmor,
   onEquipShield,
-  baseAttributes,
-  bonusDistribution,
+  alignment,
+  currency,
+  onUpdateCurrency,
+  backstory,
+  appearance,
+  personalityTraits,
+  faith,
+  lifestyle,
+  organizations,
+  onUpdateIdentity,
+  onSetLevel,
+  classId,
+  subclassName,
+  classLevels,
+  onAddClass,
+  onLevelUpClass,
 }: CharacterSheetPageProps) {
-  const { rolls, roll: diceRoll, dismiss: dismissRoll } = useDiceRoller();
+  /* ── HP state ── */
+  const [hpInput, setHpInput] = useState('');
+  const [hpPulse, setHpPulse] = useState<'damage' | 'heal' | null>(null);
+  const prevHpRef = useRef(playState.currentHp);
+
+  /* ── Sidebar state ── */
+  const [sidebarStack, setSidebarStack] = useState<Exclude<SidebarState, null>[]>([]);
+  const sidebar: SidebarState = sidebarStack.length > 0 ? sidebarStack[sidebarStack.length - 1] : null;
+  const setSidebar = useCallback((state: SidebarState) => {
+    if (state === null) setSidebarStack([]);
+    else setSidebarStack([state]);
+  }, []);
+  const pushSidebar = useCallback((state: Exclude<SidebarState, null>) => {
+    setSidebarStack(prev => [...prev, state]);
+  }, []);
+  const popSidebar = useCallback(() => {
+    setSidebarStack(prev => prev.length > 1 ? prev.slice(0, -1) : []);
+  }, []);
+
+  /* ── 3D Dice context ── */
+  const { roll: roll3D } = useDice();
+
+  /* ── Responsive layout ── */
+  const isMobile = useMediaQuery('(max-width: 1023px)');
+  const isDesktopWide = useMediaQuery('(min-width: 1280px)');
+
+  /* ── Rest modal state ── */
+  const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
   const [shortRestOpen, setShortRestOpen] = useState(false);
   const [hdCount, setHdCount] = useState('1');
-  const [hpInput, setHpInput] = useState('');
-  const [tempInput, setTempInput] = useState('');
+
+  /* ── Advantage mode ── */
+  const [advantageMode, setAdvantageMode] = useState<AdvantageMode>('normal');
+
+  /* ── XP state ── */
+  const [xpInput, setXpInput] = useState('');
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showAddClass, setShowAddClass] = useState(false);
+  const currentXP = playState.xp ?? 0;
+  const xpLevel = getLevelFromXP(currentXP);
+  const xpCurrentFloor = XP_TABLE[Math.min(xpLevel - 1, 19)] ?? 0;
+  const xpNextCeil = XP_TABLE[Math.min(xpLevel, 19)] ?? XP_TABLE[19];
+  const xpPercent = xpLevel >= 20 ? 100 : ((currentXP - xpCurrentFloor) / (xpNextCeil - xpCurrentFloor)) * 100;
+
+  const handleAddXP = () => {
+    const amount = parseInt(xpInput, 10);
+    if (!isNaN(amount) && amount > 0) {
+      onUpdatePlayState(prev => ({ ...prev, xp: (prev.xp ?? 0) + amount }));
+      setXpInput('');
+    }
+  };
+
+  /* ── HP pulse effect ── */
+  useEffect(() => {
+    if (playState.currentHp !== prevHpRef.current) {
+      setHpPulse(playState.currentHp < prevHpRef.current ? 'damage' : 'heal');
+      prevHpRef.current = playState.currentHp;
+      const timer = setTimeout(() => setHpPulse(null), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [playState.currentHp]);
 
   const effectiveMaxHP = playState.maxHpOverride ?? derivedSheet.maxHP;
   const hitDieSize = parseInt((derivedSheet.hitDie ?? 'd8').replace('d', ''), 10) || 8;
   const conMod = derivedSheet.modifiers?.constituicao ?? 0;
 
-  const handleLongRest = () => {
+  /* ── Hit Dice tracking ── */
+  const totalHitDice = characterLevel;
+  const availableHitDice = totalHitDice - (playState.spentHitDice ?? 0);
+
+  /* ── Dice History helper ── */
+  const addToHistory = useCallback((result: DiceRollResult) => {
     onUpdatePlayState(prev => ({
       ...prev,
-      currentHp: effectiveMaxHP,
-      tempHp: 0,
-      spentSpellSlots: {},
-      activeConditions: [],
-      deathSaves: { successes: 0, failures: 0 },
-      classResources: (prev.classResources ?? []).map(r => ({ ...r, usedCount: 0 })),
+      diceHistory: [
+        { label: result.label, total: result.total, type: result.type, timestamp: Date.now() },
+        ...(prev.diceHistory ?? []),
+      ].slice(0, MAX_DICE_HISTORY),
     }));
-  };
+  }, [onUpdatePlayState]);
 
-  const handleShortRest = () => {
-    const count = Math.max(1, parseInt(hdCount, 10) || 1);
-    const rolled = Array.from({ length: count }, () => Math.floor(Math.random() * hitDieSize) + 1);
-    const total = rolled.reduce((sum, r) => sum + r + conMod, 0);
-    onUpdatePlayState(prev => ({
-      ...prev,
-      currentHp: Math.min(prev.currentHp + Math.max(1, total), effectiveMaxHP),
-      classResources: (prev.classResources ?? []).map(r =>
-        r.rechargeOn === 'short' ? { ...r, usedCount: 0 } : r
-      ),
-    }));
-    setShortRestOpen(false);
-    setHdCount('1');
-  };
-
+  /* ── HP handlers ── */
   const handleHeal = () => {
     const amount = parseInt(hpInput, 10);
     if (!isNaN(amount) && amount > 0) {
@@ -142,16 +249,67 @@ export function CharacterSheetPage({
     }
   };
 
-  const handleSetTemp = () => {
-    const amount = parseInt(tempInput, 10);
-    if (!isNaN(amount) && amount >= 0) {
-      onUpdatePlayState(prev => ({ ...prev, tempHp: amount }));
-      setTempInput('');
+  const handleTempHp = () => {
+    const amount = parseInt(hpInput, 10);
+    if (!isNaN(amount)) {
+      onUpdatePlayState(prev => ({
+        ...prev,
+        tempHp: amount > 0 ? amount : 0,
+      }));
+      setHpInput('');
     }
   };
 
+  /* ── Rest handlers ── */
+  const handleLongRest = () => {
+    onUpdatePlayState(prev => ({
+      ...prev,
+      currentHp: effectiveMaxHP,
+      tempHp: 0,
+      spentSpellSlots: {},
+      activeConditions: [],
+      heroicInspiration: true,
+      deathSaves: { successes: 0, failures: 0 },
+      spentHitDice: Math.max(0, (prev.spentHitDice ?? 0) - Math.floor(totalHitDice / 2)),
+      customActions: prev.customActions.map(a =>
+        a.resetOn === 'long' || a.resetOn === 'short' ? { ...a, usesSpent: 0 } : a
+      ),
+      customCounters: (prev.customCounters ?? []).map(c =>
+        c.resetOn === 'long' || c.resetOn === 'short' ? { ...c, current: c.max } : c
+      ),
+      exhaustionLevel: Math.max(0, (prev.exhaustionLevel ?? 0) - 1),
+    }));
+    setRestModal(null);
+  };
+
+  const handleShortRest = () => {
+    const count = Math.max(1, Math.min(parseInt(hdCount, 10) || 1, availableHitDice));
+    if (count <= 0) return;
+    const rolled = Array.from({ length: count }, () => Math.floor(Math.random() * hitDieSize) + 1);
+    const total = rolled.reduce((sum, r) => sum + r + conMod, 0);
+    onUpdatePlayState(prev => ({
+      ...prev,
+      currentHp: Math.min(prev.currentHp + Math.max(1, total), effectiveMaxHP),
+      spentHitDice: (prev.spentHitDice ?? 0) + count,
+      customActions: prev.customActions.map(a =>
+        a.resetOn === 'short' ? { ...a, usesSpent: 0 } : a
+      ),
+      customCounters: (prev.customCounters ?? []).map(c =>
+        c.resetOn === 'short' ? { ...c, current: c.max } : c
+      ),
+    }));
+    setShortRestOpen(false);
+    setHdCount('1');
+  };
+
+  /* ── Death Saves handler ── */
+  const handleUpdateDeathSaves = useCallback((deathSaves: CharacterPlayState['deathSaves']) => {
+    onUpdatePlayState(prev => ({ ...prev, deathSaves }));
+  }, [onUpdatePlayState]);
+
+  /* ── Condition / Defense handlers ── */
   const handleAddCondition = (condition: string) => {
-    onUpdatePlayState((prev) => ({
+    onUpdatePlayState(prev => ({
       ...prev,
       activeConditions: prev.activeConditions.includes(condition)
         ? prev.activeConditions
@@ -160,14 +318,14 @@ export function CharacterSheetPage({
   };
 
   const handleRemoveCondition = (condition: string) => {
-    onUpdatePlayState((prev) => ({
+    onUpdatePlayState(prev => ({
       ...prev,
-      activeConditions: prev.activeConditions.filter((c) => c !== condition),
+      activeConditions: prev.activeConditions.filter(c => c !== condition),
     }));
   };
 
   const handleAddDefense = (defense: string) => {
-    onUpdatePlayState((prev) => ({
+    onUpdatePlayState(prev => ({
       ...prev,
       activeDefenses: prev.activeDefenses.includes(defense)
         ? prev.activeDefenses
@@ -176,152 +334,532 @@ export function CharacterSheetPage({
   };
 
   const handleRemoveDefense = (defense: string) => {
-    onUpdatePlayState((prev) => ({
+    onUpdatePlayState(prev => ({
       ...prev,
-      activeDefenses: prev.activeDefenses.filter((d) => d !== defense),
+      activeDefenses: prev.activeDefenses.filter(d => d !== defense),
     }));
   };
 
+  /* ── Heroic Inspiration toggle ── */
+  const toggleInspiration = () => {
+    onUpdatePlayState(prev => ({ ...prev, heroicInspiration: !prev.heroicInspiration }));
+  };
+
+  /* ── Sidebar handlers ── */
+  const closeSidebar = useCallback(() => setSidebar(null), []);
+
+  const handleSkillClick = useCallback((skill: DerivedSkill) => {
+    const abbr = ATTR_ABBR[skill.attribute] ?? skill.attribute;
+    const result = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
+    setSidebar({ type: 'skill', skill, result });
+    addToHistory(result);
+    roll3D({
+      dice: [{ type: 'd20', count: advantageMode === 'normal' ? 1 : 2 }],
+      label: `${skill.label} (${abbr})`,
+      results: result.rolls,
+      total: result.total,
+      formula: result.formula,
+    });
+  }, [advantageMode, addToHistory, roll3D]);
+
+  const handleSaveClick = useCallback((save: DerivedSavingThrow) => {
+    const result = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
+    setSidebar({ type: 'save', save, result });
+    addToHistory(result);
+    roll3D({
+      dice: [{ type: 'd20', count: advantageMode === 'normal' ? 1 : 2 }],
+      label: `Teste de Resistência (${save.label})`,
+      results: result.rolls,
+      total: result.total,
+      formula: result.formula,
+    });
+  }, [advantageMode, addToHistory, roll3D]);
+
+  const handleAbilityClick = useCallback((key: string, label: string, score: number, modifier: number) => {
+    setSidebar({ type: 'ability', key, label, score, modifier });
+  }, []);
+
+  const handleAttackClick = useCallback((attack: WeaponAttack) => {
+    const dmgFormula = `${attack.damageDice}${attack.damageBonus !== 0 ? (attack.damageBonus > 0 ? '+' : '') + attack.damageBonus : ''}`;
+    const hitResult = rollD20Check(attack.attackBonus, attack.weaponName, 'attack', advantageMode);
+    const damageResult = rollDamage(dmgFormula, attack.weaponName);
+    setSidebar({ type: 'attack', attack, hitResult, damageResult });
+    addToHistory(hitResult);
+    addToHistory(damageResult);
+    // Parsear dados de dano (ex: "2d6" → {type:'d6',count:2})
+    const diceMatch = attack.damageDice.match(/^(\d+)d(\d+)$/);
+    const damageDice = diceMatch
+      ? [{ type: `d${diceMatch[2]}` as any, count: parseInt(diceMatch[1]) }]
+      : [{ type: 'd6' as const, count: 1 }];
+    roll3D({
+      dice: [{ type: 'd20', count: advantageMode === 'normal' ? 1 : 2 }, ...damageDice],
+      label: attack.weaponName,
+      results: [...hitResult.rolls, ...damageResult.rolls],
+      total: hitResult.total,
+      formula: `${hitResult.formula} | ${damageResult.formula}`,
+    });
+  }, [advantageMode, addToHistory, roll3D]);
+
+  /* ── Sidebar reroll helpers ── */
+  const rerollSkill = () => {
+    if (sidebar?.type === 'skill') {
+      const abbr = ATTR_ABBR[sidebar.skill.attribute] ?? sidebar.skill.attribute;
+      const result = rollD20Check(sidebar.skill.modifier, `${sidebar.skill.label} (${abbr})`, 'check', advantageMode);
+      setSidebar({ ...sidebar, result });
+      addToHistory(result);
+    }
+  };
+
+  const rerollSave = () => {
+    if (sidebar?.type === 'save') {
+      const result = rollD20Check(sidebar.save.modifier, `Teste de Resistência (${sidebar.save.label})`, 'save', advantageMode);
+      setSidebar({ ...sidebar, result });
+      addToHistory(result);
+    }
+  };
+
+  const rerollAttackHit = () => {
+    if (sidebar?.type === 'attack') {
+      const hitResult = rollD20Check(sidebar.attack.attackBonus, sidebar.attack.weaponName, 'attack', advantageMode);
+      setSidebar({ ...sidebar, hitResult });
+      addToHistory(hitResult);
+    }
+  };
+
+  const rerollAttackDamage = () => {
+    if (sidebar?.type === 'attack') {
+      const atk = sidebar.attack;
+      const dmgFormula = `${atk.damageDice}${atk.damageBonus !== 0 ? (atk.damageBonus > 0 ? '+' : '') + atk.damageBonus : ''}`;
+      const damageResult = rollDamage(dmgFormula, atk.weaponName);
+      setSidebar({ ...sidebar, damageResult });
+      addToHistory(damageResult);
+    }
+  };
+
+  /* Ability detail: roll from within ability sidebar (drill-down with push) */
+  const handleAbilitySkillRoll = (label: string, modifier: number) => {
+    const result = rollD20Check(modifier, label, 'check', advantageMode);
+    const fakeSkill: DerivedSkill = { label, attribute: sidebar?.type === 'ability' ? sidebar.key : '', modifier, proficient: false, expertise: false, halfProficient: false, baseAbilityMod: modifier, proficiencyValue: 0 };
+    pushSidebar({ type: 'skill', skill: fakeSkill, result });
+    addToHistory(result);
+  };
+
+  const handleAbilitySaveRoll = (modifier: number) => {
+    if (sidebar?.type === 'ability') {
+      const result = rollD20Check(modifier, `Teste de Resistência (${sidebar.label})`, 'save', advantageMode);
+      const fakeSave: DerivedSavingThrow = { label: sidebar.label, attribute: sidebar.key, modifier, proficient: false };
+      pushSidebar({ type: 'save', save: fakeSave, result });
+      addToHistory(result);
+    }
+  };
+
+  /* ── Derived values ── */
   const hpPercent = effectiveMaxHP > 0 ? (playState.currentHp / effectiveMaxHP) * 100 : 0;
   const hpColor = hpPercent > 50 ? '#4ade80' : hpPercent > 25 ? '#fbbf24' : '#f87171';
 
-  const statCard = (label: string, value: string, isShield: boolean = false) => (
-    <div className={`${styles.statCard} ${isShield ? styles.statCardShield : ''}`}>
-      <div className={styles.statCardValue}>{value}</div>
-      <div className={styles.statCardLabel}>{label}</div>
-    </div>
-  );
+  /* ── Sidebar content renderer ── */
+  const renderSidebarContent = () => {
+    if (!sidebar) return null;
+
+    switch (sidebar.type) {
+      case 'skill':
+        return (
+          <DiceResultPanel
+            result={sidebar.result}
+            onReroll={rerollSkill}
+          />
+        );
+
+      case 'save':
+        return (
+          <DiceResultPanel
+            result={sidebar.result}
+            onReroll={rerollSave}
+          />
+        );
+
+      case 'ability': {
+        const relatedSkills = derivedSheet.skills
+          .filter(s => s.attribute === sidebar.key)
+          .map(s => ({ label: s.label, modifier: s.modifier, proficient: s.proficient }));
+        const savingThrow = derivedSheet.derivedSavingThrows.find(st => st.attribute === sidebar.key);
+        return (
+          <AbilityDetailPanel
+            abilityName={sidebar.label}
+            score={sidebar.score}
+            modifier={sidebar.modifier}
+            relatedSkills={relatedSkills}
+            savingThrow={savingThrow ? { modifier: savingThrow.modifier, proficient: savingThrow.proficient } : undefined}
+            onRollSkill={handleAbilitySkillRoll}
+            onRollSave={handleAbilitySaveRoll}
+          />
+        );
+      }
+
+      case 'attack':
+        return (
+          <AttackDetailPanel
+            weaponName={sidebar.attack.weaponName}
+            range={sidebar.attack.range}
+            properties={sidebar.attack.properties}
+            hitResult={sidebar.hitResult}
+            damageResult={sidebar.damageResult}
+            damageType={sidebar.attack.damageType}
+            onRerollHit={rerollAttackHit}
+            onRerollDamage={rerollAttackDamage}
+          />
+        );
+
+      case 'history':
+        return (
+          <div className={styles.historyList}>
+            {(playState.diceHistory ?? []).length === 0 ? (
+              <div className={styles.historyEmpty}>Nenhuma rolagem registrada.</div>
+            ) : (
+              (playState.diceHistory ?? []).map((entry, i) => (
+                <div key={`${entry.timestamp}-${i}`} className={styles.historyEntry}>
+                  <div className={styles.historyLabel}>{entry.label}</div>
+                  <div className={styles.historyTotal}>{entry.total}</div>
+                  <div className={styles.historyType}>{entry.type}</div>
+                </div>
+              ))
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const sidebarTitle = sidebar
+    ? sidebar.type === 'skill' ? sidebar.skill.label
+      : sidebar.type === 'save' ? 'Teste de Resistência'
+        : sidebar.type === 'ability' ? sidebar.label
+          : sidebar.type === 'attack' ? sidebar.attack.weaponName
+            : sidebar.type === 'history' ? 'Histórico de Rolagens'
+              : ''
+    : '';
+
+  const sidebarSubtitle = sidebar
+    ? sidebar.type === 'skill' ? `Teste de Perícia (${ATTR_ABBR[sidebar.skill.attribute] ?? sidebar.skill.attribute})`
+      : sidebar.type === 'save' ? sidebar.save.label
+        : sidebar.type === 'ability' ? `Score ${sidebar.score} · Modificador ${signedMod(sidebar.modifier)}`
+          : sidebar.type === 'attack' ? `${sidebar.attack.range}`
+            : sidebar.type === 'history' ? `Últimas ${(playState.diceHistory ?? []).length} rolagens`
+              : undefined
+    : undefined;
+
+  /* ── Sticky header sentinel ── */
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [isStuck, setIsStuck] = useState(false);
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className={styles.page}>
-      <DiceRollToast rolls={rolls} characterName={characterName} onDismiss={dismissRoll} />
-      
-      <div className={styles.container}>
+      {/* Sentinel para detectar scroll */}
+      <div ref={sentinelRef} style={{ height: 1 }} />
 
-        {/* === ROW 1: Header + Rest Buttons === */}
-        <div className={styles.headerRow}>
+      {/* ===== STICKY CONDENSED HEADER ===== */}
+      {isStuck && (
+        <div className={styles.stickyHeader}>
+          <div className={styles.stickyInner}>
+            <div className={styles.stickyPortrait}>
+              {portrait ? (
+                <img src={`/imgs/portrait_caracter/${portrait}`} alt="" className={styles.stickyPortraitImg} />
+              ) : '🧙'}
+            </div>
+            <div className={styles.stickyInfo}>
+              <span className={styles.stickyName}>{characterName || 'Sem Nome'}</span>
+              <span className={styles.stickyMeta}>{className} · Nv {characterLevel}</span>
+            </div>
+            <div className={styles.stickyStats}>
+              <span className={styles.stickyStat}>
+                <span className={styles.stickyStatLabel}>HP</span>
+                <span style={{ color: playState.currentHp < effectiveMaxHP / 2 ? '#ef4444' : '#22c55e' }}>
+                  {playState.currentHp}/{effectiveMaxHP}
+                </span>
+              </span>
+              <span className={styles.stickyStat}>
+                <span className={styles.stickyStatLabel}>CA</span>
+                {derivedSheet.armorClass}
+              </span>
+              <span className={styles.stickyStat}>
+                <span className={styles.stickyStatLabel}>INIT</span>
+                {signedMod(derivedSheet.initiative)}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== TOP BAR (DASHBOARD SUPERIOR) ===== */}
+      <div className={styles.topBar}>
+
+        {/* ROW 1: Portrait e Rests */}
+        <div className={styles.topBarRow1}>
           <SheetHeader
             name={characterName}
             portrait={portrait}
             speciesName={speciesName}
             className={className}
             level={characterLevel}
+            creatureSize={derivedSheet.creatureSize}
+            alignment={alignment}
+            subclassName={subclassName}
+            classLevels={classLevels}
           />
-          <div className={styles.restButtons}>
+          <div className={styles.topBarActions}>
+            {/* Advantage Mode Toggle */}
+            <div className={styles.advantageToggle}>
+              {(['normal', 'advantage', 'disadvantage'] as const).map(mode => (
+                <button
+                  key={mode}
+                  onClick={() => setAdvantageMode(mode)}
+                  className={advantageMode === mode ? `${styles.advantageBtn} ${styles.advantageBtnActive}` : styles.advantageBtn}
+                  title={mode === 'normal' ? 'Normal' : mode === 'advantage' ? 'Vantagem' : 'Desvantagem'}
+                >
+                  {mode === 'normal' ? '⚖' : mode === 'advantage' ? '▲' : '▼'}
+                </button>
+              ))}
+            </div>
+            {/* History button */}
             <button
-              className={`${styles.restBtn} ${shortRestOpen ? styles.restBtnActive : ''}`}
+              onClick={() => window.print()}
+              className={styles.restBtn}
+              title="Imprimir / Exportar PDF"
+            >
+              🖨 IMPRIMIR
+            </button>
+            <button
+              onClick={() => setSidebar({ type: 'history' })}
+              className={styles.restBtn}
+              title="Histórico de Rolagens"
+            >
+              🎲 HISTÓRICO
+            </button>
+            <button
               onClick={() => setShortRestOpen(prev => !prev)}
+              className={shortRestOpen ? `${styles.restBtn} ${styles.restBtnActive}` : styles.restBtn}
             >
               DESCANSO CURTO
             </button>
-            <button className={styles.restBtn} onClick={handleLongRest}>
+            <button
+              onClick={() => setRestModal('long')}
+              className={styles.restBtn}
+            >
               DESCANSO LONGO
             </button>
           </div>
         </div>
 
-        {/* Short Rest Panel */}
+        {/* Short Rest Overlay */}
         {shortRestOpen && (
-          <div className={styles.redBox} style={{ padding: '12px 16px' }}>
+          <div className={`${styles.redBox} ${styles.shortRestOverlay}`}>
             <div className={styles.sectionHeader}>DESCANSO CURTO</div>
-            <div className={styles.shortRestPanel}>
-              <span style={{ fontSize: '0.85rem', color: '#e2e8f0' }}>Dado(s):</span>
-              <input type="number" min="1" value={hdCount} onChange={e => setHdCount(e.target.value)}
-                className={styles.hpInput} style={{ width: '60px' }} />
-              <button onClick={handleShortRest}
-                style={{ background: '#991b1b', border: 'none', borderRadius: '4px', color: 'white', padding: '6px 14px', cursor: 'pointer', fontWeight: 600 }}>
+            <div className={styles.shortRestControls}>
+              <span className={styles.shortRestLabel}>
+                Dado(s) de Vida ({derivedSheet.hitDie}):
+              </span>
+              <input
+                type="number"
+                min="1"
+                max={availableHitDice}
+                value={hdCount}
+                onChange={e => setHdCount(e.target.value)}
+                className={styles.shortRestInput}
+              />
+              <span className={styles.shortRestLabel}>
+                Disponíveis: {availableHitDice}/{totalHitDice}
+              </span>
+              <button
+                onClick={handleShortRest}
+                className={styles.shortRestBtn}
+                disabled={availableHitDice <= 0}
+              >
                 Recuperar PV
               </button>
             </div>
           </div>
         )}
 
-        {/* === ROW 2: Attributes + PB/Speed + Inspiration + HP === */}
-        <div className={styles.combatRow}>
-          <div className={styles.abilityGroup}>
-            <AbilityScoreCards
-              finalAttributes={derivedSheet.finalAttributes}
-              modifiers={derivedSheet.modifiers}
-              baseAttributes={baseAttributes}
-              bonusDistribution={bonusDistribution}
-              onRoll={diceRoll}
-            />
+        {/* ROW 2: Stats Row - Abilities, PB, Speed, Heroic Insp, HP */}
+        <div className={styles.statsRow}>
+
+          {/* Atributos */}
+          <AbilityScoreCards
+            finalAttributes={derivedSheet.finalAttributes}
+            modifiers={derivedSheet.modifiers}
+            attributeBreakdowns={derivedSheet.attributeBreakdowns}
+            onAbilityClick={handleAbilityClick}
+          />
+
+          {/* Proficiency Bonus */}
+          <div className={styles.statBox}>
+            <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
+            <div className={styles.statLabel}>Proficiência</div>
           </div>
 
-          <div className={styles.miniStatsGroup}>
-            {statCard('PROFICIÊNCIA', signedMod(derivedSheet.proficiencyBonus))}
-            {statCard('DESLOC.', derivedSheet.speed.replace('metros', 'mts').replace('metro', 'mt'))}
+          {/* Speed */}
+          <div className={styles.statBox}>
+            <div className={styles.statValueInline}>
+              {derivedSheet.speed}<span className={styles.statUnit}>m</span>
+            </div>
+            <div className={styles.statLabel}>Deslocamento</div>
           </div>
 
-          <div
-            className={`${styles.redBox} ${styles.inspBox}`}
-            style={{ width: '52px', padding: '16px 8px', cursor: 'pointer' }}
-            onClick={() => onUpdatePlayState(prev => ({ ...prev, heroicInspiration: !prev.heroicInspiration }))}
-            title={playState.heroicInspiration ? 'Remover Inspiração Heroica' : 'Ganhar Inspiração Heroica'}
-          >
-            <div className={styles.sectionHeader} style={{ fontSize: '0.55rem', padding: '4px 6px' }}>INSP.<br/>HEROICA</div>
-            <div style={{
-              width: '28px',
-              height: '28px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.3rem',
-              transition: 'all 0.2s',
-              filter: playState.heroicInspiration ? 'drop-shadow(0 0 6px #fbbf24)' : 'none',
-            }}>
-              {playState.heroicInspiration ? '◆' : '◇'}
+          {/* Hit Dice */}
+          <div className={styles.statBox} title={`${availableHitDice} de ${totalHitDice} dados de vida disponíveis`}>
+            <div className={styles.statValue}>{availableHitDice}<span className={styles.statFraction}>/{totalHitDice}</span></div>
+            <div className={styles.hitDiceDots}>
+              {Array.from({ length: totalHitDice }, (_, i) => (
+                <span key={i} className={i < availableHitDice ? styles.hdDotFilled : styles.hdDotSpent} />
+              ))}
+            </div>
+            <div className={styles.statLabel}>
+              Dados de Vida ({derivedSheet.hitDie})
             </div>
           </div>
 
-          <div className={styles.hpSection}>
-            <div className={styles.redBox} style={{ padding: '12px 14px' }}>
-              <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
+          {/* Heroic Inspiration */}
+          <div
+            className={`${styles.heroicBox} ${playState.heroicInspiration ? styles.heroicBoxActive : ''}`}
+            onClick={toggleInspiration}
+            role="checkbox"
+            aria-checked={playState.heroicInspiration}
+            aria-label="Inspiração Heróica"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
+          >
+            {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
+            <span className={styles.heroicLabel}>Insp.<br/>Heróica</span>
+          </div>
+
+          {/* HP Panel */}
+          <div className={styles.hpPanel}>
+            <div
+              className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
+              style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column' }}
+            >
+              <div className={styles.hpHeader}>
+                <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
+                <div className={styles.hpHeaderBtns}>
+                  <input
+                    type="number"
+                    min="0"
+                    value={hpInput}
+                    onChange={e => setHpInput(e.target.value)}
+                    className={styles.hpInput}
+                  />
+                  <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
+                  <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
+                  <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
+                </div>
+              </div>
 
               <div className={styles.hpLabels}>
-                <span className={styles.hpLabelText}>ATUAL</span>
-                <span className={styles.hpLabelText}>MÁXIMO</span>
-                <span className={styles.hpLabelText}>TEMP</span>
+                <span className={styles.hpLabel}>ATUAL</span>
+                <span className={styles.hpLabel}>MÁXIMO</span>
+                <span className={styles.hpLabel}>TEMP</span>
               </div>
 
               <div className={styles.hpValues}>
-                <span style={{ fontSize: '1.6rem', fontWeight: 900, color: hpColor }}>{playState.currentHp}</span>
-                <span style={{ color: '#475569', fontSize: '1.2rem', fontWeight: 900 }}>/</span>
-                <span style={{ fontSize: '1.3rem', color: '#cbd5e1', fontWeight: 800 }}>{effectiveMaxHP}</span>
-                <span style={{ fontSize: '1.2rem', color: '#cbd5e1', fontWeight: 800 }}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
+                <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
+                <span className={styles.hpSeparator}>/</span>
+                <span className={styles.hpMax}>{effectiveMaxHP}</span>
+                <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
               </div>
 
               <div className={styles.hpBar}>
                 <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
               </div>
-
-              <div className={styles.hpActions}>
-                <input type="number" min="0" value={hpInput} onChange={e => setHpInput(e.target.value)} placeholder="HP" className={styles.hpInput} />
-                <button onClick={handleHeal} className={`${styles.hpActionBtn} ${styles.healBtn}`}>CURAR</button>
-                <button onClick={handleDamage} className={`${styles.hpActionBtn} ${styles.damageBtn}`}>DANO</button>
-                <div className={styles.divider} />
-                <input type="number" min="0" value={tempInput} onChange={e => setTempInput(e.target.value)} placeholder="Temp" className={styles.hpInput} />
-                <button onClick={handleSetTemp} className={`${styles.hpActionBtn} ${styles.tempBtn}`}>TEMP</button>
-              </div>
             </div>
-
-            {playState.currentHp === 0 && (
-              <div className={styles.deathSavesSection}>
-                <div className={styles.deathSavesLabel}>TESTES CONTRA A MORTE</div>
-                <DeathSavesCard deathSaves={playState.deathSaves} onUpdatePlayState={onUpdatePlayState} />
-              </div>
-            )}
           </div>
+
         </div>
 
-        {/* === ROW 3: Initiative + AC + Defenses + Conditions === */}
-        <div className={styles.statusRow}>
-          <div className={styles.combatStats}>
-            {statCard('INICIATIVA', signedMod(derivedSheet.initiative))}
-            {statCard('CLASSE\nARMADURA', String(derivedSheet.armorClass), true)}
+        {/* ROW XP + LEVEL */}
+        <div className={styles.xpRow}>
+          {onSetLevel && (
+            <div className={styles.levelCtrl}>
+              <button
+                className={styles.levelBtn}
+                onClick={() => onSetLevel(Math.max(1, characterLevel - 1))}
+                disabled={characterLevel <= 1}
+                title="Diminuir nível"
+              >−</button>
+              <span className={styles.levelDisplay}>NIV {characterLevel}</span>
+              <button
+                className={styles.levelBtn}
+                onClick={() => setShowLevelUp(true)}
+                disabled={characterLevel >= 20}
+                title="Aumentar nível"
+              >+</button>
+              {onAddClass && characterLevel >= 1 && (
+                <button
+                  className={styles.levelBtn}
+                  onClick={() => setShowAddClass(true)}
+                  title="Adicionar classe (multiclasse)"
+                  style={{ marginLeft: 4, fontSize: '0.7rem', width: 'auto', padding: '0 6px' }}
+                >+ Classe</button>
+              )}
+            </div>
+          )}
+          <span className={styles.xpLabel}>XP</span>
+          <span className={styles.xpValue}>{currentXP.toLocaleString()}</span>
+          <div className={styles.xpBarWrap}>
+            <div className={styles.xpBarFill} style={{ width: `${Math.min(xpPercent, 100)}%` }} />
+          </div>
+          <span className={styles.xpMeta}>
+            {xpLevel >= 20 ? 'Máx.' : `Próx. Nível: ${xpNextCeil.toLocaleString()} XP`}
+          </span>
+          <input
+            type="number"
+            min="0"
+            value={xpInput}
+            onChange={e => setXpInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleAddXP(); }}
+            placeholder="+XP"
+            className={styles.xpInput}
+          />
+          <button onClick={handleAddXP} className={styles.xpBtn}>Adicionar</button>
+        </div>
+
+        {/* ROW 3: Sub-Row - Iniciativa, AC, Death Saves, Defesas, Condições */}
+        <div className={styles.subRow}>
+
+          {/* Iniciativa + AC */}
+          <div className={styles.subRowStatGroup}>
+            <div className={styles.statBox}>
+              <div className={styles.statValue}>{signedMod(derivedSheet.initiative)}</div>
+              <div className={styles.statLabel}>INICIATIVA</div>
+            </div>
+            <div className={`${styles.statBox} ${styles.statBoxShield}`}>
+              <div className={styles.statValue}>{derivedSheet.armorClass}</div>
+              <div className={styles.statLabel}>CLASSE ARMADURA</div>
+            </div>
           </div>
 
-          <div className={styles.panelsGroup}>
+          {/* Death Saves + Defesas + Condições */}
+          <div className={styles.subRowPanels}>
+            {/* Death Saves */}
+            <div className={styles.redBox} style={{ flex: 0.8, padding: '16px 12px' }}>
+              <div className={styles.sectionHeader}>TESTES CONTRA A MORTE</div>
+              <DeathSavesCard
+                deathSaves={playState.deathSaves}
+                onUpdate={handleUpdateDeathSaves}
+              />
+            </div>
+
             <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
               <div className={styles.sectionHeader}>DEFESAS</div>
               <DefensesCard
@@ -335,34 +873,40 @@ export function CharacterSheetPage({
               <div className={styles.sectionHeader}>CONDIÇÕES</div>
               <ConditionsCard
                 activeConditions={playState.activeConditions}
+                concentratingOn={playState.concentratingOn}
                 onAdd={handleAddCondition}
                 onRemove={handleRemoveCondition}
+                onStopConcentrating={() => onUpdatePlayState(prev => ({ ...prev, concentratingOn: null }))}
+              />
+              <ExhaustionTracker
+                level={playState.exhaustionLevel ?? 0}
+                onChange={(level) => onUpdatePlayState(prev => ({ ...prev, exhaustionLevel: level }))}
               />
             </div>
           </div>
+
         </div>
+      </div>
 
-        {/* === Spell Slots Panel (casters only) === */}
-        {derivedSheet.isCaster && derivedSheet.spellSlots && Object.keys(derivedSheet.spellSlots).length > 0 && (
-          <SpellSlotsPanel
-            spellSlots={derivedSheet.spellSlots}
-            spentSpellSlots={playState.spentSpellSlots}
-            onUpdatePlayState={onUpdatePlayState}
-          />
-        )}
+      {/* ===== BOTTOM PANELS (SUB-PAINÉIS) ===== */}
+      <div
+        className={`${styles.mainGrid} ${isDesktopWide && sidebar !== null ? styles.mainGridWithSidebar : ''}`}
+        style={{ marginTop: 24 }}
+      >
 
-        {/* === ROW 4: Bottom Grid === */}
-        <div className={styles.bottomGrid}>
-          <div className={styles.colLeft}>
+        {/* Coluna 1: Testes de Resistência, Sentidos, Proficiências */}
+        <div className={styles.colLeft}>
+          <CollapsibleSection title="Testes de Resistência" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
               <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
               <SavingThrowsCard
                 derivedSavingThrows={derivedSheet.derivedSavingThrows}
-                modifiers={derivedSheet.modifiers}
-                proficiencyBonus={derivedSheet.proficiencyBonus}
-                onRoll={diceRoll}
+                onSaveClick={handleSaveClick}
               />
             </div>
+          </CollapsibleSection>
+
+          <CollapsibleSection title="Sentidos" forceOpen={!isMobile}>
             <div className={styles.redBox}>
               <div className={styles.sectionHeader}>SENTIDOS ⚙</div>
               <SensesCard
@@ -372,6 +916,9 @@ export function CharacterSheetPage({
                 specialSenses={derivedSheet.specialSenses}
               />
             </div>
+          </CollapsibleSection>
+
+          <CollapsibleSection title="Proficiências" forceOpen={!isMobile}>
             <div className={styles.redBox}>
               <div className={styles.sectionHeader}>PROFICIÊNCIAS E TREINAMENTO ⚙</div>
               <ProficienciesCard
@@ -382,45 +929,146 @@ export function CharacterSheetPage({
                 languages={derivedSheet.languages}
               />
             </div>
-          </div>
+          </CollapsibleSection>
+        </div>
 
-          <div className={`${styles.redBox} ${styles.colMiddle}`}>
-            <div className={styles.sectionHeader}>PERÍCIAS ⚙</div>
-            <SkillsCard
-              skills={derivedSheet.skills}
-              modifiers={derivedSheet.modifiers}
-              proficiencyBonus={derivedSheet.proficiencyBonus}
-              onRoll={diceRoll}
-            />
-          </div>
+        {/* Coluna 2: Perícias + Abas de Gerenciamento */}
+        <div className={styles.colRight}>
+          <div className={styles.bottomPanel}>
+            {/* Skills */}
+            <div className={`${styles.redBox} ${styles.skillsPanel}`}>
+              <div className={styles.sectionHeader}>PERÍCIAS ⚙</div>
+              <SkillsCard
+                skills={derivedSheet.skills}
+                onSkillClick={handleSkillClick}
+                expertiseSkills={playState.expertiseSkills ?? []}
+                canGrantExpertise={derivedSheet.classGrantsExpertise}
+                expertiseCount={derivedSheet.expertiseCount}
+                onToggleExpertise={(label) => {
+                  onUpdatePlayState(prev => {
+                    const list = prev.expertiseSkills ?? [];
+                    const next = list.includes(label)
+                      ? list.filter(s => s !== label)
+                      : list.length < derivedSheet.expertiseCount
+                        ? [...list, label]
+                        : list;
+                    return { ...prev, expertiseSkills: next };
+                  });
+                }}
+              />
+            </div>
 
-          <div className={`${styles.redBox} ${styles.colRight}`} style={{ padding: '20px 12px' }}>
-            <SheetTabs
-              derivedSheet={derivedSheet}
-              playState={playState}
-              onUpdatePlayState={onUpdatePlayState}
-              classFeatures={classFeatures}
-              speciesTraits={speciesTraits}
-              inventory={inventory}
-              learnedCantrips={learnedCantrips}
-              preparedSpells={preparedSpells}
-              characterLevel={characterLevel}
-              backgroundName={backgroundName}
-              backgroundDescription={backgroundDescription}
-              backgroundSkills={backgroundSkills}
-              backgroundTool={backgroundTool}
-              backgroundEquipment={backgroundEquipment}
-              equippedArmorId={equippedArmorId}
-              hasShieldEquipped={hasShieldEquipped}
-              onEquipArmor={onEquipArmor}
-              onEquipShield={onEquipShield}
-              onRoll={diceRoll}
-              strengthScore={derivedSheet.finalAttributes?.forca ?? 10}
-            />
+            {/* Tabs */}
+            <div className={`${styles.redBox} ${styles.tabsPanel}`}>
+              <SheetTabs
+                derivedSheet={derivedSheet}
+                playState={playState}
+                onUpdatePlayState={onUpdatePlayState}
+                classFeatures={classFeatures}
+                speciesTraits={speciesTraits}
+                inventory={inventory}
+                learnedCantrips={learnedCantrips}
+                preparedSpells={preparedSpells}
+                onUpdatePreparedSpells={onUpdatePreparedSpells}
+                characterLevel={characterLevel}
+                backgroundName={backgroundName}
+                backgroundDescription={backgroundDescription}
+                backgroundSkills={backgroundSkills}
+                backgroundTool={backgroundTool}
+                backgroundEquipment={backgroundEquipment}
+                equippedArmorId={equippedArmorId}
+                hasShieldEquipped={hasShieldEquipped}
+                onEquipArmor={onEquipArmor}
+                onEquipShield={onEquipShield}
+                onAttackClick={handleAttackClick}
+                currency={currency}
+                onUpdateCurrency={onUpdateCurrency}
+                backstory={backstory}
+                appearance={appearance}
+                personalityTraits={personalityTraits}
+                faith={faith}
+                lifestyle={lifestyle}
+                organizations={organizations}
+                alignment={alignment}
+                onUpdateIdentity={onUpdateIdentity}
+                classId={classId}
+              />
+            </div>
           </div>
         </div>
 
+        {/* Coluna 3: Sidebar inline (apenas desktop >= 1280px) */}
+        {isDesktopWide && sidebar !== null && (
+          <div className={styles.colSidebar}>
+            <div className={styles.colSidebarHeader}>
+              <div>
+                {sidebarStack.length > 1 && (
+                  <button onClick={popSidebar} className={styles.colSidebarBack} aria-label="Voltar">←</button>
+                )}
+              </div>
+              <div>
+                <div className={styles.colSidebarTitle}>{sidebarTitle}</div>
+                {sidebarSubtitle && <div className={styles.colSidebarSubtitle}>{sidebarSubtitle}</div>}
+              </div>
+              <button onClick={closeSidebar} className={styles.colSidebarClose} aria-label="Fechar">✕</button>
+            </div>
+            {renderSidebarContent()}
+          </div>
+        )}
+
       </div>
+
+      {/* ===== SIDEBAR OVERLAY (apenas < 1280px) ===== */}
+      {!isDesktopWide && (
+        <SheetSidebar
+          isOpen={sidebar !== null}
+          onClose={closeSidebar}
+          onBack={popSidebar}
+          canGoBack={sidebarStack.length > 1}
+          title={sidebarTitle}
+          subtitle={sidebarSubtitle}
+        >
+          {renderSidebarContent()}
+        </SheetSidebar>
+      )}
+
+      {/* ===== REST MODAL ===== */}
+      <RestModal
+        type={restModal ?? 'long'}
+        isOpen={restModal !== null}
+        onClose={() => setRestModal(null)}
+        onConfirm={restModal === 'long' ? handleLongRest : handleShortRest}
+      />
+
+      {onSetLevel && classId && (
+        <LevelUpModal
+          isOpen={showLevelUp}
+          onClose={() => setShowLevelUp(false)}
+          onConfirm={(newLevel, levelUpClassId) => {
+            if (levelUpClassId && onLevelUpClass) {
+              onLevelUpClass(levelUpClassId);
+            }
+            onSetLevel(newLevel);
+            setShowLevelUp(false);
+          }}
+          currentLevel={characterLevel}
+          classId={classId}
+          className={className}
+          classFeatures={classFeatures}
+          derivedSheet={derivedSheet}
+          classLevels={classLevels}
+        />
+      )}
+
+      {onAddClass && classLevels && (
+        <AddClassModal
+          isOpen={showAddClass}
+          onClose={() => setShowAddClass(false)}
+          onAddClass={(id, name) => { onAddClass(id, name); setShowAddClass(false); }}
+          currentClassLevels={classLevels}
+          derivedSheet={derivedSheet}
+        />
+      )}
     </div>
   );
 }

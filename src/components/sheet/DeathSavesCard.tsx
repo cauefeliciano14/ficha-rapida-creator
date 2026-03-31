@@ -1,114 +1,89 @@
 import type { CharacterPlayState } from '../../types/playState';
+import styles from './DeathSavesCard.module.css';
 
 interface DeathSavesCardProps {
-  deathSaves: { successes: number; failures: number };
-  onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
+  deathSaves: CharacterPlayState['deathSaves'];
+  onUpdate: (deathSaves: CharacterPlayState['deathSaves']) => void;
 }
 
-export function DeathSavesCard({ deathSaves, onUpdatePlayState }: DeathSavesCardProps) {
+export function DeathSavesCard({ deathSaves, onUpdate }: DeathSavesCardProps) {
+  const isStable = deathSaves.successes >= 3;
+  const isDead = deathSaves.failures >= 3;
+
   const toggleSuccess = (index: number) => {
-    onUpdatePlayState(prev => ({
-      ...prev,
-      deathSaves: {
-        ...prev.deathSaves,
-        successes: prev.deathSaves.successes > index ? index : index + 1,
-      },
-    }));
+    if (isDead || isStable) return;
+    const newSuccesses = index < deathSaves.successes
+      ? index
+      : index + 1;
+    onUpdate({ ...deathSaves, successes: Math.min(3, newSuccesses) });
   };
 
   const toggleFailure = (index: number) => {
-    onUpdatePlayState(prev => ({
-      ...prev,
-      deathSaves: {
-        ...prev.deathSaves,
-        failures: prev.deathSaves.failures > index ? index : index + 1,
-      },
-    }));
+    if (isDead || isStable) return;
+    const newFailures = index < deathSaves.failures
+      ? index
+      : index + 1;
+    onUpdate({ ...deathSaves, failures: Math.min(3, newFailures) });
   };
 
-  const resetDeathSaves = () => {
-    onUpdatePlayState(prev => ({
-      ...prev,
-      deathSaves: { successes: 0, failures: 0 },
-    }));
+  const handleReset = () => {
+    onUpdate({ successes: 0, failures: 0 });
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '6px',
-      padding: '8px 0',
-    }}>
-      {/* Successes */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '0.65rem', color: '#4ade80', fontWeight: 800, width: '62px', letterSpacing: '0.03em' }}>
-          SUCESSOS
-        </span>
-        <div style={{ display: 'flex', gap: '6px' }}>
+    <div className={styles.container}>
+      {/* Sucesso */}
+      <div className={styles.row}>
+        <span className={styles.label}>Sucesso</span>
+        <div className={styles.checks}>
           {[0, 1, 2].map(i => (
-            <button
+            <div
               key={`s-${i}`}
+              className={i < deathSaves.successes ? styles.checkSuccess : styles.check}
               onClick={() => toggleSuccess(i)}
-              style={{
-                width: '18px',
-                height: '18px',
-                borderRadius: '50%',
-                border: `2px solid ${i < deathSaves.successes ? '#4ade80' : 'rgba(255,255,255,0.2)'}`,
-                background: i < deathSaves.successes ? '#4ade80' : 'transparent',
-                cursor: 'pointer',
-                padding: 0,
-                transition: 'all 0.15s',
-                boxShadow: i < deathSaves.successes ? '0 0 8px rgba(74,222,128,0.5)' : 'none',
-              }}
-            />
+              role="checkbox"
+              aria-checked={i < deathSaves.successes}
+              aria-label={`Sucesso ${i + 1}`}
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleSuccess(i); }}
+            >
+              {i < deathSaves.successes ? '✓' : ''}
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Failures */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '0.65rem', color: '#f87171', fontWeight: 800, width: '62px', letterSpacing: '0.03em' }}>
-          FALHAS
-        </span>
-        <div style={{ display: 'flex', gap: '6px' }}>
+      {/* Falha */}
+      <div className={styles.row}>
+        <span className={styles.label}>Falha</span>
+        <div className={styles.checks}>
           {[0, 1, 2].map(i => (
-            <button
+            <div
               key={`f-${i}`}
+              className={i < deathSaves.failures ? styles.checkFailure : styles.check}
               onClick={() => toggleFailure(i)}
-              style={{
-                width: '18px',
-                height: '18px',
-                borderRadius: '50%',
-                border: `2px solid ${i < deathSaves.failures ? '#f87171' : 'rgba(255,255,255,0.2)'}`,
-                background: i < deathSaves.failures ? '#f87171' : 'transparent',
-                cursor: 'pointer',
-                padding: 0,
-                transition: 'all 0.15s',
-                boxShadow: i < deathSaves.failures ? '0 0 8px rgba(248,113,113,0.5)' : 'none',
-              }}
-            />
+              role="checkbox"
+              aria-checked={i < deathSaves.failures}
+              aria-label={`Falha ${i + 1}`}
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleFailure(i); }}
+            >
+              {i < deathSaves.failures ? '✕' : ''}
+            </div>
           ))}
         </div>
-        
-        {/* Reset button */}
-        {(deathSaves.successes > 0 || deathSaves.failures > 0) && (
-          <button
-            onClick={resetDeathSaves}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#475569',
-              fontSize: '0.65rem',
-              cursor: 'pointer',
-              padding: '0 4px',
-              marginLeft: 'auto',
-            }}
-          >
-            ↺ Resetar
-          </button>
-        )}
       </div>
+
+      {/* Status */}
+      {isStable && <div className={styles.statusStable}>✓ Estabilizado!</div>}
+      {isDead && <div className={styles.statusDead}>✕ Morto</div>}
+
+      {/* Reset */}
+      {(deathSaves.successes > 0 || deathSaves.failures > 0) && (
+        <button onClick={handleReset} className={styles.resetBtn}>
+          Resetar
+        </button>
+      )}
     </div>
   );
 }

@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import type { DerivedSheet } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../../types/playState';
+import { signedMod } from '../../../utils/format';
+import { SpellCardTooltip } from '../SpellCardTooltip';
 import spellsAll from '../../../data/spells/spells_all.json';
+import styles from './SpellsTab.module.css';
 
-
-function signedMod(n: number): string {
-  return n >= 0 ? `+${n}` : `${n}`;
-}
+const ABILITY_LABELS: Record<string, string> = {
+  inteligencia: 'Inteligência', sabedoria: 'Sabedoria', carisma: 'Carisma',
+  forca: 'Força', destreza: 'Destreza', constituicao: 'Constituição',
+};
 
 interface SpellsTabProps {
   derivedSheet: DerivedSheet;
@@ -14,24 +17,12 @@ interface SpellsTabProps {
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
   learnedCantrips: string[];
   preparedSpells: string[];
+  onUpdatePreparedSpells?: (spells: string[]) => void;
 }
 
-interface SpellInfo {
-  name: string;
-  level: string;
-  school: string;
-  castingTime: string;
-  range: string;
-  components: string;
-  duration: string;
-  description: string;
-  damage?: string;
-  savingThrow?: string;
-}
-
-const SPELL_MAP = new Map<string, SpellInfo>();
-for (const sp of spellsAll as SpellInfo[]) {
-  SPELL_MAP.set(sp.name, sp);
+const SPELL_LEVEL_MAP = new Map<string, string>();
+for (const sp of spellsAll as Array<{ name: string; level: string }>) {
+  SPELL_LEVEL_MAP.set(sp.name, sp.level);
 }
 
 const CIRCLE_ORDER = [
@@ -39,423 +30,255 @@ const CIRCLE_ORDER = [
   '5º Círculo', '6º Círculo', '7º Círculo', '8º Círculo', '9º Círculo',
 ];
 
-function castingTimeAbbrev(ct: string): string {
-  if (ct.includes('ação bônus') || ct.includes('Ação Bônus')) return '1BA';
-  if (ct.includes('reação') || ct.includes('Reação')) return '1R';
-  if (ct.includes('1 minuto')) return '1min';
-  if (ct.includes('10 minutos')) return '10min';
-  if (ct.includes('1 hora')) return '1h';
-  if (ct.includes('ação') || ct.includes('Ação')) return '1A';
-  return ct.length > 6 ? ct.substring(0, 6) : ct;
-}
-
-function rangeAbbrev(range: string): string {
-  return range
-    .replace('metros', 'ft.')
-    .replace('metro', 'ft.')
-    .replace('Pessoal', 'Self')
-    .replace('Toque', 'Touch');
-}
-
-function componentsAbbrev(comp: string): string {
-  const parts: string[] = [];
-  if (comp.includes('V')) parts.push('V');
-  if (comp.includes('S')) parts.push('S');
-  if (comp.includes('M')) parts.push('M');
-  return parts.join('/');
-}
-
-function getSpellEffect(sp: SpellInfo, _spellAttackBonus: number, modValue: number): { text: string; isAttack: boolean; saveDC?: string } {
-  const desc = sp.description?.toLowerCase() ?? '';
-  const dmg = sp.damage;
-
-  if (dmg) {
-    const bonus = modValue !== 0 ? `${signedMod(modValue)}` : '';
-    return { text: `${dmg}${bonus}`, isAttack: true };
-  }
-
-  if (desc.includes('teste de resistência') || desc.includes('saving throw') || sp.savingThrow) {
-    const stMatch = sp.savingThrow ?? '';
-    return { text: stMatch ? stMatch.substring(0, 3).toUpperCase() : 'Save', isAttack: false };
-  }
-
-  if (desc.includes('cura') || desc.includes('heal')) return { text: 'Healing', isAttack: false };
-  if (desc.includes('buff') || desc.includes('vantagem')) return { text: 'Buff', isAttack: false };
-  if (desc.includes('controle') || desc.includes('control')) return { text: 'Control', isAttack: false };
-  if (desc.includes('criação') || desc.includes('create')) return { text: 'Creation*', isAttack: false };
-  if (desc.includes('comunicação') || desc.includes('communi')) return { text: 'Communication*', isAttack: false };
-
-  return { text: '—', isAttack: false };
-}
-
-function durationAbbrev(dur: string): string {
-  if (dur.includes('Instantân') || dur.includes('instantân')) return '';
-  if (dur.includes('Concentração')) {
-    const m = dur.match(/(\d+)\s*(minuto|hora|rodada)/i);
-    if (m) return `D: ${m[1]}${m[2][0]}`;
-    return 'D: Conc.';
-  }
-  const m = dur.match(/(\d+)\s*(minuto|hora|rodada|dia)/i);
-  if (m) return `D: ${m[1]}${m[2][0]}`;
-  return dur.length > 10 ? dur.substring(0, 10) : dur;
-}
-
 export function SpellsTab({
   derivedSheet,
   playState,
   onUpdatePlayState,
   learnedCantrips,
   preparedSpells,
+  onUpdatePreparedSpells,
 }: SpellsTabProps) {
-  const [search, setSearch] = useState('');
   const [circleFilter, setCircleFilter] = useState<string>('all');
-  const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState('');
+  const [showAddSpell, setShowAddSpell] = useState(false);
+  const [addSearch, setAddSearch] = useState('');
 
   const racialCantrips = derivedSheet.racialCantrips ?? [];
   const bonusCantrips = derivedSheet.bonusCantrips ?? [];
   const bonusPreparedSpells = derivedSheet.bonusPreparedSpells ?? [];
-  const spellMod = derivedSheet.modifiers?.[derivedSheet.spellcastingAbility ?? ''] ?? 0;
 
-  // Build unified spell list with source tagging
-  const allSpells = useMemo(() => {
-    const list: Array<{ name: string; source: string; circle: string; info: SpellInfo | undefined }> = [];
-
-    for (const name of learnedCantrips) {
-      list.push({ name, source: 'Classe', circle: 'Truque', info: SPELL_MAP.get(name) });
-    }
-    for (const name of racialCantrips) {
-      if (!list.some(s => s.name === name)) {
-        list.push({ name, source: 'Racial', circle: 'Truque', info: SPELL_MAP.get(name) });
-      }
-    }
-    for (const bc of bonusCantrips) {
-      if (!list.some(s => s.name === bc.name)) {
-        list.push({ name: bc.name, source: bc.origin, circle: 'Truque', info: SPELL_MAP.get(bc.name) });
-      }
-    }
+  const groupedPrepared = useMemo(() => {
+    const groups: Record<string, string[]> = {};
     for (const name of preparedSpells) {
-      const info = SPELL_MAP.get(name);
-      list.push({ name, source: 'Classe', circle: info?.level ?? '?', info });
-    }
-    for (const bp of bonusPreparedSpells) {
-      if (!list.some(s => s.name === bp.name && s.circle !== 'Truque')) {
-        const info = SPELL_MAP.get(bp.name);
-        list.push({ name: bp.name, source: bp.origin, circle: info?.level ?? '1º Círculo', info });
-      }
-    }
-    return list;
-  }, [learnedCantrips, racialCantrips, bonusCantrips, preparedSpells, bonusPreparedSpells]);
-
-  const availableCircles = useMemo(() => {
-    const circles = new Set(allSpells.map(s => s.circle));
-    return CIRCLE_ORDER.filter(c => circles.has(c));
-  }, [allSpells]);
-
-  const filteredSpells = useMemo(() => {
-    let filtered = allSpells;
-    if (circleFilter !== 'all') filtered = filtered.filter(s => s.circle === circleFilter);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      filtered = filtered.filter(s =>
-        s.name.toLowerCase().includes(q) ||
-        s.source.toLowerCase().includes(q) ||
-        (s.info?.school ?? '').toLowerCase().includes(q)
-      );
-    }
-    return filtered;
-  }, [allSpells, circleFilter, search]);
-
-  // Group by circle
-  const grouped = useMemo(() => {
-    const groups: Record<string, typeof filteredSpells> = {};
-    for (const sp of filteredSpells) {
-      if (!groups[sp.circle]) groups[sp.circle] = [];
-      groups[sp.circle].push(sp);
+      const circle = SPELL_LEVEL_MAP.get(name) ?? '?';
+      if (!groups[circle]) groups[circle] = [];
+      groups[circle].push(name);
     }
     return groups;
-  }, [filteredSpells]);
+  }, [preparedSpells]);
 
-  if (!derivedSheet.isCaster && bonusCantrips.length === 0 && bonusPreparedSpells.length === 0 && learnedCantrips.length === 0) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px 20px', color: '#475569', fontSize: '0.9rem' }}>
-        Esta classe não conjura magias.
-      </div>
-    );
+  const availableCircles = useMemo(() => {
+    const circles = new Set<string>();
+    if (learnedCantrips.length > 0 || bonusCantrips.length > 0) circles.add('Truque');
+    for (const c of Object.keys(groupedPrepared)) circles.add(c);
+    if (bonusPreparedSpells.length > 0) circles.add('1º Círculo');
+    return CIRCLE_ORDER.filter(c => circles.has(c));
+  }, [groupedPrepared, learnedCantrips, bonusCantrips, bonusPreparedSpells]);
+
+  // Search results from full spell list for "add" modal
+  const addSearchResults = useMemo(() => {
+    if (addSearch.trim().length < 2) return [];
+    const q = addSearch.toLowerCase();
+    return (spellsAll as any[])
+      .filter(sp => sp.name.toLowerCase().includes(q) && !preparedSpells.includes(sp.name))
+      .slice(0, 12);
+  }, [addSearch, preparedSpells]);
+
+  const handleUnprepare = (spellName: string) => {
+    onUpdatePreparedSpells?.(preparedSpells.filter(s => s !== spellName));
+  };
+
+  const handleAddSpell = (spellName: string) => {
+    if (!preparedSpells.includes(spellName)) {
+      onUpdatePreparedSpells?.([...preparedSpells, spellName]);
+    }
+    setAddSearch('');
+  };
+
+  if (!derivedSheet.isCaster && bonusCantrips.length === 0 && bonusPreparedSpells.length === 0) {
+    return <div className={styles.emptyText}>Esta classe não conjura magias.</div>;
   }
 
   const slots = derivedSheet.spellSlots ?? {};
+  const slotLevels = Object.keys(slots).map(Number).filter(l => (slots as Record<number, number>)[l] > 0).sort((a, b) => a - b);
+
+  const handleSpendSlot = (level: number) => {
+    onUpdatePlayState(prev => ({
+      ...prev,
+      spentSpellSlots: { ...prev.spentSpellSlots, [level]: (prev.spentSpellSlots[level] ?? 0) + 1 },
+    }));
+  };
+
+  const handleRestoreSlot = (level: number) => {
+    onUpdatePlayState(prev => ({
+      ...prev,
+      spentSpellSlots: { ...prev.spentSpellSlots, [level]: Math.max(0, (prev.spentSpellSlots[level] ?? 0) - 1) },
+    }));
+  };
+
+  const canEditSpells = !!onUpdatePreparedSpells;
+  const q = searchText.toLowerCase();
+
+  const filterSpells = (spells: string[]) =>
+    q ? spells.filter(s => s.toLowerCase().includes(q)) : spells;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Spell stats header */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '10px' }}>
-        {derivedSheet.spellcastingAbility && (
-          <StatPill label="MODIFICADOR" value={signedMod(spellMod)} />
-        )}
-        <StatPill label="ATAQUE MÁGICO" value={signedMod(derivedSheet.spellAttackBonus ?? 0)} />
+    <div className={styles.container}>
+      {/* Spell stats */}
+      <div className={styles.statsRow}>
+        <StatPill label="ATRIBUTO DE CONJURAÇÃO" value={ABILITY_LABELS[derivedSheet.spellcastingAbility ?? ''] ?? '—'} />
         <StatPill label="CD DE MAGIA" value={String(derivedSheet.spellSaveDC ?? 0)} />
+        <StatPill label="BÔNUS DE ATAQUE MÁGICO" value={signedMod(derivedSheet.spellAttackBonus ?? 0)} />
+        <StatPill label="MAGIAS PREPARADAS" value={String(derivedSheet.preparedSpellCount ?? 0)} />
+        <StatPill label="TRUQUES CONHECIDOS" value={String(derivedSheet.cantripsKnown ?? 0)} />
       </div>
 
-      {/* Search bar */}
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'rgba(17,18,24,0.6)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '4px',
-          padding: '6px 10px',
-        }}>
-          <span style={{ color: '#64748b', fontSize: '0.85rem' }}>🔍</span>
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar Magias, Escolas, Tags..."
-            style={{
-              flex: 1,
-              background: 'transparent',
-              border: 'none',
-              color: '#f1f5f9',
-              fontSize: '0.85rem',
-              outline: 'none',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Circle filter pills */}
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <FilterPill active={circleFilter === 'all'} onClick={() => setCircleFilter('all')}>TODAS</FilterPill>
-        {availableCircles.map(c => {
-          const label = c === 'Truque' ? '- 0 -' : c.replace('º Círculo', 'º');
-          return <FilterPill key={c} active={circleFilter === c} onClick={() => setCircleFilter(c)}>{label}</FilterPill>;
-        })}
-      </div>
-
-      {/* Spell sections by circle */}
-      {CIRCLE_ORDER.map(circle => {
-        const spells = grouped[circle];
-        if (!spells || spells.length === 0) return null;
-        const isCantrip = circle === 'Truque';
-        const circleNum = isCantrip ? 0 : parseInt(circle);
-        const slotTotal = isCantrip ? 0 : (slots as Record<number, number>)[circleNum] ?? 0;
-        const slotSpent = isCantrip ? 0 : (playState.spentSpellSlots[circleNum] ?? 0);
-
-        return (
-          <div key={circle}>
-            {/* Section header */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingBottom: '6px',
-              borderBottom: '1px solid rgba(220,38,38,0.3)',
-              marginBottom: '4px',
-            }}>
-              <span style={{ fontSize: '0.7rem', color: '#dc2626', fontWeight: 800, letterSpacing: '0.05em' }}>
-                {isCantrip ? 'TRUQUE' : circle.toUpperCase()}
-              </span>
-              {!isCantrip && slotTotal > 0 && (
-                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                  {Array.from({ length: slotTotal }, (_, i) => {
-                    const isUsed = i < slotSpent;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          onUpdatePlayState(prev => ({
-                            ...prev,
-                            spentSpellSlots: {
-                              ...prev.spentSpellSlots,
-                              [circleNum]: isUsed
-                                ? Math.max(0, (prev.spentSpellSlots[circleNum] ?? 0) - 1)
-                                : (prev.spentSpellSlots[circleNum] ?? 0) + 1,
-                            },
-                          }));
-                        }}
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '3px',
-                          border: `2px solid ${isUsed ? '#475569' : '#991b1b'}`,
-                          background: isUsed ? 'transparent' : '#991b1b',
-                          cursor: 'pointer',
-                          padding: 0,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        title={isUsed ? 'Restaurar slot' : 'Gastar slot'}
-                      >
-                        {isUsed && <span style={{ color: '#475569', fontSize: '0.6rem', fontWeight: 900 }}>✕</span>}
-                      </button>
-                    );
-                  })}
-                  <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700, marginLeft: '4px' }}>SLOTS</span>
-                </div>
-              )}
-            </div>
-
-            {/* Table header */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '32px minmax(140px, 1fr) 40px 60px 60px 80px minmax(80px, 1fr)',
-              padding: '4px 8px',
-              gap: '4px',
-              borderBottom: '1px solid rgba(255,255,255,0.05)',
-            }}>
-              {['', 'NOME', 'TEMPO', 'ALCANCE', 'ACERTO/CD', 'EFEITO', 'NOTAS'].map(h => (
-                <span key={h} style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 800 }}>{h}</span>
-              ))}
-            </div>
-
-            {/* Spell rows */}
-            {spells.map((sp, i) => {
-              const info = sp.info;
-              const effect = info ? getSpellEffect(info, derivedSheet.spellAttackBonus ?? 0, spellMod) : { text: '—', isAttack: false };
-              const isExpanded = expandedSpell === sp.name;
-
+      {/* Spell slots */}
+      {slotLevels.length > 0 && (
+        <div className={styles.slotsCard}>
+          <div className={styles.slotsTitle}>ESPAÇOS DE MAGIA</div>
+          <div className={styles.slotsList}>
+            {slotLevels.map(level => {
+              const total = (slots as Record<number, number>)[level] ?? 0;
+              const spent = playState.spentSpellSlots[level] ?? 0;
+              const remaining = total - spent;
               return (
-                <div key={`${sp.name}-${sp.source}-${i}`}>
-                  <div
-                    onClick={() => setExpandedSpell(isExpanded ? null : sp.name)}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '32px minmax(140px, 1fr) 40px 60px 60px 80px minmax(80px, 1fr)',
-                      padding: '8px 8px',
-                      gap: '4px',
-                      borderBottom: '1px solid rgba(255,255,255,0.04)',
-                      cursor: 'pointer',
-                      alignItems: 'center',
-                      background: isExpanded ? 'rgba(153,27,27,0.08)' : 'transparent',
-                      transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
-                    onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = 'transparent'; }}
-                  >
-                    {/* AT WILL / CAST badge */}
-                    <span style={{
-                      fontSize: '0.55rem',
-                      color: isCantrip ? '#64748b' : '#dc2626',
-                      fontWeight: 800,
-                      textAlign: 'center',
-                      lineHeight: 1.1,
-                      border: isCantrip ? 'none' : '1px solid rgba(220,38,38,0.3)',
-                      borderRadius: '3px',
-                      padding: isCantrip ? '0' : '2px 3px',
-                      background: isCantrip ? 'transparent' : 'rgba(220,38,38,0.08)',
-                    }}>
-                      {isCantrip ? 'AT\nWILL' : 'CAST'}
-                    </span>
-
-                    {/* Name + source */}
-                    <div>
-                      <div style={{ fontSize: '0.85rem', color: '#f1f5f9', fontWeight: 700, fontStyle: 'italic' }}>{sp.name}</div>
-                      <div style={{ fontSize: '0.6rem', color: '#64748b' }}>
-                        {sp.source}
-                      </div>
-                    </div>
-
-                    {/* Casting time */}
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
-                      {info ? castingTimeAbbrev(info.castingTime) : '—'}
-                    </span>
-
-                    {/* Range */}
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>
-                      {info ? rangeAbbrev(info.range) : '—'}
-                    </span>
-
-                    {/* Hit/DC */}
-                    <span style={{ textAlign: 'center' }}>
-                      {effect.isAttack ? (
-                        <span style={{
-                          display: 'inline-block',
-                          border: '1px solid #991b1b',
-                          borderRadius: '20px',
-                          padding: '1px 6px',
-                          fontSize: '0.75rem',
-                          fontWeight: 900,
-                          color: '#f1f5f9',
-                          background: 'rgba(0,0,0,0.5)',
-                        }}>
-                          {signedMod(derivedSheet.spellAttackBonus ?? 0)}
-                        </span>
-                      ) : info?.savingThrow ? (
-                        <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>
-                          <span style={{ fontSize: '0.6rem', color: '#64748b', display: 'block' }}>{info.savingThrow.substring(0, 3).toUpperCase()}</span>
-                          {derivedSheet.spellSaveDC}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#475569' }}>—</span>
-                      )}
-                    </span>
-
-                    {/* Effect */}
-                    <span style={{
-                      fontSize: '0.75rem',
-                      color: '#f1f5f9',
-                      textAlign: 'center',
-                      ...(effect.isAttack ? {
-                        border: '1px solid #7f1d1d',
-                        background: 'rgba(0,0,0,0.4)',
-                        borderRadius: '4px',
-                        padding: '2px 4px',
-                      } : {}),
-                    }}>
-                      {effect.text}
-                    </span>
-
-                    {/* Notes: duration + components */}
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
-                      {info ? `${durationAbbrev(info.duration)}${durationAbbrev(info.duration) ? ', ' : ''}${componentsAbbrev(info.components)}` : '—'}
-                    </span>
+                <div key={level} className={styles.slotRow}>
+                  <span className={styles.slotLevel}>{level}º círculo</span>
+                  <div className={styles.slotDots}>
+                    {Array.from({ length: total }, (_, i) => (
+                      <div key={i} className={i < remaining ? styles.slotDotFilled : styles.slotDot} />
+                    ))}
                   </div>
-
-                  {/* Expanded details */}
-                  {isExpanded && info && (
-                    <div style={{
-                      padding: '12px 14px 12px 40px',
-                      background: 'rgba(0,0,0,0.2)',
-                      borderBottom: '1px solid rgba(255,255,255,0.06)',
-                    }}>
-                      <div style={{ color: '#94a3b8', fontSize: '0.75rem', fontStyle: 'italic', marginBottom: '8px' }}>
-                        {info.level === 'Truque' ? `Truque de ${info.school}` : `${info.level}, ${info.school}`}
-                      </div>
-                      <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'auto 1fr',
-                        gap: '4px 12px',
-                        fontSize: '0.78rem',
-                        marginBottom: '8px',
-                      }}>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Conjuração:</span>
-                        <span style={{ color: '#e2e8f0' }}>{info.castingTime}</span>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Alcance:</span>
-                        <span style={{ color: '#e2e8f0' }}>{info.range}</span>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Componentes:</span>
-                        <span style={{ color: '#e2e8f0' }}>{info.components}</span>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Duração:</span>
-                        <span style={{ color: '#e2e8f0' }}>{info.duration}</span>
-                      </div>
-                      <div style={{ color: '#cbd5e1', fontSize: '0.82rem', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                        {info.description}
-                      </div>
-                    </div>
-                  )}
+                  <span className={styles.slotCount}>{remaining}/{total}</span>
+                  <button onClick={() => handleSpendSlot(level)} disabled={remaining <= 0} className={styles.slotSpendBtn}>Gastar</button>
+                  <button onClick={() => handleRestoreSlot(level)} disabled={spent <= 0} className={styles.slotRestoreBtn}>Restaurar</button>
                 </div>
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Concentration banner */}
+      {playState.concentratingOn && (
+        <div className={styles.concentrationBanner}>
+          <span className={styles.concentrationIcon}>◉</span>
+          <span className={styles.concentrationText}>
+            Concentrando em: <strong>{playState.concentratingOn}</strong>
+          </span>
+          <button
+            className={styles.concentrationEndBtn}
+            onClick={() => onUpdatePlayState(prev => ({ ...prev, concentratingOn: null }))}
+          >
+            Encerrar
+          </button>
+        </div>
+      )}
+
+      {/* Search bar */}
+      <div className={styles.searchRow}>
+        <input
+          type="text"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          placeholder="Buscar magia…"
+          className={styles.searchInput}
+        />
+        {canEditSpells && (
+          <button onClick={() => setShowAddSpell(v => !v)} className={styles.addSpellBtn}>
+            {showAddSpell ? '✕ Fechar' : '＋ Adicionar Magia'}
+          </button>
+        )}
+      </div>
+
+      {/* Add spell search */}
+      {showAddSpell && (
+        <div className={styles.addSpellPanel}>
+          <input
+            type="text"
+            value={addSearch}
+            onChange={e => setAddSearch(e.target.value)}
+            placeholder="Buscar na lista completa de magias…"
+            className={styles.searchInput}
+            autoFocus
+          />
+          {addSearchResults.length > 0 && (
+            <div className={styles.addSpellResults}>
+              {addSearchResults.map((sp: any) => (
+                <div key={sp.name} className={styles.addSpellResult} onClick={() => handleAddSpell(sp.name)}>
+                  <span className={styles.addSpellName}>{sp.name}</span>
+                  <span className={styles.addSpellMeta}>{sp.level} · {sp.school}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {addSearch.length >= 2 && addSearchResults.length === 0 && (
+            <div className={styles.emptyText}>Nenhuma magia encontrada.</div>
+          )}
+        </div>
+      )}
+
+      {/* Circle filter */}
+      {availableCircles.length > 1 && !q && (
+        <div className={styles.filterBar}>
+          <button onClick={() => setCircleFilter('all')} className={circleFilter === 'all' ? styles.filterBtnActive : styles.filterBtn}>Todos</button>
+          {availableCircles.map(c => (
+            <button key={c} onClick={() => setCircleFilter(c)} className={circleFilter === c ? styles.filterBtnActive : styles.filterBtn}>{c}</button>
+          ))}
+        </div>
+      )}
+
+      {/* Spell lists */}
+      {learnedCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(learnedCantrips).length > 0 && (
+        <SpellList title="TRUQUES" spells={filterSpells(learnedCantrips)} accent="#fbbf24" />
+      )}
+      {racialCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(racialCantrips).length > 0 && (
+        <SpellList title="TRUQUES RACIAIS" spells={filterSpells(racialCantrips)} accent="#22c55e" badge="Racial" />
+      )}
+      {bonusCantrips.filter(s => s.source === 'talent').length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && (
+        <SpellList
+          title="TRUQUES DE TALENTO"
+          spells={filterSpells(bonusCantrips.filter(s => s.source === 'talent').map(s => `${s.name} — ${s.origin}`))}
+          accent="#38bdf8" badge="Talento"
+          concentratingOn={playState.concentratingOn}
+          onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
+        />
+      )}
+
+      {CIRCLE_ORDER.filter(c => c !== 'Truque' && groupedPrepared[c]).map(circle => {
+        if (!q && circleFilter !== 'all' && circleFilter !== circle) return null;
+        const filtered = filterSpells(groupedPrepared[circle]);
+        if (filtered.length === 0) return null;
+        return (
+          <SpellList
+            key={circle}
+            title={circle.toUpperCase()}
+            spells={filtered}
+            accent="#a78bfa"
+            canRemove={canEditSpells}
+            onRemove={handleUnprepare}
+            concentratingOn={playState.concentratingOn}
+            onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
+          />
         );
       })}
 
-      {filteredSpells.length === 0 && (
-        <div style={{ color: '#475569', fontSize: '0.85rem', textAlign: 'center', padding: '16px' }}>
-          {search ? 'Nenhuma magia encontrada.' : 'Nenhuma magia selecionada.'}
-        </div>
+      {groupedPrepared['?'] && (circleFilter === 'all' || circleFilter === '?') && filterSpells(groupedPrepared['?']).length > 0 && (
+        <SpellList
+          title="MAGIAS PREPARADAS"
+          spells={filterSpells(groupedPrepared['?'])}
+          accent="#a78bfa"
+          canRemove={canEditSpells}
+          onRemove={handleUnprepare}
+          concentratingOn={playState.concentratingOn}
+          onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
+        />
+      )}
+
+      {bonusPreparedSpells.length > 0 && (circleFilter === 'all' || circleFilter === '1º Círculo') && (
+        <SpellList
+          title="MAGIAS EXTRA"
+          subtitle="Preparadas por traços raciais ou talentos."
+          spells={filterSpells(bonusPreparedSpells.map(s => `${s.name} — ${s.origin}`))}
+          accent="#34d399" badge="Extra"
+          concentratingOn={playState.concentratingOn}
+          onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
+        />
+      )}
+
+      {learnedCantrips.length === 0 && bonusCantrips.length === 0 && preparedSpells.length === 0 && bonusPreparedSpells.length === 0 && !showAddSpell && (
+        <div className={styles.emptySpells}>Nenhuma magia selecionada.</div>
       )}
     </div>
   );
@@ -463,30 +286,137 @@ export function SpellsTab({
 
 function StatPill({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#f1f5f9' }}>{value}</div>
-      <div style={{ fontSize: '0.6rem', color: '#94a3b8', fontWeight: 800 }}>{label}</div>
+    <div className={styles.statPill}>
+      <div className={styles.statPillLabel}>{label}</div>
+      <div className={styles.statPillValue}>{value}</div>
     </div>
   );
 }
 
-function FilterPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function SpellList({
+  title, subtitle, spells, accent, badge, canRemove, onRemove,
+  concentratingOn, onSetConcentration,
+}: {
+  title: string; subtitle?: string; spells: string[]; accent: string;
+  badge?: string; canRemove?: boolean; onRemove?: (name: string) => void;
+  concentratingOn?: string | null; onSetConcentration?: (name: string | null) => void;
+}) {
+  const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
+
+  const getSpellTags = (spellName: string) => {
+    const info = (spellsAll as any[]).find(sp => sp.name === spellName);
+    if (!info) return { isRitual: false, isConcentration: false };
+    return {
+      isRitual: typeof info.castingTime === 'string' && info.castingTime.toLowerCase().includes('ritual'),
+      isConcentration: typeof info.duration === 'string' && info.duration.toLowerCase().includes('concentra'),
+    };
+  };
+
   return (
-    <button
-      onClick={onClick}
-      style={{
-        background: active ? '#991b1b' : 'transparent',
-        border: 'none',
-        borderRadius: '4px',
-        color: active ? '#ffffff' : '#94a3b8',
-        padding: '4px 8px',
-        fontSize: '0.7rem',
-        fontWeight: 800,
-        cursor: 'pointer',
-        transition: 'background 0.2s',
-      }}
-    >
-      {children}
-    </button>
+    <div className={styles.spellSection} style={{ '--accent': accent } as React.CSSProperties}>
+      <div className={styles.spellSectionHeader} style={{ marginBottom: subtitle ? '4px' : '8px' }}>
+        <div className={styles.spellSectionTitle}>{title}</div>
+        {badge && (
+          <span className={styles.spellBadge} style={{ background: `${accent}1a`, border: `1px solid ${accent}33`, color: accent }}>
+            {badge}
+          </span>
+        )}
+      </div>
+      {subtitle && <div className={styles.spellSectionSubtitle}>{subtitle}</div>}
+      <div className={styles.spellGrid}>
+        {spells.map(s => {
+          const rawName = s.split(' — ')[0].trim();
+          const isExpanded = expandedSpell === s;
+
+          if (isExpanded) {
+            const spellInfo = (spellsAll as any[]).find(sp => sp.name === rawName);
+            return (
+              <div key={`exp-${s}`} className={styles.spellExpanded} style={{ border: `1px solid ${accent}40` }}>
+                <div className={styles.spellExpandedHeader}>
+                  <div>
+                    <div className={styles.spellExpandedName} style={{ color: accent }}>{s}</div>
+                    {spellInfo && (
+                      <div className={styles.spellExpandedMeta}>
+                        {spellInfo.level === 'Truque' ? `Truque de ${spellInfo.school}` : `${spellInfo.level}, ${spellInfo.school}`}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                    {(() => {
+                      const spellInfoHere = (spellsAll as any[]).find(sp => sp.name === rawName);
+                      const isConc = typeof spellInfoHere?.duration === 'string' && spellInfoHere.duration.toLowerCase().includes('concentra');
+                      if (!isConc || !onSetConcentration) return null;
+                      const isActive = concentratingOn === rawName;
+                      return (
+                        <button
+                          onClick={e => { e.stopPropagation(); onSetConcentration(isActive ? null : rawName); }}
+                          className={isActive ? styles.concentratingActiveBtn : styles.concentratingBtn}
+                          title={isActive ? 'Encerrar concentração' : 'Iniciar concentração nesta magia'}
+                        >
+                          {isActive ? '◉ Concentrando' : '◎ Concentrar'}
+                        </button>
+                      );
+                    })()}
+                    {canRemove && onRemove && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onRemove(rawName); }}
+                        className={styles.unprepareBtn}
+                        title="Remover da lista de preparadas"
+                      >
+                        Remover
+                      </button>
+                    )}
+                    <button onClick={() => setExpandedSpell(null)} className={styles.collapseBtn}>Recolher ▲</button>
+                  </div>
+                </div>
+                {spellInfo ? (
+                  <>
+                    <div className={styles.spellTags}>
+                      {typeof spellInfo.castingTime === 'string' && spellInfo.castingTime.toLowerCase().includes('ritual') && (
+                        <span className={styles.tagRitual}>Ritual</span>
+                      )}
+                      {typeof spellInfo.duration === 'string' && spellInfo.duration.toLowerCase().includes('concentra') && (
+                        <span className={styles.tagConcentration}>Concentração</span>
+                      )}
+                    </div>
+                    <div className={styles.spellDetails}>
+                      <span className={styles.spellDetailLabel}>Conjuração:</span>
+                      <span className={styles.spellDetailValue}>{spellInfo.castingTime}</span>
+                      <span className={styles.spellDetailLabel}>Alcance:</span>
+                      <span className={styles.spellDetailValue}>{spellInfo.range}</span>
+                      <span className={styles.spellDetailLabel}>Componentes:</span>
+                      <span className={styles.spellDetailValue}>{spellInfo.components}</span>
+                      <span className={styles.spellDetailLabel}>Duração:</span>
+                      <span className={styles.spellDetailValue}>{spellInfo.duration}</span>
+                    </div>
+                    <div className={styles.spellDescription}>{spellInfo.description}</div>
+                  </>
+                ) : (
+                  <div className={styles.spellNotFound}>Detalhes não encontrados.</div>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <SpellCardTooltip key={s} spellName={rawName}>
+              <span onClick={() => setExpandedSpell(s)} className={styles.spellPill}
+                style={{ background: `${accent}1a`, border: `1px solid ${accent}33`, color: accent }}>
+                {s}
+                {(() => {
+                  const tags = getSpellTags(rawName);
+                  return (
+                    <>
+                      {tags.isRitual && <span className={styles.tagRitualSmall} title="Ritual">R</span>}
+                      {tags.isConcentration && <span className={styles.tagConcentrationSmall} title="Concentração">C</span>}
+                    </>
+                  );
+                })()}
+              </span>
+            </SpellCardTooltip>
+          );
+        })}
+      </div>
+    </div>
   );
 }

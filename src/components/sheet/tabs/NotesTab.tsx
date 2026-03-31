@@ -1,296 +1,224 @@
 import { useState } from 'react';
-
-type CategoryId = 'all' | 'orgs' | 'allies' | 'enemies' | 'backstory' | 'other';
-
-interface NoteEntry {
-  id: string;
-  text: string;
-}
-
-interface CategorizedNotes {
-  orgs: NoteEntry[];
-  allies: NoteEntry[];
-  enemies: NoteEntry[];
-  backstory: NoteEntry[];
-  other: NoteEntry[];
-}
-
-const CATEGORIES: Array<{ id: CategoryId; label: string }> = [
-  { id: 'all',       label: 'TODAS' },
-  { id: 'orgs',      label: 'ORGS' },
-  { id: 'allies',    label: 'ALIADOS' },
-  { id: 'enemies',   label: 'INIMIGOS' },
-  { id: 'backstory', label: 'BACKSTORY' },
-  { id: 'other',     label: 'OUTRO' },
-];
-
-const SECTION_LABELS: Record<string, string> = {
-  orgs: 'ORGANIZAÇÕES',
-  allies: 'ALIADOS',
-  enemies: 'INIMIGOS',
-  backstory: 'BACKSTORY',
-  other: 'OUTRO',
-};
-
-function parseLegacyNotes(raw: string): CategorizedNotes {
-  try {
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      return {
-        orgs: parsed.orgs ?? [],
-        allies: parsed.allies ?? [],
-        enemies: parsed.enemies ?? [],
-        backstory: parsed.backstory ?? [],
-        other: parsed.other ?? [],
-      };
-    }
-  } catch { /* not JSON, treat as legacy */ }
-
-  if (raw.trim()) {
-    return {
-      orgs: [],
-      allies: [],
-      enemies: [],
-      backstory: [],
-      other: [{ id: `legacy-${Date.now()}`, text: raw }],
-    };
-  }
-  return { orgs: [], allies: [], enemies: [], backstory: [], other: [] };
-}
-
-function serializeNotes(notes: CategorizedNotes): string {
-  return JSON.stringify(notes);
-}
+import type { CharacterAppearance, PersonalityTraits, CharacterIdentityUpdate } from '../../../types/character';
+import styles from './NotesTab.module.css';
 
 interface NotesTabProps {
   notes: string;
   onUpdateNotes: (notes: string) => void;
+  backstory?: string;
+  appearance?: CharacterAppearance;
+  personalityTraits?: PersonalityTraits;
+  faith?: string;
+  lifestyle?: string;
+  organizations?: string;
+  alignment?: string | null;
+  onUpdateIdentity?: (update: CharacterIdentityUpdate) => void;
 }
 
-export function NotesTab({ notes, onUpdateNotes }: NotesTabProps) {
-  const [filter, setFilter] = useState<CategoryId>('all');
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editText, setEditText] = useState('');
+const ALIGNMENTS = [
+  'Leal e Bom', 'Neutro e Bom', 'Caótico e Bom',
+  'Leal e Neutro', 'Neutro', 'Caótico e Neutro',
+  'Leal e Mau', 'Neutro e Mau', 'Caótico e Mau',
+];
 
-  const categorized = parseLegacyNotes(notes);
+const LIFESTYLES = [
+  'Miserável', 'Pobre', 'Modesto', 'Confortável', 'Rico', 'Aristocrático',
+];
 
-  const update = (newNotes: CategorizedNotes) => {
-    onUpdateNotes(serializeNotes(newNotes));
-  };
+const APPEARANCE_FIELDS: Array<[keyof CharacterAppearance, string]> = [
+  ['height', 'Altura'],
+  ['weight', 'Peso'],
+  ['eyeColor', 'Olhos'],
+  ['hairColor', 'Cabelo'],
+  ['skinColor', 'Pele'],
+];
 
-  const addEntry = (category: keyof CategorizedNotes) => {
-    const newId = `note-${Date.now()}`;
-    update({
-      ...categorized,
-      [category]: [...categorized[category], { id: newId, text: '' }],
-    });
-    setEditingId(newId);
-    setEditText('');
-  };
+const PERSONALITY_FIELDS: Array<[keyof PersonalityTraits, string, string]> = [
+  ['traits', 'Traços de Personalidade', 'Como você age, fala e se comporta…'],
+  ['ideals', 'Ideais', 'O que você acredita e valoriza…'],
+  ['bonds', 'Vínculos', 'Com quem ou o que você se importa…'],
+  ['flaws', 'Defeitos', 'Suas fraquezas e falhas…'],
+];
 
-  const saveEntry = (category: keyof CategorizedNotes, id: string) => {
-    if (!editText.trim()) {
-      // Remove empty entry
-      update({
-        ...categorized,
-        [category]: categorized[category].filter(e => e.id !== id),
-      });
-    } else {
-      update({
-        ...categorized,
-        [category]: categorized[category].map(e =>
-          e.id === id ? { ...e, text: editText.trim() } : e
-        ),
-      });
-    }
-    setEditingId(null);
-    setEditText('');
-  };
-
-  const removeEntry = (category: keyof CategorizedNotes, id: string) => {
-    update({
-      ...categorized,
-      [category]: categorized[category].filter(e => e.id !== id),
-    });
-    if (editingId === id) {
-      setEditingId(null);
-      setEditText('');
-    }
-  };
-
-  const visibleCategories = filter === 'all'
-    ? (['orgs', 'allies', 'enemies', 'backstory', 'other'] as const)
-    : [filter as keyof CategorizedNotes];
+export function NotesTab({
+  notes,
+  onUpdateNotes,
+  backstory = '',
+  appearance = { height: '', weight: '', eyeColor: '', hairColor: '', skinColor: '' },
+  personalityTraits = { traits: '', ideals: '', bonds: '', flaws: '' },
+  faith = '',
+  lifestyle = '',
+  organizations = '',
+  alignment = null,
+  onUpdateIdentity,
+}: NotesTabProps) {
+  const [activeSection, setActiveSection] = useState<string>('identity');
+  const canEdit = !!onUpdateIdentity;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Filter bar */}
-      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
-        {CATEGORIES.map(c => (
+    <div className={styles.container}>
+      {/* Sub-nav */}
+      <div className={styles.subNav}>
+        {[{ id: 'identity', label: 'Identidade' }, { id: 'notes', label: 'Notas Livres' }].map(s => (
           <button
-            key={c.id}
-            onClick={() => setFilter(c.id)}
-            style={{
-              background: filter === c.id ? '#991b1b' : 'transparent',
-              border: 'none',
-              borderRadius: '4px',
-              color: filter === c.id ? '#ffffff' : '#94a3b8',
-              padding: '4px 8px',
-              fontSize: '0.7rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
+            key={s.id}
+            onClick={() => setActiveSection(s.id)}
+            className={activeSection === s.id ? styles.subNavBtnActive : styles.subNavBtn}
           >
-            {c.label}
+            {s.label}
           </button>
         ))}
       </div>
 
-      {/* Category sections */}
-      {visibleCategories.map(catKey => {
-        const entries = categorized[catKey];
-        return (
-          <div key={catKey}>
-            {/* Section header */}
-            <div style={{
-              fontSize: '0.7rem',
-              color: '#dc2626',
-              fontWeight: 800,
-              letterSpacing: '0.05em',
-              paddingBottom: '6px',
-              borderBottom: '1px solid rgba(220,38,38,0.3)',
-              marginBottom: '8px',
-            }}>
-              {SECTION_LABELS[catKey]}
+      {/* ── Identity Section ── */}
+      {activeSection === 'identity' && (
+        <div className={styles.identityGrid}>
+
+          {/* Aparência */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>👤 Aparência Física</div>
+            <div className={styles.traitGrid}>
+              {APPEARANCE_FIELDS.map(([field, label]) => (
+                <div key={field} className={styles.traitItem}>
+                  <label className={styles.traitLabel}>{label}</label>
+                  {canEdit ? (
+                    <input
+                      className={styles.traitInput}
+                      value={appearance[field] ?? ''}
+                      onChange={e => onUpdateIdentity!({ appearance: { [field]: e.target.value } })}
+                      placeholder={label}
+                    />
+                  ) : (
+                    <span className={styles.traitValue}>{appearance[field] || '—'}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Detalhes */}
+          <div className={styles.card}>
+            <div className={styles.cardTitle}>⚔ Detalhes</div>
+
+            <div className={styles.traitItem} style={{ marginBottom: 10 }}>
+              <label className={styles.traitLabel}>Alinhamento</label>
+              {canEdit ? (
+                <select
+                  className={styles.traitSelect}
+                  value={alignment ?? ''}
+                  onChange={e => onUpdateIdentity!({ alignment: e.target.value || null })}
+                >
+                  <option value="">— Escolher —</option>
+                  {ALIGNMENTS.map(a => <option key={a} value={a}>{a}</option>)}
+                </select>
+              ) : (
+                <span className={styles.traitValue}>{alignment || '—'}</span>
+              )}
             </div>
 
-            {/* Entries */}
-            {entries.map(entry => (
-              <div key={entry.id} style={{
-                padding: '8px 12px',
-                borderBottom: '1px solid rgba(255,255,255,0.04)',
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '8px',
-              }}>
-                {editingId === entry.id ? (
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <textarea
-                      autoFocus
-                      value={editText}
-                      onChange={e => setEditText(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          saveEntry(catKey, entry.id);
-                        }
-                        if (e.key === 'Escape') {
-                          if (!entry.text) removeEntry(catKey, entry.id);
-                          else { setEditingId(null); setEditText(''); }
-                        }
-                      }}
-                      rows={3}
-                      style={{
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        borderRadius: '4px',
-                        color: '#f1f5f9',
-                        fontSize: '0.85rem',
-                        padding: '8px 10px',
-                        resize: 'vertical',
-                        outline: 'none',
-                        lineHeight: 1.5,
-                      }}
-                    />
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <button
-                        onClick={() => saveEntry(catKey, entry.id)}
-                        style={{
-                          background: 'rgba(153,27,27,0.2)',
-                          border: '1px solid rgba(153,27,27,0.4)',
-                          borderRadius: '4px',
-                          color: '#dc2626',
-                          padding: '4px 10px',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Salvar
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (!entry.text) removeEntry(catKey, entry.id);
-                          else { setEditingId(null); setEditText(''); }
-                        }}
-                        style={{
-                          background: 'none',
-                          border: '1px solid rgba(255,255,255,0.07)',
-                          borderRadius: '4px',
-                          color: '#64748b',
-                          padding: '4px 10px',
-                          fontSize: '0.75rem',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div
-                      style={{
-                        flex: 1,
-                        fontSize: '0.85rem',
-                        color: '#cbd5e1',
-                        lineHeight: 1.5,
-                        cursor: 'pointer',
-                        whiteSpace: 'pre-wrap',
-                      }}
-                      onClick={() => { setEditingId(entry.id); setEditText(entry.text); }}
-                    >
-                      {entry.text || <span style={{ color: '#475569', fontStyle: 'italic' }}>Clique para editar...</span>}
-                    </div>
-                    <button
-                      onClick={() => removeEntry(catKey, entry.id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#475569',
-                        cursor: 'pointer',
-                        fontSize: '0.75rem',
-                        padding: '2px 4px',
-                        flexShrink: 0,
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
+            <div className={styles.traitItem} style={{ marginBottom: 10 }}>
+              <label className={styles.traitLabel}>Fé / Divindade</label>
+              {canEdit ? (
+                <input
+                  className={styles.traitInput}
+                  value={faith}
+                  onChange={e => onUpdateIdentity!({ faith: e.target.value })}
+                  placeholder="Ex: Tyr, Selûne, nenhuma…"
+                />
+              ) : (
+                <span className={styles.traitValue}>{faith || '—'}</span>
+              )}
+            </div>
 
-            {/* Add button */}
-            <button
-              onClick={() => addEntry(catKey)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#dc2626',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                padding: '8px 0',
-                textAlign: 'left',
-              }}
-            >
-              + Adicionar {SECTION_LABELS[catKey].charAt(0) + SECTION_LABELS[catKey].slice(1).toLowerCase()}
-            </button>
+            <div className={styles.traitItem}>
+              <label className={styles.traitLabel}>Estilo de Vida</label>
+              {canEdit ? (
+                <select
+                  className={styles.traitSelect}
+                  value={lifestyle}
+                  onChange={e => onUpdateIdentity!({ lifestyle: e.target.value })}
+                >
+                  <option value="">— Escolher —</option>
+                  {LIFESTYLES.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              ) : (
+                <span className={styles.traitValue}>{lifestyle || '—'}</span>
+              )}
+            </div>
           </div>
-        );
-      })}
+
+          {/* Personalidade */}
+          <div className={styles.cardWide}>
+            <div className={styles.cardTitle}>💭 Personalidade</div>
+            <div className={styles.personalityGrid}>
+              {PERSONALITY_FIELDS.map(([field, label, placeholder]) => (
+                <div key={field} className={styles.personBlock}>
+                  <div className={styles.personLabel}>{label}</div>
+                  {canEdit ? (
+                    <textarea
+                      className={styles.personTextarea}
+                      value={personalityTraits[field] ?? ''}
+                      onChange={e => onUpdateIdentity!({ personalityTraits: { [field]: e.target.value } })}
+                      placeholder={placeholder}
+                      rows={2}
+                    />
+                  ) : (
+                    <div className={styles.personText}>{personalityTraits[field] || '—'}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Backstory */}
+          <div className={styles.cardWide}>
+            <div className={styles.cardTitle}>📜 História Pessoal</div>
+            {canEdit ? (
+              <textarea
+                className={styles.backstoryTextarea}
+                value={backstory}
+                onChange={e => onUpdateIdentity!({ backstory: e.target.value })}
+                placeholder="A história do seu personagem, de onde vem, o que o motiva…"
+                rows={6}
+              />
+            ) : (
+              <div className={styles.backstoryText}>{backstory || '—'}</div>
+            )}
+          </div>
+
+          {/* Organizações */}
+          <div className={styles.cardWide}>
+            <div className={styles.cardTitle}>🏰 Organizações & Aliados</div>
+            {canEdit ? (
+              <textarea
+                className={styles.backstoryTextarea}
+                value={organizations}
+                onChange={e => onUpdateIdentity!({ organizations: e.target.value })}
+                placeholder="Guildas, ordens, aliados, inimigos…"
+                rows={3}
+              />
+            ) : (
+              <div className={styles.backstoryText}>{organizations || '—'}</div>
+            )}
+          </div>
+
+        </div>
+      )}
+
+      {/* ── Notes Section ── */}
+      {activeSection === 'notes' && (
+        <>
+          <div className={styles.hint}>
+            Anotações livres sobre seu personagem, sessões, objetivos, etc.
+          </div>
+          <textarea
+            value={notes}
+            onChange={e => onUpdateNotes(e.target.value)}
+            placeholder="Escreva suas anotações aqui…"
+            className={styles.textarea}
+          />
+        </>
+      )}
     </div>
   );
 }

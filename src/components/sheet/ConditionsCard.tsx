@@ -1,63 +1,74 @@
+import { useState } from 'react';
 import { D6_CONDITIONS } from '../../rules/calculators/sheet';
+import styles from './ConditionsCard.module.css';
 
 interface ConditionsCardProps {
   activeConditions: string[];
+  concentratingOn?: string | null;
   onAdd: (condition: string) => void;
   onRemove: (condition: string) => void;
+  onStopConcentrating?: () => void;
 }
 
-export function ConditionsCard({ activeConditions, onAdd, onRemove }: ConditionsCardProps) {
+export function ConditionsCard({
+  activeConditions,
+  concentratingOn,
+  onAdd,
+  onRemove,
+  onStopConcentrating,
+}: ConditionsCardProps) {
+  const [selected, setSelected] = useState('');
+
+  const available = D6_CONDITIONS.filter(c => !activeConditions.includes(c));
+
+  const handleAdd = () => {
+    if (selected && !activeConditions.includes(selected)) {
+      onAdd(selected);
+      setSelected('');
+    }
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      {D6_CONDITIONS.map(condition => {
-        const isActive = activeConditions.includes(condition);
-        return (
-          <div
-            key={condition}
-            onClick={() => isActive ? onRemove(condition) : onAdd(condition)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '4px 8px',
-              cursor: 'pointer',
-              borderBottom: '1px solid rgba(255,255,255,0.03)',
-              background: isActive ? 'rgba(248,113,113,0.08)' : 'transparent',
-              transition: 'background 0.15s',
-            }}
-            onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
-            onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '0.85rem', color: isActive ? '#f87171' : '#94a3b8' }}>
-                {condition}
-              </span>
-            </div>
-            
-            {/* Toggle switch */}
-            <div style={{
-              width: '36px',
-              height: '20px',
-              borderRadius: '10px',
-              background: isActive ? '#991b1b' : 'rgba(255,255,255,0.1)',
-              position: 'relative',
-              transition: 'background 0.2s',
-              flexShrink: 0,
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '2px',
-                left: isActive ? '18px' : '2px',
-                width: '16px',
-                height: '16px',
-                borderRadius: '50%',
-                background: isActive ? '#f87171' : '#475569',
-                transition: 'left 0.2s, background 0.2s',
-              }} />
-            </div>
+    <div className={styles.container}>
+      <div className={styles.pillList}>
+        {activeConditions.length === 0 && !concentratingOn && (
+          <div className={styles.emptyText}>Adicionar ativas...</div>
+        )}
+        {concentratingOn && (
+          <div className={`${styles.pill} ${styles.concentrationPill}`} title="Concentração Ativa">
+            <span className={styles.pillText}>Concentração: {concentratingOn}</span>
+            {onStopConcentrating && (
+              <button onClick={onStopConcentrating} className={styles.removeBtn}>✕</button>
+            )}
           </div>
-        );
-      })}
+        )}
+        {activeConditions.map(c => (
+          <div key={c} className={styles.pill}>
+            <span className={`${styles.pillText} glossary-term`} data-glossary={c}>{c}</span>
+            <button onClick={() => onRemove(c)} className={styles.removeBtn}>✕</button>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.addRow}>
+        <select
+          value={selected}
+          onChange={e => setSelected(e.target.value)}
+          className={styles.select}
+        >
+          <option value="">Adicionar condição…</option>
+          {available.map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <button
+          onClick={handleAdd}
+          disabled={!selected}
+          className={styles.addBtn}
+        >
+          +
+        </button>
+      </div>
     </div>
   );
 }
