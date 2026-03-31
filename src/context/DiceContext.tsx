@@ -70,9 +70,6 @@ export function DiceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Chamado pelo DiceTray quando todos os dados pararem
-  const handleAllSettled = useCallback(() => {
-    setSettled(true);
-  }, []);
 
   return (
     <DiceContext.Provider value={{ roll, currentRoll, settled, dismiss, themeId, setThemeId, webglAvailable }}>
@@ -83,7 +80,7 @@ export function DiceProvider({ children }: { children: ReactNode }) {
 
 /** Hook interno para o DiceTray obter o callback de settled */
 export function useDiceSettled() {
-  const [, setSettled] = useState(false);
+  useState(false);
   const ctx = useContext(DiceContext);
   // Retorna o setter do contexto real via o próprio contexto
   return ctx;

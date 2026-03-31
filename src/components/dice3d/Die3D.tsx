@@ -1,8 +1,8 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useBox } from '@react-three/cannon';
-import { MeshStandardMaterial, TextureLoader, type Mesh } from 'three';
-import { createDieGeometry, createNumberTexture, getDieFaces, type DieType } from './diceGeometries';
+import { MeshStandardMaterial, type Mesh } from 'three';
+import { createDieGeometry, getDieFaces, type DieType } from './diceGeometries';
 import type { DiceTheme } from './DiceThemes';
 
 interface Die3DProps {
@@ -18,7 +18,7 @@ export function Die3D({ type, theme, position, onSettle }: Die3DProps) {
   const faces = getDieFaces(type);
 
   // Physics body
-  const [ref, api] = useBox<Mesh>(() => ({
+  const [ref] = useBox<Mesh>(() => ({
     mass: 1,
     position,
     rotation: [Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2],

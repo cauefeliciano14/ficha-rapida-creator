@@ -111,16 +111,16 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const attributeBreakdowns: Record<string, { label: string; value: number }[]> = {};
   for (const attr of Object.keys(choices.baseAttributes)) {
     const rows: { label: string; value: number }[] = [];
-    rows.push({ label: 'Base', value: choices.baseAttributes[attr] ?? 0 });
+    rows.push({ label: 'Base', value: (choices.baseAttributes as Record<string, number>)[attr] ?? 0 });
     if (choices.backgroundBonusDistribution) {
-      const bonus = choices.backgroundBonusDistribution.distribution[attr as keyof typeof choices.backgroundBonusDistribution.distribution];
+      const bonus = (choices.backgroundBonusDistribution.distribution as Record<string, number | undefined>)[attr];
       if (bonus && bonus > 0) {
         rows.push({ label: 'Antecedente', value: bonus });
       }
     }
     for (const appliedTalent of appliedTalentEffects) {
-      const talentBonus = appliedTalent?.attributeBonuses?.[attr];
-      if (talentBonus && talentBonus > 0) {
+      const talentBonus = (appliedTalent?.attributeBonuses as Record<string, number> | undefined)?.[attr];
+      if (talentBonus && talentBonus > 0 && appliedTalent) {
         rows.push({ label: appliedTalent.name, value: talentBonus });
       }
     }

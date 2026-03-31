@@ -27,7 +27,7 @@ interface ThemeControlsProps {
 export function ThemeControls({ activeClassId }: ThemeControlsProps) {
   const {
     theme,
-    toggleTheme,
+    toggleTheme: _toggleTheme,
     setTheme,
     accentColor,
     setAccentColor,
