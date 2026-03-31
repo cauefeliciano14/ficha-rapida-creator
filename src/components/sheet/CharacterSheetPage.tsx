@@ -352,14 +352,7 @@ export function CharacterSheetPage({
     const result = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
     setSidebar({ type: 'skill', skill, result });
     addToHistory(result);
-    roll3D({
-      dice: [{ type: 'd20', count: advantageMode === 'normal' ? 1 : 2 }],
-      label: `${skill.label} (${abbr})`,
-      results: result.rolls,
-      total: result.total,
-      formula: result.formula,
-    });
-  }, [advantageMode, addToHistory, roll3D]);
+  }, [advantageMode, addToHistory]);
 
   const handleSaveClick = useCallback((save: DerivedSavingThrow) => {
     const result = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
