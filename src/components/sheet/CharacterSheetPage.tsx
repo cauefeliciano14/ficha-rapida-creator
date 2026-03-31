@@ -4,7 +4,7 @@ import type { CharacterPlayState } from '../../types/playState';
 import type { DiceRollResult, AdvantageMode } from '../../utils/diceRoller';
 import type { CharacterAppearance, PersonalityTraits, CharacterIdentityUpdate } from '../../types/character';
 import { rollD20Check, rollDamage } from '../../utils/diceRoller';
-import { useDice } from '../../context/DiceContext';
+
 import { signedMod } from '../../utils/format';
 import { ATTR_ABBR } from '../../utils/attributeConstants';
 import { SheetHeader } from './SheetHeader';
