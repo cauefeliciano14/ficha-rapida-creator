@@ -9,8 +9,8 @@ const SpeciesStep = lazy(() => import('../../components/steps/SpeciesStep').then
 const AttributesStepWrapper = lazy(() => import('../../components/steps/AttributesStepWrapper').then(m => ({ default: m.AttributesStepWrapper })));
 const EquipmentStepWrapper = lazy(() => import('../../components/steps/EquipmentStepWrapper').then(m => ({ default: m.EquipmentStepWrapper })));
 const CharacterSheetStep = lazy(() => import('../../components/steps/CharacterSheetStep').then(m => ({ default: m.CharacterSheetStep })));
-import { PortraitPickerModal } from './portrait/PortraitPickerModal';
-import { CharacterManagerModal } from './CharacterManagerModal';
+const PortraitPickerModal = lazy(() => import('./portrait/PortraitPickerModal').then(m => ({ default: m.PortraitPickerModal })));
+const CharacterManagerModal = lazy(() => import('./CharacterManagerModal').then(m => ({ default: m.CharacterManagerModal })));
 import { listSavedCharacters } from '../../utils/persistence';
 import styles from './layout/CreatorShell.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
