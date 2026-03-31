@@ -32,8 +32,11 @@ export default defineConfig({
           if (id.includes('/data/') && (id.endsWith('.json') || id.endsWith('.ts')) && !id.includes('spells/')) {
             return 'data-core';
           }
-          if (id.includes('/rules/')) {
-            return 'rules-engine';
+          if (id.includes('/rules/calculators/')) {
+            return 'rules-calculators';
+          }
+          if (id.includes('/rules/data/') || id.includes('/rules/utils/') || id.includes('/rules/types/') || id.includes('/rules/engine/')) {
+            return 'rules-data';
           }
         },
       },
