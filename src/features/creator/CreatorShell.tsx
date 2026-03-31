@@ -9,8 +9,8 @@ const SpeciesStep = lazy(() => import('../../components/steps/SpeciesStep').then
 const AttributesStepWrapper = lazy(() => import('../../components/steps/AttributesStepWrapper').then(m => ({ default: m.AttributesStepWrapper })));
 const EquipmentStepWrapper = lazy(() => import('../../components/steps/EquipmentStepWrapper').then(m => ({ default: m.EquipmentStepWrapper })));
 const CharacterSheetStep = lazy(() => import('../../components/steps/CharacterSheetStep').then(m => ({ default: m.CharacterSheetStep })));
-import { PortraitPickerModal } from './portrait/PortraitPickerModal';
-import { CharacterManagerModal } from './CharacterManagerModal';
+const PortraitPickerModal = lazy(() => import('./portrait/PortraitPickerModal').then(m => ({ default: m.PortraitPickerModal })));
+const CharacterManagerModal = lazy(() => import('./CharacterManagerModal').then(m => ({ default: m.CharacterManagerModal })));
 import { listSavedCharacters } from '../../utils/persistence';
 import styles from './layout/CreatorShell.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,8 +19,8 @@ import { useCompletionCelebration } from '../../hooks/useCompletionCelebration';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useSound } from '../../context/SoundContext';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
-import { AccordionWizard } from './AccordionWizard';
-import { OnboardingModal } from '../../components/ui/OnboardingModal';
+const AccordionWizard = lazy(() => import('./AccordionWizard').then(m => ({ default: m.AccordionWizard })));
+const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
   const {
@@ -139,7 +139,7 @@ export function CreatorShell() {
       </div>
       {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
       {isMobile ? (
-        <AccordionWizard onReset={handleFullReset} />
+        <Suspense fallback={null}><AccordionWizard onReset={handleFullReset} /></Suspense>
       ) : (
         <AnimatePresence>
           <motion.div
@@ -162,21 +162,27 @@ export function CreatorShell() {
       )}
 
       {isPortraitModalOpen && (
-        <PortraitPickerModal
-          currentPortrait={character.portrait}
-          onClose={() => setIsPortraitModalOpen(false)}
-          onSelect={(portrait) => {
-            setCharacter((prev) => ({ ...prev, portrait }));
-            setIsPortraitModalOpen(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <PortraitPickerModal
+            currentPortrait={character.portrait}
+            onClose={() => setIsPortraitModalOpen(false)}
+            onSelect={(portrait) => {
+              setCharacter((prev) => ({ ...prev, portrait }));
+              setIsPortraitModalOpen(false);
+            }}
+          />
+        </Suspense>
       )}
 
       {isCharacterManagerOpen && (
-        <CharacterManagerModal onClose={() => setIsCharacterManagerOpen(false)} />
+        <Suspense fallback={null}>
+          <CharacterManagerModal onClose={() => setIsCharacterManagerOpen(false)} />
+        </Suspense>
       )}
 
-      <OnboardingModal />
+      <Suspense fallback={null}>
+        <OnboardingModal />
+      </Suspense>
     </div>
   );
 }
