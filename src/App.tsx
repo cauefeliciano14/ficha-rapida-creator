@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { GlossaryTooltipProvider } from './components/GlossaryTooltip';
 import { CharacterProvider } from './context/CharacterContext';
 import { WizardProvider } from './context/WizardContext';
@@ -5,9 +6,10 @@ import { ChangeHistoryProvider } from './context/ChangeHistoryContext';
 import { SoundProvider } from './context/SoundContext';
 import { DiceProvider } from './context/DiceContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { DiceTrayOverlay } from './components/dice3d/DiceTrayOverlay';
-import { CreatorShell } from './features/creator/CreatorShell';
 import './index.css';
+
+const CreatorShell = lazy(() => import('./features/creator/CreatorShell').then(m => ({ default: m.CreatorShell })));
+const DiceTrayOverlay = lazy(() => import('./components/dice3d/DiceTrayOverlay').then(m => ({ default: m.DiceTrayOverlay })));
 
 function App() {
   return (
@@ -18,8 +20,10 @@ function App() {
             <WizardProvider>
               <DiceProvider>
                 <GlossaryTooltipProvider>
-                  <CreatorShell />
-                  <DiceTrayOverlay />
+                  <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando...</div>}>
+                    <CreatorShell />
+                    <DiceTrayOverlay />
+                  </Suspense>
                 </GlossaryTooltipProvider>
               </DiceProvider>
             </WizardProvider>
