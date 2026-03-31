@@ -25,7 +25,7 @@ export const MULTICLASS_PREREQUISITES: Record<string, string[]> = {
 // Guerreiro aceita FOR ou DES >= 13
 export function checkMulticlassPrerequisite(
   classId: string,
-  modifiers: Record<string, number>,
+  _modifiers: Record<string, number>,
   attributes: Record<string, number>,
 ): boolean {
   const reqs = MULTICLASS_PREREQUISITES[classId];

@@ -113,7 +113,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     const rows: { label: string; value: number }[] = [];
     rows.push({ label: 'Base', value: (choices.baseAttributes as Record<string, number>)[attr] ?? 0 });
     if (choices.backgroundBonusDistribution) {
-      const bonus = choices.backgroundBonusDistribution.distribution[attr as keyof typeof choices.backgroundBonusDistribution.distribution];
+      const bonus = (choices.backgroundBonusDistribution.distribution as Record<string, number | undefined>)[attr];
       if (bonus && bonus > 0) {
         rows.push({ label: 'Antecedente', value: bonus });
       }

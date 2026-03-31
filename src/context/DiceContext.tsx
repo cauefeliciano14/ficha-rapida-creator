@@ -83,7 +83,7 @@ export function DiceProvider({ children }: { children: ReactNode }) {
 
 /** Hook interno para o DiceTray obter o callback de settled */
 export function useDiceSettled() {
-  const [, setSettled] = useState(false);
+  const [,] = useState(false);
   const ctx = useContext(DiceContext);
   // Retorna o setter do contexto real via o próprio contexto
   return ctx;

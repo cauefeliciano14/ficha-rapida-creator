@@ -18,7 +18,7 @@ export function Die3D({ type, theme, position, onSettle }: Die3DProps) {
   const faces = getDieFaces(type);
 
   // Physics body
-  const [ref, api] = useBox<Mesh>(() => ({
+  const [ref] = useBox<Mesh>(() => ({
     mass: 1,
     position,
     rotation: [Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2],

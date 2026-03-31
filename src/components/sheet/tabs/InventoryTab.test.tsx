@@ -88,6 +88,7 @@ function InventoryHarness({
         hasShieldEquipped={hasShieldEquipped}
         onEquipArmor={setEquippedArmorId}
         onEquipShield={setHasShieldEquipped}
+        carryingCapacity={150}
       />
     </div>
   );

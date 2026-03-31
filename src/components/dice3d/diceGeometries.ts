@@ -10,7 +10,6 @@ import {
   DodecahedronGeometry,
   IcosahedronGeometry,
   BufferGeometry,
-  Float32BufferAttribute,
   SphereGeometry,
 } from 'three';
 

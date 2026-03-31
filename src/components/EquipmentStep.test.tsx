@@ -40,6 +40,10 @@ const baseDerivedSheet: DerivedSheet = {
   derivedTraits: [],
   activeTalents: [],
   creatureSize: 'Medium',
+  attributeBreakdowns: {},
+  classGrantsExpertise: false,
+  expertiseCount: 0,
+  jackOfAllTrades: false,
 };
 
 function createCharacter(equipmentOverrides: Record<string, any> = {}) {
