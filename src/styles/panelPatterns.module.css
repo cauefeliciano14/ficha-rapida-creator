@@ -1,0 +1,130 @@
+/* ═══════════════════════════════════════════════════
+   Panel Patterns — Shared layout & card utilities
+   ═══════════════════════════════════════════════════ */
+
+/* ── Stack (vertical spacing) ── */
+.stackXs { display: flex; flex-direction: column; gap: var(--space-sm); }
+.stackSm { display: flex; flex-direction: column; gap: var(--space-md); }
+.stackMd { display: flex; flex-direction: column; gap: var(--space-lg); }
+
+/* ── Panel Cards ── */
+.panelCard {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-separator);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.panelCardCompact {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-separator);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.panelCardAccent {
+  background: var(--color-accent-bg);
+  border: 1px solid var(--border-accent-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.panelCardInset {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+/* ── Section Titles ── */
+.sectionTitle {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.panelTitle {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* ── Pills / Badges ── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pillAccent {
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent-border);
+  color: var(--color-accent-warm-pale);
+}
+
+.pillSuccess {
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success-vivid);
+}
+
+.pillMuted {
+  background: var(--surface-ghost);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+}
+
+.pillError {
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-vivid);
+}
+
+.pillInfo {
+  background: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  color: var(--color-info);
+}
+
+.pillWarning {
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  color: var(--color-warning);
+}
+
+.pillMagic {
+  background: var(--color-magic-bg);
+  border: 1px solid var(--color-magic-border);
+  color: var(--color-magic);
+}
+
+/* ── Responsive Grids ── */
+.responsiveGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.responsiveGrid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.wrapRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .responsiveGrid3,
+  .responsiveGrid2 {
+    grid-template-columns: 1fr;
+  }
+}
