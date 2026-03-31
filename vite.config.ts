@@ -16,21 +16,25 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-three': ['three', '@react-three/fiber', '@react-three/cannon'],
-          'vendor-motion': ['framer-motion'],
-          'data-core': [
-            './src/data/backgrounds.json',
-            './src/data/classDetails.json',
-            './src/data/classesSummary.json',
-            './src/data/species.json',
-            './src/data/talents.json',
-            './src/data/equipment.json',
-            './src/data/weapons.json',
-            './src/data/armor.json',
-            './src/data/magicItems.json',
-          ],
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/scheduler')) {
+            return 'vendor-react';
+          }
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'vendor-motion';
+          }
+          if (id.includes('node_modules/canvas-confetti')) {
+            return 'vendor-confetti';
+          }
+          if (id.includes('/data/') && (id.endsWith('.json') || id.endsWith('.ts')) && !id.includes('spells/')) {
+            return 'data-core';
+          }
+          if (id.includes('/rules/')) {
+            return 'rules-engine';
+          }
         },
       },
     },
