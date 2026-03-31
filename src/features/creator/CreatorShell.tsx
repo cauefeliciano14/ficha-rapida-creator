@@ -19,8 +19,8 @@ import { useCompletionCelebration } from '../../hooks/useCompletionCelebration';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useSound } from '../../context/SoundContext';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
-import { AccordionWizard } from './AccordionWizard';
-import { OnboardingModal } from '../../components/ui/OnboardingModal';
+const AccordionWizard = lazy(() => import('./AccordionWizard').then(m => ({ default: m.AccordionWizard })));
+const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
   const {
