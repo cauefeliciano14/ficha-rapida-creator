@@ -162,21 +162,27 @@ export function CreatorShell() {
       )}
 
       {isPortraitModalOpen && (
-        <PortraitPickerModal
-          currentPortrait={character.portrait}
-          onClose={() => setIsPortraitModalOpen(false)}
-          onSelect={(portrait) => {
-            setCharacter((prev) => ({ ...prev, portrait }));
-            setIsPortraitModalOpen(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <PortraitPickerModal
+            currentPortrait={character.portrait}
+            onClose={() => setIsPortraitModalOpen(false)}
+            onSelect={(portrait) => {
+              setCharacter((prev) => ({ ...prev, portrait }));
+              setIsPortraitModalOpen(false);
+            }}
+          />
+        </Suspense>
       )}
 
       {isCharacterManagerOpen && (
-        <CharacterManagerModal onClose={() => setIsCharacterManagerOpen(false)} />
+        <Suspense fallback={null}>
+          <CharacterManagerModal onClose={() => setIsCharacterManagerOpen(false)} />
+        </Suspense>
       )}
 
-      <OnboardingModal />
+      <Suspense fallback={null}>
+        <OnboardingModal />
+      </Suspense>
     </div>
   );
 }
