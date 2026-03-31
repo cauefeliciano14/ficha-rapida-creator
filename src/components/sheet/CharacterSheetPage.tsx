@@ -159,8 +159,7 @@ export function CharacterSheetPage({
     setSidebarStack(prev => prev.length > 1 ? prev.slice(0, -1) : []);
   }, []);
 
-  /* ── 3D Dice context ── */
-  const { roll: roll3D } = useDice();
+  /* ── (3D dice removed — rolls are sidebar-only like D&D Beyond) ── */
 
   /* ── Responsive layout ── */
   const isMobile = useMediaQuery('(max-width: 1023px)');
