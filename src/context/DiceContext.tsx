@@ -70,10 +70,6 @@ export function DiceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Chamado pelo DiceTray quando todos os dados pararem
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleAllSettled = useCallback(() => {
-    setSettled(true);
-  }, []);
 
   return (
     <DiceContext.Provider value={{ roll, currentRoll, settled, dismiss, themeId, setThemeId, webglAvailable }}>
