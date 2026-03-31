@@ -70,7 +70,7 @@ export function DiceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Chamado pelo DiceTray quando todos os dados pararem
-  const handleAllSettled = useCallback(() => {
+  const _handleAllSettled = useCallback(() => {
     setSettled(true);
   }, []);
 
