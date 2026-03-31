@@ -139,7 +139,7 @@ export function CreatorShell() {
       </div>
       {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
       {isMobile ? (
-        <AccordionWizard onReset={handleFullReset} />
+        <Suspense fallback={null}><AccordionWizard onReset={handleFullReset} /></Suspense>
       ) : (
         <AnimatePresence>
           <motion.div
