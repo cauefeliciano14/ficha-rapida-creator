@@ -371,19 +371,7 @@ export function CharacterSheetPage({
     setSidebar({ type: 'attack', attack, hitResult, damageResult });
     addToHistory(hitResult);
     addToHistory(damageResult);
-    // Parsear dados de dano (ex: "2d6" → {type:'d6',count:2})
-    const diceMatch = attack.damageDice.match(/^(\d+)d(\d+)$/);
-    const damageDice = diceMatch
-      ? [{ type: `d${diceMatch[2]}` as any, count: parseInt(diceMatch[1]) }]
-      : [{ type: 'd6' as const, count: 1 }];
-    roll3D({
-      dice: [{ type: 'd20', count: advantageMode === 'normal' ? 1 : 2 }, ...damageDice],
-      label: attack.weaponName,
-      results: [...hitResult.rolls, ...damageResult.rolls],
-      total: hitResult.total,
-      formula: `${hitResult.formula} | ${damageResult.formula}`,
-    });
-  }, [advantageMode, addToHistory, roll3D]);
+  }, [advantageMode, addToHistory]);
 
   /* ── Sidebar reroll helpers ── */
   const rerollSkill = () => {
