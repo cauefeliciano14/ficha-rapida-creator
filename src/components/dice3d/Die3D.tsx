@@ -1,8 +1,8 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useBox } from '@react-three/cannon';
-import { MeshStandardMaterial, TextureLoader, type Mesh } from 'three';
-import { createDieGeometry, createNumberTexture, getDieFaces, type DieType } from './diceGeometries';
+import { MeshStandardMaterial, type Mesh } from 'three';
+import { createDieGeometry, getDieFaces, type DieType } from './diceGeometries';
 import type { DiceTheme } from './DiceThemes';
 
 interface Die3DProps {
