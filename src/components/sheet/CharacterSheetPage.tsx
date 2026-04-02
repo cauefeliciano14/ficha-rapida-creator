@@ -18,7 +18,7 @@ import { DefensesCard } from './DefensesCard';
 import { DeathSavesCard } from './DeathSavesCard';
 import { SheetTabs } from './SheetTabs';
 import { SheetSidebar } from './SheetSidebar';
-import { DiceResultPanel, AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
+import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
