@@ -32,6 +32,9 @@ import {
   SPEED_DESCRIPTION,
   INITIATIVE_DESCRIPTION,
   AC_DESCRIPTION,
+  SENSES_DESCRIPTION,
+  HP_DESCRIPTION,
+  ABILITY_SCORE_DESCRIPTIONS,
 } from '../../data/sidebarDescriptions';
 import type { ClassLevel } from '../../types/multiclass';
 import styles from './CharacterSheetPage.module.css';
@@ -46,6 +49,8 @@ type SidebarState =
   | { type: 'speed' }
   | { type: 'initiative' }
   | { type: 'ac' }
+  | { type: 'senses' }
+  | { type: 'hp' }
   | { type: 'history' }
   | null;
 
@@ -512,16 +517,25 @@ export function CharacterSheetPage({
           .filter(s => s.attribute === sidebar.key)
           .map(s => ({ label: s.label, modifier: s.modifier, proficient: s.proficient }));
         const savingThrow = derivedSheet.derivedSavingThrows.find(st => st.attribute === sidebar.key);
+        const abilityDescription = ABILITY_SCORE_DESCRIPTIONS[sidebar.key];
         return (
-          <AbilityDetailPanel
-            abilityName={sidebar.label}
-            score={sidebar.score}
-            modifier={sidebar.modifier}
-            relatedSkills={relatedSkills}
-            savingThrow={savingThrow ? { modifier: savingThrow.modifier, proficient: savingThrow.proficient } : undefined}
-            onRollSkill={handleAbilitySkillRoll}
-            onRollSave={handleAbilitySaveRoll}
-          />
+          <>
+            <AbilityDetailPanel
+              abilityName={sidebar.label}
+              score={sidebar.score}
+              modifier={sidebar.modifier}
+              relatedSkills={relatedSkills}
+              savingThrow={savingThrow ? { modifier: savingThrow.modifier, proficient: savingThrow.proficient } : undefined}
+              onRollSkill={handleAbilitySkillRoll}
+              onRollSave={handleAbilitySaveRoll}
+            />
+            {abilityDescription && (
+              <>
+                <hr className={styles.sidebarDivider} />
+                <div className={styles.sidebarDescription}>{abilityDescription}</div>
+              </>
+            )}
+          </>
         );
       }
 
@@ -579,6 +593,58 @@ export function CharacterSheetPage({
           </div>
         );
 
+      case 'senses':
+        return (
+          <div>
+            <div className={styles.sidebarInfoItem}>
+              <span>Percepção Passiva</span>
+              <span className={styles.sidebarInfoMod}>{derivedSheet.passivePerception}</span>
+            </div>
+            <div className={styles.sidebarInfoItem}>
+              <span>Investigação Passiva</span>
+              <span className={styles.sidebarInfoMod}>{derivedSheet.passiveInvestigation}</span>
+            </div>
+            <div className={styles.sidebarInfoItem}>
+              <span>Intuição Passiva</span>
+              <span className={styles.sidebarInfoMod}>{derivedSheet.passiveInsight}</span>
+            </div>
+            {derivedSheet.specialSenses.length > 0 && (
+              <>
+                <hr className={styles.sidebarDivider} />
+                {derivedSheet.specialSenses.map(s => (
+                  <div key={s} className={styles.sidebarInfoItem}>
+                    <span>{s}</span>
+                  </div>
+                ))}
+              </>
+            )}
+            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>{SENSES_DESCRIPTION}</div>
+          </div>
+        );
+
+      case 'hp':
+        return (
+          <div>
+            <div className={styles.sidebarInfoItem}>
+              <span>Atual</span>
+              <span className={styles.sidebarInfoMod}>{playState.currentHp}</span>
+            </div>
+            <div className={styles.sidebarInfoItem}>
+              <span>Máximo</span>
+              <span className={styles.sidebarInfoMod}>{effectiveMaxHP}</span>
+            </div>
+            {playState.tempHp > 0 && (
+              <div className={styles.sidebarInfoItem}>
+                <span>Temporário</span>
+                <span className={styles.sidebarInfoMod}>{playState.tempHp}</span>
+              </div>
+            )}
+            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>{HP_DESCRIPTION}</div>
+          </div>
+        );
+
       case 'history':
         return (
           <div className={styles.historyList}>
@@ -602,25 +668,29 @@ export function CharacterSheetPage({
   };
 
   const sidebarTitle = sidebar
-    ? sidebar.type === 'skill' ? 'Skills'
-      : sidebar.type === 'save' ? 'Saving Throws'
+    ? sidebar.type === 'skill' ? 'Perícias'
+      : sidebar.type === 'save' ? 'Testes de Resistência'
         : sidebar.type === 'ability' ? sidebar.label
           : sidebar.type === 'attack' ? sidebar.attack.weaponName
-            : sidebar.type === 'proficiency' ? 'Proficiency Bonus'
-              : sidebar.type === 'speed' ? 'Walking Speed'
-                : sidebar.type === 'initiative' ? 'Initiative'
-                  : sidebar.type === 'ac' ? 'Armor Class'
-                    : sidebar.type === 'history' ? 'Histórico de Rolagens'
-                      : ''
+            : sidebar.type === 'proficiency' ? 'Bônus de Proficiência'
+              : sidebar.type === 'speed' ? 'Deslocamento'
+                : sidebar.type === 'initiative' ? 'Iniciativa'
+                  : sidebar.type === 'ac' ? 'Classe de Armadura'
+                    : sidebar.type === 'senses' ? 'Sentidos'
+                      : sidebar.type === 'hp' ? 'Pontos de Vida'
+                        : sidebar.type === 'history' ? 'Histórico de Rolagens'
+                          : ''
     : '';
 
   const sidebarSubtitle = sidebar
-    ? sidebar.type === 'skill' ? `${sidebar.skill.label} (${ATTR_ABBR[sidebar.skill.attribute] ?? sidebar.skill.attribute})`
-      : sidebar.type === 'save' ? sidebar.save.label
-        : sidebar.type === 'ability' ? `Score ${sidebar.score} · Modificador ${signedMod(sidebar.modifier)}`
+    ? sidebar.type === 'skill' ? `${sidebar.skill.label} (${ATTR_ABBR[sidebar.skill.attribute] ?? sidebar.skill.attribute}) ${signedMod(sidebar.skill.modifier)}`
+      : sidebar.type === 'save' ? `${sidebar.save.label} ${signedMod(sidebar.save.modifier)}`
+        : sidebar.type === 'ability' ? `Pontuação ${sidebar.score} · Modificador ${signedMod(sidebar.modifier)}`
           : sidebar.type === 'attack' ? sidebar.attack.range
-            : sidebar.type === 'history' ? `Últimas ${(playState.diceHistory ?? []).length} rolagens`
-              : undefined
+            : sidebar.type === 'senses' ? `Percepção Passiva ${derivedSheet.passivePerception}`
+              : sidebar.type === 'hp' ? `${playState.currentHp} / ${effectiveMaxHP} PV`
+                : sidebar.type === 'history' ? `Últimas ${(playState.diceHistory ?? []).length} rolagens`
+                  : undefined
     : undefined;
 
   /* ── Sticky header sentinel ── */
@@ -757,16 +827,8 @@ export function CharacterSheetPage({
           </div>
         )}
 
-        {/* ROW 2: Ability Scores + PB + Speed + Heroic Insp + HP */}
+        {/* ROW 2: PB + Speed + Heroic Insp + HP */}
         <div className={styles.statsRow}>
-          {/* Ability Score Cards */}
-          <AbilityScoreCards
-            finalAttributes={derivedSheet.finalAttributes}
-            modifiers={derivedSheet.modifiers}
-            attributeBreakdowns={derivedSheet.attributeBreakdowns}
-            onAbilityClick={handleAbilityClick}
-          />
-
           {/* Proficiency Bonus */}
           <div
             className={`${styles.statBox} ${styles.statBoxClickable}`}
@@ -775,6 +837,7 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
           >
+            <div className={styles.statLabel}>PROFICIÊNCIA</div>
             <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
             <div className={styles.statLabel}>BÔNUS</div>
           </div>
@@ -787,10 +850,11 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
           >
+            <div className={styles.statLabel}>CAMINHADA</div>
             <div className={styles.statValueInline}>
               {derivedSheet.speed}<span className={styles.statUnit}>m</span>
             </div>
-            <div className={styles.statLabel}>DESLOCAMENTO</div>
+            <div className={styles.statLabel}>VELOCIDADE</div>
           </div>
 
           {/* Heroic Inspiration */}
@@ -902,8 +966,18 @@ export function CharacterSheetPage({
         className={`${styles.mainGrid} ${isDesktopWide && sidebar !== null ? styles.mainGridWithSidebar : ''}`}
       >
 
-        {/* ── Col 1: Saves / Senses / Proficiencies ── */}
+        {/* ── Col 1: Ability Scores + Saves / Senses / Proficiencies ── */}
         <div className={styles.colLeft}>
+          {/* Ability Score Cards — moved from statsRow */}
+          <div className={styles.abilitiesBlock}>
+            <AbilityScoreCards
+              finalAttributes={derivedSheet.finalAttributes}
+              modifiers={derivedSheet.modifiers}
+              attributeBreakdowns={derivedSheet.attributeBreakdowns}
+              onAbilityClick={handleAbilityClick}
+            />
+          </div>
+
           <CollapsibleSection title="Testes de Resistência" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
               <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
@@ -911,11 +985,18 @@ export function CharacterSheetPage({
                 derivedSavingThrows={derivedSheet.derivedSavingThrows}
                 onSaveClick={handleSaveClick}
               />
+              <div className={styles.savingThrowLabel}>Modificadores de Resistência</div>
             </div>
           </CollapsibleSection>
 
           <CollapsibleSection title="Sentidos" forceOpen={!isMobile}>
-            <div className={styles.redBox}>
+            <div
+              className={`${styles.redBox} ${styles.redBoxClickable}`}
+              onClick={() => setSidebar({ type: 'senses' })}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'senses' }); }}
+            >
               <div className={styles.sectionHeader}>SENTIDOS ⚙</div>
               <SensesCard
                 passivePerception={derivedSheet.passivePerception}

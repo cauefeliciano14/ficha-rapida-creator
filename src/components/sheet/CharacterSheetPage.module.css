@@ -32,7 +32,13 @@
   min-height: 100vh;
   font-family: var(--font-body, 'Roboto', sans-serif);
   padding: 16px;
-  background-color: var(--surface-base);
+  background-color: #0d0d0f;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.82)),
+    url('/sheet_bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
   color: var(--text-body);
 }
 
@@ -147,34 +153,39 @@
   align-items: center;
 }
 
-/* ── Stats Row (abilities + PB + speed + heroic + HP) ── */
+/* ── Stats Row (PB + speed + heroic + HP — abilities are now in colLeft) ── */
 .statsRow {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   align-items: stretch;
   width: 100%;
+}
+
+.statsRow .statBox {
+  min-width: 80px;
+  max-width: 110px;
 }
 
 /* ── Main 3-Column Grid (D&D Beyond layout) ── */
 .mainGrid {
   display: grid;
-  grid-template-columns: 210px 280px 1fr;
-  gap: 16px;
+  grid-template-columns: 240px 210px 1fr;
+  gap: 12px;
   max-width: 1400px;
-  margin: 16px auto 0;
+  margin: 12px auto 0;
   align-items: start;
   animation: sheetFadeIn 0.5s ease-out 0.15s both;
 }
 
 .mainGridWithSidebar {
-  grid-template-columns: 210px 280px 1fr 320px;
+  grid-template-columns: 240px 210px 1fr 280px;
 }
 
 /* ── Col 1: Saves / Senses / Proficiencies ── */
 .colLeft {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -446,6 +457,11 @@
   margin: 12px 0;
 }
 
+/* ── Ability Scores block at top of left column ── */
+.abilitiesBlock {
+  padding: 4px 0 8px;
+}
+
 /* ── D&D Beyond themed panel box ── */
 .redBox {
   background: var(--surface-panel-card);
@@ -454,6 +470,16 @@
   padding: 16px;
   position: relative;
   box-shadow: var(--shadow-card);
+}
+
+.redBoxClickable {
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.redBoxClickable:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 12px var(--color-primary-glow);
 }
 
 .sectionHeader {
@@ -846,6 +872,18 @@
   color: var(--color-primary-light);
 }
 
+/* ── Saving Throw label ── */
+.savingThrowLabel {
+  font-family: var(--font-label);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  text-align: center;
+  padding-top: 6px;
+}
+
 /* ── Skills panel ── */
 .skillsPanel {
   min-width: 0;
@@ -1097,7 +1135,7 @@
 @media (min-width: 1024px) and (max-width: 1279px) {
   .mainGrid,
   .mainGridWithSidebar {
-    grid-template-columns: 210px 1fr;
+    grid-template-columns: 240px 1fr;
   }
   .colMid {
     display: none;
