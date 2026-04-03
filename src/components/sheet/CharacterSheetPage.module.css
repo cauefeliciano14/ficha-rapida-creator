@@ -206,7 +206,7 @@
 /* ── Combat Row (Initiative + AC + Defenses + Conditions) ── */
 .combatRow {
   display: flex;
-  gap: clamp(4px, 0.5vw, 8px);
+  gap: 6px;
   align-items: flex-start;
   width: 100%;
   flex-wrap: wrap;
@@ -214,14 +214,14 @@
 
 .combatRowStats {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
   flex-shrink: 0;
 }
 
 .combatRowPanels {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   min-width: 0;
 }
