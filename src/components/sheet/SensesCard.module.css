@@ -1,33 +1,33 @@
 .container {
-  padding: 8px 4px;
+  padding: 4px 2px;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 36px;
-  padding: 0 12px;
+  gap: 10px;
+  height: 30px;
+  padding: 0 8px;
   border: 1px solid var(--border-theme-dark);
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   background: var(--surface-card);
 }
 
 .value {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 900;
   color: var(--text-secondary);
 }
 
 .label {
   font-family: var(--font-label);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: var(--text-primary);
   text-transform: uppercase;
@@ -35,15 +35,15 @@
 }
 
 .specialSenses {
-  margin-top: 8px;
+  margin-top: 6px;
   border-top: 1px solid var(--border-subtle);
-  padding-top: 8px;
+  padding-top: 6px;
   text-align: center;
 }
 
 .specialSense {
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--text-secondary);
 }

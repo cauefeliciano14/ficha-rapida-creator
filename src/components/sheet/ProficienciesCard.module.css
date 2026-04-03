@@ -5,21 +5,21 @@
 }
 
 .section {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .sectionTitle {
   font-family: var(--font-label);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
   color: var(--text-bright);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sectionItems {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   color: var(--text-body);
-  line-height: 1.5;
+  line-height: 1.4;
 }
