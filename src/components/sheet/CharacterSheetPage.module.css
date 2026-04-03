@@ -31,14 +31,8 @@
   width: 100%;
   min-height: 100vh;
   font-family: var(--font-body, 'Roboto', sans-serif);
-  padding: clamp(8px, 1.5vw, 20px);
-  background-color: #0d0d0f;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.82)),
-    url('/sheet_bg.png');
-  background-size: cover;
-  background-position: center top;
-  background-attachment: fixed;
+  padding: clamp(4px, 1vw, 12px);
+  background-color: #10141a;
   color: var(--text-body);
   container-type: inline-size;
 }
