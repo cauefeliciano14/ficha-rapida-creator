@@ -70,30 +70,30 @@
 
 .attrLabel {
   font-family: var(--font-label);
-  font-size: var(--label-size);
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--text-dim);
-  width: 40px;
+  width: 34px;
 }
 
 .skillName {
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--text-secondary);
   flex: 1;
 }
 
 .bonusBox {
-  width: 44px;
+  width: 38px;
   border: 1px solid var(--border-theme-dark);
-  border-radius: var(--radius-xs);
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.4);
   text-align: center;
-  padding: 4px 0;
+  padding: 2px 0;
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-bright);
 }
