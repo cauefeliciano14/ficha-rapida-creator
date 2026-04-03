@@ -893,7 +893,7 @@
 
 /* ── Tabs panel ── */
 .tabsPanel {
-  padding: clamp(10px, 1.5vw, 20px) clamp(8px, 1vw, 12px);
+  padding: clamp(8px, 1.2vw, 14px) clamp(6px, 0.8vw, 10px);
   min-width: 0;
 }
 
