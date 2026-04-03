@@ -1158,10 +1158,10 @@
 /* ── Responsive: 1024–1199px (3 columns, compact) ── */
 @media (min-width: 1024px) and (max-width: 1199px) {
   .mainGrid {
-    grid-template-columns: minmax(170px, 0.9fr) minmax(150px, 0.8fr) minmax(280px, 2.5fr);
+    grid-template-columns: 200px minmax(150px, 240px) 1fr;
   }
   .mainGridWithSidebar {
-    grid-template-columns: minmax(170px, 0.9fr) minmax(150px, 0.8fr) minmax(240px, 2fr) minmax(200px, 1fr);
+    grid-template-columns: 200px minmax(150px, 220px) 1fr 260px;
   }
 }
 
