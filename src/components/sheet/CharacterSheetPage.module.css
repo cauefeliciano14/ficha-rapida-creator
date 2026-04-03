@@ -462,10 +462,10 @@
 .redBox {
   background: var(--surface-panel-card);
   border: 1px solid var(--border-theme);
-  border-radius: var(--radius-md);
-  padding: clamp(8px, 1.2vw, 16px);
+  border-radius: 6px;
+  padding: clamp(6px, 1vw, 12px);
   position: relative;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   isolation: isolate;
 }
 
