@@ -136,12 +136,12 @@
 }
 
 @media (max-width: 780px) {
-  .headerProf, .profCol { width: 28px; }
-  .headerMod, .attrLabel { width: 32px; font-size: 0.6rem; }
-  .headerBonus, .bonusBox { width: 38px; }
-  .skillName { font-size: 0.75rem; }
-  .skillRow { padding: 3px 6px; }
-  .headerRow { padding: 0 6px 6px 6px; }
+  .headerProf, .profCol { width: 24px; }
+  .headerMod, .attrLabel { width: 28px; font-size: 0.55rem; }
+  .headerBonus, .bonusBox { width: 34px; }
+  .skillName { font-size: 0.7rem; }
+  .skillRow { padding: 2px 4px; }
+  .headerRow { padding: 0 4px 4px 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
