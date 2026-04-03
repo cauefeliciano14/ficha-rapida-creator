@@ -4,7 +4,6 @@ import { ATTR_KEYS, ATTR_META } from '../utils/attributeConstants';
 import classAttributeSuggestions from '../data/classAttributeSuggestions';
 import { StandardArrayDnD } from './StandardArrayDnD';
 import { DiceAnimation } from './DiceAnimation';
-import { useSound } from '../context/SoundContext';
 
 
 const STD_VALUES = [15, 14, 13, 12, 10, 8];
@@ -39,7 +38,6 @@ export const AttributesStep = React.memo(
   const attrs = character.attributes;
   const [rollingSlots, setRollingSlots] = useState<Set<number>>(new Set());
   const [useDragMode, setUseDragMode] = useState(true);
-  const { playSound } = useSound();
 
   // Sync background bonuses whenever they change
   useEffect(() => {
@@ -108,7 +106,6 @@ export const AttributesStep = React.memo(
 
   const handleRollSlot = (slotIdx: number) => {
     setRollingSlots(prev => new Set([...prev, slotIdx]));
-    playSound('dice-roll');
     setTimeout(() => {
       const result = roll4d6DropLowest();
       setCharacter((prev: any) => {

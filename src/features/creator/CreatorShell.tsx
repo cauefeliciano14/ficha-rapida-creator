@@ -17,7 +17,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useCompletionCelebration } from '../../hooks/useCompletionCelebration';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { useSound } from '../../context/SoundContext';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
 const AccordionWizard = lazy(() => import('./AccordionWizard').then(m => ({ default: m.AccordionWizard })));
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
@@ -52,16 +51,9 @@ export function CreatorShell() {
     goToStep,
   } = useWizard();
 
-  const { playSound } = useSound();
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
-  useCompletionCelebration(validationResult.isValid, () => playSound('success'));
+  useCompletionCelebration(validationResult.isValid);
   const isMobile = useMediaQuery('(max-width: 779px)');
-
-  const isFirstStepRender = useRef(true);
-  useEffect(() => {
-    if (isFirstStepRender.current) { isFirstStepRender.current = false; return; }
-    playSound('paper-turn');
-  }, [currentStep, playSound]);
 
   const [isCharacterManagerOpen, setIsCharacterManagerOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
@@ -150,7 +142,7 @@ export function CreatorShell() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
             <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
-              {currentStep === 0 && <ClassSelectionStep onReset={handleFullReset} languagesData={languagesData} />}
+              {currentStep === 0 && <ClassSelectionStep languagesData={languagesData} />}
               {currentStep === 1 && <BackgroundStep />}
               {currentStep === 2 && <SpeciesStep languagesData={languagesData} />}
               {currentStep === 3 && <AttributesStepWrapper />}

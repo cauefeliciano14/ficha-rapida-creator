@@ -13,7 +13,6 @@ import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
 
 export interface ClassSelectionStepProps {
-  onReset: () => void;
   languagesData?: unknown;
 }
 
@@ -47,7 +46,7 @@ function getGroupTitle(name: string): string {
   if (lower.includes('instrumento')) return 'Escolha de Instrumentos Musicais';
   if (lower.includes('maestria')) return 'Escolhas de Maestria em Arma';
   if (lower.includes('equipamento')) return 'Escolha de Equipamento';
-  
+
   if (lower.startsWith('escolha uma ')) return 'Escolhas de ' + name.slice(12) + 's';
   if (lower.startsWith('escolha um ')) return 'Escolhas de ' + name.slice(11) + 's';
   return name;
@@ -121,7 +120,7 @@ function GroupedChoices({ title, options, choices, onChoiceChange, allSelections
   );
 }
 
-export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ onReset, languagesData }) => {
+export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ languagesData }) => {
   void languagesData;
   const {
     character,
@@ -242,9 +241,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ onReset,
         </div>
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button onClick={onReset} className={styles.resetButton}>
-            Novo Personagem
-          </button>
+
           <button
             onClick={() => { setCompareMode(m => !m); setCompareIds([null, null]); }}
             style={{

@@ -7,7 +7,6 @@ import { FANTASY_NAMES } from '../../../data/fantasyNames';
 import { HelpTooltip } from '../../../components/ui/HelpTooltip';
 import { alignmentsData } from '../../../data/alignmentsData';
 import { IdentityFieldsPanel } from './IdentityFieldsPanel';
-import { TimelinePanel } from '../../../components/TimelinePanel';
 import styles from './CharacterSummaryPanel.module.css';
 
 const STEP_LABELS: Record<string, string> = {
@@ -176,7 +175,7 @@ export function CharacterSummaryPanel() {
               : <div className={styles.avatarPlaceholder}>+</div>
             }
           </button>
-          
+
           <div className={styles.identityInfo} style={{ position: 'relative' }}>
             <div className={styles.nameInputRow} ref={suggestionsRef}>
               <input
@@ -291,68 +290,8 @@ export function CharacterSummaryPanel() {
         )}
       </div>
 
-      <details className={styles.identityCard}>
-        <summary className={styles.quickSheetSummary}>
-          <span className={styles.identityTitle}>Ficha Rápida</span>
-          <span className={styles.quickSheetChevron}>▾</span>
-        </summary>
-        <div className={styles.quickSheetBody}>
-          <div className={styles.quickSheetRow}>
-            <span className={styles.quickSheetLabel}>PV Máx</span>
-            <span className={styles.quickSheetValue}>
-              {derivedSheet.hitDie} + {derivedSheet.modifiers?.constituicao >= 0 ? '+' : ''}{derivedSheet.modifiers?.constituicao ?? 0} = <strong>{derivedSheet.maxHP}</strong>
-            </span>
-          </div>
-          <div className={styles.quickSheetRow}>
-            <span className={styles.quickSheetLabel}>CA</span>
-            <span className={styles.quickSheetValue}><strong>{derivedSheet.armorClass}</strong></span>
-          </div>
-          <div className={styles.quickSheetRow}>
-            <span className={styles.quickSheetLabel}>Iniciativa</span>
-            <span className={styles.quickSheetValue}>{derivedSheet.initiative >= 0 ? '+' : ''}{derivedSheet.initiative}</span>
-          </div>
-          <div className={styles.quickSheetRow}>
-            <span className={styles.quickSheetLabel}>Prof. Bonus</span>
-            <span className={styles.quickSheetValue}>+{derivedSheet.proficiencyBonus}</span>
-          </div>
-          <div className={styles.quickSheetRow}>
-            <span className={styles.quickSheetLabel}>Deslocamento</span>
-            <span className={styles.quickSheetValue}>{derivedSheet.speed || '9 m'}</span>
-          </div>
-          {derivedSheet.isCaster && derivedSheet.spellSaveDC != null && (
-            <>
-              <div className={styles.quickSheetDivider} />
-              <div className={styles.quickSheetRow}>
-                <span className={styles.quickSheetLabel}>CD Magia</span>
-                <span className={styles.quickSheetValue}>{derivedSheet.spellSaveDC}</span>
-              </div>
-              <div className={styles.quickSheetRow}>
-                <span className={styles.quickSheetLabel}>Ataque Magia</span>
-                <span className={styles.quickSheetValue}>{derivedSheet.spellAttackBonus != null && derivedSheet.spellAttackBonus >= 0 ? '+' : ''}{derivedSheet.spellAttackBonus}</span>
-              </div>
-            </>
-          )}
-          {derivedSheet.specialSenses.length > 0 && (
-            <>
-              <div className={styles.quickSheetDivider} />
-              <div className={styles.quickSheetRow}>
-                <span className={styles.quickSheetLabel}>Sentidos</span>
-                <span className={styles.quickSheetValue}>{derivedSheet.specialSenses.join(', ')}</span>
-              </div>
-            </>
-          )}
-        </div>
-      </details>
 
-      <details className={styles.identityCard}>
-        <summary className={styles.quickSheetSummary}>
-          <span className={styles.identityTitle}>Histórico</span>
-          <span className={styles.quickSheetChevron}>▾</span>
-        </summary>
-        <div style={{ paddingTop: '8px' }}>
-          <TimelinePanel />
-        </div>
-      </details>
+
 
       {/* ── Campos de Identidade (colapsáveis) ── */}
       <IdentityFieldsPanel

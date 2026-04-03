@@ -156,30 +156,30 @@
   --text-slate-dim: #64748b;
 
   /* ── Typography ── */
-  --font-body: 'Roboto', Helvetica, sans-serif;
-  --font-heading: 'Cinzel', Georgia, serif;
-  --font-label: 'Roboto Condensed', Helvetica, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  --font-heading: 'Cinzel', 'Outfit', serif;
+  --font-label: 'Outfit', sans-serif;
   --font-mono: 'Fira Code', Consolas, monospace;
-  --label-size: 0.6875rem;
-  --label-spacing: 0.08em;
-  --label-weight: 700;
+  --label-size: 0.72rem;
+  --label-spacing: 0.06em;
+  --label-weight: 600;
 
-  /* ── Spacing Scale ── */
-  --space-2xs: 2px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
+  /* ── Spacing Scale (High-End: Breathe heavily) ── */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 24px;
+  --space-lg: 36px;
+  --space-xl: 64px;
+  --space-2xl: 96px;
 
-  /* ── Border Radii ── */
-  --radius-xs: 3px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 18px;
+  /* ── Border Radii (Squircle) ── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
   --radius-pill: 9999px;
 
   /* ── Z-Index Scale ── */
@@ -192,26 +192,40 @@
   --z-tooltip: 1100;
 
   /* ── Shadows ── */
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.5);
-  --shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-glow-accent: 0 0 10px rgba(212, 160, 23, 0.4);
-  --shadow-glow-primary: 0 4px 12px rgba(197, 49, 49, 0.4);
-  --shadow-glow-orange: 0 0 10px rgba(249, 115, 22, 0.4);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  --shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  --shadow-modal: 0 30px 80px rgba(0, 0, 0, 0.7), 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow-accent: 0 0 20px rgba(212, 160, 23, 0.35), 0 0 6px rgba(212, 160, 23, 0.2);
+  --shadow-glow-primary: 0 8px 24px rgba(197, 49, 49, 0.35), 0 0 8px rgba(197, 49, 49, 0.15);
+  --shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.35), 0 0 6px rgba(249, 115, 22, 0.2);
+  --shadow-glow-magic: 0 0 20px rgba(167, 139, 250, 0.3), 0 0 6px rgba(167, 139, 250, 0.15);
   --shadow-input: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-focus-accent: 0 0 0 2px rgba(212, 160, 23, 0.15);
-  --shadow-focus-orange: 0 0 0 2px rgba(249, 115, 22, 0.1);
-  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.25);
-  --shadow-hover-lg: 0 8px 20px rgba(0, 0, 0, 0.2);
-  --shadow-danger: 0 4px 16px rgba(239, 68, 68, 0.3);
+  --shadow-focus-accent: 0 0 0 2px rgba(212, 160, 23, 0.2), 0 0 12px rgba(212, 160, 23, 0.08);
+  --shadow-focus-orange: 0 0 0 2px rgba(249, 115, 22, 0.15), 0 0 12px rgba(249, 115, 22, 0.06);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  --shadow-hover-lg: 0 16px 36px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  --shadow-danger: 0 8px 32px rgba(239, 68, 68, 0.3);
+  --shadow-inner-glow: inset 0 1px 2px rgba(255, 255, 255, 0.06), inset 0 0 12px rgba(255, 255, 255, 0.02);
+  --shadow-panel-depth: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
-  /* ── Transitions ── */
-  --transition-speed: 0.3s;
-  --transition-fast: 0.15s;
-  --transition-base: 0.25s;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* ── Gradients (Arcane Atelier) ── */
+  --gradient-arcane-subtle: linear-gradient(135deg, rgba(197, 49, 49, 0.06) 0%, rgba(212, 160, 23, 0.04) 50%, rgba(167, 139, 250, 0.03) 100%);
+  --gradient-gold-shimmer: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.08), transparent);
+  --gradient-panel-edge: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+  --gradient-accent-warm: linear-gradient(135deg, var(--color-accent-warm) 0%, var(--color-accent) 100%);
+  --gradient-primary-deep: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+
+  /* ── Transitions (Spring Physics) ── */
+  --transition-speed: 0.4s;
+  --transition-fast: 0.2s;
+  --transition-base: 0.3s;
+  --transition-slow: 0.6s;
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-luxury: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-dramatic: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* ── Overlay / Glassmorphism tokens ── */
   --overlay-black-50: rgba(0, 0, 0, 0.5);
@@ -469,6 +483,22 @@
   --color-rarity-legendary: #e06c0a;
   --color-rarity-legendary-bg: rgba(224, 108, 10, 0.1);
   --color-rarity-legendary-border: rgba(224, 108, 10, 0.25);
+
+  /* ── Transitions (inherited from dark but need explicit for light) ── */
+  --transition-slow: 0.6s;
+  --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-luxury: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-dramatic: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Extra shadows & gradients (light equivalents) ── */
+  --shadow-inner-glow: inset 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 0 12px rgba(0, 0, 0, 0.01);
+  --shadow-panel-depth: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-glow-magic: 0 0 12px rgba(124, 58, 237, 0.2);
+  --gradient-arcane-subtle: linear-gradient(135deg, rgba(183, 43, 43, 0.04) 0%, rgba(184, 134, 11, 0.03) 50%, rgba(124, 58, 237, 0.02) 100%);
+  --gradient-gold-shimmer: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.06), transparent);
+  --gradient-panel-edge: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+  --gradient-accent-warm: linear-gradient(135deg, var(--color-accent-warm) 0%, var(--color-accent) 100%);
+  --gradient-primary-deep: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
 
   /* ── Theme-aware accent (customizável) ── */
   --color-user-accent: var(--color-accent);

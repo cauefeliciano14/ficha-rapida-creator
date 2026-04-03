@@ -4,7 +4,6 @@ import type { SavedCharacterMeta } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import styles from './CharacterManagerModal.module.css';
-import { useSound } from '../../context/SoundContext';
 
 interface CharacterManagerModalProps {
   onClose: () => void;
@@ -14,10 +13,8 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
   const characters = listSavedCharacters();
   const { activeCharacterId, handleLoadCharacter, handleResetCharacter } = useCharacter();
   const { setCurrentStep } = useWizard();
-  const { playSound } = useSound();
 
   const handleCreateNew = () => {
-    playSound('paper-turn');
     handleResetCharacter();
     setCurrentStep(0);
     onClose();
@@ -26,7 +23,6 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
   const handleLoad = (meta: SavedCharacterMeta) => {
     const fullChar = loadSavedCharacter(meta.id);
     if (fullChar) {
-      playSound('success');
       handleLoadCharacter(fullChar);
       setCurrentStep(fullChar.creationSnapshot.currentStep ?? 0);
       onClose();
@@ -41,7 +37,6 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
         handleResetCharacter();
         setCurrentStep(0);
       }
-      playSound('paper-turn');
     }
   };
 

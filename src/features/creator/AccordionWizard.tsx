@@ -22,7 +22,7 @@ const STEPS = [
 
 const STEP_KEYS = ['class', 'background', 'species', 'attributes', 'equipment'] as const;
 
-export function AccordionWizard({ onReset }: { onReset: () => void }) {
+export function AccordionWizard({ onReset: _onReset }: { onReset: () => void }) {
   const { currentStep, goToStep } = useWizard();
   const { character, selectedBackground, validationResult } = useCharacter();
 
@@ -67,7 +67,7 @@ export function AccordionWizard({ onReset }: { onReset: () => void }) {
             {isOpen && (
               <div className={styles.body}>
                 <Suspense fallback={<div className={styles.loading}>Carregando...</div>}>
-                  {index === 0 && <ClassSelectionStep onReset={onReset} languagesData={languagesData} />}
+                  {index === 0 && <ClassSelectionStep languagesData={languagesData} />}
                   {index === 1 && <BackgroundStep />}
                   {index === 2 && <SpeciesStep languagesData={languagesData} />}
                   {index === 3 && <AttributesStepWrapper />}

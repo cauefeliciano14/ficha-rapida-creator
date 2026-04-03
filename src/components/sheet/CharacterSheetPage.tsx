@@ -176,7 +176,7 @@ export function CharacterSheetPage({
 
   /* ── Responsive layout ── */
   const isMobile = useMediaQuery('(max-width: 1023px)');
-  const isDesktopWide = useMediaQuery('(min-width: 1280px)');
+  const isDesktopWide = useMediaQuery('(min-width: 1200px)');
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
@@ -797,122 +797,6 @@ export function CharacterSheetPage({
           </div>
         </div>
 
-        {/* Short Rest Overlay */}
-        {shortRestOpen && (
-          <div className={`${styles.redBox} ${styles.shortRestOverlay}`}>
-            <div className={styles.sectionHeader}>DESCANSO CURTO</div>
-            <div className={styles.shortRestControls}>
-              <span className={styles.shortRestLabel}>
-                Dado(s) de Vida ({derivedSheet.hitDie}):
-              </span>
-              <input
-                type="number"
-                min="1"
-                max={availableHitDice}
-                value={hdCount}
-                onChange={e => setHdCount(e.target.value)}
-                className={styles.shortRestInput}
-              />
-              <span className={styles.shortRestLabel}>
-                Disponíveis: {availableHitDice}/{totalHitDice}
-              </span>
-              <button
-                onClick={handleShortRest}
-                className={styles.shortRestBtn}
-                disabled={availableHitDice <= 0}
-              >
-                Recuperar PV
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ROW 2: PB + Speed + Heroic Insp + HP */}
-        <div className={styles.statsRow}>
-          {/* Proficiency Bonus */}
-          <div
-            className={`${styles.statBox} ${styles.statBoxClickable}`}
-            onClick={() => setSidebar({ type: 'proficiency' })}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
-          >
-            <div className={styles.statLabel}>PROFICIÊNCIA</div>
-            <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
-            <div className={styles.statLabel}>BÔNUS</div>
-          </div>
-
-          {/* Walking Speed */}
-          <div
-            className={`${styles.statBox} ${styles.statBoxClickable}`}
-            onClick={() => setSidebar({ type: 'speed' })}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
-          >
-            <div className={styles.statLabel}>CAMINHADA</div>
-            <div className={styles.statValueInline}>
-              {derivedSheet.speed}<span className={styles.statUnit}>m</span>
-            </div>
-            <div className={styles.statLabel}>VELOCIDADE</div>
-          </div>
-
-          {/* Heroic Inspiration */}
-          <div
-            className={`${styles.heroicBox} ${playState.heroicInspiration ? styles.heroicBoxActive : ''}`}
-            onClick={toggleInspiration}
-            role="checkbox"
-            aria-checked={playState.heroicInspiration}
-            aria-label="Inspiração Heróica"
-            tabIndex={0}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
-          >
-            {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
-            <span className={styles.heroicLabel}>Insp.<br />Heróica</span>
-          </div>
-
-          {/* HP Panel */}
-          <div className={styles.hpPanel}>
-            <div
-              className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
-              style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column' }}
-            >
-              <div className={styles.hpHeader}>
-                <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
-                <div className={styles.hpHeaderBtns}>
-                  <input
-                    type="number"
-                    min="0"
-                    value={hpInput}
-                    onChange={e => setHpInput(e.target.value)}
-                    className={styles.hpInput}
-                  />
-                  <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
-                  <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
-                  <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
-                </div>
-              </div>
-
-              <div className={styles.hpLabels}>
-                <span className={styles.hpLabel}>ATUAL</span>
-                <span className={styles.hpLabel}>MÁXIMO</span>
-                <span className={styles.hpLabel}>TEMP</span>
-              </div>
-
-              <div className={styles.hpValues}>
-                <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
-                <span className={styles.hpSeparator}>/</span>
-                <span className={styles.hpMax}>{effectiveMaxHP}</span>
-                <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
-              </div>
-
-              <div className={styles.hpBar}>
-                <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* XP + LEVEL ROW */}
         <div className={styles.xpRow}>
           {onSetLevel && (
@@ -1046,8 +930,120 @@ export function CharacterSheetPage({
           </div>
         </div>
 
-        {/* ── Col 3: Combat Row + Tabs ── */}
+        {/* ── Col 3: Stats Row + Combat Row + Tabs ── */}
         <div className={styles.colRight}>
+
+          {/* Stats Row: PB + Speed + Heroic + HP — scoped to col3 */}
+          <div className={styles.statsRow}>
+            {/* Proficiency Bonus */}
+            <div
+              className={`${styles.statBox} ${styles.statBoxClickable}`}
+              onClick={() => setSidebar({ type: 'proficiency' })}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
+            >
+              <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
+              <div className={styles.statLabel}>BÔNUS PROF.</div>
+            </div>
+
+            {/* Walking Speed */}
+            <div
+              className={`${styles.statBox} ${styles.statBoxClickable}`}
+              onClick={() => setSidebar({ type: 'speed' })}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
+            >
+              <div className={styles.statValueInline}>
+                {derivedSheet.speed}<span className={styles.statUnit}>m</span>
+              </div>
+              <div className={styles.statLabel}>VELOCIDADE</div>
+            </div>
+
+            {/* Heroic Inspiration */}
+            <div
+              className={`${styles.heroicBox} ${playState.heroicInspiration ? styles.heroicBoxActive : ''}`}
+              onClick={toggleInspiration}
+              role="checkbox"
+              aria-checked={playState.heroicInspiration}
+              aria-label="Inspiração Heróica"
+              tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
+            >
+              {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
+              <span className={styles.heroicLabel}>INSP.<br />HERÓICA</span>
+            </div>
+
+            {/* HP Panel */}
+            <div className={styles.hpPanel}>
+              <div
+                className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
+                style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column' }}
+              >
+                <div className={styles.hpHeader}>
+                  <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
+                  <div className={styles.hpHeaderBtns}>
+                    <input
+                      type="number"
+                      min="0"
+                      value={hpInput}
+                      onChange={e => setHpInput(e.target.value)}
+                      className={styles.hpInput}
+                    />
+                    <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
+                    <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
+                    <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
+                  </div>
+                </div>
+                <div className={styles.hpLabels}>
+                  <span className={styles.hpLabel}>ATUAL</span>
+                  <span className={styles.hpLabel}>MÁXIMO</span>
+                  <span className={styles.hpLabel}>TEMP</span>
+                </div>
+                <div className={styles.hpValues}>
+                  <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
+                  <span className={styles.hpSeparator}>/</span>
+                  <span className={styles.hpMax}>{effectiveMaxHP}</span>
+                  <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
+                </div>
+                <div className={styles.hpBar}>
+                  <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Short Rest Overlay */}
+          {shortRestOpen && (
+            <div className={`${styles.redBox} ${styles.shortRestOverlay}`}>
+              <div className={styles.sectionHeader}>DESCANSO CURTO</div>
+              <div className={styles.shortRestControls}>
+                <span className={styles.shortRestLabel}>
+                  Dado(s) de Vida ({derivedSheet.hitDie}):
+                </span>
+                <input
+                  type="number"
+                  min="1"
+                  max={availableHitDice}
+                  value={hdCount}
+                  onChange={e => setHdCount(e.target.value)}
+                  className={styles.shortRestInput}
+                />
+                <span className={styles.shortRestLabel}>
+                  Disponíveis: {availableHitDice}/{totalHitDice}
+                </span>
+                <button
+                  onClick={handleShortRest}
+                  className={styles.shortRestBtn}
+                  disabled={availableHitDice <= 0}
+                >
+                  Recuperar PV
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Combat Row: Initiative + AC + Death Saves + Defenses + Conditions */}
           <div className={styles.combatRow}>
             <div className={styles.combatRowStats}>

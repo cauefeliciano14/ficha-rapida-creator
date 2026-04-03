@@ -3,7 +3,6 @@ import { GlossaryTooltipProvider } from './components/GlossaryTooltip';
 import { CharacterProvider } from './context/CharacterContext';
 import { WizardProvider } from './context/WizardContext';
 import { ChangeHistoryProvider } from './context/ChangeHistoryContext';
-import { SoundProvider } from './context/SoundContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
@@ -12,7 +11,6 @@ const CreatorShell = lazy(() => import('./features/creator/CreatorShell').then(m
 function App() {
   return (
     <ThemeProvider>
-      <SoundProvider>
         <ChangeHistoryProvider>
           <CharacterProvider>
             <WizardProvider>
@@ -24,7 +22,6 @@ function App() {
             </WizardProvider>
           </CharacterProvider>
         </ChangeHistoryProvider>
-      </SoundProvider>
     </ThemeProvider>
   );
 }

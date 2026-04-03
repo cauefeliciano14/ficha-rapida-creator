@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useWizard } from '../../../context/WizardContext';
 import { useCharacter } from '../../../context/CharacterContext';
-import { useSound } from '../../../context/SoundContext';
 import patterns from '../../../styles/panelPatterns.module.css';
 import styles from './StepSidebar.module.css';
 
@@ -19,7 +18,6 @@ const STEP_KEYS = ['class', 'background', 'species', 'attributes', 'equipment'] 
 export function StepSidebar() {
   const { currentStep, setCurrentStep } = useWizard();
   const { validationResult } = useCharacter();
-  const { soundEnabled, toggleSound } = useSound();
 
   const pendingMap = {
     class: validationResult.byStep.class.length,
@@ -107,15 +105,6 @@ export function StepSidebar() {
         })}
       </div>
 
-      <button
-        type="button"
-        onClick={toggleSound}
-        className={styles.soundToggle}
-        title={soundEnabled ? 'Desativar sons' : 'Ativar sons'}
-        aria-label={soundEnabled ? 'Desativar sons' : 'Ativar sons'}
-      >
-        {soundEnabled ? '🔊' : '🔇'} Sons {soundEnabled ? 'on' : 'off'}
-      </button>
     </div>
   );
 }
