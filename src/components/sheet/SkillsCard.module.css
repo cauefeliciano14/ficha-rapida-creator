@@ -1,21 +1,21 @@
 .headerRow {
   display: flex;
   align-items: center;
-  padding: 0 8px 8px 8px;
-  margin-bottom: var(--space-sm);
+  padding: 0 4px 6px 4px;
+  margin-bottom: 4px;
   border-bottom: 1px solid var(--border-subtle);
   font-family: var(--font-label);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: var(--label-weight);
   letter-spacing: var(--label-spacing);
   text-transform: uppercase;
   color: var(--text-dim);
 }
 
-.headerProf { width: 38px; }
-.headerMod { width: 40px; }
+.headerProf { width: 32px; }
+.headerMod { width: 34px; }
 .headerSkill { flex: 1; }
-.headerBonus { width: 44px; text-align: center; }
+.headerBonus { width: 40px; text-align: center; }
 
 .skillRow {
   display: flex;
