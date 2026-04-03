@@ -128,7 +128,7 @@
 .topBar {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -144,7 +144,7 @@
 
 .topBarActions {
   display: flex;
-  gap: clamp(4px, 0.6vw, 8px);
+  gap: clamp(4px, 0.5vw, 6px);
   align-items: center;
   flex-wrap: wrap;
 }
@@ -152,7 +152,7 @@
 /* ── Stats Row (inside colRight/col3 — PB + speed + heroic + HP) ── */
 .statsRow {
   display: flex;
-  gap: clamp(4px, 0.5vw, 8px);
+  gap: clamp(4px, 0.4vw, 6px);
   align-items: stretch;
   width: 100%;
   flex-wrap: wrap;
@@ -161,17 +161,17 @@
 /* ── Main 3-Column Grid (D&D Beyond layout) ── */
 .mainGrid {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(160px, 0.9fr) minmax(280px, 2.5fr);
-  gap: clamp(6px, 1vw, 12px);
+  grid-template-columns: 220px minmax(160px, 260px) 1fr;
+  gap: 6px;
   max-width: 1400px;
-  margin: 8px auto 0;
+  margin: 4px auto 0;
   align-items: start;
   animation: sheetFadeIn 0.5s ease-out 0.15s both;
   width: 100%;
 }
 
 .mainGridWithSidebar {
-  grid-template-columns: minmax(180px, 1fr) minmax(160px, 0.9fr) minmax(280px, 2.5fr) minmax(220px, 1.2fr);
+  grid-template-columns: 220px minmax(160px, 260px) 1fr 280px;
 }
 
 /* ── Col 1: Ability Scores / Saves / Senses / Proficiencies ── */
