@@ -723,7 +723,9 @@ export function CharacterSheetPage({
             </div>
             <div className={styles.stickyInfo}>
               <span className={styles.stickyName}>{characterName || 'Sem Nome'}</span>
-              <span className={styles.stickyMeta}>{className} · Nv {characterLevel}</span>
+              <span className={styles.stickyMeta}>
+                {className}{subclassName ? ` (${subclassName})` : ''} · {speciesName || '—'}
+              </span>
             </div>
             <div className={styles.stickyStats}>
               <span className={styles.stickyStat}>
@@ -761,6 +763,7 @@ export function CharacterSheetPage({
             subclassName={subclassName}
             classLevels={classLevels}
             backgroundName={backgroundName}
+            onUpdateIdentity={onUpdateIdentity}
           />
           <div className={styles.topBarActions}>
             {/* Advantage Mode Toggle */}

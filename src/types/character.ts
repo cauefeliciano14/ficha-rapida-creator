@@ -69,6 +69,8 @@ export interface Character {
 
 /** Partial update for identity-only fields (used in NotesTab edit callbacks) */
 export interface CharacterIdentityUpdate {
+  name?: string;
+  portrait?: string | null;
   alignment?: string | null;
   faith?: string;
   lifestyle?: string;
