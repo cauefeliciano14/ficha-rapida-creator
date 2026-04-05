@@ -761,6 +761,7 @@ export function CharacterSheetPage({
             subclassName={subclassName}
             classLevels={classLevels}
             backgroundName={backgroundName}
+            onUpdateIdentity={onUpdateIdentity}
           />
           <div className={styles.topBarActions}>
             {/* Advantage Mode Toggle */}
