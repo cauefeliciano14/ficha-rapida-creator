@@ -89,7 +89,7 @@ export function SheetHeader({
         <ManageCharacterModal
           name={name}
           portrait={portrait}
-          alignment={alignment}
+          alignment={alignment ?? null}
           onSave={handleManageSave}
           onClose={() => setManageOpen(false)}
         />
