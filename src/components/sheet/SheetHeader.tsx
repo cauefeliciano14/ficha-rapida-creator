@@ -15,8 +15,9 @@ interface SheetHeaderProps {
 }
 
 export function SheetHeader({
-  name, portrait, speciesName, className, level, creatureSize, alignment, subclassName, classLevels, backgroundName,
+  name, portrait, speciesName, className, level: _level, creatureSize: _size, alignment, subclassName, classLevels, backgroundName,
 }: SheetHeaderProps) {
+  void _level; void _size;
   const isMulticlass = classLevels && classLevels.length > 1;
   const classDisplay = isMulticlass
     ? classLevels.map(cl => `${cl.className} ${cl.level}`).join(' / ')
