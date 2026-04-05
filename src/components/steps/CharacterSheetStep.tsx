@@ -28,6 +28,8 @@ export const CharacterSheetStep: React.FC = () => {
   const handleUpdateIdentity = (update: CharacterIdentityUpdate) => {
     setCharacter(prev => ({
       ...prev,
+      ...(update.name !== undefined ? { name: update.name } : {}),
+      ...(update.portrait !== undefined ? { portrait: update.portrait } : {}),
       ...(update.alignment !== undefined ? { alignment: update.alignment } : {}),
       ...(update.faith !== undefined ? { faith: update.faith } : {}),
       ...(update.lifestyle !== undefined ? { lifestyle: update.lifestyle } : {}),
