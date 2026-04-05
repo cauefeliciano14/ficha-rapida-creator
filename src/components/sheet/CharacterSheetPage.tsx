@@ -760,6 +760,7 @@ export function CharacterSheetPage({
             alignment={alignment}
             subclassName={subclassName}
             classLevels={classLevels}
+            backgroundName={backgroundName}
           />
           <div className={styles.topBarActions}>
             {/* Advantage Mode Toggle */}

@@ -1,24 +1,24 @@
 .container {
   display: flex;
-  align-items: center;
-  gap: clamp(8px, 1vw, 12px);
-  background: transparent;
-  border-radius: var(--radius-md);
-  padding: 6px 0;
-  border: none;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(18, 22, 30, 0.85);
+  border-radius: 6px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   min-width: 0;
+  max-width: 380px;
 }
 
 .portrait {
-  width: clamp(40px, 5vw, 64px);
-  height: clamp(40px, 5vw, 64px);
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
   background: linear-gradient(135deg, var(--surface-dark), var(--surface-elevated));
-  border: 2px solid var(--border-theme);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -26,47 +26,113 @@
 .portraitImg {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   object-fit: cover;
+}
+
+.portraitPlaceholder {
+  font-size: 1.6rem;
+  opacity: 0.5;
+}
+
+.infoBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .name {
   font-family: var(--font-heading);
-  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-bright);
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.meta {
-  font-family: var(--font-label);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-  letter-spacing: 0.03em;
-}
-
-.sizeBadge {
-  display: inline-block;
-  background: rgba(197, 49, 49, 0.12);
-  border: 1px solid rgba(197, 49, 49, 0.3);
+.manageBtn {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-dim);
   border-radius: 4px;
-  padding: 1px 7px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-primary-light);
-  letter-spacing: 0.04em;
-  vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.metaSub {
+.manageBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 10px;
+  align-items: baseline;
+}
+
+.metaLabel {
   font-family: var(--font-label);
-  font-size: 0.7rem;
-  color: var(--color-primary-light);
-  margin-top: 2px;
-  letter-spacing: 0.04em;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.metaValue {
+  font-size: 0.75rem;
+  color: var(--text-muted);
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaValueAccent {
+  font-size: 0.75rem;
+  color: var(--color-primary-light);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alignmentRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.alignmentBadge {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
