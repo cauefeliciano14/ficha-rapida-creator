@@ -11,14 +11,12 @@ interface SheetHeaderProps {
   alignment?: string | null;
   subclassName?: string;
   classLevels?: ClassLevel[];
+  backgroundName?: string;
 }
 
 export function SheetHeader({
-  name, portrait, speciesName, className, level, creatureSize, alignment, subclassName, classLevels,
+  name, portrait, speciesName, className, level, creatureSize, alignment, subclassName, classLevels, backgroundName,
 }: SheetHeaderProps) {
-  /** Extrai apenas o rótulo curto do tamanho (ex: "Médio" de "Médio (1,2-2,1m)") */
-  const sizeLabel = creatureSize?.split('(')[0]?.trim() ?? '';
-
   const isMulticlass = classLevels && classLevels.length > 1;
   const classDisplay = isMulticlass
     ? classLevels.map(cl => `${cl.className} ${cl.level}`).join(' / ')
@@ -26,6 +24,7 @@ export function SheetHeader({
 
   return (
     <div className={styles.container}>
+      {/* Portrait */}
       <div className={styles.portrait}>
         {portrait ? (
           <img
@@ -34,18 +33,35 @@ export function SheetHeader({
             className={styles.portraitImg}
           />
         ) : (
-          '🧙'
+          <span className={styles.portraitPlaceholder}>🧙</span>
         )}
       </div>
-      <div>
-        <div className={styles.name}>{name || 'Sem Nome'}</div>
-        <div className={styles.meta}>
-          Nível {level} &nbsp;·&nbsp; {speciesName || '—'} &nbsp;·&nbsp; {classDisplay}
-          {sizeLabel && <>&nbsp;·&nbsp;<span className={styles.sizeBadge}>{sizeLabel}</span></>}
+
+      {/* Info block */}
+      <div className={styles.infoBlock}>
+        {/* Name row */}
+        <div className={styles.nameRow}>
+          <span className={styles.name}>{name || 'Sem Nome'}</span>
+          <button className={styles.manageBtn} title="Gerenciar">⚙</button>
         </div>
-        {alignment && (
-          <div className={styles.metaSub}>{alignment}</div>
-        )}
+
+        {/* Meta rows */}
+        <div className={styles.metaGrid}>
+          <span className={styles.metaLabel}>CLASSE</span>
+          <span className={styles.metaValueAccent}>{classDisplay}</span>
+
+          <span className={styles.metaLabel}>ORIGEM</span>
+          <span className={styles.metaValue}>{backgroundName || 'Não definida'}</span>
+
+          <span className={styles.metaLabel}>ESPÉCIE</span>
+          <span className={styles.metaValue}>{speciesName || 'Não definida'}</span>
+        </div>
+
+        {/* Alignment row */}
+        <div className={styles.alignmentRow}>
+          <span className={styles.metaLabel}>ALINHAMENTO</span>
+          <span className={styles.alignmentBadge}>{alignment || 'Não definido'}</span>
+        </div>
       </div>
     </div>
   );
