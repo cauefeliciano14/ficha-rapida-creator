@@ -18,7 +18,8 @@ import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useCompletionCelebration } from '../../hooks/useCompletionCelebration';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
-const AccordionWizard = lazy(() => import('./AccordionWizard').then(m => ({ default: m.AccordionWizard })));
+import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
+import mobileStyles from './mobile/MobileNavBar.module.css';
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
@@ -82,7 +83,6 @@ export function CreatorShell() {
       shellState: { sidebarCollapsed, summaryCollapsed },
     }));
 
-    // Skip the very first save (on mount) to avoid showing "Salvo" on load
     if (isFirstSave.current) {
       isFirstSave.current = false;
       return;
@@ -114,43 +114,62 @@ export function CreatorShell() {
     setCurrentStep(0);
   };
 
+  const renderStepContent = () => (
+    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
+      {currentStep === 0 && <ClassSelectionStep languagesData={languagesData} />}
+      {currentStep === 1 && <BackgroundStep />}
+      {currentStep === 2 && <SpeciesStep languagesData={languagesData} />}
+      {currentStep === 3 && <AttributesStepWrapper />}
+      {currentStep === 4 && <EquipmentStepWrapper />}
+      {currentStep === 5 && <CharacterSheetStep />}
+    </Suspense>
+  );
+
   return (
     <div className={`layout-container ${styles.shellFrame}`}>
       <ChangeHistoryLogger />
-      <div className={styles.topActions}>
-        <button
-          onClick={() => setIsCharacterManagerOpen(true)}
-          className={styles.savesFab}
-          title="Gerenciar Personagens"
-        >
-          <span className={styles.savesFabIcon}>📚</span>
-          Personagens
-        </button>
-        <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
-        <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
-      </div>
-      {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
+
       {isMobile ? (
-        <Suspense fallback={null}><AccordionWizard onReset={handleFullReset} /></Suspense>
+        <>
+          <MobileTopBar
+            onOpenManager={() => setIsCharacterManagerOpen(true)}
+            onUndo={undo}
+            onRedo={redo}
+            canUndo={canUndo}
+            canRedo={canRedo}
+          />
+          <div className={mobileStyles.mobileContent}>
+            {renderStepContent()}
+          </div>
+          <MobileBottomNav />
+        </>
       ) : (
-        <AnimatePresence>
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
-              {currentStep === 0 && <ClassSelectionStep languagesData={languagesData} />}
-              {currentStep === 1 && <BackgroundStep />}
-              {currentStep === 2 && <SpeciesStep languagesData={languagesData} />}
-              {currentStep === 3 && <AttributesStepWrapper />}
-              {currentStep === 4 && <EquipmentStepWrapper />}
-              {currentStep === 5 && <CharacterSheetStep />}
-            </Suspense>
-          </motion.div>
-        </AnimatePresence>
+        <>
+          <div className={styles.topActions}>
+            <button
+              onClick={() => setIsCharacterManagerOpen(true)}
+              className={styles.savesFab}
+              title="Gerenciar Personagens"
+            >
+              <span className={styles.savesFabIcon}>📚</span>
+              Personagens
+            </button>
+            <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
+            <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
+          </div>
+          {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
+          <AnimatePresence>
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+              {renderStepContent()}
+            </motion.div>
+          </AnimatePresence>
+        </>
       )}
 
       {isPortraitModalOpen && (
