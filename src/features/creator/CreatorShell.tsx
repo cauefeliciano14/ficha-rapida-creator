@@ -34,7 +34,7 @@ export function CreatorShell() {
     derivedSheet,
     playState,
     setPlayState,
-    handleResetCharacter,
+    
     validationResult,
     activeCharacterId,
     undo,
