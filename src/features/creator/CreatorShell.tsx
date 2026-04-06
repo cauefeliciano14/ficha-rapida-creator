@@ -71,12 +71,33 @@ export function CreatorShell() {
   }, [currentStep, goToStep]);
 
   const swipeRef = useRef<{ startX: number; startY: number }>({ startX: 0, startY: 0 });
+  const [swipeHint, setSwipeHint] = useState<'left' | 'right' | null>(null);
+  const [swipeProgress, setSwipeProgress] = useState(0);
 
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     swipeRef.current = { startX: e.touches[0].clientX, startY: e.touches[0].clientY };
+    setSwipeHint(null);
+    setSwipeProgress(0);
   }, []);
 
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    const dx = e.touches[0].clientX - swipeRef.current.startX;
+    const dy = e.touches[0].clientY - swipeRef.current.startY;
+    if (Math.abs(dx) < 20 || Math.abs(dy) > Math.abs(dx) * 0.7) {
+      setSwipeHint(null);
+      setSwipeProgress(0);
+      return;
+    }
+    const dir = dx < 0 ? 'left' : 'right';
+    const canSwipe = dir === 'left' ? currentStep < 5 : currentStep > 0;
+    if (!canSwipe) { setSwipeHint(null); setSwipeProgress(0); return; }
+    setSwipeHint(dir);
+    setSwipeProgress(Math.min(Math.abs(dx) / 120, 1));
+  }, [currentStep]);
+
   const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    setSwipeHint(null);
+    setSwipeProgress(0);
     const dx = e.changedTouches[0].clientX - swipeRef.current.startX;
     const dy = e.changedTouches[0].clientY - swipeRef.current.startY;
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
