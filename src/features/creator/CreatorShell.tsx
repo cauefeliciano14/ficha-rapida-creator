@@ -162,8 +162,22 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <div className={mobileStyles.mobileContent}>
-            {renderStepContent()}
+          <div
+            className={mobileStyles.mobileContent}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: slideDirection * 60 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: slideDirection * -60 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              >
+                {renderStepContent()}
+              </motion.div>
+            </AnimatePresence>
           </div>
           <MobileBottomNav />
         </>
