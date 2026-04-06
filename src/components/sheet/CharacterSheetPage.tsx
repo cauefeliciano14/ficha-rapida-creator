@@ -186,6 +186,31 @@ export function CharacterSheetPage({
   /* ── Advantage mode ── */
   const [advantageMode, setAdvantageMode] = useState<AdvantageMode>('normal');
 
+  /* ── Dice toast state (D&D Beyond style floating roll result) ── */
+  const [diceToast, setDiceToast] = useState<{
+    result: DiceRollResult;
+    label: string;
+    onReroll?: () => void;
+  } | null>(null);
+  const [diceToastExiting, setDiceToastExiting] = useState(false);
+  const diceToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showDiceToast = useCallback((result: DiceRollResult, label: string, onReroll?: () => void) => {
+    if (diceToastTimer.current) clearTimeout(diceToastTimer.current);
+    setDiceToastExiting(false);
+    setDiceToast({ result, label, onReroll });
+    diceToastTimer.current = setTimeout(() => {
+      setDiceToastExiting(true);
+      setTimeout(() => { setDiceToast(null); setDiceToastExiting(false); }, 250);
+    }, 5000);
+  }, []);
+
+  const dismissDiceToast = useCallback(() => {
+    if (diceToastTimer.current) clearTimeout(diceToastTimer.current);
+    setDiceToastExiting(true);
+    setTimeout(() => { setDiceToast(null); setDiceToastExiting(false); }, 250);
+  }, []);
+
   /* ── XP state ── */
   const [xpInput, setXpInput] = useState('');
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -365,13 +390,25 @@ export function CharacterSheetPage({
     const result = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
     setSidebar({ type: 'skill', skill, result });
     addToHistory(result);
-  }, [advantageMode, addToHistory, setSidebar]);
+    showDiceToast(result, `${skill.label} (${abbr})`, () => {
+      const reroll = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
+      setSidebar({ type: 'skill', skill, result: reroll });
+      addToHistory(reroll);
+      showDiceToast(reroll, `${skill.label} (${abbr})`);
+    });
+  }, [advantageMode, addToHistory, setSidebar, showDiceToast]);
 
   const handleSaveClick = useCallback((save: DerivedSavingThrow) => {
     const result = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
     setSidebar({ type: 'save', save, result });
     addToHistory(result);
-  }, [advantageMode, addToHistory, setSidebar]);
+    showDiceToast(result, `Resistência (${save.label})`, () => {
+      const reroll = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
+      setSidebar({ type: 'save', save, result: reroll });
+      addToHistory(reroll);
+      showDiceToast(reroll, `Resistência (${save.label})`);
+    });
+  }, [advantageMode, addToHistory, setSidebar, showDiceToast]);
 
   const handleAbilityClick = useCallback((key: string, label: string, score: number, modifier: number) => {
     setSidebar({ type: 'ability', key, label, score, modifier });
@@ -384,7 +421,8 @@ export function CharacterSheetPage({
     setSidebar({ type: 'attack', attack, hitResult, damageResult });
     addToHistory(hitResult);
     addToHistory(damageResult);
-  }, [advantageMode, addToHistory, setSidebar]);
+    showDiceToast(hitResult, `${attack.weaponName} (Ataque)`);
+  }, [advantageMode, addToHistory, setSidebar, showDiceToast]);
 
   /* ── Sidebar reroll helpers ── */
   const rerollSkill = () => {
@@ -393,6 +431,7 @@ export function CharacterSheetPage({
       const result = rollD20Check(sidebar.skill.modifier, `${sidebar.skill.label} (${abbr})`, 'check', advantageMode);
       setSidebar({ ...sidebar, result });
       addToHistory(result);
+      showDiceToast(result, `${sidebar.skill.label} (${abbr})`);
     }
   };
 
@@ -401,6 +440,7 @@ export function CharacterSheetPage({
       const result = rollD20Check(sidebar.save.modifier, `Teste de Resistência (${sidebar.save.label})`, 'save', advantageMode);
       setSidebar({ ...sidebar, result });
       addToHistory(result);
+      showDiceToast(result, `Resistência (${sidebar.save.label})`);
     }
   };
 
@@ -409,6 +449,7 @@ export function CharacterSheetPage({
       const hitResult = rollD20Check(sidebar.attack.attackBonus, sidebar.attack.weaponName, 'attack', advantageMode);
       setSidebar({ ...sidebar, hitResult });
       addToHistory(hitResult);
+      showDiceToast(hitResult, `${sidebar.attack.weaponName} (Ataque)`);
     }
   };
 
@@ -419,6 +460,7 @@ export function CharacterSheetPage({
       const damageResult = rollDamage(dmgFormula, atk.weaponName);
       setSidebar({ ...sidebar, damageResult });
       addToHistory(damageResult);
+      showDiceToast(damageResult, `${atk.weaponName} (Dano)`);
     }
   };
 
@@ -428,6 +470,7 @@ export function CharacterSheetPage({
     const fakeSkill: DerivedSkill = { label, attribute: sidebar?.type === 'ability' ? sidebar.key : '', modifier, proficient: false, expertise: false, halfProficient: false, baseAbilityMod: modifier, proficiencyValue: 0 };
     pushSidebar({ type: 'skill', skill: fakeSkill, result });
     addToHistory(result);
+    showDiceToast(result, label);
   };
 
   const handleAbilitySaveRoll = (modifier: number) => {
@@ -436,6 +479,7 @@ export function CharacterSheetPage({
       const fakeSave: DerivedSavingThrow = { label: sidebar.label, attribute: sidebar.key, modifier, proficient: false };
       pushSidebar({ type: 'save', save: fakeSave, result });
       addToHistory(result);
+      showDiceToast(result, `Resistência (${sidebar.label})`);
     }
   };
 
@@ -849,23 +893,106 @@ export function CharacterSheetPage({
         </div>
       </div>
 
-      {/* ===== MAIN 3-COLUMN GRID (D&D Beyond layout) ===== */}
-      <div
-        className={`${styles.mainGrid} ${isDesktopWide && sidebar !== null ? styles.mainGridWithSidebar : ''}`}
-      >
+      {/* ===== STATS BAND (full-width: Abilities + PB/Speed + Heroic/HP) ===== */}
+      <div className={styles.statsBand}>
+        {/* 6 ability scores in horizontal row */}
+        <div className={styles.statsBandAbilities}>
+          <AbilityScoreCards
+            finalAttributes={derivedSheet.finalAttributes}
+            modifiers={derivedSheet.modifiers}
+            attributeBreakdowns={derivedSheet.attributeBreakdowns}
+            onAbilityClick={handleAbilityClick}
+            horizontal
+          />
+        </div>
 
-        {/* ── Col 1: Ability Scores + Saves / Senses / Proficiencies ── */}
-        <div className={styles.colLeft}>
-          {/* Ability Score Cards — moved from statsRow */}
-          <div className={styles.abilitiesBlock}>
-            <AbilityScoreCards
-              finalAttributes={derivedSheet.finalAttributes}
-              modifiers={derivedSheet.modifiers}
-              attributeBreakdowns={derivedSheet.attributeBreakdowns}
-              onAbilityClick={handleAbilityClick}
-            />
+        {/* PB + Speed + Heroic Inspiration + HP (aligns with col3) */}
+        <div className={styles.statsBandRight}>
+          {/* Proficiency Bonus */}
+          <div
+            className={`${styles.statBox} ${styles.statBoxClickable}`}
+            onClick={() => setSidebar({ type: 'proficiency' })}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
+          >
+            <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
+            <div className={styles.statLabel}>BÔNUS PROF.</div>
           </div>
 
+          {/* Walking Speed */}
+          <div
+            className={`${styles.statBox} ${styles.statBoxClickable}`}
+            onClick={() => setSidebar({ type: 'speed' })}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
+          >
+            <div className={styles.statValueInline}>
+              {derivedSheet.speed}<span className={styles.statUnit}>m</span>
+            </div>
+            <div className={styles.statLabel}>VELOCIDADE</div>
+          </div>
+
+          {/* Heroic Inspiration */}
+          <div
+            className={`${styles.heroicBox} ${playState.heroicInspiration ? styles.heroicBoxActive : ''}`}
+            onClick={toggleInspiration}
+            role="checkbox"
+            aria-checked={playState.heroicInspiration}
+            aria-label="Inspiração Heróica"
+            tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
+          >
+            {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
+            <span className={styles.heroicLabel}>INSP.<br />HERÓICA</span>
+          </div>
+
+          {/* HP Panel */}
+          <div className={styles.hpPanel}>
+            <div
+              className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
+              style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column' }}
+            >
+              <div className={styles.hpHeader}>
+                <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
+                <div className={styles.hpHeaderBtns}>
+                  <input
+                    type="number"
+                    min="0"
+                    value={hpInput}
+                    onChange={e => setHpInput(e.target.value)}
+                    className={styles.hpInput}
+                  />
+                  <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
+                  <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
+                  <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
+                </div>
+              </div>
+              <div className={styles.hpLabels}>
+                <span className={styles.hpLabel}>ATUAL</span>
+                <span className={styles.hpLabel}>MÁXIMO</span>
+                <span className={styles.hpLabel}>TEMP</span>
+              </div>
+              <div className={styles.hpValues}>
+                <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
+                <span className={styles.hpSeparator}>/</span>
+                <span className={styles.hpMax}>{effectiveMaxHP}</span>
+                <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
+              </div>
+              <div className={styles.hpBar}>
+                <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== MAIN 3-COLUMN GRID (D&D Beyond layout) ===== */}
+      <div className={styles.mainGrid}>
+
+        {/* ── Col 1: Saves / Senses / Proficiencies ── */}
+        <div className={styles.colLeft}>
           <CollapsibleSection title="Testes de Resistência" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
               <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
@@ -934,89 +1061,8 @@ export function CharacterSheetPage({
           </div>
         </div>
 
-        {/* ── Col 3: Stats Row + Combat Row + Tabs ── */}
+        {/* ── Col 3: Combat Row + Tabs ── */}
         <div className={styles.colRight}>
-
-          {/* Stats Row: PB + Speed + Heroic + HP — scoped to col3 */}
-          <div className={styles.statsRow}>
-            {/* Proficiency Bonus */}
-            <div
-              className={`${styles.statBox} ${styles.statBoxClickable}`}
-              onClick={() => setSidebar({ type: 'proficiency' })}
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
-            >
-              <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
-              <div className={styles.statLabel}>BÔNUS PROF.</div>
-            </div>
-
-            {/* Walking Speed */}
-            <div
-              className={`${styles.statBox} ${styles.statBoxClickable}`}
-              onClick={() => setSidebar({ type: 'speed' })}
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
-            >
-              <div className={styles.statValueInline}>
-                {derivedSheet.speed}<span className={styles.statUnit}>m</span>
-              </div>
-              <div className={styles.statLabel}>VELOCIDADE</div>
-            </div>
-
-            {/* Heroic Inspiration */}
-            <div
-              className={`${styles.heroicBox} ${playState.heroicInspiration ? styles.heroicBoxActive : ''}`}
-              onClick={toggleInspiration}
-              role="checkbox"
-              aria-checked={playState.heroicInspiration}
-              aria-label="Inspiração Heróica"
-              tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
-            >
-              {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
-              <span className={styles.heroicLabel}>INSP.<br />HERÓICA</span>
-            </div>
-
-            {/* HP Panel */}
-            <div className={styles.hpPanel}>
-              <div
-                className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
-                style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column' }}
-              >
-                <div className={styles.hpHeader}>
-                  <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
-                  <div className={styles.hpHeaderBtns}>
-                    <input
-                      type="number"
-                      min="0"
-                      value={hpInput}
-                      onChange={e => setHpInput(e.target.value)}
-                      className={styles.hpInput}
-                    />
-                    <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
-                    <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
-                    <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
-                  </div>
-                </div>
-                <div className={styles.hpLabels}>
-                  <span className={styles.hpLabel}>ATUAL</span>
-                  <span className={styles.hpLabel}>MÁXIMO</span>
-                  <span className={styles.hpLabel}>TEMP</span>
-                </div>
-                <div className={styles.hpValues}>
-                  <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
-                  <span className={styles.hpSeparator}>/</span>
-                  <span className={styles.hpMax}>{effectiveMaxHP}</span>
-                  <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
-                </div>
-                <div className={styles.hpBar}>
-                  <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Short Rest Overlay */}
           {shortRestOpen && (
@@ -1145,8 +1191,11 @@ export function CharacterSheetPage({
           </div>
         </div>
 
-        {/* ── Col 4: Sidebar inline (desktop >= 1280px) ── */}
-        {isDesktopWide && sidebar !== null && (
+      </div>
+
+      {/* ===== INFO PANEL (fixed top-right overlay) ===== */}
+      {sidebar !== null && (
+        isDesktopWide ? (
           <div className={styles.colSidebar}>
             <div className={styles.colSidebarHeader}>
               <div>
@@ -1162,22 +1211,50 @@ export function CharacterSheetPage({
             </div>
             {renderSidebarContent()}
           </div>
-        )}
+        ) : (
+          <SheetSidebar
+            isOpen
+            onClose={closeSidebar}
+            onBack={popSidebar}
+            canGoBack={sidebarStack.length > 1}
+            title={sidebarTitle}
+            subtitle={sidebarSubtitle}
+          >
+            {renderSidebarContent()}
+          </SheetSidebar>
+        )
+      )}
 
-      </div>
-
-      {/* ===== SIDEBAR OVERLAY (< 1280px) ===== */}
-      {!isDesktopWide && (
-        <SheetSidebar
-          isOpen={sidebar !== null}
-          onClose={closeSidebar}
-          onBack={popSidebar}
-          canGoBack={sidebarStack.length > 1}
-          title={sidebarTitle}
-          subtitle={sidebarSubtitle}
-        >
-          {renderSidebarContent()}
-        </SheetSidebar>
+      {/* ===== DICE RESULT TOAST (D&D Beyond style) ===== */}
+      {diceToast && (
+        <div className={`${styles.diceToast} ${diceToastExiting ? styles.diceToastExiting : ''}`}>
+          <div className={styles.diceToastHeader}>
+            <span className={styles.diceToastLabel}>{diceToast.label}</span>
+            <button onClick={dismissDiceToast} className={styles.diceToastClose} aria-label="Fechar">✕</button>
+          </div>
+          <div className={styles.diceToastBody}>
+            <div className={
+              diceToast.result.isCritical ? styles.diceToastD20Crit
+                : diceToast.result.isFumble ? styles.diceToastD20Fumble
+                  : styles.diceToastD20
+            }>
+              {diceToast.result.rolls[0]}
+            </div>
+            <div className={styles.diceToastInfo}>
+              <div className={styles.diceToastTotal}>Total: {diceToast.result.total}</div>
+              <div className={styles.diceToastFormula}>{diceToast.result.formula}</div>
+              {diceToast.result.isCritical && <div className={styles.diceToastCritBadge}>Acerto Crítico!</div>}
+              {diceToast.result.isFumble && <div className={styles.diceToastFumbleBadge}>Falha Crítica!</div>}
+            </div>
+          </div>
+          {diceToast.onReroll && (
+            <div className={styles.diceToastActions}>
+              <button onClick={diceToast.onReroll} className={styles.diceToastReroll}>
+                🎲 Rolar Novamente
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
       {/* ===== MODALS ===== */}

@@ -34,8 +34,8 @@ interface CharacterContextValue {
   activeCharacterId: string | null;
   character: Character;
   setCharacter: React.Dispatch<React.SetStateAction<Character>>;
-  selectedBackground: any;
-  setSelectedBackground: (bg: any) => void;
+  selectedBackground: Selection | null;
+  setSelectedBackground: (bg: Selection | null) => void;
   attrChoiceMode: '' | 'triple' | 'double';
   setAttrChoiceMode: (mode: '' | 'triple' | 'double') => void;
   attrPlus1: string;
@@ -52,7 +52,7 @@ interface CharacterContextValue {
   allSelections: string[];
   stepSelections: Record<number, string>;
   handleSelect: <K extends keyof Character>(field: K, value: Character[K]) => void;
-  handleSelectSpecies: (sp: any) => void;
+  handleSelectSpecies: (sp: Selection | null) => void;
   handleChoiceChange: (featureId: string, choiceName: string) => void;
   handleTalentSelectionChange: (talentName: string, selections: Record<string, string>) => void;
   handleResetCharacter: () => void;
@@ -82,7 +82,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const [character, setCharacter] = useState<Character>(savedState?.character ?? DEFAULT_CHARACTER);
-  const [selectedBackground, setSelectedBackground] = useState<any>(savedState?.auxiliaryState?.selectedBackground ?? null);
+  const [selectedBackground, setSelectedBackground] = useState<Selection | null>(savedState?.auxiliaryState?.selectedBackground ?? null);
   const [attrChoiceMode, setAttrChoiceMode] = useState<'' | 'triple' | 'double'>(savedState?.auxiliaryState?.attrChoiceMode ?? '');
   const [attrPlus1, setAttrPlus1] = useState(savedState?.auxiliaryState?.attrPlus1 ?? '');
   const [attrPlus2, setAttrPlus2] = useState(savedState?.auxiliaryState?.attrPlus2 ?? '');
@@ -214,13 +214,13 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         classOption: character.equipment.classOption,
         backgroundOption: character.equipment.backgroundOption,
       },
-      inventory: character.equipment.inventory.map((item: any) => ({
-        name: item.name as string,
-        quantity: item.quantity as number | undefined,
-        source: item.source as string | undefined,
-        isStartingGear: item.isStartingGear as boolean | undefined,
+      inventory: character.equipment.inventory.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        source: item.source,
+        isStartingGear: item.isStartingGear,
       })),
-      inventoryWeapons: character.equipment.inventory.map((item: any) => item.name as string),
+      inventoryWeapons: character.equipment.inventory.map(item => item.name),
       spellSelections: {
         cantrips: character.spells.learnedCantrips,
         prepared: character.spells.preparedSpells,
@@ -299,7 +299,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const handleSelectSpecies = useCallback((sp: any) => {
+  const handleSelectSpecies = useCallback((sp: Selection | null) => {
     setCharacter(prev => {
       const prevId = prev.species?.id;
       const newChoices = { ...prev.choices };
@@ -417,39 +417,41 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [activeCharacterId, character.characterClass, updateActiveCharacterId]);
 
   // -------------------------------------------------------------------------
-  // Auto-Save character to multi-character storage
+  // Auto-Save character to multi-character storage (debounced)
   // -------------------------------------------------------------------------
   useEffect(() => {
-    // We only auto-save if an ID is active
     if (!activeCharacterId) return;
 
-    // Throttle slightly if needed, but for now we'll just save on every typical character state change
-    const name = character.name || 'Herói sem Nome';
-    const classNameStr = character.characterClass?.name || 'Aventureiro';
-    const speciesNameStr = character.species?.name || 'Convidado';
+    const timer = setTimeout(() => {
+      const name = character.name || 'Herói sem Nome';
+      const classNameStr = character.characterClass?.name || 'Aventureiro';
+      const speciesNameStr = character.species?.name || 'Convidado';
 
-    const saved: SavedCharacter = {
-      id: activeCharacterId,
-      name,
-      className: classNameStr,
-      speciesName: speciesNameStr,
-      level: characterLevel,
-      portrait: character.portrait,
-      savedAt: Date.now(),
-      creationSnapshot: {
-        character,
-        currentStep: 0, // Currently step is pushed from WizardContext, but we fallback
-        auxiliaryState: {
-          selectedBackground,
-          attrChoiceMode,
-          attrPlus1,
-          attrPlus2,
-        }
-      },
-      playState: playState
-    };
+      const saved: SavedCharacter = {
+        id: activeCharacterId,
+        name,
+        className: classNameStr,
+        speciesName: speciesNameStr,
+        level: characterLevel,
+        portrait: character.portrait,
+        savedAt: Date.now(),
+        creationSnapshot: {
+          character,
+          currentStep: 0,
+          auxiliaryState: {
+            selectedBackground,
+            attrChoiceMode,
+            attrPlus1,
+            attrPlus2,
+          }
+        },
+        playState: playState
+      };
 
-    saveCharacter(saved);
+      saveCharacter(saved);
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, [
     activeCharacterId,
     character,

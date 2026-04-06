@@ -10,6 +10,7 @@ export const ACTIVE_CHARACTER_KEY = 'dnd_active_character_id';
 export interface CreationStateSnapshot {
   character: Character;
   currentStep: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   auxiliaryState?: any;
   shellState?: {
     sidebarCollapsed?: boolean;
@@ -70,7 +71,7 @@ export function loadSavedCharacter(id: string): SavedCharacter | null {
   }
 }
 
-export function saveCharacter(saved: SavedCharacter): void {
+export function saveCharacter(saved: SavedCharacter): boolean {
   try {
     localStorage.setItem(`dnd_char_${saved.id}`, JSON.stringify(saved));
     const list = listSavedCharacters();
@@ -87,8 +88,10 @@ export function saveCharacter(saved: SavedCharacter): void {
     if (idx >= 0) list[idx] = meta;
     else list.push(meta);
     localStorage.setItem(CHARACTERS_LIST_KEY, JSON.stringify(list));
-  } catch {
-    // storage quota exceeded — ignore
+    return true;
+  } catch (err) {
+    console.warn('[persistence] Failed to save character — storage may be full:', err);
+    return false;
   }
 }
 

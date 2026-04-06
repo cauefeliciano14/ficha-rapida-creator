@@ -31,7 +31,7 @@ export function ManageCharacterModal({ name, portrait, alignment, onSave, onClos
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <span className={styles.title}>Gerenciar Personagem</span>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Fechar">✕</button>
         </div>
 
         {/* Name */}

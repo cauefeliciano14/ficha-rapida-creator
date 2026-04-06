@@ -151,7 +151,7 @@ export function InventoryTab({
 
   const handleMarketplaceAdd = (item: any) => {
     const newItem: SheetItem = {
-      id: `si-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      id: crypto.randomUUID(),
       name: item.name,
       quantity: 1,
       notes: item.isMagic ? item.rarity : (item.type ?? undefined),

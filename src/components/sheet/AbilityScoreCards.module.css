@@ -4,6 +4,12 @@
   gap: 4px;
 }
 
+.gridHorizontal {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
 .box {
   position: relative;
   min-width: 0;
@@ -67,6 +73,9 @@
 @media (max-width: 780px) {
   .grid {
     grid-template-columns: 1fr 1fr 1fr;
+  }
+  .gridHorizontal {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

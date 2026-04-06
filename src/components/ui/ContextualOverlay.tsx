@@ -34,7 +34,7 @@ export function ContextualOverlay({ anchorRect, width = 360, children, title, on
       {(title || onClose) && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '10px' }}>
           <div style={{ color: '#f97316', fontWeight: 800, fontSize: '0.95rem', textTransform: 'uppercase' }}>{title}</div>
-          {onClose ? <button onClick={onClose} style={{ background: 'transparent', color: '#94a3b8', padding: 0 }}>✕</button> : null}
+          {onClose ? <button onClick={onClose} aria-label="Fechar" style={{ background: 'transparent', color: '#94a3b8', padding: 0 }}>✕</button> : null}
         </div>
       )}
       {children}

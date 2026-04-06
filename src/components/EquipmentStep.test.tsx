@@ -122,7 +122,7 @@ function Harness({
       <div data-testid="shield-equipped">{String(character.equipment.hasShieldEquipped)}</div>
       <EquipmentStep
         character={character}
-        selectedBackground={{ id: 'soldado', name: 'Soldado' }}
+        selectedBackground={{ id: 'soldado', name: 'Soldado', description: '' }}
         updateEquipment={updateEquipment}
         updateSpells={updateSpells}
         derivedSheet={{ ...baseDerivedSheet, armorClass }}

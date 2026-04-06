@@ -50,7 +50,7 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Gerenciador de Personagens</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Fechar">✕</button>
         </div>
 
         <div className={styles.actionBar}>

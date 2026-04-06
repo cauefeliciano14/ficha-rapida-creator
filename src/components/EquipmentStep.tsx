@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { classStartingSpells } from '../data/spellsData';
 import { isCaster as engineIsCaster } from '../rules/calculators/spells';
 import type { DerivedSheet } from '../rules/types/DerivedSheet';
+import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
 import { getArmorByName } from '../rules/data/armorRules';
 import { sanitizeEquipmentState } from '../rules/utils/equipment';
@@ -16,15 +17,14 @@ import { SpellCatalog } from './equipment/SpellCatalog';
 import { SkeletonLoader } from './ui/SkeletonLoader';
 
 interface EquipmentStepProps {
-  character: any;
-  selectedBackground: any;
-  updateEquipment: (updater: (prev: any) => any) => void;
-  updateSpells: (updater: (prev: any) => any) => void;
+  character: Character;
+  selectedBackground: Selection | null;
+  updateEquipment: (updater: (prev: Character['equipment']) => Character['equipment']) => void;
+  updateSpells: (updater: (prev: Character['spells']) => Character['spells']) => void;
   derivedSheet: DerivedSheet;
 }
 
 export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selectedBackground, updateEquipment, updateSpells, derivedSheet }) => {
-  void derivedSheet;
   const classId = character.characterClass?.id || '';
   const bgId = selectedBackground?.id || '';
   const spellInfo = classStartingSpells[classId];
@@ -73,7 +73,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   // Pre-select starting spells when entering the step (each array checked independently)
   useEffect(() => {
     if (!isCaster || !spellInfo) return;
-    updateSpells((prev: any) => ({
+    updateSpells(prev => ({
       ...prev,
       learnedCantrips: prev.learnedCantrips.length === 0 && spellInfo.cantrips.length > 0
         ? spellInfo.cantrips : prev.learnedCantrips,
@@ -87,7 +87,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
     const classEq = getEquipmentForClass(classId);
     const bgEq = getEquipmentForBackground(bgId);
 
-    updateEquipment((prev: any) => {
+    updateEquipment(prev => {
       const draft = { ...prev, inventory: [...prev.inventory], currency: { ...prev.currency } };
 
       // Add class equipment
@@ -98,7 +98,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
           const choiceKey = `class-${itemName}`;
           const resolvedName = subChoices[choiceKey] || itemName;
           draft.inventory.push({
-            id: `start-${Date.now()}-${Math.random()}`,
+            id: crypto.randomUUID(),
             name: resolvedName,
             quantity: 1,
             isStartingGear: true,
@@ -116,7 +116,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
           const choiceKey = `bg-${itemName}`;
           const resolvedName = subChoices[choiceKey] || itemName;
           draft.inventory.push({
-            id: `start-${Date.now()}-${Math.random()}`,
+            id: crypto.randomUUID(),
             name: resolvedName,
             quantity: 1,
             isStartingGear: true,
@@ -157,11 +157,11 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
     setOpenAccordions(prev => ({ ...prev, starting: false, inventory: true }));
   };
 
-  const handleAddItem = (item: any) => {
-    updateEquipment((prev: any) => ({
+  const handleAddItem = (item: CatalogItemBase) => {
+    updateEquipment(prev => ({
       ...prev,
       inventory: [...prev.inventory, {
-        id: `item-${Date.now()}-${Math.random()}`,
+        id: crypto.randomUUID(),
         name: item.name,
         quantity: 1,
         itemBase: item,
@@ -170,9 +170,9 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   };
 
   const handleRemoveItem = (id: string) => {
-    updateEquipment((prev: any) => {
-      const removedItem = prev.inventory.find((i: any) => i.id === id);
-      const nextInventory = prev.inventory.filter((i: any) => i.id !== id);
+    updateEquipment(prev => {
+      const removedItem = prev.inventory.find(i => i.id === id);
+      const nextInventory = prev.inventory.filter(i => i.id !== id);
       const nextEquipment = sanitizeEquipmentState({ ...prev, inventory: nextInventory });
       const removedArmor = removedItem ? getArmorByName(removedItem.name) : null;
 
@@ -189,11 +189,11 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   };
 
   const handleChangeQuantity = (id: string, delta: number) => {
-    updateEquipment((prev: any) => {
-      const targetItem = prev.inventory.find((i: any) => i.id === id);
+    updateEquipment(prev => {
+      const targetItem = prev.inventory.find(i => i.id === id);
       const nextInventory = prev.inventory
-        .map((i: any) => i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i)
-        .filter((i: any) => i.quantity > 0);
+        .map(i => i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i)
+        .filter(i => i.quantity > 0);
 
       const nextEquipment = sanitizeEquipmentState({ ...prev, inventory: nextInventory });
       const removedArmor = targetItem && targetItem.quantity + delta <= 0 ? getArmorByName(targetItem.name) : null;
@@ -211,14 +211,14 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   };
 
   const handleCurrencyChange = (coin: string, delta: number) => {
-    updateEquipment((prev: any) => ({
+    updateEquipment(prev => ({
       ...prev,
-      currency: { ...prev.currency, [coin]: Math.max(0, prev.currency[coin] + delta) },
+      currency: { ...prev.currency, [coin]: Math.max(0, (prev.currency as Record<string, number>)[coin] + delta) },
     }));
   };
 
   const handleCurrencySet = (coin: string, value: number) => {
-    updateEquipment((prev: any) => ({
+    updateEquipment(prev => ({
       ...prev,
       currency: { ...prev.currency, [coin]: value },
     }));
@@ -226,30 +226,30 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
 
   // --- Spell handlers ---
   const handleLearnCantrip = (name: string) => {
-    updateSpells((prev: any) => ({
+    updateSpells(prev => ({
       ...prev,
       learnedCantrips: [...prev.learnedCantrips, name],
     }));
   };
 
   const handleRemoveCantrip = (name: string) => {
-    updateSpells((prev: any) => ({
+    updateSpells(prev => ({
       ...prev,
-      learnedCantrips: prev.learnedCantrips.filter((c: string) => c !== name),
+      learnedCantrips: prev.learnedCantrips.filter(c => c !== name),
     }));
   };
 
   const handlePrepareSpell = (name: string) => {
-    updateSpells((prev: any) => ({
+    updateSpells(prev => ({
       ...prev,
       preparedSpells: [...prev.preparedSpells, name],
     }));
   };
 
   const handleRemoveSpell = (name: string) => {
-    updateSpells((prev: any) => ({
+    updateSpells(prev => ({
       ...prev,
-      preparedSpells: prev.preparedSpells.filter((s: string) => s !== name),
+      preparedSpells: prev.preparedSpells.filter(s => s !== name),
     }));
   };
 

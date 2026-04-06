@@ -1,4 +1,4 @@
-import { useEffect, useId, useCallback } from 'react';
+import { useEffect, useId, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
@@ -14,20 +14,51 @@ export interface ModalProps {
   children: ReactNode;
 }
 
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
 export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   const titleId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') { onClose(); return; }
+
+      // Focus trap: cycle Tab within the dialog
+      if (e.key === 'Tab' && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     },
     [onClose],
   );
 
   useEffect(() => {
     if (!isOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+
+    // Auto-focus the first focusable element inside the dialog
+    requestAnimationFrame(() => {
+      const first = panelRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+      first?.focus();
+    });
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // Restore focus when modal closes
+      previousFocusRef.current?.focus();
+    };
   }, [isOpen, handleKeyDown]);
 
   if (!isOpen) return null;
@@ -39,6 +70,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
 
       {/* Dialog panel */}
       <div
+        ref={panelRef}
         className={styles.panel}
         role="dialog"
         aria-modal="true"

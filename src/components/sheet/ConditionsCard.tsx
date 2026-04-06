@@ -38,7 +38,7 @@ export function ConditionsCard({
           <div className={`${styles.pill} ${styles.concentrationPill}`} title="Concentração Ativa">
             <span className={styles.pillText}>Concentração: {concentratingOn}</span>
             {onStopConcentrating && (
-              <button onClick={onStopConcentrating} className={styles.removeBtn}>✕</button>
+              <button onClick={onStopConcentrating} className={styles.removeBtn} aria-label="Parar concentração">✕</button>
             )}
           </div>
         )}

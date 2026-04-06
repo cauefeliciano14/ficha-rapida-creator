@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 import css from './equipment.module.css';
 import { getArmorByName } from '../../rules/data/armorRules';
-
-interface InventoryItem {
-  id: string;
-  name: string;
-  quantity: number;
-  isStartingGear?: boolean;
-  source?: string;
-  itemBase?: any;
-}
+import type { InventoryItem } from '../../types/character';
 
 interface InventorySectionProps {
   inventory: InventoryItem[];

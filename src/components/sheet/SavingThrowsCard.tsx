@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { DerivedSavingThrow } from '../../rules/types/DerivedSheet';
 import { signedMod } from '../../utils/format';
 import styles from './SavingThrowsCard.module.css';
@@ -7,7 +8,7 @@ interface SavingThrowsCardProps {
   onSaveClick?: (save: DerivedSavingThrow) => void;
 }
 
-export function SavingThrowsCard({ derivedSavingThrows, onSaveClick }: SavingThrowsCardProps) {
+export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingThrows, onSaveClick }: SavingThrowsCardProps) {
   return (
     <div className={styles.container}>
       <div className={styles.grid}>
@@ -33,4 +34,4 @@ export function SavingThrowsCard({ derivedSavingThrows, onSaveClick }: SavingThr
       </div>
     </div>
   );
-}
+});

@@ -4,6 +4,7 @@ import { CharacterProvider } from './context/CharacterContext';
 import { WizardProvider } from './context/WizardContext';
 import { ChangeHistoryProvider } from './context/ChangeHistoryContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import './index.css';
 
 const CreatorShell = lazy(() => import('./features/creator/CreatorShell').then(m => ({ default: m.CreatorShell })));
@@ -11,6 +12,7 @@ const CreatorShell = lazy(() => import('./features/creator/CreatorShell').then(m
 function App() {
   return (
     <ThemeProvider>
+      <ErrorBoundary>
         <ChangeHistoryProvider>
           <CharacterProvider>
             <WizardProvider>
@@ -22,6 +24,7 @@ function App() {
             </WizardProvider>
           </CharacterProvider>
         </ChangeHistoryProvider>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 }

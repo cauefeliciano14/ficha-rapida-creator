@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { signedMod } from '../../utils/format';
 import { CalculationTooltip } from '../ui/CalculationTooltip';
 import type { AttributeBreakdownRow } from '../../rules/types/DerivedSheet';
@@ -17,11 +18,12 @@ interface AbilityScoreCardsProps {
   modifiers: Record<string, number>;
   attributeBreakdowns?: Record<string, AttributeBreakdownRow[]>;
   onAbilityClick?: (key: string, label: string, score: number, modifier: number) => void;
+  horizontal?: boolean;
 }
 
-export function AbilityScoreCards({ finalAttributes, modifiers, attributeBreakdowns, onAbilityClick }: AbilityScoreCardsProps) {
+export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttributes, modifiers, attributeBreakdowns, onAbilityClick, horizontal }: AbilityScoreCardsProps) {
   return (
-    <div className={styles.grid}>
+    <div className={horizontal ? styles.gridHorizontal : styles.grid}>
       {ABILITY_LABELS.map(({ key, label }) => {
         const score = finalAttributes[key] ?? 8;
         const mod = modifiers[key] ?? 0;
@@ -58,4 +60,4 @@ export function AbilityScoreCards({ finalAttributes, modifiers, attributeBreakdo
       })}
     </div>
   );
-}
+});

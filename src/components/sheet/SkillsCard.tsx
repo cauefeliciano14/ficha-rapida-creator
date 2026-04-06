@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { DerivedSkill } from '../../rules/types/DerivedSheet';
 import { signedMod } from '../../utils/format';
 import { ATTR_ABBR } from '../../utils/attributeConstants';
@@ -33,7 +34,7 @@ interface SkillsCardProps {
   expertiseCount?: number;
 }
 
-export function SkillsCard({
+export const SkillsCard = memo(function SkillsCard({
   skills,
   onSkillClick,
   expertiseSkills = [],
@@ -111,4 +112,4 @@ export function SkillsCard({
       ))}
     </div>
   );
-}
+});

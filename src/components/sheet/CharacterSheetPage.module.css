@@ -26,6 +26,21 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes sidebarSlideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes diceToastIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes diceToastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(16px) scale(0.9); }
+}
+
 /* ── Page ── */
 .page {
   width: 100%;
@@ -149,13 +164,29 @@
   flex-wrap: wrap;
 }
 
-/* ── Stats Row (inside colRight/col3 — PB + speed + heroic + HP) ── */
-.statsRow {
-  display: flex;
-  gap: clamp(4px, 0.4vw, 6px);
-  align-items: stretch;
+/* ── Stats Band (full-width above mainGrid, aligned to same grid columns) ── */
+.statsBand {
+  display: grid;
+  grid-template-columns: 220px minmax(160px, 260px) 1fr;
+  gap: 6px;
+  max-width: 1400px;
+  margin: 4px auto 0;
   width: 100%;
-  flex-wrap: wrap;
+  animation: sheetFadeIn 0.4s ease-out 0.1s both;
+}
+
+.statsBandAbilities {
+  grid-column: 1 / 3;
+  display: flex;
+  gap: 4px;
+  align-items: stretch;
+}
+
+.statsBandRight {
+  grid-column: 3;
+  display: flex;
+  gap: 4px;
+  align-items: stretch;
 }
 
 /* ── Main 3-Column Grid (D&D Beyond layout) ── */
@@ -170,9 +201,7 @@
   width: 100%;
 }
 
-.mainGridWithSidebar {
-  grid-template-columns: 220px minmax(160px, 260px) 1fr 280px;
-}
+/* mainGridWithSidebar no longer needed — sidebar is fixed overlay */
 
 /* ── Col 1: Ability Scores / Saves / Senses / Proficiencies ── */
 .colLeft {
@@ -226,22 +255,26 @@
   min-width: 0;
 }
 
-/* ── Col 4: Sidebar inline ── */
+/* ── Info Panel (fixed top-right overlay) ── */
 .colSidebar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-width: 0;
-  background: var(--surface-panel-card);
-  border: 1px solid var(--border-theme);
-  border-radius: var(--radius-md);
-  padding: clamp(10px, 1.2vw, 16px);
-  box-shadow: var(--shadow-card);
-  position: sticky;
+  gap: 10px;
+  position: fixed;
   top: 12px;
+  right: 12px;
+  width: clamp(260px, 22vw, 320px);
   max-height: calc(100vh - 24px);
   overflow-y: auto;
-  z-index: 10;
+  background: rgba(16, 20, 28, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 80;
+  animation: sidebarSlideIn 0.25s ease-out;
 }
 
 .colSidebarHeader {
@@ -453,9 +486,190 @@
   margin: 12px 0;
 }
 
-/* ── Ability Scores block at top of left column ── */
-.abilitiesBlock {
-  padding: 0 0 4px;
+/* ── Dice Result Toast (D&D Beyond style floating roll) ── */
+.diceToast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: rgba(16, 20, 28, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 90;
+  animation: diceToastIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diceToastExiting {
+  animation: diceToastOut 0.25s ease-in forwards;
+}
+
+.diceToastHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.diceToastLabel {
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diceToastClose {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.diceToastClose:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-bright);
+}
+
+.diceToastBody {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.diceToastD20 {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-bright);
+  flex-shrink: 0;
+}
+
+.diceToastD20Crit {
+  composes: diceToastD20;
+  background: rgba(0, 199, 151, 0.1);
+  border-color: rgba(0, 199, 151, 0.3);
+  color: var(--color-hp-positive);
+  text-shadow: 0 0 12px rgba(0, 199, 151, 0.4);
+}
+
+.diceToastD20Fumble {
+  composes: diceToastD20;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--color-hp-negative);
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+}
+
+.diceToastInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.diceToastTotal {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+
+.diceToastFormula {
+  font-family: var(--font-code);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.diceToastCritBadge {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-hp-positive);
+  background: rgba(0, 199, 151, 0.12);
+  border: 1px solid rgba(0, 199, 151, 0.25);
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.diceToastFumbleBadge {
+  composes: diceToastCritBadge;
+  color: var(--color-hp-negative);
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.diceToastActions {
+  display: flex;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.diceToastReroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-family: var(--font-label);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.diceToastReroll:hover {
+  background: rgba(197, 49, 49, 0.12);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary-light);
+}
+
+/* ── Dice toast responsive ── */
+@media (max-width: 480px) {
+  .diceToast {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: 12px;
+  }
 }
 
 /* ── D&D Beyond themed panel box ── */
@@ -1109,11 +1323,21 @@
 
 /* ── Responsive: < 768px (single column, fully stacked) ── */
 @media (max-width: 767px) {
-  .mainGrid,
-  .mainGridWithSidebar {
+  .mainGrid {
     grid-template-columns: 1fr;
   }
-  .statsRow {
+  .colSidebar {
+    width: calc(100vw - 24px);
+    max-width: 340px;
+  }
+  .statsBand {
+    grid-template-columns: 1fr;
+  }
+  .statsBandAbilities {
+    grid-column: 1;
+  }
+  .statsBandRight {
+    grid-column: 1;
     flex-wrap: wrap;
   }
   .hpPanel {
@@ -1139,8 +1363,17 @@
 
 /* ── Responsive: 768–1023px (2 columns, skills hidden) ── */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .mainGrid,
-  .mainGridWithSidebar {
+  .statsBand {
+    grid-template-columns: minmax(160px, 1fr) minmax(280px, 2.5fr);
+  }
+  .statsBandAbilities {
+    grid-column: 1;
+  }
+  .statsBandRight {
+    grid-column: 2;
+    flex-wrap: wrap;
+  }
+  .mainGrid {
     grid-template-columns: minmax(160px, 1fr) minmax(280px, 2.5fr);
   }
   .colMid {
@@ -1157,11 +1390,11 @@
 
 /* ── Responsive: 1024–1199px (3 columns, compact) ── */
 @media (min-width: 1024px) and (max-width: 1199px) {
-  .mainGrid {
+  .statsBand {
     grid-template-columns: 200px minmax(150px, 240px) 1fr;
   }
-  .mainGridWithSidebar {
-    grid-template-columns: 200px minmax(150px, 220px) 1fr 260px;
+  .mainGrid {
+    grid-template-columns: 200px minmax(150px, 240px) 1fr;
   }
 }
 
@@ -1169,6 +1402,7 @@
 @media (prefers-reduced-motion: reduce) {
   .topBar,
   .mainGrid,
+  .statsBand,
   .colLeft > * {
     animation: none;
   }

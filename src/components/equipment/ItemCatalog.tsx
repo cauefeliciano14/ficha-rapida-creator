@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import type { CatalogItemBase } from '../../types/character';
 import weaponsData from '../../data/weapons.json';
 import armorData from '../../data/armor.json';
 import equipmentData from '../../data/equipment.json';
@@ -7,40 +8,51 @@ import magicItemsData from '../../data/magicItems.json';
 import css from './equipment.module.css';
 
 interface ItemCatalogProps {
-  onAddItem: (item: any) => void;
+  onAddItem: (item: CatalogItemBase) => void;
 }
+
+interface WeaponJson { name: string; damage: string; properties: string; mastery?: string; weight: string; cost: string }
+interface ArmorJson { name: string; ac: string; strength: string; stealth: string; weight: string; cost: string }
+interface GearJson { name?: string; type?: string; weight: string; cost: string }
+interface ToolJson { name: string; cost: string; weight: string; attribute?: string; useObject?: string; crafting?: string }
+interface MagicItemJson { name: string; category: string; rarity: string; attunement: string | null; description: string; baseItem: string | null }
 
 const CATEGORY_FILTERS = ['Todos', 'Arma', 'Armadura', 'Equipamento', 'Ferramenta', 'Poção', 'Anel', 'Bastão', 'Pergaminho', 'Cajado', 'Varinha', 'Maravilhoso'];
 
-const buildAllItems = (): any[] => {
-  const items: any[] = [];
+const buildAllItems = (): CatalogItemBase[] => {
+  const items: CatalogItemBase[] = [];
 
   // Weapons
-  const addWeapons = (arr: any[], type: string) => arr.forEach(w => items.push({ ...w, category: 'Arma', type, isMagic: false }));
+  const addWeapons = (arr: WeaponJson[], type: string) => arr.forEach(w => items.push({ ...w, category: 'Arma', type, isMagic: false }));
   addWeapons(weaponsData.simpleMelee, 'Arma Simples Corpo a Corpo');
   addWeapons(weaponsData.simpleRanged, 'Arma Simples à Distância');
   addWeapons(weaponsData.martialMelee, 'Arma Marcial Corpo a Corpo');
   addWeapons(weaponsData.martialRanged, 'Arma Marcial à Distância');
 
   // Armor
-  (armorData as any).lightArmor?.forEach((a: any) => items.push({ ...a, category: 'Armadura', type: 'Armadura Leve', isMagic: false }));
-  (armorData as any).mediumArmor?.forEach((a: any) => items.push({ ...a, category: 'Armadura', type: 'Armadura Média', isMagic: false }));
-  (armorData as any).heavyArmor?.forEach((a: any) => items.push({ ...a, category: 'Armadura', type: 'Armadura Pesada', isMagic: false }));
-  (armorData as any).shield?.forEach((a: any) => items.push({ ...a, category: 'Armadura', type: 'Escudo', isMagic: false }));
+  const addArmor = (arr: ArmorJson[] | undefined, type: string) => arr?.forEach(a => items.push({ ...a, category: 'Armadura', type, isMagic: false }));
+  const armor = armorData as { lightArmor?: ArmorJson[]; mediumArmor?: ArmorJson[]; heavyArmor?: ArmorJson[]; shield?: ArmorJson[] };
+  addArmor(armor.lightArmor, 'Armadura Leve');
+  addArmor(armor.mediumArmor, 'Armadura Média');
+  addArmor(armor.heavyArmor, 'Armadura Pesada');
+  addArmor(armor.shield, 'Escudo');
 
   // Adventuring Gear
-  (equipmentData as any).adventuringGear?.forEach((e: any) => items.push({ ...e, category: 'Equipamento', type: 'Equipamento de Aventureiro', isMagic: false }));
-  (equipmentData as any).ammunition?.forEach((e: any) => items.push({ ...e, category: 'Equipamento', type: 'Munição', isMagic: false }));
-  (equipmentData as any).arcaneFocus?.forEach((e: any) => items.push({ ...e, category: 'Equipamento', type: 'Foco Arcano', isMagic: false }));
-  (equipmentData as any).druidicFocus?.forEach((e: any) => items.push({ ...e, category: 'Equipamento', type: 'Foco Druídico', isMagic: false }));
-  (equipmentData as any).holySymbol?.forEach((e: any) => items.push({ ...e, category: 'Equipamento', type: 'Símbolo Sagrado', isMagic: false }));
+  const addGear = (arr: GearJson[] | undefined, type: string) => arr?.forEach(e => items.push({ name: e.name || e.type || '', weight: e.weight, cost: e.cost, category: 'Equipamento', type, isMagic: false }));
+  const gear = equipmentData as { adventuringGear?: GearJson[]; ammunition?: GearJson[]; arcaneFocus?: GearJson[]; druidicFocus?: GearJson[]; holySymbol?: GearJson[] };
+  addGear(gear.adventuringGear, 'Equipamento de Aventureiro');
+  addGear(gear.ammunition, 'Munição');
+  addGear(gear.arcaneFocus, 'Foco Arcano');
+  addGear(gear.druidicFocus, 'Foco Druídico');
+  addGear(gear.holySymbol, 'Símbolo Sagrado');
 
   // Tools
-  (toolsData as any).artisanTools?.forEach((t: any) => items.push({ ...t, category: 'Ferramenta', type: 'Ferramenta de Artesão', isMagic: false }));
-  (toolsData as any).otherTools?.forEach((t: any) => items.push({ ...t, category: 'Ferramenta', type: 'Outra Ferramenta', isMagic: false }));
+  const tools = toolsData as { artisanTools?: ToolJson[]; otherTools?: ToolJson[] };
+  tools.artisanTools?.forEach(t => items.push({ name: t.name, cost: t.cost, weight: t.weight, category: 'Ferramenta', type: 'Ferramenta de Artesão', isMagic: false }));
+  tools.otherTools?.forEach(t => items.push({ name: t.name, cost: t.cost, weight: t.weight, category: 'Ferramenta', type: 'Outra Ferramenta', isMagic: false }));
 
   // Magic Items
-  magicItemsData.forEach((m: any) => items.push({
+  (magicItemsData as MagicItemJson[]).forEach(m => items.push({
     name: m.name,
     category: m.category,
     type: m.category,
@@ -48,8 +60,8 @@ const buildAllItems = (): any[] => {
     weight: '',
     description: m.description,
     rarity: m.rarity,
-    attunement: m.attunement,
-    baseItem: m.baseItem,
+    attunement: m.attunement ?? undefined,
+    baseItem: m.baseItem ?? undefined,
     isMagic: true,
   }));
 
@@ -303,7 +315,7 @@ export const ItemCatalog: React.FC<ItemCatalogProps> = ({ onAddItem }) => {
                     <>
                       <div style={separator} />
                       <p style={{ color: 'var(--text-dim)', fontSize: '0.82rem', margin: 0, lineHeight: 1.5, maxHeight: '150px', overflowY: 'auto' }}>
-                        {typeof item.description === 'string' && item.description.length > 500
+                        {item.description.length > 500
                           ? item.description.slice(0, 500) + '...'
                           : item.description}
                       </p>

@@ -2,7 +2,38 @@ export interface Selection {
   id: string;
   name: string;
   description: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
+}
+
+/** Item base vindo do catálogo (arma, armadura, equipamento, item mágico) */
+export interface CatalogItemBase {
+  name: string;
+  category?: string;
+  type?: string;
+  weight?: string;
+  cost?: string;
+  damage?: string;
+  properties?: string;
+  mastery?: string;
+  ac?: string;
+  strength?: string;
+  stealth?: string;
+  description?: string;
+  rarity?: string;
+  attunement?: string;
+  baseItem?: string;
+  isMagic?: boolean;
+}
+
+/** Item no inventário do personagem */
+export interface InventoryItem {
+  id: string;
+  name: string;
+  quantity: number;
+  isStartingGear?: boolean;
+  source?: string;
+  itemBase?: CatalogItemBase;
 }
 
 /** Aparência física do personagem */
@@ -56,7 +87,7 @@ export interface Character {
     classOption: 'A' | 'B' | null;
     backgroundOption: 'A' | 'B' | null;
     startingEquipmentAdded: boolean;
-    inventory: any[];
+    inventory: InventoryItem[];
     currency: { cp: number; sp: number; ep: number; gp: number; pp: number; };
     equippedArmorId: string | null;
     hasShieldEquipped: boolean;
