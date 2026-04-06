@@ -109,11 +109,6 @@ export function CreatorShell() {
     }
   }, [currentStep, playState.currentHp, derivedSheet.maxHP, setPlayState]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleFullReset = () => {
-    handleResetCharacter();
-    setCurrentStep(0);
-  };
 
   const renderStepContent = () => (
     <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
