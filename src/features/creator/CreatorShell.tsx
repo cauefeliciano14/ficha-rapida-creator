@@ -184,8 +184,10 @@ export function CreatorShell() {
             canRedo={canRedo}
           />
           <div
-            className={mobileStyles.mobileContent}
+            className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
+            style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
             onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
             <AnimatePresence mode="wait" initial={false}>
