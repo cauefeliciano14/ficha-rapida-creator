@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense, useCallback } from 'react';
 import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
@@ -55,6 +55,34 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
   const isMobile = useMediaQuery('(max-width: 779px)');
+  const prevStepRef = useRef(currentStep);
+  const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
+
+  useEffect(() => {
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
+
+  const handleSwipeLeft = useCallback(() => {
+    if (currentStep < 5) goToStep(currentStep + 1);
+  }, [currentStep, goToStep]);
+
+  const handleSwipeRight = useCallback(() => {
+    if (currentStep > 0) goToStep(currentStep - 1);
+  }, [currentStep, goToStep]);
+
+  const swipeRef = useRef<{ startX: number; startY: number }>({ startX: 0, startY: 0 });
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    swipeRef.current = { startX: e.touches[0].clientX, startY: e.touches[0].clientY };
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - swipeRef.current.startX;
+    const dy = e.changedTouches[0].clientY - swipeRef.current.startY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+    if (dx < 0) handleSwipeLeft();
+    else handleSwipeRight();
+  }, [handleSwipeLeft, handleSwipeRight]);
 
   const [isCharacterManagerOpen, setIsCharacterManagerOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
@@ -134,8 +162,22 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <div className={mobileStyles.mobileContent}>
-            {renderStepContent()}
+          <div
+            className={mobileStyles.mobileContent}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: slideDirection * 60 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: slideDirection * -60 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              >
+                {renderStepContent()}
+              </motion.div>
+            </AnimatePresence>
           </div>
           <MobileBottomNav />
         </>
