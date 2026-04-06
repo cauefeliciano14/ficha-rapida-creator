@@ -217,3 +217,33 @@
   padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
   min-height: calc(100dvh - 56px);
 }
+
+/* Swipe hint edge glow */
+.mobileContent {
+  position: relative;
+}
+
+.swipeHintLeft::after,
+.swipeHintRight::after {
+  content: "";
+  position: fixed;
+  top: 56px;
+  bottom: 56px;
+  width: 6px;
+  z-index: 50;
+  pointer-events: none;
+  transition: opacity 0.1s;
+  opacity: var(--swipe-progress, 0);
+}
+
+.swipeHintLeft::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-accent-warm), transparent);
+  box-shadow: 0 0 16px rgba(249, 115, 22, calc(0.4 * var(--swipe-progress, 0)));
+}
+
+.swipeHintRight::after {
+  left: 0;
+  background: linear-gradient(to right, var(--color-accent-warm), transparent);
+  box-shadow: 0 0 16px rgba(249, 115, 22, calc(0.4 * var(--swipe-progress, 0)));
+}
