@@ -109,7 +109,7 @@ export function CreatorShell() {
     }
   }, [currentStep, playState.currentHp, derivedSheet.maxHP, setPlayState]);
 
-  const handleFullReset = () => {
+  const _handleFullReset = () => {
     handleResetCharacter();
     setCurrentStep(0);
   };
