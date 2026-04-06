@@ -44,7 +44,7 @@ export function CreatorShell() {
   } = useCharacter();
   const {
     currentStep,
-    setCurrentStep,
+    
     isPortraitModalOpen,
     setIsPortraitModalOpen,
     sidebarCollapsed,
