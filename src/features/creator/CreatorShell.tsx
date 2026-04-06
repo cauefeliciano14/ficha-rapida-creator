@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense, useCallback } from 'react';
 import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
