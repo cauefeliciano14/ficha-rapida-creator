@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _useCallback = useCallback;
 import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
