@@ -55,6 +55,34 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
   const isMobile = useMediaQuery('(max-width: 779px)');
+  const prevStepRef = useRef(currentStep);
+  const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
+
+  useEffect(() => {
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
+
+  const handleSwipeLeft = useCallback(() => {
+    if (currentStep < 5) goToStep(currentStep + 1);
+  }, [currentStep, goToStep]);
+
+  const handleSwipeRight = useCallback(() => {
+    if (currentStep > 0) goToStep(currentStep - 1);
+  }, [currentStep, goToStep]);
+
+  const swipeRef = useRef<{ startX: number; startY: number }>({ startX: 0, startY: 0 });
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    swipeRef.current = { startX: e.touches[0].clientX, startY: e.touches[0].clientY };
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - swipeRef.current.startX;
+    const dy = e.changedTouches[0].clientY - swipeRef.current.startY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+    if (dx < 0) handleSwipeLeft();
+    else handleSwipeRight();
+  }, [handleSwipeLeft, handleSwipeRight]);
 
   const [isCharacterManagerOpen, setIsCharacterManagerOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
