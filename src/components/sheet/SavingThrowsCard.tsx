@@ -11,26 +11,25 @@ interface SavingThrowsCardProps {
 export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingThrows, onSaveClick }: SavingThrowsCardProps) {
   return (
     <div className={styles.container}>
-      <div className={styles.grid}>
-        {derivedSavingThrows.map(st => {
-          const shortLabel = st.label.substring(0, 3).toUpperCase();
-          return (
-            <div
-              key={st.attribute}
-              className={`${styles.row} ${st.proficient ? styles.rowProficient : ''}`}
-              onClick={() => onSaveClick?.(st)}
-              role={onSaveClick ? 'button' : undefined}
-              tabIndex={onSaveClick ? 0 : undefined}
-              onKeyDown={onSaveClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onSaveClick(st); } : undefined}
-              style={onSaveClick ? { cursor: 'pointer' } : undefined}
-            >
-              <span className={`${styles.label} ${st.proficient ? styles.labelProficient : ''}`}>{shortLabel}</span>
-              <span className={`${styles.value} ${st.proficient ? styles.valueProficient : ''}`}>
-                {signedMod(st.modifier)}
-              </span>
-            </div>
-          );
-        })}
+      <div className={styles.list}>
+        {derivedSavingThrows.map(st => (
+          <div
+            key={st.attribute}
+            className={styles.row}
+            onClick={() => onSaveClick?.(st)}
+            role={onSaveClick ? 'button' : undefined}
+            tabIndex={onSaveClick ? 0 : undefined}
+            onKeyDown={onSaveClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onSaveClick(st); } : undefined}
+          >
+            <span className={`${styles.profDot} ${st.proficient ? styles.profDotFilled : ''}`} />
+            <span className={`${styles.label} ${st.proficient ? styles.labelProficient : ''}`}>
+              {st.label}
+            </span>
+            <span className={`${styles.value} ${st.proficient ? styles.valueProficient : ''}`}>
+              {signedMod(st.modifier)}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
