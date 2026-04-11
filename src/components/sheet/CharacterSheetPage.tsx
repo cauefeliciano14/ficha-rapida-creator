@@ -1096,7 +1096,7 @@ export function CharacterSheetPage({
           <div className={styles.combatRow}>
             <div className={styles.combatRowStats}>
               <div
-                className={`${styles.statBox} ${styles.statBoxClickable}`}
+                className={`${styles.statBox} ${styles.statBoxHex} ${styles.statBoxClickable}`}
                 onClick={() => setSidebar({ type: 'initiative' })}
                 role="button"
                 tabIndex={0}
