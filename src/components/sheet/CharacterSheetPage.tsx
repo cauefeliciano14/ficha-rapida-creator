@@ -952,7 +952,7 @@ export function CharacterSheetPage({
           <div className={styles.hpPanel}>
             <div
               className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
-              style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column' }}
+              style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
               <div className={styles.hpHeader}>
                 <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
@@ -963,24 +963,22 @@ export function CharacterSheetPage({
                     value={hpInput}
                     onChange={e => setHpInput(e.target.value)}
                     className={styles.hpInput}
+                    placeholder="0"
                   />
-                  <button onClick={handleHeal} className={styles.healBtn}>Curar</button>
-                  <button onClick={handleDamage} className={styles.damageBtn}>Dano</button>
-                  <button onClick={handleTempHp} className={styles.tempBtn}>Temp</button>
+                  <button onClick={handleHeal} className={styles.healBtn} title="Curar">+</button>
+                  <button onClick={handleDamage} className={styles.damageBtn} title="Dano">−</button>
+                  <button onClick={handleTempHp} className={styles.tempBtn} title="HP Temporário">♡</button>
                 </div>
-              </div>
-              <div className={styles.hpLabels}>
-                <span className={styles.hpLabel}>ATUAL</span>
-                <span className={styles.hpLabel}>MÁXIMO</span>
-                <span className={styles.hpLabel}>TEMP</span>
               </div>
               <div className={styles.hpValues}>
                 <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
                 <span className={styles.hpSeparator}>/</span>
                 <span className={styles.hpMax}>{effectiveMaxHP}</span>
-                <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '--'}</span>
+                {playState.tempHp > 0 && (
+                  <span className={styles.hpTemp}>+{playState.tempHp}</span>
+                )}
               </div>
-              <div className={styles.hpBar}>
+              <div className={styles.hpBar} style={{ width: '100%' }}>
                 <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />
               </div>
             </div>
