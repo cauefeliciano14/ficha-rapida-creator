@@ -5,24 +5,32 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   height: 30px;
   padding: 0 8px;
-  border: 1px solid var(--border-theme-dark);
-  border-radius: 4px;
-  background: var(--surface-card);
+  border: none;
+  border-bottom: 1px solid var(--border-faint);
+  border-radius: 0;
+  background: transparent;
+}
+
+.row:last-child {
+  border-bottom: none;
 }
 
 .value {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 900;
-  color: var(--text-secondary);
+  color: var(--color-primary-light);
+  min-width: 26px;
+  text-align: center;
+  line-height: 1;
 }
 
 .label {

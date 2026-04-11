@@ -21,13 +21,15 @@
   display: flex;
   align-items: center;
   padding: 2px 4px;
+  height: 28px;
   border-bottom: 1px solid var(--border-faint);
   transition: background var(--transition-fast);
   cursor: pointer;
+  border-radius: 3px;
 }
 
 .skillRow:hover {
-  background: var(--surface-subtle-hover);
+  background: rgba(197, 49, 49, 0.14);
 }
 
 .profCol {
@@ -37,8 +39,8 @@
 }
 
 .profDot {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -88,13 +90,13 @@
 .bonusBox {
   width: 38px;
   border: 1px solid var(--border-theme-dark);
-  border-radius: 3px;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.4);
   text-align: center;
   padding: 2px 0;
   font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   color: var(--text-bright);
 }
 
