@@ -944,8 +944,8 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
           >
-            {playState.heroicInspiration && <span className={styles.heroicCheck}>✓</span>}
-            <span className={styles.heroicLabel}>INSP.<br />HERÓICA</span>
+            {playState.heroicInspiration && <span className={styles.heroicCheck}>★</span>}
+            <span className={styles.heroicLabel}>INSPIRAÇÃO</span>
           </div>
 
           {/* HP Panel */}
