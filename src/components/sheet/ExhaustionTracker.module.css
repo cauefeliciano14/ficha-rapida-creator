@@ -1,55 +1,74 @@
 .container {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 0 2px;
+}
+
+.header {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 0;
+  justify-content: space-between;
 }
 
 .label {
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-family: var(--font-label);
+  font-size: 0.6rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-dim);
-  white-space: nowrap;
 }
 
-.pips {
+.bar {
   display: flex;
   gap: 3px;
 }
 
-.pip {
-  width: 10px;
+.seg {
+  flex: 1;
   height: 10px;
   border-radius: 2px;
   border: 1px solid var(--border-default);
   background: transparent;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
   padding: 0;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
-.pip:hover {
-  border-color: var(--color-accent-warm);
+.seg:hover {
+  border-color: hsl(43, 80%, 55%);
+  background: hsla(43, 80%, 55%, 0.15);
 }
 
-.pipActive {
-  composes: pip;
-  background: var(--color-error);
-  border-color: var(--color-error);
-  box-shadow: 0 0 4px var(--color-error);
+.segActive {
+  composes: seg;
+  box-shadow: 0 0 5px currentColor;
 }
 
 .penalty {
   font-family: var(--font-code);
-  font-size: 0.7rem;
-  color: var(--color-error-vivid);
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
 }
 
-.levelText {
-  font-family: var(--font-code);
-  font-size: 0.7rem;
-  color: var(--text-secondary);
+.deadLabel {
+  font-family: var(--font-label);
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(0, 75%, 50%);
+  text-align: center;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg, .segActive { transition: none; }
+  .deadLabel { animation: none; }
 }

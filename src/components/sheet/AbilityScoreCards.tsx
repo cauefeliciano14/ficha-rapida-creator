@@ -44,7 +44,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
           </div>
         );
 
-        if (!breakdown || breakdown.length <= 1) return <div key={key}>{card}</div>;
+        if (!breakdown || breakdown.length === 0) return <div key={key}>{card}</div>;
 
         return (
           <CalculationTooltip
@@ -52,7 +52,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
             title={label}
             breakdown={breakdown}
             total={score}
-            totalLabel="Pontuação"
+            totalLabel="Pontuação Final"
           >
             {card}
           </CalculationTooltip>
