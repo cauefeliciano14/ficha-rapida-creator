@@ -756,9 +756,13 @@
     50% 100%,
     0% 70%
   );
-  padding: 10px 10px 18px;
-  min-width: 72px;
-  min-height: 76px;
+  padding: 12px 12px 22px;
+  width: 88px;
+  min-width: 88px;
+  height: 92px;
+  min-height: 92px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
 /* Initiative — Hexagonal shape */
@@ -773,9 +777,13 @@
     0% 75%,
     0% 25%
   );
-  padding: 12px 10px;
-  min-width: 72px;
-  min-height: 76px;
+  padding: 14px 12px;
+  width: 88px;
+  min-width: 88px;
+  height: 92px;
+  min-height: 92px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
 .statValue {
