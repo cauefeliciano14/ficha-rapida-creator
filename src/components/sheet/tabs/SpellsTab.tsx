@@ -123,26 +123,37 @@ export function SpellsTab({
         <StatPill label="TRUQUES CONHECIDOS" value={String(derivedSheet.cantripsKnown ?? 0)} />
       </div>
 
-      {/* Spell slots */}
+      {/* Spell slots — D&D Beyond style: grid of level cards with circular checkboxes */}
       {slotLevels.length > 0 && (
         <div className={styles.slotsCard}>
           <div className={styles.slotsTitle}>ESPAÇOS DE MAGIA</div>
-          <div className={styles.slotsList}>
+          <div className={styles.slotsGrid}>
             {slotLevels.map(level => {
               const total = (slots as Record<number, number>)[level] ?? 0;
               const spent = playState.spentSpellSlots[level] ?? 0;
               const remaining = total - spent;
               return (
-                <div key={level} className={styles.slotRow}>
-                  <span className={styles.slotLevel}>{level}º círculo</span>
-                  <div className={styles.slotDots}>
-                    {Array.from({ length: total }, (_, i) => (
-                      <div key={i} className={i < remaining ? styles.slotDotFilled : styles.slotDot} />
-                    ))}
+                <div key={level} className={styles.slotLevelCard}>
+                  <div className={styles.slotLevelHeader}>
+                    <span className={styles.slotLevelBadge}>{level}</span>
+                    <span className={styles.slotLevelLabel}>Nível {level}</span>
+                    <span className={styles.slotLevelCount}>{remaining}/{total}</span>
                   </div>
-                  <span className={styles.slotCount}>{remaining}/{total}</span>
-                  <button onClick={() => handleSpendSlot(level)} disabled={remaining <= 0} className={styles.slotSpendBtn}>Gastar</button>
-                  <button onClick={() => handleRestoreSlot(level)} disabled={spent <= 0} className={styles.slotRestoreBtn}>Restaurar</button>
+                  <div className={styles.slotCheckboxRow}>
+                    {Array.from({ length: total }, (_, i) => {
+                      const isAvailable = i < remaining;
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          className={`${styles.slotCheckbox} ${isAvailable ? styles.slotCheckboxAvailable : styles.slotCheckboxSpent}`}
+                          onClick={() => isAvailable ? handleSpendSlot(level) : handleRestoreSlot(level)}
+                          aria-label={isAvailable ? `Gastar espaço de nível ${level}` : `Restaurar espaço de nível ${level}`}
+                          title={isAvailable ? `Clique para gastar espaço de nível ${level}` : `Clique para restaurar espaço de nível ${level}`}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               );
             })}
