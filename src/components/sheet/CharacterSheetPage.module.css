@@ -941,11 +941,26 @@
 }
 
 .hpPulseDamage {
-  animation: hpPulse 0.6s ease-out;
+  animation: hpShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
+             hpDamageFlash 0.6s ease-out;
 }
 
 .hpPulseHeal {
-  animation: hpHealPulse 0.6s ease-out;
+  animation: hpHealPulse 0.9s ease-out;
+}
+
+.hpBarFill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: translateX(-100%);
+  animation: hpShimmer 2.6s ease-in-out infinite;
+}
+
+@keyframes hpShimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
 }
 
 .hpSeparator {
