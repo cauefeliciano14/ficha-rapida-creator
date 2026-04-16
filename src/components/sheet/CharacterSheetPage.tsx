@@ -1084,18 +1084,29 @@ export function CharacterSheetPage({
                       hitDieSize === 10 ? styles.hitDieD10 :
                       hitDieSize === 12 ? styles.hitDieD12 :
                       hitDieSize === 20 ? styles.hitDieD20 : '';
+                    const minHeal = Math.max(1, 1 + conMod);
+                    const maxHeal = Math.max(1, hitDieSize + conMod);
+                    const conSign = conMod >= 0 ? '+' : '';
                     return (
-                      <button
-                        key={i}
-                        type="button"
-                        className={`${styles.hitDie} ${dieClass} ${isAvailable ? styles.hitDieAvailable : styles.hitDieSpent}`}
-                        onClick={() => { if (isAvailable) { setHdCount('1'); handleShortRest(); } }}
-                        disabled={!isAvailable}
-                        title={isAvailable ? `Gastar 1d${hitDieSize} (+${conMod >= 0 ? '+' : ''}${conMod} CON)` : 'Dado já gasto'}
-                        aria-label={isAvailable ? `Gastar dado de vida ${i + 1}` : `Dado ${i + 1} gasto`}
-                      >
-                        d{hitDieSize}
-                      </button>
+                      <span key={i} className={styles.hitDieWrap}>
+                        <button
+                          type="button"
+                          className={`${styles.hitDie} ${dieClass} ${isAvailable ? styles.hitDieAvailable : styles.hitDieSpent}`}
+                          onClick={() => { if (isAvailable) { setHdCount('1'); handleShortRest(); } }}
+                          disabled={!isAvailable}
+                          aria-label={isAvailable ? `Gastar dado de vida ${i + 1}` : `Dado ${i + 1} gasto`}
+                        >
+                          d{hitDieSize}
+                        </button>
+                        <span className={styles.hitDieTooltip} role="tooltip">
+                          <span className={styles.hitDieTooltipFormula}>
+                            1d{hitDieSize}{conSign}{conMod} CON
+                          </span>
+                          <span className={styles.hitDieTooltipRange}>
+                            = {minHeal}–{maxHeal} PV
+                          </span>
+                        </span>
+                      </span>
                     );
                   })}
                 </div>
