@@ -1066,28 +1066,50 @@ export function CharacterSheetPage({
           {shortRestOpen && (
             <div className={`${styles.redBox} ${styles.shortRestOverlay}`}>
               <div className={styles.sectionHeader}>DESCANSO CURTO</div>
-              <div className={styles.shortRestControls}>
-                <span className={styles.shortRestLabel}>
-                  Dado(s) de Vida ({derivedSheet.hitDie}):
-                </span>
-                <input
-                  type="number"
-                  min="1"
-                  max={availableHitDice}
-                  value={hdCount}
-                  onChange={e => setHdCount(e.target.value)}
-                  className={styles.shortRestInput}
-                />
-                <span className={styles.shortRestLabel}>
-                  Disponíveis: {availableHitDice}/{totalHitDice}
-                </span>
-                <button
-                  onClick={handleShortRest}
-                  className={styles.shortRestBtn}
-                  disabled={availableHitDice <= 0}
-                >
-                  Recuperar PV
-                </button>
+              <div className={styles.hitDicePanel}>
+                <div className={styles.hitDiceHeader}>
+                  <span className={styles.hitDiceTitle}>
+                    Dados de Vida ({derivedSheet.hitDie})
+                  </span>
+                  <span className={styles.hitDiceCount}>
+                    <strong>{availableHitDice}</strong> / {totalHitDice}
+                  </span>
+                </div>
+                <div className={styles.hitDiceRow}>
+                  {Array.from({ length: totalHitDice }).map((_, i) => {
+                    const isAvailable = i < availableHitDice;
+                    const dieClass =
+                      hitDieSize === 6 ? styles.hitDieD6 :
+                      hitDieSize === 8 ? styles.hitDieD8 :
+                      hitDieSize === 10 ? styles.hitDieD10 :
+                      hitDieSize === 12 ? styles.hitDieD12 :
+                      hitDieSize === 20 ? styles.hitDieD20 : '';
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        className={`${styles.hitDie} ${dieClass} ${isAvailable ? styles.hitDieAvailable : styles.hitDieSpent}`}
+                        onClick={() => { if (isAvailable) { setHdCount('1'); handleShortRest(); } }}
+                        disabled={!isAvailable}
+                        title={isAvailable ? `Gastar 1d${hitDieSize} (+${conMod >= 0 ? '+' : ''}${conMod} CON)` : 'Dado já gasto'}
+                        aria-label={isAvailable ? `Gastar dado de vida ${i + 1}` : `Dado ${i + 1} gasto`}
+                      >
+                        d{hitDieSize}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className={styles.shortRestControls}>
+                  <span className={styles.shortRestLabel}>
+                    Clique em um dado para gastar e recuperar PV
+                  </span>
+                  <button
+                    onClick={() => setShortRestOpen(false)}
+                    className={styles.shortRestBtn}
+                  >
+                    Fechar
+                  </button>
+                </div>
               </div>
             </div>
           )}
