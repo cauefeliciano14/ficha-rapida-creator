@@ -1255,6 +1255,61 @@
 .hitDieD12 { clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%); }
 .hitDieD20 { clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); }
 
+/* ── Hit Die Tooltip Wrapper ── */
+.hitDieWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.hitDieTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--surface-panel-dark, rgba(15, 18, 24, 0.96));
+  border: 1px solid var(--color-primary-light);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--font-code, var(--font-body));
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 50;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  line-height: 1.4;
+}
+
+.hitDieTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-primary-light);
+}
+
+.hitDieTooltipFormula {
+  color: var(--color-accent-warm, var(--color-primary-light));
+  font-weight: 800;
+}
+
+.hitDieTooltipRange {
+  color: var(--color-hp-positive, #4ade80);
+  font-weight: 800;
+  margin-left: 6px;
+}
+
+.hitDieWrap:hover .hitDieTooltip,
+.hitDieWrap:focus-within .hitDieTooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ── Advantage Toggle ── */
 .advantageToggle {
   display: flex;
