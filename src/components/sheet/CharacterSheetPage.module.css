@@ -4,16 +4,29 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes hpPulse {
-  0% { box-shadow: 0 0 0 0 rgba(197, 49, 49, 0.4); }
-  50% { box-shadow: 0 0 16px 4px rgba(197, 49, 49, 0.25); }
-  100% { box-shadow: 0 0 0 0 rgba(197, 49, 49, 0); }
+@keyframes hpShake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-6px); }
+  20% { transform: translateX(6px); }
+  30% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  50% { transform: translateX(-3px); }
+  60% { transform: translateX(3px); }
+  70% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  90% { transform: translateX(-1px); }
+}
+
+@keyframes hpDamageFlash {
+  0% { box-shadow: inset 0 0 0 0 rgba(197, 49, 49, 0); }
+  40% { box-shadow: inset 0 0 32px 8px rgba(197, 49, 49, 0.55); }
+  100% { box-shadow: inset 0 0 0 0 rgba(197, 49, 49, 0); }
 }
 
 @keyframes hpHealPulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 199, 151, 0.4); }
-  50% { box-shadow: 0 0 16px 4px rgba(0, 199, 151, 0.25); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 199, 151, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(0, 199, 151, 0.5), inset 0 0 0 0 rgba(0, 199, 151, 0); }
+  40% { box-shadow: 0 0 28px 6px rgba(0, 199, 151, 0.5), inset 0 0 32px 6px rgba(0, 199, 151, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 199, 151, 0), inset 0 0 0 0 rgba(0, 199, 151, 0); }
 }
 
 @keyframes glowPulse {
@@ -928,11 +941,26 @@
 }
 
 .hpPulseDamage {
-  animation: hpPulse 0.6s ease-out;
+  animation: hpShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
+             hpDamageFlash 0.6s ease-out;
 }
 
 .hpPulseHeal {
-  animation: hpHealPulse 0.6s ease-out;
+  animation: hpHealPulse 0.9s ease-out;
+}
+
+.hpBarFill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: translateX(-100%);
+  animation: hpShimmer 2.6s ease-in-out infinite;
+}
+
+@keyframes hpShimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
 }
 
 .hpSeparator {
@@ -970,7 +998,10 @@
 .hpBarFill {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.4s ease;
 }
 
 .hpInput {
@@ -1075,29 +1106,22 @@
 
 /* ── Short Rest Overlay ── */
 .shortRestOverlay {
-  padding: 12px 16px;
+  padding: 14px 18px;
   margin-bottom: 16px;
 }
 
 .shortRestControls {
   display: flex;
-  gap: 8px;
+  gap: 14px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .shortRestLabel {
   font-size: 0.85rem;
   color: var(--text-secondary);
-}
-
-.shortRestInput {
-  width: 60px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border-theme-dark);
-  border-radius: 4px;
-  color: var(--text-bright);
-  padding: 6px 10px;
-  font-family: var(--font-body);
+  font-family: var(--font-label);
+  letter-spacing: 0.04em;
 }
 
 .shortRestBtn {
@@ -1105,17 +1129,131 @@
   border: none;
   border-radius: 4px;
   color: white;
-  padding: 6px 14px;
+  padding: 8px 16px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   font-family: var(--font-label);
-  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
-.shortRestBtn:hover {
+.shortRestBtn:hover:not(:disabled) {
   background: var(--color-primary-hover);
   box-shadow: 0 0 12px var(--color-primary-glow);
+  transform: translateY(-1px);
 }
+
+.shortRestBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Hit Dice Visual Panel ── */
+.hitDicePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 240px;
+}
+
+.hitDiceHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hitDiceTitle {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hitDiceCount {
+  font-family: var(--font-code, var(--font-body));
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.hitDiceCount strong {
+  color: var(--color-primary-light);
+  font-size: 1.1rem;
+}
+
+.hitDiceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.hitDie {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-card);
+  border: 2px solid var(--border-theme);
+  color: var(--text-bright);
+  font-family: var(--font-code, var(--font-body));
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color var(--transition-fast),
+              background var(--transition-fast),
+              box-shadow var(--transition-fast);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  position: relative;
+}
+
+.hitDieAvailable {
+  background: linear-gradient(145deg, var(--color-primary), var(--color-primary-hover, #8a2424));
+  border-color: var(--color-primary-light);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(197, 49, 49, 0.4),
+              inset 0 1px 2px rgba(255, 255, 255, 0.18);
+}
+
+.hitDieAvailable:hover {
+  transform: translateY(-3px) scale(1.08) rotate(-4deg);
+  box-shadow: 0 4px 14px rgba(197, 49, 49, 0.6),
+              inset 0 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.hitDieAvailable:active {
+  transform: translateY(-1px) scale(0.96);
+}
+
+.hitDieSpent {
+  background: rgba(0, 0, 0, 0.45);
+  border-color: var(--border-subtle);
+  color: var(--text-faint);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.hitDieSpent::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border-top: 2px solid var(--text-faint);
+  transform: rotate(-22deg);
+}
+
+.hitDieD6 { clip-path: none; border-radius: 4px; }
+.hitDieD8 { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+.hitDieD10 { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+.hitDieD12 { clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%); }
+.hitDieD20 { clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); }
 
 /* ── Advantage Toggle ── */
 .advantageToggle {
