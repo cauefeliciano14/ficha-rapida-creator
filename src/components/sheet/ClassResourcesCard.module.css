@@ -167,3 +167,60 @@
 @media (prefers-reduced-motion: reduce) {
   .boxAvailable, .boxSpent { animation: none; }
 }
+
+/* Icon + tooltip */
+.iconWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  outline: none;
+}
+.iconWrap:focus-visible { box-shadow: 0 0 0 2px var(--color-primary); border-radius: 4px; }
+
+.iconTooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  width: 240px;
+  background: var(--surface-elevated, #1a1f28);
+  border: 1px solid var(--border-theme);
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 20px hsl(0 0% 0% / 0.55);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+.iconWrap:hover .iconTooltip,
+.iconWrap:focus-visible .iconTooltip { display: flex; }
+
+.iconTooltip::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--surface-elevated, #1a1f28);
+  border-left: 1px solid var(--border-theme);
+  border-top: 1px solid var(--border-theme);
+  transform: rotate(45deg);
+}
+
+.tooltipTitle {
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--label-spacing);
+  color: var(--color-primary-light);
+}
+.tooltipBody {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}

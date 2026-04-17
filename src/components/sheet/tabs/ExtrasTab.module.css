@@ -308,3 +308,42 @@
   .addBtn { transition: none; }
   .slotAvailable, .slotSpent { animation: none; }
 }
+
+/* Emoji picker */
+.iconPickerLabel {
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: var(--label-spacing);
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.iconPicker {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+}
+.iconPickerBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-input);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.1s ease, border-color 0.15s ease;
+}
+.iconPickerBtn:hover { transform: scale(1.1); border-color: var(--color-primary); }
+.iconPickerBtnActive {
+  border-color: var(--color-primary);
+  background: var(--color-primary-faint);
+  box-shadow: 0 0 0 1px var(--color-primary) inset;
+}
+@media (max-width: 480px) {
+  .iconPicker { grid-template-columns: repeat(6, 1fr); }
+}
