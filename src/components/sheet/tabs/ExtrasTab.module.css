@@ -305,6 +305,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dotFilled, .dotEmpty { transition: none; }
   .addBtn { transition: none; }
+  .slotAvailable, .slotSpent { animation: none; }
 }
