@@ -25,7 +25,7 @@ export function getResourceIcon(counterId: string): string | undefined {
 
 // Level arrays: index 0 = level 1, length 20
 const BARBARO_RAGE = [2,2,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6];
-const BARBARO_RAGE_DMG = [2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,4,4];
+// (Bônus de dano de fúria descrito textualmente em barbaro-rage.description)
 const MONGE_KI = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 const LADINO_SNEAK = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10];
 const GUERREIRO_SURTO = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2];
