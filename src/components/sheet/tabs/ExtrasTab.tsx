@@ -84,32 +84,47 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
 
       {counters.length > 0 && (
         <div className={styles.counterList}>
-          {counters.map(ctr => (
-            <div key={ctr.id} className={styles.counterCard}>
-              <div className={styles.counterTop}>
-                <span className={styles.counterName}>{ctr.name}</span>
-                <span className={styles.counterReset}>{RESET_LABELS[ctr.resetOn]}</span>
-                <button onClick={() => resetCounter(ctr.id)} className={styles.counterResetBtn} title="Restaurar">↺</button>
-                <button onClick={() => removeCounter(ctr.id)} className={styles.counterRemoveBtn} title="Remover">✕</button>
+          {counters.map(ctr => {
+            const used = ctr.max - ctr.current;
+            return (
+              <div key={ctr.id} className={styles.counterCard}>
+                <div className={styles.counterTop}>
+                  <span className={styles.counterName}>{ctr.name}</span>
+                  <span className={styles.counterReset}>{RESET_LABELS[ctr.resetOn]}</span>
+                  <span className={styles.counterValue}>
+                    {ctr.current}<span className={styles.counterMax}>/{ctr.max}</span>
+                  </span>
+                  <button onClick={() => resetCounter(ctr.id)} className={styles.counterResetBtn} title="Restaurar">↺</button>
+                  <button onClick={() => removeCounter(ctr.id)} className={styles.counterRemoveBtn} title="Remover">✕</button>
+                </div>
+                <div className={styles.checkboxGroup} role="group" aria-label={ctr.name}>
+                  {Array.from({ length: ctr.max }, (_, i) => {
+                    const isAvailable = i < ctr.current;
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        className={`${styles.slotBox} ${isAvailable ? styles.slotAvailable : styles.slotSpent}`}
+                        onClick={() => {
+                          if (isAvailable) updateCounter(ctr.id, -(ctr.current - i));
+                          else updateCounter(ctr.id, (i - ctr.current + 1));
+                        }}
+                        title={isAvailable ? 'Disponível — clique para gastar' : 'Gasto — clique para restaurar'}
+                        aria-pressed={isAvailable}
+                      >
+                        {!isAvailable && <span className={styles.slotMark}>✕</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+                {used > 0 && (
+                  <div className={styles.counterFooter}>
+                    <span className={styles.usedLabel}>{used} usado{used > 1 ? 's' : ''}</span>
+                  </div>
+                )}
               </div>
-              <div className={styles.counterDots}>
-                {Array.from({ length: ctr.max }, (_, i) => (
-                  <div
-                    key={i}
-                    className={i < ctr.current ? styles.dotFilled : styles.dotEmpty}
-                    onClick={() => updateCounter(ctr.id, i < ctr.current ? -(ctr.current - i) : (i - ctr.current + 1))}
-                    role="button"
-                    title={i < ctr.current ? 'Clique para gastar até este' : 'Clique para restaurar até este'}
-                  />
-                ))}
-              </div>
-              <div className={styles.counterControls}>
-                <button onClick={() => updateCounter(ctr.id, -1)} disabled={ctr.current <= 0} className={styles.counterBtn}>−</button>
-                <span className={styles.counterValue}>{ctr.current}<span className={styles.counterMax}>/{ctr.max}</span></span>
-                <button onClick={() => updateCounter(ctr.id, 1)} disabled={ctr.current >= ctr.max} className={styles.counterBtn}>+</button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
