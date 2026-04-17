@@ -18,11 +18,14 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
   manual: 'Manual',
 };
 
+const ICON_CHOICES = ['⚙️', '🔥', '⚡', '💧', '✨', '🌙', '☀️', '⚔️', '🛡️', '🏹', '🗡️', '🎵', '🐺', '🌿', '💀', '❤️', '⏳', '🪄'];
+
 export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState, classId, characterLevel = 1 }: ExtrasTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
   const [formMax, setFormMax] = useState('1');
   const [formReset, setFormReset] = useState<CustomCounter['resetOn']>('long');
+  const [formIcon, setFormIcon] = useState<string>('⚙️');
 
   const allCounters = playState.customCounters ?? [];
 
@@ -54,9 +57,10 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
       current: max,
       max,
       resetOn: formReset,
+      icon: formIcon,
     };
     onUpdatePlayState(prev => ({ ...prev, customCounters: [...(prev.customCounters ?? []), newCounter] }));
-    setFormName(''); setFormMax('1'); setShowForm(false);
+    setFormName(''); setFormMax('1'); setFormIcon('⚙️'); setShowForm(false);
   };
 
   const updateCounter = (id: string, delta: number) => {
@@ -100,6 +104,7 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
             return (
               <div key={ctr.id} className={styles.counterCard}>
                 <div className={styles.counterTop}>
+                  {ctr.icon && <span aria-hidden style={{ fontSize: '1rem', lineHeight: 1 }}>{ctr.icon}</span>}
                   <span className={styles.counterName}>{ctr.name}</span>
                   <span className={styles.counterReset}>{RESET_LABELS[ctr.resetOn]}</span>
                   <span className={styles.counterValue}>
@@ -150,9 +155,23 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
           <input
             value={formName}
             onChange={e => setFormName(e.target.value)}
-            placeholder="Nome do recurso (ex: Ki Points, Rages)"
+            placeholder="Nome do recurso (ex: Poções, Cargas)"
             className={styles.formInput}
           />
+          <div className={styles.iconPickerLabel}>Ícone</div>
+          <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
+            {ICON_CHOICES.map(emoji => (
+              <button
+                key={emoji}
+                type="button"
+                role="radio"
+                aria-checked={formIcon === emoji}
+                onClick={() => setFormIcon(emoji)}
+                className={`${styles.iconPickerBtn} ${formIcon === emoji ? styles.iconPickerBtnActive : ''}`}
+                title={emoji}
+              >{emoji}</button>
+            ))}
+          </div>
           <div className={styles.formRow}>
             <input
               type="number"
