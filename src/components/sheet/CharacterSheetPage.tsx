@@ -1307,6 +1307,16 @@ export function CharacterSheetPage({
         isOpen={restModal !== null}
         onClose={() => setRestModal(null)}
         onConfirm={restModal === 'long' ? handleLongRest : handleShortRest}
+        restoredResources={(playState.customCounters ?? []).reduce<RestRestoredResource[]>((acc, c) => {
+          const restoresOnThisRest =
+            restModal === 'long'
+              ? c.resetOn === 'long' || c.resetOn === 'short'
+              : c.resetOn === 'short';
+          if (restoresOnThisRest) {
+            acc.push({ id: c.id, name: c.name, icon: c.icon, restored: c.max - c.current });
+          }
+          return acc;
+        }, [])}
       />
 
       {onSetLevel && classId && (
