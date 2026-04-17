@@ -87,8 +87,11 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   return (
     <div className={styles.container}>
 
-      {/* ── Contadores de Recursos ── */}
-      <div className={styles.sectionTitle}>CONTADORES DE RECURSOS</div>
+      {/* ── Contadores Personalizados (Class resources viewable on main sheet card) ── */}
+      <div className={styles.sectionTitle}>CONTADORES PERSONALIZADOS</div>
+      <div className={styles.hint}>
+        Recursos da sua classe aparecem no card lateral da ficha. Aqui você pode criar contadores extras (poções, cargas de itens etc.).
+      </div>
 
       {counters.length > 0 && (
         <div className={styles.counterList}>
