@@ -57,9 +57,10 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
       current: max,
       max,
       resetOn: formReset,
+      icon: formIcon,
     };
     onUpdatePlayState(prev => ({ ...prev, customCounters: [...(prev.customCounters ?? []), newCounter] }));
-    setFormName(''); setFormMax('1'); setShowForm(false);
+    setFormName(''); setFormMax('1'); setFormIcon('⚙️'); setShowForm(false);
   };
 
   const updateCounter = (id: string, delta: number) => {
