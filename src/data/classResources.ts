@@ -10,6 +10,17 @@ export interface ClassResourceTemplate {
   maxByLevel: number[];
   resetOn: 'short' | 'long';
   description?: string;
+  /** Emoji/glyph icon shown next to the resource name */
+  icon?: string;
+}
+
+/** Lookup icon by counter id (used by sheet card to decorate restored counters) */
+export function getResourceIcon(counterId: string): string | undefined {
+  for (const list of Object.values(CLASS_RESOURCES)) {
+    const t = list.find(r => r.id === counterId);
+    if (t?.icon) return t.icon;
+  }
+  return undefined;
 }
 
 // Level arrays: index 0 = level 1, length 20
@@ -30,6 +41,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'barbaro-rage',
       name: 'Usos de Fúria',
+      icon: '🔥',
       maxByLevel: BARBARO_RAGE,
       resetOn: 'long',
       description: 'Bônus de dano: ' + BARBARO_RAGE_DMG.map((v, i) => `Nív ${i+1}: +${v}`).slice(0,4).join(', ') + '…',
@@ -39,6 +51,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'bardo-inspiration',
       name: 'Inspiração de Bardo',
+      icon: '🎵',
       maxByLevel: BARDO_INSPIRATION,
       resetOn: 'short',
     },
@@ -47,6 +60,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'clerigo-channel',
       name: 'Canalizar Divindade',
+      icon: '⚡',
       maxByLevel: CLERIGO_CD,
       resetOn: 'short',
     },
@@ -55,6 +69,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'druida-wildshape',
       name: 'Transformação Selvagem',
+      icon: '🐺',
       maxByLevel: DRUIDA_WILD,
       resetOn: 'short',
     },
@@ -63,6 +78,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'feiticeiro-sorcery',
       name: 'Pontos de Feitiçaria',
+      icon: '✨',
       maxByLevel: FEITICEIRO_SORCERY,
       resetOn: 'long',
     },
@@ -71,12 +87,14 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'guerreiro-secondwind',
       name: 'Segundo Fôlego',
+      icon: '💨',
       maxByLevel: GUERREIRO_WIND,
       resetOn: 'short',
     },
     {
       id: 'guerreiro-actionsurge',
       name: 'Surto de Ação',
+      icon: '⚔️',
       maxByLevel: GUERREIRO_SURTO,
       resetOn: 'short',
     },
@@ -85,6 +103,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'ladino-cunningaction',
       name: 'Ataque Furtivo (d6s)',
+      icon: '🗡️',
       maxByLevel: LADINO_SNEAK,
       resetOn: 'short',
       description: 'Número de d6 para Ataque Furtivo (não é um recurso limitado — use como referência)',
@@ -94,6 +113,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'monge-ki',
       name: 'Pontos de Ki',
+      icon: '💧',
       maxByLevel: MONGE_KI,
       resetOn: 'short',
     },
@@ -102,6 +122,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
     {
       id: 'paladino-channel',
       name: 'Canalizar Divindade',
+      icon: '☀️',
       maxByLevel: PALADINO_CD,
       resetOn: 'short',
     },
@@ -115,10 +136,10 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
 export function getDefaultClassCounters(
   classId: string,
   level: number,
-): Array<{ id: string; name: string; current: number; max: number; resetOn: 'short' | 'long' | 'manual' }> {
+): Array<{ id: string; name: string; current: number; max: number; resetOn: 'short' | 'long' | 'manual'; icon?: string }> {
   const templates = CLASS_RESOURCES[classId] ?? [];
   const lvlIdx = Math.max(0, Math.min(19, level - 1));
   return templates
-    .map(t => ({ id: t.id, name: t.name, current: t.maxByLevel[lvlIdx], max: t.maxByLevel[lvlIdx], resetOn: t.resetOn }))
+    .map(t => ({ id: t.id, name: t.name, icon: t.icon, current: t.maxByLevel[lvlIdx], max: t.maxByLevel[lvlIdx], resetOn: t.resetOn }))
     .filter(c => c.max > 0);
 }

@@ -22,7 +22,8 @@ import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { RestModal } from './RestModal';
+import { RestModal, type RestRestoredResource } from './RestModal';
+import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
 import { AddClassModal } from './AddClassModal';
 import {
@@ -1032,6 +1033,18 @@ export function CharacterSheetPage({
               />
             </div>
           </CollapsibleSection>
+
+          <CollapsibleSection title="Recursos de Classe" defaultOpen forceOpen={!isMobile}>
+            <div className={styles.redBox}>
+              <div className={styles.sectionHeader}>RECURSOS DE CLASSE ⚙</div>
+              <ClassResourcesCard
+                playState={playState}
+                onUpdatePlayState={onUpdatePlayState}
+                classId={classId}
+                characterLevel={characterLevel}
+              />
+            </div>
+          </CollapsibleSection>
         </div>
 
         {/* ── Col 2: Skills ── */}
@@ -1294,6 +1307,16 @@ export function CharacterSheetPage({
         isOpen={restModal !== null}
         onClose={() => setRestModal(null)}
         onConfirm={restModal === 'long' ? handleLongRest : handleShortRest}
+        restoredResources={(playState.customCounters ?? []).reduce<RestRestoredResource[]>((acc, c) => {
+          const restoresOnThisRest =
+            restModal === 'long'
+              ? c.resetOn === 'long' || c.resetOn === 'short'
+              : c.resetOn === 'short';
+          if (restoresOnThisRest) {
+            acc.push({ id: c.id, name: c.name, icon: c.icon, restored: c.max - c.current });
+          }
+          return acc;
+        }, [])}
       />
 
       {onSetLevel && classId && (

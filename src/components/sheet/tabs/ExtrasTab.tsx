@@ -24,18 +24,26 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   const [formMax, setFormMax] = useState('1');
   const [formReset, setFormReset] = useState<CustomCounter['resetOn']>('long');
 
-  const counters = playState.customCounters ?? [];
+  const allCounters = playState.customCounters ?? [];
 
   const defaultCounters = classId ? getDefaultClassCounters(classId, characterLevel) : [];
-  const missingDefaults = defaultCounters.filter(d => !counters.some(c => c.id === d.id));
+  const classIds = new Set(defaultCounters.map(d => d.id));
+
+  // Class-derived counters render in the dedicated ClassResourcesCard;
+  // here we only show user-created custom counters.
+  const counters = allCounters.filter(c => !classIds.has(c.id));
 
   const handleAddClassResources = () => {
-    if (missingDefaults.length === 0) return;
+    // kept for backward compatibility but no longer surfaced in UI
+    const missing = defaultCounters.filter(d => !allCounters.some(c => c.id === d.id));
+    if (missing.length === 0) return;
     onUpdatePlayState(prev => ({
       ...prev,
-      customCounters: [...(prev.customCounters ?? []), ...missingDefaults],
+      customCounters: [...(prev.customCounters ?? []), ...missing],
     }));
   };
+  void handleAddClassResources;
+  const missingDefaults: typeof defaultCounters = [];
 
   const handleAddCounter = () => {
     if (!formName.trim()) return;
@@ -79,8 +87,11 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   return (
     <div className={styles.container}>
 
-      {/* ── Contadores de Recursos ── */}
-      <div className={styles.sectionTitle}>CONTADORES DE RECURSOS</div>
+      {/* ── Contadores Personalizados (Class resources viewable on main sheet card) ── */}
+      <div className={styles.sectionTitle}>CONTADORES PERSONALIZADOS</div>
+      <div className={styles.hint}>
+        Recursos da sua classe aparecem no card lateral da ficha. Aqui você pode criar contadores extras (poções, cargas de itens etc.).
+      </div>
 
       {counters.length > 0 && (
         <div className={styles.counterList}>
