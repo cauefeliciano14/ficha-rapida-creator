@@ -10,6 +10,17 @@ export interface ClassResourceTemplate {
   maxByLevel: number[];
   resetOn: 'short' | 'long';
   description?: string;
+  /** Emoji/glyph icon shown next to the resource name */
+  icon?: string;
+}
+
+/** Lookup icon by counter id (used by sheet card to decorate restored counters) */
+export function getResourceIcon(counterId: string): string | undefined {
+  for (const list of Object.values(CLASS_RESOURCES)) {
+    const t = list.find(r => r.id === counterId);
+    if (t?.icon) return t.icon;
+  }
+  return undefined;
 }
 
 // Level arrays: index 0 = level 1, length 20
