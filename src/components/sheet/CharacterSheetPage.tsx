@@ -1033,6 +1033,18 @@ export function CharacterSheetPage({
               />
             </div>
           </CollapsibleSection>
+
+          <CollapsibleSection title="Recursos de Classe" defaultOpen forceOpen={!isMobile}>
+            <div className={styles.redBox}>
+              <div className={styles.sectionHeader}>RECURSOS DE CLASSE ⚙</div>
+              <ClassResourcesCard
+                playState={playState}
+                onUpdatePlayState={onUpdatePlayState}
+                classId={classId}
+                characterLevel={characterLevel}
+              />
+            </div>
+          </CollapsibleSection>
         </div>
 
         {/* ── Col 2: Skills ── */}
