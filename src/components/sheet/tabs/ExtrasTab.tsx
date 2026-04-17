@@ -18,11 +18,14 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
   manual: 'Manual',
 };
 
+const ICON_CHOICES = ['⚙️', '🔥', '⚡', '💧', '✨', '🌙', '☀️', '⚔️', '🛡️', '🏹', '🗡️', '🎵', '🐺', '🌿', '💀', '❤️', '⏳', '🪄'];
+
 export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState, classId, characterLevel = 1 }: ExtrasTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
   const [formMax, setFormMax] = useState('1');
   const [formReset, setFormReset] = useState<CustomCounter['resetOn']>('long');
+  const [formIcon, setFormIcon] = useState<string>('⚙️');
 
   const allCounters = playState.customCounters ?? [];
 
