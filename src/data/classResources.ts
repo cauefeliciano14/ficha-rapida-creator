@@ -44,7 +44,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '🔥',
       maxByLevel: BARBARO_RAGE,
       resetOn: 'long',
-      description: 'Bônus de dano: ' + BARBARO_RAGE_DMG.map((v, i) => `Nív ${i+1}: +${v}`).slice(0,4).join(', ') + '…',
+      description: 'Bônus de dano por fúria (Nív 1–8: +2, 9–16: +3, 17+: +4). Duração: 1 minuto. Vantagem em testes de Força. Resistência a contundente, perfurante e cortante. Termina se você ficar inconsciente ou não atacar/sofrer dano em um turno. Recupera em descanso longo.',
     },
   ],
   bardo: [
@@ -54,6 +54,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '🎵',
       maxByLevel: BARDO_INSPIRATION,
       resetOn: 'short',
+      description: 'Ação bônus para conceder a um aliado a até 18m um Dado de Inspiração (d6 nív 1, d8 nív 5, d10 nív 10, d12 nív 15). Pode ser somado a um teste, ataque ou resistência antes de saber o resultado. Recupera em descanso curto/longo.',
     },
   ],
   clerigo: [
@@ -63,6 +64,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '⚡',
       maxByLevel: CLERIGO_CD,
       resetOn: 'short',
+      description: 'Energia divina canalizada do seu deus. Usos: 1× (nív 2), 2× (nív 6), 3× (nív 18). Opções incluem Expulsar Mortos-Vivos e habilidades de domínio. CD = 8 + prof + Sab. Recupera em descanso curto/longo.',
     },
   ],
   druida: [
@@ -72,6 +74,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '🐺',
       maxByLevel: DRUIDA_WILD,
       resetOn: 'short',
+      description: 'Ação bônus para transformar-se em uma fera com VD ≤ ¼ (nív 2), 1 (nív 4) ou seu nível ÷ 3 (nív 8). Duração: metade do nível em horas. Mantém Inteligência, Sabedoria e Carisma. Recupera 2 usos em descanso curto/longo.',
     },
   ],
   feiticeiro: [
@@ -81,6 +84,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '✨',
       maxByLevel: FEITICEIRO_SORCERY,
       resetOn: 'long',
+      description: 'Recurso para Metamagia (Magia Distante, Sutil, Empoderada, Gêmea, etc.) e conversão em espaços de magia: 2pts→1º, 3pts→2º, 5pts→3º, 6pts→4º, 7pts→5º. Recupera em descanso longo.',
     },
   ],
   guerreiro: [
@@ -90,6 +94,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '💨',
       maxByLevel: GUERREIRO_WIND,
       resetOn: 'short',
+      description: 'Ação bônus para recuperar 1d10 + nível de guerreiro PV. Recupera em descanso curto/longo.',
     },
     {
       id: 'guerreiro-actionsurge',
@@ -97,6 +102,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '⚔️',
       maxByLevel: GUERREIRO_SURTO,
       resetOn: 'short',
+      description: 'Em seu turno, ganhe uma ação adicional (não pode ser usado mais de 1× por turno). Usos: 1 (nív 2), 2 (nív 17). Recupera em descanso curto/longo.',
     },
   ],
   ladino: [
@@ -106,7 +112,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '🗡️',
       maxByLevel: LADINO_SNEAK,
       resetOn: 'short',
-      description: 'Número de d6 para Ataque Furtivo (não é um recurso limitado — use como referência)',
+      description: 'Dano extra (d6) 1×/turno quando você tem vantagem ou aliado adjacente ao alvo, com arma de acabamento ou à distância. Não é um recurso limitado — referência da quantidade de d6 por nível. Progressão: +1d6 a cada 2 níveis.',
     },
   ],
   monge: [
@@ -116,6 +122,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '💧',
       maxByLevel: MONGE_KI,
       resetOn: 'short',
+      description: 'Energia mística do monge. Usos básicos: Rajada de Golpes (1pt — 2 ataques desarmados como bônus), Esquiva Marcial (1pt) ou Disparada (1pt). CD de Ki = 8 + prof + Sab. Recupera em descanso curto/longo.',
     },
   ],
   paladino: [
@@ -125,6 +132,7 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '☀️',
       maxByLevel: PALADINO_CD,
       resetOn: 'short',
+      description: 'Energia divina do juramento. Usos: 1× (nív 3), 2× (nív 7), 3× (nív 15). Opções dependem do juramento (ex: Devoção – Arma Sagrada; Antigos – Natureza Repreendedora). Recupera em descanso curto/longo.',
     },
   ],
 };
