@@ -14,6 +14,8 @@ export interface CustomCounter {
   current: number;
   max: number;
   resetOn: 'short' | 'long' | 'manual';
+  /** Optional emoji/glyph displayed next to name */
+  icon?: string;
 }
 
 export interface Container {
