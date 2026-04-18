@@ -122,6 +122,17 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   const [formMax, setFormMax] = useState('1');
   const [formReset, setFormReset] = useState<CustomCounter['resetOn']>('long');
   const [formIcon, setFormIcon] = useState<string>('⚙️');
+  const [emojiCategory, setEmojiCategory] = useState<EmojiCategoryKey>('all');
+  const [emojiQuery, setEmojiQuery] = useState('');
+
+  const filteredEmojis = (() => {
+    const pool = emojiCategory === 'all'
+      ? ALL_EMOJIS
+      : EMOJI_CATEGORIES[emojiCategory].emojis;
+    const q = normalizeText(emojiQuery);
+    if (!q) return pool;
+    return pool.filter(x => normalizeText(x.kw).includes(q) || x.e.includes(emojiQuery));
+  })();
 
   const allCounters = playState.customCounters ?? [];
 
