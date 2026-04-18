@@ -319,14 +319,18 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
           </div>
           <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
             {filteredEmojis.length === 0 ? (
-              <span className={styles.emojiEmpty}>Nenhum ícone encontrado.</span>
+              <span className={styles.emojiEmpty}>
+                {emojiCategory === 'recent'
+                  ? 'Nenhum ícone recente ainda. Escolha um abaixo para começar.'
+                  : 'Nenhum ícone encontrado.'}
+              </span>
             ) : filteredEmojis.map(({ e: emoji, kw }) => (
               <button
                 key={emoji}
                 type="button"
                 role="radio"
                 aria-checked={formIcon === emoji}
-                onClick={() => setFormIcon(emoji)}
+                onClick={() => { setFormIcon(emoji); pushRecentEmoji(emoji); }}
                 className={`${styles.iconPickerBtn} ${formIcon === emoji ? styles.iconPickerBtnActive : ''}`}
                 title={kw}
               >{emoji}</button>
