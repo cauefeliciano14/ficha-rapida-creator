@@ -25,6 +25,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
+import { LevelUnlockHistoryModal } from './LevelUnlockHistoryModal';
 import { AddClassModal } from './AddClassModal';
 import {
   SKILL_DESCRIPTIONS,
