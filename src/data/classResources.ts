@@ -151,42 +151,257 @@ const onesAt = (start: number, count = 1) =>
   Array.from({ length: 20 }, (_, i) => (i + 1 >= start ? count : 0));
 
 export const SUBCLASS_RESOURCES: Record<string, SubclassResourceTemplate[]> = {
-  // Bárbaro Berserker — Frenesi (3º nível)
+  /* ─── BÁRBARO ─── */
   'berserker': [{
     id: 'barbaro-frenesi', name: 'Frenesi', icon: '🩸', unlockLevel: 3,
     maxByLevel: ones(3), resetOn: 'long',
-    description: 'Durante a fúria, você pode entrar em frenesi: ganha um ataque adicional como ação bônus enquanto a fúria durar. Ao final, sofre 1 nível de exaustão.',
+    description: 'Durante a Fúria, ganhe um ataque adicional como ação bônus por turno. Ao final, sofre 1 nível de exaustão.',
   }],
-  // Clérigo Vida — Bênção Preservadora (canalização extra)
+  'coracao selvagem': [{
+    id: 'barbaro-aspecto-fera', name: 'Aspecto da Fera', icon: '🐻', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'long',
+    description: 'Canalize o espírito de uma fera (Urso, Águia, Lobo, Tigre, Elefante) por benefícios temáticos durante a Fúria.',
+  }],
+  'guerreiro tribal': [{
+    id: 'barbaro-conhecimento-espiritual', name: 'Conhecimento Espiritual', icon: '👻', unlockLevel: 3,
+    maxByLevel: [0,0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4], resetOn: 'long',
+    description: 'Conjure magias de divinação e proteção concedidas pelos espíritos ancestrais.',
+  }],
+  'magia selvagem': [{
+    id: 'barbaro-magia-selvagem', name: 'Surto de Magia Selvagem', icon: '🌀', unlockLevel: 3,
+    maxByLevel: [0,0,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3], resetOn: 'long',
+    description: 'Ao entrar em Fúria, role na tabela de Magia Selvagem para um efeito mágico aleatório.',
+  }],
+
+  /* ─── BARDO ─── */
+  'valor': [{
+    id: 'bardo-combate-inspirador', name: 'Combate Inspirador', icon: '🎺', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Ao usar Inspiração de Bardo, o aliado ganha PVs temporários iguais ao dado de inspiração + Carisma.',
+  }],
+  'sabedoria': [{
+    id: 'bardo-palavras-cortantes', name: 'Palavras Cortantes', icon: '🗯️', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Reação: gaste 1 Inspiração de Bardo e subtraia o dado do ataque/teste/dano de uma criatura a até 18m.',
+  }],
+  'criacao': [{
+    id: 'bardo-improvisar-objetos', name: 'Improvisar Objetos', icon: '🛠️', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'long',
+    description: 'Crie objetos não-mágicos pequenos por meio de magia performática.',
+  }],
+  'eloquencia': [{
+    id: 'bardo-discurso-imponente', name: 'Discurso Imponente', icon: '🎭', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Ao usar Inspiração de Bardo, o resultado mínimo do dado é tratado como um valor médio.',
+  }],
+
+  /* ─── CLÉRIGO ─── */
   'vida': [{
     id: 'clerigo-bencao-preservadora', name: 'Bênção Preservadora', icon: '💚', unlockLevel: 6,
     maxByLevel: onesAt(6), resetOn: 'short',
-    description: 'Quando você usa magia de cura de 1º nível ou superior em outra criatura, ela ganha PVs temporários iguais a 2 + nível da magia.',
+    description: 'Ao usar magia de cura de 1º+ nível em outra criatura, ela ganha PVs temporários iguais a 2 + nível da magia.',
   }],
-  // Mago Evocação — Escultura de Magias (passiva, sem contador) — pulamos
-  // Paladino Devoção — Arma Sagrada
-  'devocao': [{
-    id: 'paladino-arma-sagrada', name: 'Arma Sagrada', icon: '🗡️', unlockLevel: 3,
-    maxByLevel: onesAt(3), resetOn: 'short',
-    description: 'Como ação bônus, imbua sua arma com energia sagrada por 1 minuto. Adiciona seu mod. de Carisma ao dano e emite luz.',
+  'luz': [{
+    id: 'clerigo-chama-protetora', name: 'Chama Protetora', icon: '🕯️', unlockLevel: 1,
+    maxByLevel: [3,3,3,3,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5], resetOn: 'long',
+    description: 'Reação para impor desvantagem em ataque contra você ou aliado próximo (Sab × por dia).',
   }],
-  // Guerreiro Campeão — Atleta Notável (passiva) — pulamos
-  // Guerreiro Mestre de Batalha — Manobras / Dados de Superioridade
-  'mestre de batalha': [{
-    id: 'guerreiro-superioridade', name: 'Dados de Superioridade', icon: '🎲', unlockLevel: 3,
-    maxByLevel: [0,0,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6], resetOn: 'short',
-    description: 'd8 (d10 nív 10, d12 nív 18). Gaste para usar Manobras de Combate (Aparar, Investida, Manobra Distrativa etc.).',
+  'guerra': [{
+    id: 'clerigo-sacerdote-guerreiro', name: 'Ataques de Sacerdote', icon: '⚔️', unlockLevel: 1,
+    maxByLevel: [4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5], resetOn: 'long',
+    description: 'Quando usa Atacar, pode fazer um ataque adicional como ação bônus (Sab × por dia).',
   }],
-  // Bardo Valor — Combate Inspirador (passiva)
-  // Bardo Sabedoria — Palavras Cortantes (usa Inspiração de Bardo)
-  // Druida Lua — Combate Lunar
+  'tempestade': [{
+    id: 'clerigo-trovao-destruicao', name: 'Trovão Destrutivo', icon: '🌩️', unlockLevel: 1,
+    maxByLevel: [3,3,3,3,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5], resetOn: 'long',
+    description: 'Reação ao causar dano: empurra o alvo 3m e causa dano de trovão (Sab × por dia).',
+  }],
+  'enganacao': [{
+    id: 'clerigo-bencao-trapaceiro', name: 'Bênção do Trapaceiro', icon: '🃏', unlockLevel: 1,
+    maxByLevel: ones(1), resetOn: 'long',
+    description: 'Toque que concede vantagem em testes de Furtividade, Trapaça ou Acrobacia por 1h.',
+  }],
+  'natureza': [{
+    id: 'clerigo-bencao-natureza', name: 'Bênção da Natureza', icon: '🌿', unlockLevel: 1,
+    maxByLevel: ones(1), resetOn: 'long',
+    description: 'Aprenda truques e idiomas druídicos. Acolha aliados sob proteção dos espíritos.',
+  }],
+
+  /* ─── DRUIDA ─── */
   'lua': [{
     id: 'druida-combate-lunar', name: 'Combate Lunar', icon: '🌙', unlockLevel: 2,
     maxByLevel: onesAt(2), resetOn: 'short',
-    description: 'Ao usar Transformação Selvagem, pode assumir formas com VD até seu nível ÷ 3 e gastar pontos de magia para recuperar PV em forma animal.',
+    description: 'Em forma de fera, gaste pontos de magia para recuperar PV (1d8 por nível convertido).',
   }],
-  // Feiticeiro Linhagem Dracônica — Resiliência Dracônica (passiva)
-  // Bruxo Pacto da Lâmina — Invocações usam ação, sem contador novo
+  'terra': [{
+    id: 'druida-recuperacao-natural', name: 'Recuperação Natural', icon: '🍃', unlockLevel: 2,
+    maxByLevel: onesAt(2), resetOn: 'long',
+    description: 'Em descanso curto, recupere espaços de magia até metade do nível de druida.',
+  }],
+  'estrelas': [{
+    id: 'druida-forma-estelar', name: 'Forma Estelar', icon: '⭐', unlockLevel: 3,
+    maxByLevel: [0,0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4], resetOn: 'short',
+    description: 'Assuma uma constelação (Arqueiro, Vaca, Dragão) por 10 min para benefícios mágicos.',
+  }],
+  'feiticaria': [{
+    id: 'druida-bestia-magica', name: 'Companheiro Mágico', icon: '🦊', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'long',
+    description: 'Invoque uma fera primordial como ação para lutar ao seu lado.',
+  }],
+
+  /* ─── FEITICEIRO ─── */
+  'linhagem draconica': [{
+    id: 'feiticeiro-resiliencia-draconica', name: 'Resiliência Dracônica', icon: '🐉', unlockLevel: 1,
+    maxByLevel: ones(1), resetOn: 'manual',
+    description: 'PV máximos +1/nível. Pele resistente: CA = 13 + Des sem armadura.',
+  }],
+  'magia selvagem feit': [{
+    id: 'feiticeiro-tides-of-chaos', name: 'Marés do Caos', icon: '🌊', unlockLevel: 1,
+    maxByLevel: ones(1), resetOn: 'long',
+    description: 'Vantagem em 1 ataque/teste/save. Pode disparar Surto de Magia Selvagem.',
+  }],
+  'mago da tempestade': [{
+    id: 'feiticeiro-furia-tempestade', name: 'Fúria da Tempestade', icon: '⚡', unlockLevel: 1,
+    maxByLevel: ones(1), resetOn: 'short',
+    description: 'Ao conjurar magia de 1º+ nível, voe 3m sem provocar oportunidade.',
+  }],
+  'sombras': [{
+    id: 'feiticeiro-olhar-sombras', name: 'Olhar das Sombras', icon: '👁️', unlockLevel: 1,
+    maxByLevel: [3,3,3,3,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5], resetOn: 'short',
+    description: 'Gaste 3 pontos de feitiçaria para enxergar no escuro até 36m por 1h.',
+  }],
+
+  /* ─── GUERREIRO ─── */
+  'campeao': [{
+    id: 'guerreiro-atleta-notavel', name: 'Atleta Notável', icon: '🏃', unlockLevel: 7,
+    maxByLevel: onesAt(7), resetOn: 'manual',
+    description: 'Vantagem passiva em testes de Força, Destreza e Constituição.',
+  }],
+  'mestre de batalha': [{
+    id: 'guerreiro-superioridade', name: 'Dados de Superioridade', icon: '🎲', unlockLevel: 3,
+    maxByLevel: [0,0,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6], resetOn: 'short',
+    description: 'd8 (d10 nív 10, d12 nív 18). Use para Manobras de Combate (Aparar, Investida etc.).',
+  }],
+  'cavaleiro arcano': [{
+    id: 'guerreiro-investida-arma', name: 'Ataque Mágico Bônus', icon: '🪄', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Conjure uma magia que requer 1 ação como ação bônus em vez disso (1×/desc curto).',
+  }],
+  'mestre psionico': [{
+    id: 'guerreiro-energia-psionica', name: 'Energia Psiônica', icon: '🧠', unlockLevel: 3,
+    maxByLevel: [0,0,4,4,6,6,8,8,10,10,12,12,14,14,16,16,18,18,20,22], resetOn: 'long',
+    description: 'd6 (d8 nív 5, d10 nív 11, d12 nív 17). Use para Talentos Psiônicos. Recupera 1 em desc curto.',
+  }],
+
+  /* ─── LADINO ─── */
+  'ladrao': [{
+    id: 'ladino-uso-de-ferramentas', name: 'Uso Rápido de Ferramentas', icon: '🔧', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Use ferramentas e objetos como ação bônus. Subir/descer escalada na metade do tempo.',
+  }],
+  'assassino': [{
+    id: 'ladino-assassinato', name: 'Assassinato', icon: '💀', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Vantagem em ataques contra criaturas que ainda não agiram. Crítico em alvo surpreso.',
+  }],
+  'trapaceiro arcano': [{
+    id: 'ladino-conjuracao-furtiva', name: 'Conjuração Furtiva', icon: '🎩', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'long',
+    description: 'Conjure magias de Mago (Ilusão e Encantamento) sem ser detectado.',
+  }],
+  'alma da alma': [{
+    id: 'ladino-alma-alma', name: 'Inspiração Psiônica', icon: '🔮', unlockLevel: 3,
+    maxByLevel: [0,0,4,4,6,6,8,8,10,10,12,12,14,14,16,16,18,18,20,22], resetOn: 'long',
+    description: 'Dados psiônicos (d6→d12) para reforçar testes e ataques. Recupera 1 em desc curto.',
+  }],
+
+  /* ─── MAGO ─── */
+  'evocacao': [{
+    id: 'mago-escultura-magias', name: 'Escultura de Magias', icon: '🎨', unlockLevel: 2,
+    maxByLevel: onesAt(2), resetOn: 'manual',
+    description: 'Em magias de área, escolhe 1 + nível da magia aliados que automaticamente passam no save.',
+  }],
+  'abjuracao': [{
+    id: 'mago-protetor-arcano', name: 'Protetor Arcano', icon: '🛡️', unlockLevel: 2,
+    maxByLevel: onesAt(2), resetOn: 'long',
+    description: 'Escudo mágico com PVs = 2× nível mago + Int. Recarrega ao conjurar magia de Abjuração.',
+  }],
+  'adivinhacao': [{
+    id: 'mago-presciencia', name: 'Presciência Portentosa', icon: '🔮', unlockLevel: 2,
+    maxByLevel: [0,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3], resetOn: 'long',
+    description: 'Role 2d20 ao acordar; substitua qualquer rolagem por um dos dados (uso por dado).',
+  }],
+  'ilusao': [{
+    id: 'mago-ilusao-aprimorada', name: 'Ilusão Aprimorada', icon: '🎭', unlockLevel: 2,
+    maxByLevel: onesAt(2), resetOn: 'manual',
+    description: 'Modifique magias de ilusão como ação bônus, alterando forma/cor/som por 1 minuto.',
+  }],
+
+  /* ─── MONGE ─── */
+  'caminho da mao aberta': [{
+    id: 'monge-mao-aberta', name: 'Técnicas da Mão Aberta', icon: '✋', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Ao acertar Rajada de Golpes: derrubar, empurrar 4,5m ou negar reação ao alvo.',
+  }],
+  'caminho das sombras': [{
+    id: 'monge-passo-sombras', name: 'Passo das Sombras', icon: '🌑', unlockLevel: 6,
+    maxByLevel: onesAt(6), resetOn: 'short',
+    description: 'Em penumbra/escuridão: bônus para teleportar 18m e ganha vantagem no próximo ataque.',
+  }],
+  'caminho dos quatro elementos': [{
+    id: 'monge-quatro-elementos', name: 'Disciplinas Elementais', icon: '🔥', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Gaste pontos de Ki para conjurar magias elementais (Bola de Fogo, Muralha de Vento etc.).',
+  }],
+  'mercenario': [{
+    id: 'monge-mercenario', name: 'Combate Coordenado', icon: '🤝', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Conceda vantagem a aliado adjacente como ação bônus, ou ataque furtivo coordenado.',
+  }],
+
+  /* ─── PALADINO ─── */
+  'devocao': [{
+    id: 'paladino-arma-sagrada', name: 'Arma Sagrada', icon: '🗡️', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Ação bônus: imbua a arma com energia sagrada — +Carisma no dano e emite luz por 1 min.',
+  }],
+  'antigos': [{
+    id: 'paladino-natureza-repreendedora', name: 'Natureza Repreendedora', icon: '🌳', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Quando uma criatura a 3m falha em save contra sua magia, sofre 4d6 de dano radiante/necrótico.',
+  }],
+  'vinganca': [{
+    id: 'paladino-juramento-inimizade', name: 'Juramento de Inimizade', icon: '🎯', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Vantagem em ataques contra um inimigo escolhido por 1 minuto.',
+  }],
+  'gloria': [{
+    id: 'paladino-poder-heroico', name: 'Poder Heroico', icon: '🏆', unlockLevel: 3,
+    maxByLevel: [0,0,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,5,5], resetOn: 'short',
+    description: 'Conceda dado de Inspiração Heroica (d6) a aliados como ação bônus.',
+  }],
+
+  /* ─── BRUXO ─── */
+  'pacto da lamina': [{
+    id: 'bruxo-arma-do-pacto', name: 'Arma do Pacto', icon: '⚔️', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Conjure uma arma mágica como ação. Use Carisma para ataque/dano. Pode trocá-la livremente.',
+  }],
+  'pacto do tomo': [{
+    id: 'bruxo-tomo-sombrio', name: 'Tomo Sombrio', icon: '📖', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Aprenda 3 truques de qualquer lista de magias e mais com invocações.',
+  }],
+  'pacto da corrente': [{
+    id: 'bruxo-familiar-pacto', name: 'Familiar do Pacto', icon: '🦇', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'manual',
+    description: 'Conjure um familiar especial (imp, pseudodragão, sprite, quasit) com habilidades únicas.',
+  }],
+  'arquifada': [{
+    id: 'bruxo-presenca-feerica', name: 'Presença Feérica', icon: '🧚', unlockLevel: 1,
+    maxByLevel: onesAt(1), resetOn: 'short',
+    description: 'Encante ou amedronte criaturas em cubo de 3m (Sab para resistir).',
+  }],
 };
 
 /** Normalize subclass name: lowercase + remove accents, trim. */
