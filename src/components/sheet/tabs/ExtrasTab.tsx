@@ -266,8 +266,34 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
             className={styles.formInput}
           />
           <div className={styles.iconPickerLabel}>Ícone</div>
+          <div className={styles.emojiToolbar}>
+            <input
+              type="search"
+              value={emojiQuery}
+              onChange={e => setEmojiQuery(e.target.value)}
+              placeholder="Buscar ícone (ex: fogo, cura, dado)"
+              className={styles.emojiSearch}
+              aria-label="Buscar ícone"
+            />
+            <div className={styles.emojiTabs} role="tablist" aria-label="Categorias de ícones">
+              {(['all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={emojiCategory === key}
+                  onClick={() => setEmojiCategory(key)}
+                  className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
+                >
+                  {key === 'all' ? 'Todos' : EMOJI_CATEGORIES[key].label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
-            {ICON_CHOICES.map(emoji => (
+            {filteredEmojis.length === 0 ? (
+              <span className={styles.emojiEmpty}>Nenhum ícone encontrado.</span>
+            ) : filteredEmojis.map(({ e: emoji, kw }) => (
               <button
                 key={emoji}
                 type="button"
@@ -275,7 +301,7 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
                 aria-checked={formIcon === emoji}
                 onClick={() => setFormIcon(emoji)}
                 className={`${styles.iconPickerBtn} ${formIcon === emoji ? styles.iconPickerBtnActive : ''}`}
-                title={emoji}
+                title={kw}
               >{emoji}</button>
             ))}
           </div>
