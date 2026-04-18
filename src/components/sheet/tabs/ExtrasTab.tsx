@@ -18,7 +18,103 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
   manual: 'Manual',
 };
 
-const ICON_CHOICES = ['⚙️', '🔥', '⚡', '💧', '✨', '🌙', '☀️', '⚔️', '🛡️', '🏹', '🗡️', '🎵', '🐺', '🌿', '💀', '❤️', '⏳', '🪄'];
+type EmojiCategoryKey = 'all' | 'combate' | 'magia' | 'natureza' | 'status' | 'objetos';
+
+const EMOJI_CATEGORIES: Record<Exclude<EmojiCategoryKey, 'all'>, { label: string; emojis: { e: string; kw: string }[] }> = {
+  combate: {
+    label: 'Combate',
+    emojis: [
+      { e: '⚔️', kw: 'espadas ataque combate' },
+      { e: '🗡️', kw: 'adaga punhal furtivo' },
+      { e: '🛡️', kw: 'escudo defesa proteção' },
+      { e: '🏹', kw: 'arco flecha distância' },
+      { e: '🪓', kw: 'machado barbaro' },
+      { e: '🔱', kw: 'tridente lança' },
+      { e: '💥', kw: 'explosão crítico impacto' },
+      { e: '🎯', kw: 'alvo mira precisão' },
+      { e: '🥊', kw: 'soco desarmado monge' },
+      { e: '🩸', kw: 'sangue ferida frenesi' },
+      { e: '💀', kw: 'morte caveira veneno' },
+      { e: '🎲', kw: 'dado superioridade manobra' },
+    ],
+  },
+  magia: {
+    label: 'Magia',
+    emojis: [
+      { e: '✨', kw: 'magia faísca cantrip' },
+      { e: '🪄', kw: 'varinha magico' },
+      { e: '🔮', kw: 'orbe adivinhação cristal' },
+      { e: '🌀', kw: 'portal teleporte vento' },
+      { e: '🔥', kw: 'fogo chama bola fúria' },
+      { e: '⚡', kw: 'raio relâmpago canalizar' },
+      { e: '❄️', kw: 'gelo frio cone' },
+      { e: '☀️', kw: 'sol luz radiante paladino' },
+      { e: '🌙', kw: 'lua druida sombra' },
+      { e: '⭐', kw: 'estrela celestial' },
+      { e: '💫', kw: 'tonteira encantamento' },
+      { e: '🌈', kw: 'arco iris prismático' },
+      { e: '☁️', kw: 'nuvem nevoa' },
+      { e: '💧', kw: 'gota agua ki' },
+    ],
+  },
+  natureza: {
+    label: 'Natureza',
+    emojis: [
+      { e: '🌿', kw: 'erva planta druida' },
+      { e: '🍃', kw: 'folha vento' },
+      { e: '🌳', kw: 'arvore floresta' },
+      { e: '🌸', kw: 'flor primavera' },
+      { e: '🐺', kw: 'lobo transformação selvagem' },
+      { e: '🐻', kw: 'urso fera' },
+      { e: '🦅', kw: 'aguia voo familiar' },
+      { e: '🐍', kw: 'cobra veneno' },
+      { e: '🕷️', kw: 'aranha teia' },
+      { e: '🦂', kw: 'escorpião veneno' },
+      { e: '🌊', kw: 'onda mar agua' },
+      { e: '⛰️', kw: 'montanha terra' },
+    ],
+  },
+  status: {
+    label: 'Status',
+    emojis: [
+      { e: '❤️', kw: 'coração vida pv hp' },
+      { e: '💚', kw: 'cura bencao verde' },
+      { e: '💙', kw: 'azul mana' },
+      { e: '💛', kw: 'amarelo inspiração' },
+      { e: '⏳', kw: 'tempo ampulheta concentração' },
+      { e: '🕐', kw: 'relógio rodada turno' },
+      { e: '😴', kw: 'sono descanso' },
+      { e: '👁️', kw: 'olho percepção visão' },
+      { e: '🎭', kw: 'mascara enganação ator' },
+      { e: '🎵', kw: 'música bardo inspiração' },
+      { e: '🦶', kw: 'pe deslocamento movimento' },
+      { e: '🧠', kw: 'mente psíquico int' },
+    ],
+  },
+  objetos: {
+    label: 'Objetos',
+    emojis: [
+      { e: '⚙️', kw: 'engrenagem geral padrão' },
+      { e: '🧪', kw: 'poção alquimia' },
+      { e: '🍶', kw: 'frasco veneno oleo' },
+      { e: '📜', kw: 'pergaminho rolo magia' },
+      { e: '📖', kw: 'livro grimório mago' },
+      { e: '🔑', kw: 'chave abrir' },
+      { e: '🗝️', kw: 'chave antiga segredo' },
+      { e: '🎒', kw: 'mochila inventário' },
+      { e: '💰', kw: 'moeda ouro tesouro' },
+      { e: '💎', kw: 'gema joia' },
+      { e: '🕯️', kw: 'vela luz tocha' },
+      { e: '🔔', kw: 'sino alarme' },
+    ],
+  },
+};
+
+const ALL_EMOJIS = Object.values(EMOJI_CATEGORIES).flatMap(c => c.emojis);
+
+function normalizeText(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
 
 export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState, classId, characterLevel = 1 }: ExtrasTabProps) {
   const [showForm, setShowForm] = useState(false);
@@ -26,6 +122,17 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   const [formMax, setFormMax] = useState('1');
   const [formReset, setFormReset] = useState<CustomCounter['resetOn']>('long');
   const [formIcon, setFormIcon] = useState<string>('⚙️');
+  const [emojiCategory, setEmojiCategory] = useState<EmojiCategoryKey>('all');
+  const [emojiQuery, setEmojiQuery] = useState('');
+
+  const filteredEmojis = (() => {
+    const pool = emojiCategory === 'all'
+      ? ALL_EMOJIS
+      : EMOJI_CATEGORIES[emojiCategory].emojis;
+    const q = normalizeText(emojiQuery);
+    if (!q) return pool;
+    return pool.filter(x => normalizeText(x.kw).includes(q) || x.e.includes(emojiQuery));
+  })();
 
   const allCounters = playState.customCounters ?? [];
 
@@ -159,8 +266,34 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
             className={styles.formInput}
           />
           <div className={styles.iconPickerLabel}>Ícone</div>
+          <div className={styles.emojiToolbar}>
+            <input
+              type="search"
+              value={emojiQuery}
+              onChange={e => setEmojiQuery(e.target.value)}
+              placeholder="Buscar ícone (ex: fogo, cura, dado)"
+              className={styles.emojiSearch}
+              aria-label="Buscar ícone"
+            />
+            <div className={styles.emojiTabs} role="tablist" aria-label="Categorias de ícones">
+              {(['all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={emojiCategory === key}
+                  onClick={() => setEmojiCategory(key)}
+                  className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
+                >
+                  {key === 'all' ? 'Todos' : EMOJI_CATEGORIES[key].label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
-            {ICON_CHOICES.map(emoji => (
+            {filteredEmojis.length === 0 ? (
+              <span className={styles.emojiEmpty}>Nenhum ícone encontrado.</span>
+            ) : filteredEmojis.map(({ e: emoji, kw }) => (
               <button
                 key={emoji}
                 type="button"
@@ -168,7 +301,7 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
                 aria-checked={formIcon === emoji}
                 onClick={() => setFormIcon(emoji)}
                 className={`${styles.iconPickerBtn} ${formIcon === emoji ? styles.iconPickerBtnActive : ''}`}
-                title={emoji}
+                title={kw}
               >{emoji}</button>
             ))}
           </div>

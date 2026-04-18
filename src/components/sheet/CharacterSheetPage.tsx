@@ -1042,6 +1042,7 @@ export function CharacterSheetPage({
                 onUpdatePlayState={onUpdatePlayState}
                 classId={classId}
                 characterLevel={characterLevel}
+                subclassName={subclassName}
               />
             </div>
           </CollapsibleSection>

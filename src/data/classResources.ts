@@ -137,17 +137,97 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
   ],
 };
 
+/* ──────────────────────────────────────────────────────────────
+   Subclass-specific resources
+   Keyed by normalized subclass name (lowercase, sem acento).
+   `unlockLevel` define o nível mínimo em que o recurso aparece.
+   ────────────────────────────────────────────────────────────── */
+export interface SubclassResourceTemplate extends ClassResourceTemplate {
+  unlockLevel: number;
+}
+
+const ones = (n: number) => Array.from({ length: 20 }, (_, i) => (i + 1 >= n ? 1 : 0));
+const onesAt = (start: number, count = 1) =>
+  Array.from({ length: 20 }, (_, i) => (i + 1 >= start ? count : 0));
+
+export const SUBCLASS_RESOURCES: Record<string, SubclassResourceTemplate[]> = {
+  // Bárbaro Berserker — Frenesi (3º nível)
+  'berserker': [{
+    id: 'barbaro-frenesi', name: 'Frenesi', icon: '🩸', unlockLevel: 3,
+    maxByLevel: ones(3), resetOn: 'long',
+    description: 'Durante a fúria, você pode entrar em frenesi: ganha um ataque adicional como ação bônus enquanto a fúria durar. Ao final, sofre 1 nível de exaustão.',
+  }],
+  // Clérigo Vida — Bênção Preservadora (canalização extra)
+  'vida': [{
+    id: 'clerigo-bencao-preservadora', name: 'Bênção Preservadora', icon: '💚', unlockLevel: 6,
+    maxByLevel: onesAt(6), resetOn: 'short',
+    description: 'Quando você usa magia de cura de 1º nível ou superior em outra criatura, ela ganha PVs temporários iguais a 2 + nível da magia.',
+  }],
+  // Mago Evocação — Escultura de Magias (passiva, sem contador) — pulamos
+  // Paladino Devoção — Arma Sagrada
+  'devocao': [{
+    id: 'paladino-arma-sagrada', name: 'Arma Sagrada', icon: '🗡️', unlockLevel: 3,
+    maxByLevel: onesAt(3), resetOn: 'short',
+    description: 'Como ação bônus, imbua sua arma com energia sagrada por 1 minuto. Adiciona seu mod. de Carisma ao dano e emite luz.',
+  }],
+  // Guerreiro Campeão — Atleta Notável (passiva) — pulamos
+  // Guerreiro Mestre de Batalha — Manobras / Dados de Superioridade
+  'mestre de batalha': [{
+    id: 'guerreiro-superioridade', name: 'Dados de Superioridade', icon: '🎲', unlockLevel: 3,
+    maxByLevel: [0,0,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6], resetOn: 'short',
+    description: 'd8 (d10 nív 10, d12 nív 18). Gaste para usar Manobras de Combate (Aparar, Investida, Manobra Distrativa etc.).',
+  }],
+  // Bardo Valor — Combate Inspirador (passiva)
+  // Bardo Sabedoria — Palavras Cortantes (usa Inspiração de Bardo)
+  // Druida Lua — Combate Lunar
+  'lua': [{
+    id: 'druida-combate-lunar', name: 'Combate Lunar', icon: '🌙', unlockLevel: 2,
+    maxByLevel: onesAt(2), resetOn: 'short',
+    description: 'Ao usar Transformação Selvagem, pode assumir formas com VD até seu nível ÷ 3 e gastar pontos de magia para recuperar PV em forma animal.',
+  }],
+  // Feiticeiro Linhagem Dracônica — Resiliência Dracônica (passiva)
+  // Bruxo Pacto da Lâmina — Invocações usam ação, sem contador novo
+};
+
+/** Normalize subclass name: lowercase + remove accents, trim. */
+function normalizeSubclass(name?: string): string {
+  if (!name) return '';
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
 /**
- * Returns default CustomCounter[] for the given class and level,
- * skipping any counter whose max at that level is 0.
+ * Returns default CustomCounter[] for the given class (+ optional subclass) and level.
  */
 export function getDefaultClassCounters(
   classId: string,
   level: number,
+  subclassName?: string,
 ): Array<{ id: string; name: string; current: number; max: number; resetOn: 'short' | 'long' | 'manual'; icon?: string }> {
   const templates = CLASS_RESOURCES[classId] ?? [];
   const lvlIdx = Math.max(0, Math.min(19, level - 1));
-  return templates
+  const base = templates
     .map(t => ({ id: t.id, name: t.name, icon: t.icon, current: t.maxByLevel[lvlIdx], max: t.maxByLevel[lvlIdx], resetOn: t.resetOn }))
     .filter(c => c.max > 0);
+
+  const subKey = normalizeSubclass(subclassName);
+  const subTemplates = subKey ? (SUBCLASS_RESOURCES[subKey] ?? []) : [];
+  const sub = subTemplates
+    .filter(t => level >= t.unlockLevel)
+    .map(t => ({ id: t.id, name: t.name, icon: t.icon, current: t.maxByLevel[lvlIdx], max: t.maxByLevel[lvlIdx], resetOn: t.resetOn }))
+    .filter(c => c.max > 0);
+
+  return [...base, ...sub];
+}
+
+/** Lookup full template (class or subclass) by counter id — used for tooltips. */
+export function getResourceTemplate(counterId: string): ClassResourceTemplate | undefined {
+  for (const list of Object.values(CLASS_RESOURCES)) {
+    const t = list.find(r => r.id === counterId);
+    if (t) return t;
+  }
+  for (const list of Object.values(SUBCLASS_RESOURCES)) {
+    const t = list.find(r => r.id === counterId);
+    if (t) return t;
+  }
+  return undefined;
 }

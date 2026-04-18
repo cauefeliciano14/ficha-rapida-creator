@@ -347,3 +347,57 @@
 @media (max-width: 480px) {
   .iconPicker { grid-template-columns: repeat(6, 1fr); }
 }
+
+/* Emoji toolbar — search + category tabs */
+.emojiToolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.emojiSearch {
+  background: var(--surface-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-bright);
+  padding: 5px 9px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  outline: none;
+  width: 100%;
+}
+.emojiSearch:focus { border-color: var(--color-primary); }
+.emojiSearch::placeholder { color: var(--text-faint); }
+
+.emojiTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.emojiTab {
+  background: var(--surface-row-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-dim);
+  padding: 3px 9px;
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.emojiTab:hover { color: var(--text-bright); border-color: var(--border-default); }
+.emojiTabActive {
+  background: var(--color-primary-faint);
+  border-color: var(--color-primary);
+  color: var(--color-primary-light);
+}
+
+.emojiEmpty {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  text-align: center;
+  padding: 8px 0;
+}
