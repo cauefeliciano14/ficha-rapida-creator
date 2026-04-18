@@ -124,8 +124,29 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   const [formIcon, setFormIcon] = useState<string>('⚙️');
   const [emojiCategory, setEmojiCategory] = useState<EmojiCategoryKey>('all');
   const [emojiQuery, setEmojiQuery] = useState('');
+  const [recentEmojis, setRecentEmojis] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('emoji-recent');
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.slice(0, 8) : [];
+    } catch { return []; }
+  });
+
+  const pushRecentEmoji = (emoji: string) => {
+    setRecentEmojis(prev => {
+      const next = [emoji, ...prev.filter(e => e !== emoji)].slice(0, 8);
+      try { localStorage.setItem('emoji-recent', JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
 
   const filteredEmojis = (() => {
+    if (emojiCategory === 'recent') {
+      return recentEmojis.map(e => {
+        const found = ALL_EMOJIS.find(x => x.e === e);
+        return found ?? { e, kw: e };
+      });
+    }
     const pool = emojiCategory === 'all'
       ? ALL_EMOJIS
       : EMOJI_CATEGORIES[emojiCategory].emojis;
