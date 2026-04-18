@@ -20,7 +20,7 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
 
 type EmojiCategoryKey = 'recent' | 'all' | 'combate' | 'magia' | 'natureza' | 'status' | 'objetos';
 
-const EMOJI_CATEGORIES: Record<Exclude<EmojiCategoryKey, 'all'>, { label: string; emojis: { e: string; kw: string }[] }> = {
+const EMOJI_CATEGORIES: Record<Exclude<EmojiCategoryKey, 'all' | 'recent'>, { label: string; emojis: { e: string; kw: string }[] }> = {
   combate: {
     label: 'Combate',
     emojis: [
