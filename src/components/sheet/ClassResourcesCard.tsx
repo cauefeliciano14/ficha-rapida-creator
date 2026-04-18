@@ -71,6 +71,7 @@ export function ClassResourcesCard({
     onUpdatePlayState(curr => {
       const list = curr.customCounters ?? [];
       let changed = false;
+      const newlyUnlockedDetails: Array<{ id: string; name: string; icon?: string; max: number }> = [];
 
       // 1) Recalculate max for existing counters
       const updated = list.map(c => {
@@ -81,8 +82,10 @@ export function ClassResourcesCard({
         const used = Math.max(0, c.max - c.current);
         const newCurrent = Math.max(0, Math.min(newMax, newMax - used));
         changed = true;
-        // mark as unlocked if it gained slots from 0
-        if (c.max === 0 && newMax > 0) newlyUnlocked.push(c.id);
+        if (c.max === 0 && newMax > 0) {
+          newlyUnlocked.push(c.id);
+          newlyUnlockedDetails.push({ id: c.id, name: c.name, icon: c.icon, max: newMax });
+        }
         return { ...c, max: newMax, current: newCurrent };
       });
 
@@ -96,10 +99,21 @@ export function ClassResourcesCard({
             if (max > 0 && !updated.some(c => c.id === t.id)) {
               updated.push({ id: t.id, name: t.name, icon: t.icon, current: max, max, resetOn: t.resetOn });
               newlyUnlocked.push(t.id);
+              newlyUnlockedDetails.push({ id: t.id, name: t.name, icon: t.icon, max });
               changed = true;
             }
           }
         }
+      }
+
+      // 3) Append to unlock history
+      if (newlyUnlockedDetails.length > 0) {
+        const prevHistory = curr.unlockHistory ?? [];
+        const nextHistory = [
+          ...prevHistory,
+          { level: characterLevel, timestamp: Date.now(), resources: newlyUnlockedDetails },
+        ];
+        return { ...curr, customCounters: updated, unlockHistory: nextHistory };
       }
 
       return changed ? { ...curr, customCounters: updated } : curr;

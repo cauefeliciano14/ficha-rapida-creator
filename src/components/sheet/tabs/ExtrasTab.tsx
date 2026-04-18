@@ -18,9 +18,9 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
   manual: 'Manual',
 };
 
-type EmojiCategoryKey = 'all' | 'combate' | 'magia' | 'natureza' | 'status' | 'objetos';
+type EmojiCategoryKey = 'recent' | 'all' | 'combate' | 'magia' | 'natureza' | 'status' | 'objetos';
 
-const EMOJI_CATEGORIES: Record<Exclude<EmojiCategoryKey, 'all'>, { label: string; emojis: { e: string; kw: string }[] }> = {
+const EMOJI_CATEGORIES: Record<Exclude<EmojiCategoryKey, 'all' | 'recent'>, { label: string; emojis: { e: string; kw: string }[] }> = {
   combate: {
     label: 'Combate',
     emojis: [
@@ -124,8 +124,29 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
   const [formIcon, setFormIcon] = useState<string>('⚙️');
   const [emojiCategory, setEmojiCategory] = useState<EmojiCategoryKey>('all');
   const [emojiQuery, setEmojiQuery] = useState('');
+  const [recentEmojis, setRecentEmojis] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('emoji-recent');
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.slice(0, 8) : [];
+    } catch { return []; }
+  });
+
+  const pushRecentEmoji = (emoji: string) => {
+    setRecentEmojis(prev => {
+      const next = [emoji, ...prev.filter(e => e !== emoji)].slice(0, 8);
+      try { localStorage.setItem('emoji-recent', JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
 
   const filteredEmojis = (() => {
+    if (emojiCategory === 'recent') {
+      return recentEmojis.map(e => {
+        const found = ALL_EMOJIS.find(x => x.e === e);
+        return found ?? { e, kw: e };
+      });
+    }
     const pool = emojiCategory === 'all'
       ? ALL_EMOJIS
       : EMOJI_CATEGORIES[emojiCategory].emojis;
@@ -276,30 +297,40 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
               aria-label="Buscar ícone"
             />
             <div className={styles.emojiTabs} role="tablist" aria-label="Categorias de ícones">
-              {(['all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={emojiCategory === key}
-                  onClick={() => setEmojiCategory(key)}
-                  className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
-                >
-                  {key === 'all' ? 'Todos' : EMOJI_CATEGORIES[key].label}
-                </button>
-              ))}
+              {(['recent', 'all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => {
+                const label =
+                  key === 'recent' ? `Recentes${recentEmojis.length ? ` (${recentEmojis.length})` : ''}` :
+                  key === 'all' ? 'Todos' :
+                  EMOJI_CATEGORIES[key].label;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    role="tab"
+                    aria-selected={emojiCategory === key}
+                    onClick={() => setEmojiCategory(key)}
+                    className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
             {filteredEmojis.length === 0 ? (
-              <span className={styles.emojiEmpty}>Nenhum ícone encontrado.</span>
+              <span className={styles.emojiEmpty}>
+                {emojiCategory === 'recent'
+                  ? 'Nenhum ícone recente ainda. Escolha um abaixo para começar.'
+                  : 'Nenhum ícone encontrado.'}
+              </span>
             ) : filteredEmojis.map(({ e: emoji, kw }) => (
               <button
                 key={emoji}
                 type="button"
                 role="radio"
                 aria-checked={formIcon === emoji}
-                onClick={() => setFormIcon(emoji)}
+                onClick={() => { setFormIcon(emoji); pushRecentEmoji(emoji); }}
                 className={`${styles.iconPickerBtn} ${formIcon === emoji ? styles.iconPickerBtnActive : ''}`}
                 title={kw}
               >{emoji}</button>

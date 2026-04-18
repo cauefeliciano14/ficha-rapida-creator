@@ -59,6 +59,12 @@ export interface CharacterPlayState {
   concentratingOn: string | null;
   /** Nível de exaustão (0-10 nas regras 2024) */
   exhaustionLevel: number;
+  /** Histórico de recursos desbloqueados ao subir de nível */
+  unlockHistory?: Array<{
+    level: number;
+    timestamp: number;
+    resources: Array<{ id: string; name: string; icon?: string; max: number }>;
+  }>;
 }
 
 export const DEFAULT_PLAY_STATE: CharacterPlayState = {

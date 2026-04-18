@@ -25,6 +25,7 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
+import { LevelUnlockHistoryModal } from './LevelUnlockHistoryModal';
 import { AddClassModal } from './AddClassModal';
 import {
   SKILL_DESCRIPTIONS,
@@ -216,6 +217,7 @@ export function CharacterSheetPage({
   const [xpInput, setXpInput] = useState('');
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [showAddClass, setShowAddClass] = useState(false);
+  const [showUnlockHistory, setShowUnlockHistory] = useState(false);
   const currentXP = playState.xp ?? 0;
   const xpLevel = getLevelFromXP(currentXP);
   const xpCurrentFloor = XP_TABLE[Math.min(xpLevel - 1, 19)] ?? 0;
@@ -1036,7 +1038,29 @@ export function CharacterSheetPage({
 
           <CollapsibleSection title="Recursos de Classe" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
-              <div className={styles.sectionHeader}>RECURSOS DE CLASSE ⚙</div>
+              <div className={styles.sectionHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <span>RECURSOS DE CLASSE ⚙</span>
+                <button
+                  type="button"
+                  onClick={() => setShowUnlockHistory(true)}
+                  title="Ver histórico de desbloqueios por nível"
+                  aria-label="Histórico de desbloqueios"
+                  style={{
+                    background: 'transparent',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-dim)',
+                    padding: '2px 8px',
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                  }}
+                >
+                  📜 Histórico {(playState.unlockHistory?.length ?? 0) > 0 && `(${playState.unlockHistory!.length})`}
+                </button>
+              </div>
               <ClassResourcesCard
                 playState={playState}
                 onUpdatePlayState={onUpdatePlayState}
@@ -1318,6 +1342,16 @@ export function CharacterSheetPage({
           }
           return acc;
         }, [])}
+      />
+
+      <LevelUnlockHistoryModal
+        open={showUnlockHistory}
+        onClose={() => setShowUnlockHistory(false)}
+        playState={playState}
+        onClear={() => {
+          onUpdatePlayState(prev => ({ ...prev, unlockHistory: [] }));
+          setShowUnlockHistory(false);
+        }}
       />
 
       {onSetLevel && classId && (
