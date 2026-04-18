@@ -297,18 +297,24 @@ export function ExtrasTab({ extras, onUpdateExtras, playState, onUpdatePlayState
               aria-label="Buscar ícone"
             />
             <div className={styles.emojiTabs} role="tablist" aria-label="Categorias de ícones">
-              {(['all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={emojiCategory === key}
-                  onClick={() => setEmojiCategory(key)}
-                  className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
-                >
-                  {key === 'all' ? 'Todos' : EMOJI_CATEGORIES[key].label}
-                </button>
-              ))}
+              {(['recent', 'all', 'combate', 'magia', 'natureza', 'status', 'objetos'] as EmojiCategoryKey[]).map(key => {
+                const label =
+                  key === 'recent' ? `Recentes${recentEmojis.length ? ` (${recentEmojis.length})` : ''}` :
+                  key === 'all' ? 'Todos' :
+                  EMOJI_CATEGORIES[key].label;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    role="tab"
+                    aria-selected={emojiCategory === key}
+                    onClick={() => setEmojiCategory(key)}
+                    className={`${styles.emojiTab} ${emojiCategory === key ? styles.emojiTabActive : ''}`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className={styles.iconPicker} role="radiogroup" aria-label="Escolher ícone">
