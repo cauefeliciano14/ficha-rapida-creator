@@ -1344,8 +1344,16 @@ export function CharacterSheetPage({
         }, [])}
       />
 
-      {onSetLevel && classId && (
-        <LevelUpModal
+      <LevelUnlockHistoryModal
+        open={showUnlockHistory}
+        onClose={() => setShowUnlockHistory(false)}
+        playState={playState}
+        onClear={() => {
+          onUpdatePlayState(prev => ({ ...prev, unlockHistory: [] }));
+          setShowUnlockHistory(false);
+        }}
+      />
+
           isOpen={showLevelUp}
           onClose={() => setShowLevelUp(false)}
           onConfirm={(newLevel, levelUpClassId) => {
