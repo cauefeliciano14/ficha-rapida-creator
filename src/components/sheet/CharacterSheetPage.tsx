@@ -1354,6 +1354,8 @@ export function CharacterSheetPage({
         }}
       />
 
+      {onSetLevel && classId && (
+        <LevelUpModal
           isOpen={showLevelUp}
           onClose={() => setShowLevelUp(false)}
           onConfirm={(newLevel, levelUpClassId) => {
