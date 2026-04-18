@@ -1,6 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CharacterPlayState, CustomCounter } from '../../types/playState';
-import { getDefaultClassCounters, CLASS_RESOURCES } from '../../data/classResources';
+import {
+  getDefaultClassCounters,
+  CLASS_RESOURCES,
+  SUBCLASS_RESOURCES,
+  getResourceTemplate,
+} from '../../data/classResources';
 import styles from './ClassResourcesCard.module.css';
 
 interface ClassResourcesCardProps {
@@ -8,6 +13,7 @@ interface ClassResourcesCardProps {
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
   classId?: string;
   characterLevel?: number;
+  subclassName?: string;
 }
 
 const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
@@ -16,52 +22,96 @@ const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
   manual: 'Manual',
 };
 
+function normalizeSubclass(name?: string): string {
+  if (!name) return '';
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
 export function ClassResourcesCard({
   playState,
   onUpdatePlayState,
   classId,
   characterLevel = 1,
+  subclassName,
 }: ClassResourcesCardProps) {
   const counters = playState.customCounters ?? [];
-  const defaultCounters = classId ? getDefaultClassCounters(classId, characterLevel) : [];
+  const defaultCounters = classId
+    ? getDefaultClassCounters(classId, characterLevel, subclassName)
+    : [];
   const knownIds = new Set(defaultCounters.map(d => d.id));
-  const templates = classId ? (CLASS_RESOURCES[classId] ?? []) : [];
+  const subKey = normalizeSubclass(subclassName);
+  const allTemplates = [
+    ...(classId ? (CLASS_RESOURCES[classId] ?? []) : []),
+    ...(subKey ? (SUBCLASS_RESOURCES[subKey] ?? []) : []),
+  ];
 
-  // Only show class-derived counters here (custom ones live in Extras tab)
   const classCounters = counters.filter(c => knownIds.has(c.id));
   const missingDefaults = defaultCounters.filter(d => !counters.some(c => c.id === d.id));
 
+  // Newly-unlocked badge state: ids unlocked by latest level-up (auto-cleared after ~5s)
+  const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set());
+
   /* ─────────────────────────────────────────────────────────────
-     Auto-sync max with current level (preserves "used" amount)
-     - When level ↑: extra slots are added as available
-     - When level ↓: cap current to new max
+     Auto-sync: detect level changes
+     - Update existing counter `max` (preserves used amount)
+     - Add subclass-unlocked counters when level threshold reached
      ───────────────────────────────────────────────────────────── */
-  const lastSyncRef = useRef<{ classId?: string; level: number } | null>(null);
+  const lastSyncRef = useRef<{ classId?: string; subKey: string; level: number } | null>(null);
   useEffect(() => {
     if (!classId) return;
     const prev = lastSyncRef.current;
-    // Skip first run for stability (only sync on subsequent level changes)
-    if (prev && prev.classId === classId && prev.level === characterLevel) return;
-    lastSyncRef.current = { classId, level: characterLevel };
-    if (!prev) return; // initial mount: don't touch user state
+    if (prev && prev.classId === classId && prev.subKey === subKey && prev.level === characterLevel) return;
+    const wasInitial = !prev;
+    const prevLevel = prev?.level ?? characterLevel;
+    lastSyncRef.current = { classId, subKey, level: characterLevel };
+    if (wasInitial) return;
+
+    const newlyUnlocked: string[] = [];
 
     onUpdatePlayState(curr => {
       const list = curr.customCounters ?? [];
       let changed = false;
-      const next = list.map(c => {
-        const tmpl = templates.find(t => t.id === c.id);
+
+      // 1) Recalculate max for existing counters
+      const updated = list.map(c => {
+        const tmpl = allTemplates.find(t => t.id === c.id);
         if (!tmpl) return c;
         const newMax = tmpl.maxByLevel[Math.max(0, Math.min(19, characterLevel - 1))];
         if (newMax === c.max) return c;
         const used = Math.max(0, c.max - c.current);
         const newCurrent = Math.max(0, Math.min(newMax, newMax - used));
         changed = true;
+        // mark as unlocked if it gained slots from 0
+        if (c.max === 0 && newMax > 0) newlyUnlocked.push(c.id);
         return { ...c, max: newMax, current: newCurrent };
       });
-      return changed ? { ...curr, customCounters: next } : curr;
+
+      // 2) Auto-add subclass counters that just crossed unlockLevel (if leveling up)
+      if (characterLevel > prevLevel && subKey) {
+        const subTemplates = SUBCLASS_RESOURCES[subKey] ?? [];
+        const lvlIdx = Math.max(0, Math.min(19, characterLevel - 1));
+        for (const t of subTemplates) {
+          if (t.unlockLevel > prevLevel && t.unlockLevel <= characterLevel) {
+            const max = t.maxByLevel[lvlIdx];
+            if (max > 0 && !updated.some(c => c.id === t.id)) {
+              updated.push({ id: t.id, name: t.name, icon: t.icon, current: max, max, resetOn: t.resetOn });
+              newlyUnlocked.push(t.id);
+              changed = true;
+            }
+          }
+        }
+      }
+
+      return changed ? { ...curr, customCounters: updated } : curr;
     });
+
+    if (newlyUnlocked.length) {
+      setUnlockedIds(new Set(newlyUnlocked));
+      const t = setTimeout(() => setUnlockedIds(new Set()), 5000);
+      return () => clearTimeout(t);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, characterLevel]);
+  }, [classId, characterLevel, subKey]);
 
   const handleAddClassResources = () => {
     if (missingDefaults.length === 0) return;
@@ -89,6 +139,14 @@ export function ClassResourcesCard({
     }));
   };
 
+  const dismissBadge = (id: string) => {
+    setUnlockedIds(prev => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  };
+
   if (!classId || (defaultCounters.length === 0 && classCounters.length === 0)) {
     return null;
   }
@@ -97,11 +155,24 @@ export function ClassResourcesCard({
     <div className={styles.list}>
       {classCounters.map(ctr => {
         const used = ctr.max - ctr.current;
-        const tmpl = templates.find(t => t.id === ctr.id);
+        const tmpl = getResourceTemplate(ctr.id);
         const icon = ctr.icon ?? tmpl?.icon;
         const rules = tmpl?.description;
+        const isNewlyUnlocked = unlockedIds.has(ctr.id);
         return (
-          <div key={ctr.id} className={styles.card}>
+          <div key={ctr.id} className={`${styles.card} ${isNewlyUnlocked ? styles.cardUnlocked : ''}`}>
+            {isNewlyUnlocked && (
+              <button
+                type="button"
+                className={styles.unlockBadge}
+                onClick={() => dismissBadge(ctr.id)}
+                title="Clique para fechar"
+                aria-label="Novo recurso desbloqueado"
+              >
+                <span className={styles.unlockSparkle} aria-hidden>✨</span>
+                Novo recurso desbloqueado!
+              </button>
+            )}
             <div className={styles.top}>
               {icon && (
                 <span
