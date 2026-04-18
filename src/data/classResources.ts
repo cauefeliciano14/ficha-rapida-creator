@@ -8,7 +8,7 @@ export interface ClassResourceTemplate {
   name: string;
   /** Fixed max OR array[20] where index = level-1 */
   maxByLevel: number[];
-  resetOn: 'short' | 'long';
+  resetOn: 'short' | 'long' | 'manual';
   description?: string;
   /** Emoji/glyph icon shown next to the resource name */
   icon?: string;
