@@ -29,14 +29,18 @@ export function CreatorShell() {
     character,
     setCharacter,
     selectedBackground,
+    setSelectedBackground,
     attrChoiceMode,
+    setAttrChoiceMode,
     attrPlus1,
+    setAttrPlus1,
     attrPlus2,
+    setAttrPlus2,
     characterLevel,
     derivedSheet,
     playState,
     setPlayState,
-    
+
     validationResult,
     activeCharacterId,
     undo,
@@ -46,7 +50,7 @@ export function CreatorShell() {
   } = useCharacter();
   const {
     currentStep,
-    
+
     isPortraitModalOpen,
     setIsPortraitModalOpen,
     sidebarCollapsed,
@@ -56,6 +60,21 @@ export function CreatorShell() {
 
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
+
+  const handleQuickBuild = useCallback(() => {
+    if (!character.characterClass) {
+      goToStep(0);
+      return;
+    }
+    const result = applyQuickBuild({ character, selectedBackground });
+    setCharacter(result.character);
+    if (result.selectedBackground !== selectedBackground) {
+      setSelectedBackground(result.selectedBackground);
+    }
+    if (result.attrChoiceMode) setAttrChoiceMode(result.attrChoiceMode);
+    if (result.attrPlus1) setAttrPlus1(result.attrPlus1);
+    if (result.attrPlus2) setAttrPlus2(result.attrPlus2);
+  }, [character, selectedBackground, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
   const isMobile = useMediaQuery('(max-width: 779px)');
   const prevStepRef = useRef(currentStep);
   const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
