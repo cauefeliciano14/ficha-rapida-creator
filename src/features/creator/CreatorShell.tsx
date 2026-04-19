@@ -20,6 +20,8 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
 import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
 import mobileStyles from './mobile/MobileNavBar.module.css';
+import { GlobalProgressBar } from './progress/GlobalProgressBar';
+import { applyQuickBuild } from '../../utils/quickBuild';
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
