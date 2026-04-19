@@ -275,6 +275,15 @@ export function CreatorShell() {
         </>
       )}
 
+      {isQuizOpen && (
+        <Suspense fallback={null}>
+          <ArchetypeQuizModal
+            onClose={() => setIsQuizOpen(false)}
+            onPickClass={handleQuizPickClass}
+          />
+        </Suspense>
+      )}
+
       {isPortraitModalOpen && (
         <Suspense fallback={null}>
           <PortraitPickerModal
