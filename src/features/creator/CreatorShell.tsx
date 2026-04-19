@@ -63,6 +63,8 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
 
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
   const handleQuickBuild = useCallback(() => {
     if (!character.characterClass) {
       goToStep(0);
@@ -77,6 +79,21 @@ export function CreatorShell() {
     if (result.attrPlus1) setAttrPlus1(result.attrPlus1);
     if (result.attrPlus2) setAttrPlus2(result.attrPlus2);
   }, [character, selectedBackground, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
+
+  const handleRandomize = useCallback(() => {
+    const result = buildRandomCharacter(character);
+    setCharacter(result.character);
+    setSelectedBackground(result.selectedBackground);
+    setAttrChoiceMode(result.attrChoiceMode);
+    setAttrPlus1(result.attrPlus1);
+    setAttrPlus2(result.attrPlus2);
+    goToStep(0);
+  }, [character, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
+
+  const handleQuizPickClass = useCallback((cls: { id: string; name: string; description: string }) => {
+    setCharacter((prev) => ({ ...prev, characterClass: cls }));
+    goToStep(0);
+  }, [setCharacter, goToStep]);
   const isMobile = useMediaQuery('(max-width: 779px)');
   const prevStepRef = useRef(currentStep);
   const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
