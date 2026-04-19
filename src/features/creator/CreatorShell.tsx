@@ -22,6 +22,8 @@ import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
 import mobileStyles from './mobile/MobileNavBar.module.css';
 import { GlobalProgressBar } from './progress/GlobalProgressBar';
 import { applyQuickBuild } from '../../utils/quickBuild';
+import { buildRandomCharacter } from '../../utils/randomCharacter';
+const ArchetypeQuizModal = lazy(() => import('./quiz/ArchetypeQuizModal').then(m => ({ default: m.ArchetypeQuizModal })));
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
