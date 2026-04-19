@@ -20,6 +20,8 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
 import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
 import mobileStyles from './mobile/MobileNavBar.module.css';
+import { GlobalProgressBar } from './progress/GlobalProgressBar';
+import { applyQuickBuild } from '../../utils/quickBuild';
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
@@ -27,14 +29,18 @@ export function CreatorShell() {
     character,
     setCharacter,
     selectedBackground,
+    setSelectedBackground,
     attrChoiceMode,
+    setAttrChoiceMode,
     attrPlus1,
+    setAttrPlus1,
     attrPlus2,
+    setAttrPlus2,
     characterLevel,
     derivedSheet,
     playState,
     setPlayState,
-    
+
     validationResult,
     activeCharacterId,
     undo,
@@ -44,7 +50,7 @@ export function CreatorShell() {
   } = useCharacter();
   const {
     currentStep,
-    
+
     isPortraitModalOpen,
     setIsPortraitModalOpen,
     sidebarCollapsed,
@@ -54,6 +60,21 @@ export function CreatorShell() {
 
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
+
+  const handleQuickBuild = useCallback(() => {
+    if (!character.characterClass) {
+      goToStep(0);
+      return;
+    }
+    const result = applyQuickBuild({ character, selectedBackground });
+    setCharacter(result.character);
+    if (result.selectedBackground !== selectedBackground) {
+      setSelectedBackground(result.selectedBackground);
+    }
+    if (result.attrChoiceMode) setAttrChoiceMode(result.attrChoiceMode);
+    if (result.attrPlus1) setAttrPlus1(result.attrPlus1);
+    if (result.attrPlus2) setAttrPlus2(result.attrPlus2);
+  }, [character, selectedBackground, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
   const isMobile = useMediaQuery('(max-width: 779px)');
   const prevStepRef = useRef(currentStep);
   const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
@@ -183,6 +204,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
           <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
@@ -218,6 +240,7 @@ export function CreatorShell() {
             <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
             <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
           </div>
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
