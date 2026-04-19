@@ -7,11 +7,13 @@ import styles from './GlobalProgressBar.module.css';
 interface Props {
   onQuickBuild?: () => void;
   quickBuildDisabled?: boolean;
+  onOpenQuiz?: () => void;
+  onRandomize?: () => void;
 }
 
 const STEP_ABBR = ['Cl', 'Or', 'Es', 'At', 'Eq'];
 
-export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled }: Props) {
+export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize }: Props) {
   const { character, selectedBackground, validationResult } = useCharacter();
   const { currentStep, goToStep } = useWizard();
 
@@ -67,6 +69,28 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled }: Props) {
         </span>
       ) : (
         <span className={styles.allDone}>✓ Tudo certo</span>
+      )}
+
+      {onOpenQuiz && (
+        <button
+          type="button"
+          className={styles.quizBtn}
+          onClick={onOpenQuiz}
+          title="Quiz de 4 perguntas que sugere a classe ideal"
+        >
+          🧭 Quiz
+        </button>
+      )}
+
+      {onRandomize && (
+        <button
+          type="button"
+          className={styles.randomBtn}
+          onClick={onRandomize}
+          title="Gera um personagem 100% aleatório válido"
+        >
+          🎲
+        </button>
       )}
 
       {onQuickBuild && (
