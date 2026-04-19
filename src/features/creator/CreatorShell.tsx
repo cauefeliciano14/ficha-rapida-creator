@@ -204,6 +204,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
           <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
@@ -239,6 +240,7 @@ export function CreatorShell() {
             <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
             <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
           </div>
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
