@@ -22,6 +22,8 @@ import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
 import mobileStyles from './mobile/MobileNavBar.module.css';
 import { GlobalProgressBar } from './progress/GlobalProgressBar';
 import { applyQuickBuild } from '../../utils/quickBuild';
+import { buildRandomCharacter } from '../../utils/randomCharacter';
+const ArchetypeQuizModal = lazy(() => import('./quiz/ArchetypeQuizModal').then(m => ({ default: m.ArchetypeQuizModal })));
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 
 export function CreatorShell() {
@@ -61,6 +63,8 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
 
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
   const handleQuickBuild = useCallback(() => {
     if (!character.characterClass) {
       goToStep(0);
@@ -75,6 +79,21 @@ export function CreatorShell() {
     if (result.attrPlus1) setAttrPlus1(result.attrPlus1);
     if (result.attrPlus2) setAttrPlus2(result.attrPlus2);
   }, [character, selectedBackground, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
+
+  const handleRandomize = useCallback(() => {
+    const result = buildRandomCharacter(character);
+    setCharacter(result.character);
+    setSelectedBackground(result.selectedBackground);
+    setAttrChoiceMode(result.attrChoiceMode);
+    setAttrPlus1(result.attrPlus1);
+    setAttrPlus2(result.attrPlus2);
+    goToStep(0);
+  }, [character, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
+
+  const handleQuizPickClass = useCallback((cls: { id: string; name: string; description: string }) => {
+    setCharacter((prev) => ({ ...prev, characterClass: cls }));
+    goToStep(0);
+  }, [setCharacter, goToStep]);
   const isMobile = useMediaQuery('(max-width: 779px)');
   const prevStepRef = useRef(currentStep);
   const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
@@ -204,7 +223,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
           <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
@@ -240,7 +259,7 @@ export function CreatorShell() {
             <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
             <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
           </div>
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
@@ -254,6 +273,15 @@ export function CreatorShell() {
             </motion.div>
           </AnimatePresence>
         </>
+      )}
+
+      {isQuizOpen && (
+        <Suspense fallback={null}>
+          <ArchetypeQuizModal
+            onClose={() => setIsQuizOpen(false)}
+            onPickClass={handleQuizPickClass}
+          />
+        </Suspense>
       )}
 
       {isPortraitModalOpen && (

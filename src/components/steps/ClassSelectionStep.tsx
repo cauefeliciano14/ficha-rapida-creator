@@ -9,6 +9,7 @@ import { getClassHPData } from '../../rules/data/classRules';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
+import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
 import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
 
@@ -233,6 +234,21 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                   {cardMeta.primaryAttribute ? (
                     <span className={styles.classMetaChip}>{cardMeta.primaryAttribute}</span>
                   ) : null}
+                  {CLASS_ROLE_META[cls.id]?.roles.map((role) => (
+                    <span
+                      key={role}
+                      className={styles.classMetaChip}
+                      style={{
+                        background: `${ROLE_COLORS[role]}22`,
+                        borderColor: `${ROLE_COLORS[role]}55`,
+                        color: ROLE_COLORS[role],
+                        fontWeight: 600,
+                      }}
+                      title={`Papel: ${role}`}
+                    >
+                      {role}
+                    </span>
+                  ))}
                   {isClassSynergyForBg(selectedBackground?.id, cls.id) && !isSelected && <RecommendedBadge />}
                 </div>
               </button>
