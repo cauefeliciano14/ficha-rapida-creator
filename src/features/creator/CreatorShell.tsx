@@ -25,6 +25,9 @@ import { applyQuickBuild } from '../../utils/quickBuild';
 import { buildRandomCharacter } from '../../utils/randomCharacter';
 const ArchetypeQuizModal = lazy(() => import('./quiz/ArchetypeQuizModal').then(m => ({ default: m.ArchetypeQuizModal })));
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
+const BuildTemplatesModal = lazy(() => import('./templates/BuildTemplatesModal').then(m => ({ default: m.BuildTemplatesModal })));
+import { applyBuildTemplate } from '../../utils/buildTemplate';
+import type { BuildTemplate } from '../../data/buildTemplates';
 
 export function CreatorShell() {
   const {
@@ -64,6 +67,17 @@ export function CreatorShell() {
   useCompletionCelebration(validationResult.isValid);
 
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
+
+  const handlePickTemplate = useCallback((tpl: BuildTemplate) => {
+    const result = applyBuildTemplate(tpl, character);
+    setCharacter(result.character);
+    setSelectedBackground(result.selectedBackground);
+    setAttrChoiceMode(result.attrChoiceMode);
+    setAttrPlus1(result.attrPlus1);
+    setAttrPlus2(result.attrPlus2);
+    goToStep(0);
+  }, [character, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
 
   const handleQuickBuild = useCallback(() => {
     if (!character.characterClass) {
