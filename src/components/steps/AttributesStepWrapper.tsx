@@ -4,6 +4,8 @@ import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
+import { SmartHints } from "../ui/SmartHints";
+import { computeSmartHints } from "../../utils/smartHints";
 
 export const AttributesStepWrapper: React.FC = () => {
   const {
@@ -77,6 +79,8 @@ export const AttributesStepWrapper: React.FC = () => {
           getAttributeBonus={getAttributeBonus}
           selectedBackground={selectedBackground}
         />
+
+        <SmartHints hints={computeSmartHints(character, selectedBackground)} />
       </div>
     </StepLayout>
   );
