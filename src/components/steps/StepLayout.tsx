@@ -3,6 +3,7 @@ import { ValidationBanner } from '../ValidationBanner';
 import { StepSidebar } from '../../features/creator/navigation/StepSidebar';
 import { CharacterSummaryPanel } from '../../features/creator/summary/CharacterSummaryPanel';
 import { ChoiceImpact, type ChoiceImpactSection } from '../../features/creator/ChoiceImpact';
+import { WhyMatters } from '../ui/WhyMatters';
 import shellStyles from '../../features/creator/layout/CreatorShell.module.css';
 import styles from './StepLayout.module.css';
 import { useCharacter } from '../../context/CharacterContext';
@@ -170,6 +171,11 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
                   onReset={onReset}
                 />
                 <hr className={styles.separator} style={{ marginBottom: hrMarginBottom }} />
+                {impactSection && (
+                  <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                    <WhyMatters contextKey={impactSection} variant="link" />
+                  </div>
+                )}
               </>
             )}
             {errors && errors.length > 0 && <ValidationBanner errors={errors} />}

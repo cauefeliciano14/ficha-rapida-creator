@@ -25,6 +25,9 @@ import { applyQuickBuild } from '../../utils/quickBuild';
 import { buildRandomCharacter } from '../../utils/randomCharacter';
 const ArchetypeQuizModal = lazy(() => import('./quiz/ArchetypeQuizModal').then(m => ({ default: m.ArchetypeQuizModal })));
 const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
+const BuildTemplatesModal = lazy(() => import('./templates/BuildTemplatesModal').then(m => ({ default: m.BuildTemplatesModal })));
+import { applyBuildTemplate } from '../../utils/buildTemplate';
+import type { BuildTemplate } from '../../data/buildTemplates';
 
 export function CreatorShell() {
   const {
@@ -64,6 +67,17 @@ export function CreatorShell() {
   useCompletionCelebration(validationResult.isValid);
 
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
+
+  const handlePickTemplate = useCallback((tpl: BuildTemplate) => {
+    const result = applyBuildTemplate(tpl, character);
+    setCharacter(result.character);
+    setSelectedBackground(result.selectedBackground);
+    setAttrChoiceMode(result.attrChoiceMode);
+    setAttrPlus1(result.attrPlus1);
+    setAttrPlus2(result.attrPlus2);
+    goToStep(0);
+  }, [character, setCharacter, setSelectedBackground, setAttrChoiceMode, setAttrPlus1, setAttrPlus2, goToStep]);
 
   const handleQuickBuild = useCallback(() => {
     if (!character.characterClass) {
@@ -223,7 +237,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
           <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
@@ -259,7 +273,7 @@ export function CreatorShell() {
             <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
             <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
           </div>
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
@@ -273,6 +287,15 @@ export function CreatorShell() {
             </motion.div>
           </AnimatePresence>
         </>
+      )}
+
+      {isTemplatesOpen && (
+        <Suspense fallback={null}>
+          <BuildTemplatesModal
+            onClose={() => setIsTemplatesOpen(false)}
+            onPick={handlePickTemplate}
+          />
+        </Suspense>
       )}
 
       {isQuizOpen && (

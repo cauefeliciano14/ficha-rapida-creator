@@ -9,11 +9,12 @@ interface Props {
   quickBuildDisabled?: boolean;
   onOpenQuiz?: () => void;
   onRandomize?: () => void;
+  onOpenTemplates?: () => void;
 }
 
 const STEP_ABBR = ['Cl', 'Or', 'Es', 'At', 'Eq'];
 
-export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize }: Props) {
+export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize, onOpenTemplates }: Props) {
   const { character, selectedBackground, validationResult } = useCharacter();
   const { currentStep, goToStep } = useWizard();
 
@@ -69,6 +70,17 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz
         </span>
       ) : (
         <span className={styles.allDone}>✓ Tudo certo</span>
+      )}
+
+      {onOpenTemplates && (
+        <button
+          type="button"
+          className={styles.templatesBtn}
+          onClick={onOpenTemplates}
+          title="Personagens prontos em 1 clique"
+        >
+          📋 Templates
+        </button>
       )}
 
       {onOpenQuiz && (
