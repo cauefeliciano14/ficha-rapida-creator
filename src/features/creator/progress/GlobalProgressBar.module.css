@@ -162,7 +162,7 @@
   box-shadow: none;
 }
 
-.quizBtn, .randomBtn {
+.quizBtn, .randomBtn, .templatesBtn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -195,6 +195,13 @@
   background: rgba(251, 191, 36, 0.14);
   border-color: rgba(251, 191, 36, 0.45);
   transform: translateY(-1px) rotate(8deg);
+}
+
+.templatesBtn:hover {
+  background: rgba(255, 213, 74, 0.14);
+  border-color: rgba(255, 213, 74, 0.5);
+  color: #ffd54a;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 779px) {
