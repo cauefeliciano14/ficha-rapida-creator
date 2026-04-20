@@ -423,6 +423,22 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
         itemA={buildComparisonItem(compareIds[0])}
         itemB={buildComparisonItem(compareIds[1])}
       />
+
+      {hoverClassId && hoverRect && (() => {
+        const hoverCls = bgData.classes.find((c: any) => c.id === hoverClassId);
+        const hoverMeta = getClassCardMeta(hoverClassId);
+        if (!hoverCls) return null;
+        return (
+          <ClassHeroPreview
+            classId={hoverClassId}
+            className={hoverCls.name}
+            description={hoverCls.description}
+            hitDie={hoverMeta.hitDie}
+            primaryAttribute={hoverMeta.primaryAttribute}
+            anchorRect={hoverRect}
+          />
+        );
+      })()}
     </StepLayout>
   );
 };
