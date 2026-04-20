@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
 import { FeatureExpandable } from '../FeatureExpandable';
@@ -12,6 +12,10 @@ import { isClassSynergyForBg } from '../../data/classSynergies';
 import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
 import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
+import { ClassHeroPreview } from '../ui/ClassHeroPreview';
+import { SmartHints } from '../ui/SmartHints';
+import { computeSmartHints } from '../../utils/smartHints';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 export interface ClassSelectionStepProps {
   languagesData?: unknown;
