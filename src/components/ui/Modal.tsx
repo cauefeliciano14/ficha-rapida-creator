@@ -24,14 +24,6 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const isMobile = useMediaQuery('(max-width: 779px)');
 
-  if (isMobile) {
-    return (
-      <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
-        {children}
-      </BottomSheet>
-    );
-  }
-
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') { onClose(); return; }
@@ -55,7 +47,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   );
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isMobile) return;
     previousFocusRef.current = document.activeElement as HTMLElement;
     document.addEventListener('keydown', handleKeyDown);
 
@@ -70,7 +62,15 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       // Restore focus when modal closes
       previousFocusRef.current?.focus();
     };
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen, isMobile, handleKeyDown]);
+
+  if (isMobile) {
+    return (
+      <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
+        {children}
+      </BottomSheet>
+    );
+  }
 
   if (!isOpen) return null;
 
