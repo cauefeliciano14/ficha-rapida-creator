@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
 import { FeatureExpandable } from '../FeatureExpandable';
@@ -12,6 +12,10 @@ import { isClassSynergyForBg } from '../../data/classSynergies';
 import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
 import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
+import { ClassHeroPreview } from '../ui/ClassHeroPreview';
+import { SmartHints } from '../ui/SmartHints';
+import { computeSmartHints } from '../../utils/smartHints';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 export interface ClassSelectionStepProps {
   languagesData?: unknown;
@@ -147,6 +151,32 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [compareIds, setCompareIds] = useState<[string | null, string | null]>([null, null]);
   const [compareOpen, setCompareOpen] = useState(false);
 
+  // ── Hero hover preview (desktop only) ──
+  const isDesktop = !useMediaQuery('(max-width: 779px)');
+  const [hoverClassId, setHoverClassId] = useState<string | null>(null);
+  const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleHoverEnter = (classId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isDesktop || compareMode) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => {
+      setHoverClassId(classId);
+      setHoverRect(rect);
+    }, 250);
+  };
+
+  const handleHoverLeave = () => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    setHoverClassId(null);
+    setHoverRect(null);
+  };
+
+  // ── Smart hints ──
+  const smartHints = computeSmartHints(character, selectedBackground);
+
+
   const handleCompareClick = (classId: string) => {
     if (!compareMode) return;
     setCompareIds(prev => {
@@ -219,6 +249,10 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                 key={cls.id}
                 type="button"
                 onClick={() => { if (compareMode) { handleCompareClick(cls.id); } else { handleSelectClass(cls); } }}
+                onMouseEnter={(e) => handleHoverEnter(cls.id, e)}
+                onMouseLeave={handleHoverLeave}
+                onFocus={(e) => handleHoverEnter(cls.id, e as unknown as React.MouseEvent<HTMLButtonElement>)}
+                onBlur={handleHoverLeave}
                 className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id) ? styles.classMenuButtonSelected : ''}`}
               >
                 <div className={styles.classMenuIdentity}>
@@ -270,6 +304,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             {compareMode ? '✕ Sair da comparação' : '⚖ Comparar classes'}
           </button>
         </div>
+
+        {selectedClass && smartHints.length > 0 && <SmartHints hints={smartHints} />}
 
         <div className={layoutStyles.detailsColumn}>
           {!selectedClass || !classDetails ? (
@@ -387,6 +423,22 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
         itemA={buildComparisonItem(compareIds[0])}
         itemB={buildComparisonItem(compareIds[1])}
       />
+
+      {hoverClassId && hoverRect && (() => {
+        const hoverCls = bgData.classes.find((c: any) => c.id === hoverClassId);
+        const hoverMeta = getClassCardMeta(hoverClassId);
+        if (!hoverCls) return null;
+        return (
+          <ClassHeroPreview
+            classId={hoverClassId}
+            className={hoverCls.name}
+            description={hoverCls.description}
+            hitDie={hoverMeta.hitDie}
+            primaryAttribute={hoverMeta.primaryAttribute}
+            anchorRect={hoverRect}
+          />
+        );
+      })()}
     </StepLayout>
   );
 };
