@@ -237,8 +237,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
-          <div
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
             onTouchStart={onTouchStart}
@@ -287,6 +286,15 @@ export function CreatorShell() {
             </motion.div>
           </AnimatePresence>
         </>
+      )}
+
+      {isTemplatesOpen && (
+        <Suspense fallback={null}>
+          <BuildTemplatesModal
+            onClose={() => setIsTemplatesOpen(false)}
+            onPick={handlePickTemplate}
+          />
+        </Suspense>
       )}
 
       {isQuizOpen && (
