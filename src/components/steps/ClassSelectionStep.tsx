@@ -249,6 +249,10 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                 key={cls.id}
                 type="button"
                 onClick={() => { if (compareMode) { handleCompareClick(cls.id); } else { handleSelectClass(cls); } }}
+                onMouseEnter={(e) => handleHoverEnter(cls.id, e)}
+                onMouseLeave={handleHoverLeave}
+                onFocus={(e) => handleHoverEnter(cls.id, e as unknown as React.MouseEvent<HTMLButtonElement>)}
+                onBlur={handleHoverLeave}
                 className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id) ? styles.classMenuButtonSelected : ''}`}
               >
                 <div className={styles.classMenuIdentity}>
