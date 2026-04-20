@@ -238,6 +238,7 @@ export function CreatorShell() {
             canRedo={canRedo}
           />
           <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
+          <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
             onTouchStart={onTouchStart}
@@ -272,7 +273,7 @@ export function CreatorShell() {
             <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
             <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
           </div>
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
