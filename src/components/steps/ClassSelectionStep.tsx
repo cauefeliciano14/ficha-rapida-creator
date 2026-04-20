@@ -151,6 +151,32 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [compareIds, setCompareIds] = useState<[string | null, string | null]>([null, null]);
   const [compareOpen, setCompareOpen] = useState(false);
 
+  // ── Hero hover preview (desktop only) ──
+  const isDesktop = !useMediaQuery('(max-width: 779px)');
+  const [hoverClassId, setHoverClassId] = useState<string | null>(null);
+  const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleHoverEnter = (classId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isDesktop || compareMode) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => {
+      setHoverClassId(classId);
+      setHoverRect(rect);
+    }, 250);
+  };
+
+  const handleHoverLeave = () => {
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    setHoverClassId(null);
+    setHoverRect(null);
+  };
+
+  // ── Smart hints ──
+  const smartHints = computeSmartHints(character, selectedBackground);
+
+
   const handleCompareClick = (classId: string) => {
     if (!compareMode) return;
     setCompareIds(prev => {
