@@ -305,6 +305,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           </button>
         </div>
 
+        {selectedClass && smartHints.length > 0 && <SmartHints hints={smartHints} />}
+
         <div className={layoutStyles.detailsColumn}>
           {!selectedClass || !classDetails ? (
             <div className={`${layoutStyles.placeholderPanel} ${styles.placeholderPanel}`}>
