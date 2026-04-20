@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import speciesData from "../../data/species.json";
 import { SpeciesDetails } from "../SpeciesDetails";
 import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
+import { ComparisonModal } from "../ComparisonModal";
 import type languagesDataType from "../../data/languages.json";
 
 export interface SpeciesStepProps {
@@ -23,6 +24,42 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
 
   const validationErrors = validationResult.byStep.species;
   const canAdvance = validationErrors.length === 0;
+
+  // ── Comparison mode ──
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareIds, setCompareIds] = useState<[string | null, string | null]>([null, null]);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  const handleCompareClick = (spId: string) => {
+    if (!compareMode) return;
+    setCompareIds(prev => {
+      if (prev[0] === spId) return [null, prev[1]];
+      if (prev[1] === spId) return [prev[0], null];
+      if (!prev[0]) return [spId, prev[1]];
+      if (!prev[1]) {
+        setTimeout(() => setCompareOpen(true), 0);
+        return [prev[0], spId];
+      }
+      return [spId, null];
+    });
+  };
+
+  const buildSpComparison = (spId: string | null) => {
+    if (!spId) return null;
+    const sp = (speciesData.species as any[]).find((s: any) => s.id === spId);
+    if (!sp) return null;
+    const traitNames = (sp.racialTraits || []).map((t: any) => t.title).slice(0, 6).join(', ');
+    return {
+      name: sp.name,
+      rows: [
+        { label: 'Tipo', value: sp.vitalInfo?.type || '—' },
+        { label: 'Tamanho', value: sp.vitalInfo?.size || '—' },
+        { label: 'Deslocamento', value: sp.vitalInfo?.speed || '—' },
+        { label: 'Traços', value: traitNames || '—' },
+        { label: 'Linhagem', value: sp.lineage?.title || '—' },
+      ],
+    };
+  };
 
   return (
     <StepLayout
@@ -48,17 +85,34 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
           </p>
         </div>
 
+        <button
+          onClick={() => { setCompareMode(m => !m); setCompareIds([null, null]); }}
+          style={{
+            padding: '6px 14px', fontSize: '0.78rem', fontWeight: 600, borderRadius: '8px', cursor: 'pointer',
+            border: compareMode ? '1px solid rgba(212,160,23,0.4)' : '1px solid rgba(255,255,255,0.1)',
+            background: compareMode ? 'rgba(212,160,23,0.12)' : 'transparent',
+            color: compareMode ? '#d4a017' : '#94a3b8',
+            alignSelf: 'flex-start', marginBottom: '4px',
+          }}
+        >
+          {compareMode ? '✕ Sair da comparação' : '⚖ Comparar espécies'}
+        </button>
+
         <div className={styles.selectionLayout}>
           <div className={styles.selectionRail} style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
             {speciesData.species.map((sp: any) => {
               const isSelected = character.species?.id === sp.id;
+              const isComparing = compareMode && (compareIds[0] === sp.id || compareIds[1] === sp.id);
               return (
                 <button
                   key={sp.id}
                   style={{ minHeight: '44px', padding: '10px 12px' }}
                   type="button"
-                  className={`${styles.selectionButton} ${isSelected ? styles.selectionButtonActive : ""}`.trim()}
-                  onClick={() => handleSelectSpecies(sp)}
+                  className={`${styles.selectionButton} ${isSelected || isComparing ? styles.selectionButtonActive : ""}`.trim()}
+                  onClick={() => {
+                    if (compareMode) { handleCompareClick(sp.id); return; }
+                    handleSelectSpecies(sp);
+                  }}
                 >
                   <span className={styles.selectionButtonName}>{sp.name}</span>
                   {isSelected && <span className={styles.selectionButtonMarker}>✓</span>}
@@ -98,6 +152,14 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
           </div>
         </div>
       </div>
+
+      <ComparisonModal
+        isOpen={compareOpen}
+        onClose={() => { setCompareOpen(false); setCompareIds([null, null]); }}
+        title="Comparação de Espécies"
+        itemA={buildSpComparison(compareIds[0])}
+        itemB={buildSpComparison(compareIds[1])}
+      />
     </StepLayout>
   );
 };

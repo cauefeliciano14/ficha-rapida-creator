@@ -2,6 +2,8 @@ import { useEffect, useId, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { BottomSheet } from './BottomSheet';
 
 export interface ModalProps {
   /** Whether the modal is visible. */
@@ -20,6 +22,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const isMobile = useMediaQuery('(max-width: 779px)');
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -44,7 +47,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   );
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isMobile) return;
     previousFocusRef.current = document.activeElement as HTMLElement;
     document.addEventListener('keydown', handleKeyDown);
 
@@ -59,7 +62,15 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       // Restore focus when modal closes
       previousFocusRef.current?.focus();
     };
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen, isMobile, handleKeyDown]);
+
+  if (isMobile) {
+    return (
+      <BottomSheet isOpen={isOpen} onClose={onClose} title={title}>
+        {children}
+      </BottomSheet>
+    );
+  }
 
   if (!isOpen) return null;
 
