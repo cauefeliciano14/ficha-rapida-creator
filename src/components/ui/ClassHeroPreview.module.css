@@ -12,8 +12,51 @@
   border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   animation: previewIn 0.18s ease-out;
+}
+
+.preview[data-pinned="true"] {
+  border-color: rgba(212, 160, 23, 0.7);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(212, 160, 23, 0.35);
+  cursor: default;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f1f5f9;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.closeBtn:hover { background: rgba(239, 68, 68, 0.7); }
+
+.pinBadge {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(212, 160, 23, 0.85);
+  color: #1a1208;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: none;
 }
 
 .heroBanner {
