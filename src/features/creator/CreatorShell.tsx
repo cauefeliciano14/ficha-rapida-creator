@@ -243,7 +243,8 @@ export function CreatorShell() {
 
 
   const renderStepContent = () => (
-    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
+    // Empty fallback prevents the "Carregando..." flash; chunks are prefetched on idle
+    <Suspense fallback={<div style={{ minHeight: 320 }} />}>
       {currentStep === 0 && <ClassSelectionStep languagesData={languagesData} />}
       {currentStep === 1 && <BackgroundStep />}
       {currentStep === 2 && <SpeciesStep languagesData={languagesData} />}
