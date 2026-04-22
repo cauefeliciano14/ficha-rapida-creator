@@ -339,7 +339,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                     <h3 className={styles.summaryTitle}>{selectedClass.name}</h3>
                     <p className={styles.summaryDescription}>{selectedClass.description}</p>
                     <div className={styles.summaryStatsInline}>
-                      <SummaryStat label="Dado de vida" value={getClassHPData(selectedClass.id)?.hitDieLabel || '—'} />
+                      <SummaryStat label="Dado de vida" value={selectedClassMeta?.hitDie || '—'} />
                       {selectedClassMeta?.primaryAttribute ? (
                         <SummaryStat label="Atributo-chave" value={selectedClassMeta.primaryAttribute || '—'} />
                       ) : null}
