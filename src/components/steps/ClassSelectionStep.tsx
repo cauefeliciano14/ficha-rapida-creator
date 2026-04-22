@@ -286,6 +286,20 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                       {role}
                     </span>
                   ))}
+                  {CLASS_ROLE_META[cls.id]?.difficulty === 'Iniciante' && !isSelected && (
+                    <span
+                      className={styles.classMetaChip}
+                      title="Classe recomendada para iniciantes"
+                      style={{
+                        background: 'rgba(34,197,94,0.15)',
+                        borderColor: 'rgba(34,197,94,0.5)',
+                        color: '#22c55e',
+                        fontWeight: 700,
+                      }}
+                    >
+                      🌱 Iniciante
+                    </span>
+                  )}
                   {isClassSynergyForBg(selectedBackground?.id, cls.id) && !isSelected && <RecommendedBadge />}
                 </div>
               </button>
