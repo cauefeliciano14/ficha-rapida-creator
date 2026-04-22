@@ -230,7 +230,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (2,10-2,40m)",
-        "speed": "10,5 metros"
+        "speed": "10,5 metros\n\n"
       },
       "racialTraits": [
         {
