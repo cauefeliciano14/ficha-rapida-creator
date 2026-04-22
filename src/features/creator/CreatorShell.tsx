@@ -3,12 +3,20 @@ import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
-const ClassSelectionStep = lazy(() => import('../../components/steps/ClassSelectionStep').then(m => ({ default: m.ClassSelectionStep })));
-const BackgroundStep = lazy(() => import('../../components/steps/BackgroundStep').then(m => ({ default: m.BackgroundStep })));
-const SpeciesStep = lazy(() => import('../../components/steps/SpeciesStep').then(m => ({ default: m.SpeciesStep })));
-const AttributesStepWrapper = lazy(() => import('../../components/steps/AttributesStepWrapper').then(m => ({ default: m.AttributesStepWrapper })));
-const EquipmentStepWrapper = lazy(() => import('../../components/steps/EquipmentStepWrapper').then(m => ({ default: m.EquipmentStepWrapper })));
-const CharacterSheetStep = lazy(() => import('../../components/steps/CharacterSheetStep').then(m => ({ default: m.CharacterSheetStep })));
+// Lazy imports kept as factories so we can prefetch them on idle / hover
+const importClassStep = () => import('../../components/steps/ClassSelectionStep').then(m => ({ default: m.ClassSelectionStep }));
+const importBackgroundStep = () => import('../../components/steps/BackgroundStep').then(m => ({ default: m.BackgroundStep }));
+const importSpeciesStep = () => import('../../components/steps/SpeciesStep').then(m => ({ default: m.SpeciesStep }));
+const importAttrStep = () => import('../../components/steps/AttributesStepWrapper').then(m => ({ default: m.AttributesStepWrapper }));
+const importEquipStep = () => import('../../components/steps/EquipmentStepWrapper').then(m => ({ default: m.EquipmentStepWrapper }));
+const importSheetStep = () => import('../../components/steps/CharacterSheetStep').then(m => ({ default: m.CharacterSheetStep }));
+const ClassSelectionStep = lazy(importClassStep);
+const BackgroundStep = lazy(importBackgroundStep);
+const SpeciesStep = lazy(importSpeciesStep);
+const AttributesStepWrapper = lazy(importAttrStep);
+const EquipmentStepWrapper = lazy(importEquipStep);
+const CharacterSheetStep = lazy(importSheetStep);
+const STEP_IMPORTERS = [importClassStep, importBackgroundStep, importSpeciesStep, importAttrStep, importEquipStep, importSheetStep];
 const PortraitPickerModal = lazy(() => import('./portrait/PortraitPickerModal').then(m => ({ default: m.PortraitPickerModal })));
 const CharacterManagerModal = lazy(() => import('./CharacterManagerModal').then(m => ({ default: m.CharacterManagerModal })));
 import { listSavedCharacters } from '../../utils/persistence';
@@ -68,6 +76,18 @@ export function CreatorShell() {
 
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
+
+  // Prefetch all step chunks on idle so navigation never shows a loader flash
+  useEffect(() => {
+    const ric: (cb: () => void) => number =
+      (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback
+        ?? ((cb: () => void) => window.setTimeout(cb, 600));
+    const id = ric(() => { STEP_IMPORTERS.forEach(fn => { void fn(); }); });
+    return () => {
+      const cic = (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+      if (cic) cic(id); else window.clearTimeout(id);
+    };
+  }, []);
 
   const handlePickTemplate = useCallback((tpl: BuildTemplate) => {
     const result = applyBuildTemplate(tpl, character);
@@ -177,23 +197,32 @@ export function CreatorShell() {
     }
   }, [activeCharacterId]);
 
+  // Debounced persistence — avoids serializing the whole character on every keystroke
   useEffect(() => {
-    localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-      version: CREATION_STATE_VERSION,
-      character,
-      currentStep,
-      auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-      shellState: { sidebarCollapsed, summaryCollapsed },
-    }));
-
     if (isFirstSave.current) {
       isFirstSave.current = false;
+      // Initial sync write so reloads pick up state even if nothing changes again
+      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
+        version: CREATION_STATE_VERSION,
+        character,
+        currentStep,
+        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+        shellState: { sidebarCollapsed, summaryCollapsed },
+      }));
       return;
     }
-
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    setShowSaved(true);
-    saveTimerRef.current = setTimeout(() => setShowSaved(false), 2200);
+    saveTimerRef.current = setTimeout(() => {
+      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
+        version: CREATION_STATE_VERSION,
+        character,
+        currentStep,
+        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+        shellState: { sidebarCollapsed, summaryCollapsed },
+      }));
+      setShowSaved(true);
+      window.setTimeout(() => setShowSaved(false), 1600);
+    }, 450);
   }, [
     character,
     currentStep,
@@ -214,7 +243,8 @@ export function CreatorShell() {
 
 
   const renderStepContent = () => (
-    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Carregando etapa...</div>}>
+    // Empty fallback prevents the "Carregando..." flash; chunks are prefetched on idle
+    <Suspense fallback={<div style={{ minHeight: 320 }} />}>
       {currentStep === 0 && <ClassSelectionStep languagesData={languagesData} />}
       {currentStep === 1 && <BackgroundStep />}
       {currentStep === 2 && <SpeciesStep languagesData={languagesData} />}
