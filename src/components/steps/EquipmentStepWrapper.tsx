@@ -4,6 +4,8 @@ import { StepLayout } from "./StepLayout";
 import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
+import { SmartHints } from "../ui/SmartHints";
+import { computeEquipmentHints } from "../../utils/smartHints";
 
 export const EquipmentStepWrapper: React.FC = () => {
   const {
@@ -18,6 +20,7 @@ export const EquipmentStepWrapper: React.FC = () => {
 
   const validationErrors = validationResult.byStep.equipment;
   const canAdvance = validationErrors.length === 0;
+  const equipmentHints = computeEquipmentHints(character);
 
   return (
     <StepLayout
@@ -59,6 +62,12 @@ export const EquipmentStepWrapper: React.FC = () => {
             Confira tudo o que seu personagem carrega no início de sua aventura.
           </p>
         </div>
+
+        {equipmentHints.length > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <SmartHints hints={equipmentHints} />
+          </div>
+        )}
 
         <EquipmentStep
           character={character}

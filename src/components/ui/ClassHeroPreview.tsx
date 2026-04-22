@@ -10,6 +10,9 @@ interface ClassHeroPreviewProps {
   hitDie?: string | null;
   primaryAttribute?: string | null;
   anchorRect: DOMRect | null;
+  pinned?: boolean;
+  onPinToggle?: () => void;
+  onClose?: () => void;
 }
 
 export function ClassHeroPreview({
@@ -19,6 +22,9 @@ export function ClassHeroPreview({
   hitDie,
   primaryAttribute,
   anchorRect,
+  pinned = false,
+  onPinToggle,
+  onClose,
 }: ClassHeroPreviewProps) {
   const meta = CLASS_ROLE_META[classId];
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
@@ -54,13 +60,25 @@ export function ClassHeroPreview({
       className={styles.preview}
       style={{ top: pos.top, left: pos.left }}
       role="tooltip"
+      data-pinned={pinned ? 'true' : 'false'}
+      onClick={(e) => { e.stopPropagation(); onPinToggle?.(); }}
+      title={pinned ? 'Clique para soltar' : 'Clique para fixar e ler com calma'}
     >
+      {pinned && onClose && (
+        <button
+          type="button"
+          className={styles.closeBtn}
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          aria-label="Fechar preview fixado"
+        >×</button>
+      )}
       <div
         className={styles.heroBanner}
         style={{ backgroundImage: `url(${heroSrc})` }}
       >
         <div className={styles.heroOverlay} />
         <h4 className={styles.heroTitle}>{className}</h4>
+        {pinned && <span className={styles.pinBadge}>📌 Fixado</span>}
       </div>
       <div className={styles.body}>
         <p className={styles.tagline}>“{tagline}”</p>

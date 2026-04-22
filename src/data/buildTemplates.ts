@@ -20,6 +20,8 @@ export interface BuildTemplate {
   tags: string[];
   /** Descrição estratégica da build */
   strategy: string;
+  /** Marcador visual para builds amigáveis a iniciantes */
+  beginnerFriendly?: boolean;
 }
 
 export const BUILD_TEMPLATES: BuildTemplate[] = [
@@ -37,6 +39,7 @@ export const BUILD_TEMPLATES: BuildTemplate[] = [
     bgPlus1: 'constituicao',
     tags: ['Tank', 'Iniciante', 'Combate Corpo a Corpo'],
     strategy: 'Alta CA, muitos PV e foco em Força. O Anão dá resistência a venenos e o Soldado garante atletismo + intimidação. Ideal para quem quer absorver dano na linha de frente.',
+    beginnerFriendly: true,
   },
   {
     id: 'bardo-diplomata',
@@ -97,6 +100,7 @@ export const BUILD_TEMPLATES: BuildTemplate[] = [
     bgPlus1: 'constituicao',
     tags: ['Suporte', 'Cura', 'Iniciante'],
     strategy: 'Sabedoria alta para conjuração + Constituição para sobreviver. O Acólito reforça temas religiosos. Cura, buffs e ataques radiantes equilibrados.',
+    beginnerFriendly: true,
   },
   {
     id: 'paladino-defensor',
@@ -127,6 +131,7 @@ export const BUILD_TEMPLATES: BuildTemplate[] = [
     bgPlus1: 'constituicao',
     tags: ['DPS', 'Tank', 'Iniciante'],
     strategy: 'Força + Constituição + traço gigante do Goliath = canhão de dano. Resistência durante a Fúria torna você quase invencível em combate corpo a corpo.',
+    beginnerFriendly: true,
   },
   {
     id: 'druida-guardiao-natureza',

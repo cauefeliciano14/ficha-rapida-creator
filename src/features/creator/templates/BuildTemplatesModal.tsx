@@ -29,7 +29,29 @@ export function BuildTemplatesModal({ onClose, onPick }: Props) {
               <div className={styles.cardHeader}>
                 <span className={styles.emoji}>{tpl.emoji}</span>
                 <div className={styles.cardTitleBlock}>
-                  <h3 className={styles.cardTitle}>{tpl.name}</h3>
+                  <h3 className={styles.cardTitle}>
+                    {tpl.name}
+                    {tpl.beginnerFriendly && (
+                      <span
+                        title="Recomendado para iniciantes"
+                        style={{
+                          marginLeft: 8,
+                          fontSize: '0.6rem',
+                          fontWeight: 700,
+                          padding: '2px 7px',
+                          borderRadius: 999,
+                          background: 'rgba(34,197,94,0.15)',
+                          color: '#22c55e',
+                          border: '1px solid rgba(34,197,94,0.45)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                          verticalAlign: 'middle',
+                        }}
+                      >
+                        🌱 Iniciante
+                      </span>
+                    )}
+                  </h3>
                   <p className={styles.tagline}>{tpl.tagline}</p>
                 </div>
               </div>
