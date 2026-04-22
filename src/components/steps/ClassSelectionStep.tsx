@@ -35,6 +35,86 @@ type ClassDetails = {
 // Class card meta is now memoized in src/data/classMetaCache.ts
 const getClassCardMeta = getClassCardMetaCached;
 
+// ── Memoized class card ───────────────────────────────────────────────────
+// Pulled out so React.memo can skip re-rendering 12+ buttons whenever an
+// unrelated piece of state in the parent step changes (hover preview, hints…).
+interface ClassCardProps {
+  cls: { id: string; name: string; description?: string };
+  isSelected: boolean;
+  isCompareTarget: boolean;
+  showSynergy: boolean;
+  onActivate: (id: string) => void;
+  onHoverEnter: (id: string, rect: DOMRect) => void;
+  onHoverLeave: () => void;
+}
+const ClassCard = memo(function ClassCard({
+  cls, isSelected, isCompareTarget, showSynergy, onActivate, onHoverEnter, onHoverLeave,
+}: ClassCardProps) {
+  const meta = getClassCardMeta(cls.id);
+  const roleMeta = CLASS_ROLE_META[cls.id];
+  const handleEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
+  }, [cls.id, onHoverEnter]);
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLButtonElement>) => {
+    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
+  }, [cls.id, onHoverEnter]);
+  const handleClick = useCallback(() => onActivate(cls.id), [cls.id, onActivate]);
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      onMouseEnter={handleEnter}
+      onMouseLeave={onHoverLeave}
+      onFocus={handleFocus}
+      onBlur={onHoverLeave}
+      className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${isCompareTarget ? styles.classMenuButtonSelected : ''}`}
+    >
+      <div className={styles.classMenuIdentity}>
+        <div className={styles.classMenuIconAndName}>
+          <span className={styles.classMenuIconWrap}>
+            <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" loading="lazy" decoding="async" className={styles.classCardIcon} />
+          </span>
+          <span className={styles.classMenuName}>{cls.name}</span>
+        </div>
+        {meta.hitDie ? <span className={styles.classMetaChip}>{meta.hitDie}</span> : null}
+      </div>
+      <div className={styles.classMenuMetaRow}>
+        {meta.primaryAttribute ? <span className={styles.classMetaChip}>{meta.primaryAttribute}</span> : null}
+        {roleMeta?.roles.map((role) => (
+          <span
+            key={role}
+            className={styles.classMetaChip}
+            style={{
+              background: `${ROLE_COLORS[role]}22`,
+              borderColor: `${ROLE_COLORS[role]}55`,
+              color: ROLE_COLORS[role],
+              fontWeight: 600,
+            }}
+            title={`Papel: ${role}`}
+          >
+            {role}
+          </span>
+        ))}
+        {roleMeta?.difficulty === 'Iniciante' && !isSelected && (
+          <span
+            className={styles.classMetaChip}
+            title="Classe recomendada para iniciantes"
+            style={{
+              background: 'rgba(34,197,94,0.15)',
+              borderColor: 'rgba(34,197,94,0.5)',
+              color: '#22c55e',
+              fontWeight: 700,
+            }}
+          >
+            🌱 Iniciante
+          </span>
+        )}
+        {showSynergy && !isSelected && <RecommendedBadge />}
+      </div>
+    </button>
+  );
+});
+
 function getGroupTitle(name: string): string {
   const lower = name.toLowerCase();
   if (lower.includes('perícia') || lower.includes('pericia') || lower.includes('skill')) return 'Escolhas de Perícias';
