@@ -36,6 +36,10 @@ const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal')
 const BuildTemplatesModal = lazy(() => import('./templates/BuildTemplatesModal').then(m => ({ default: m.BuildTemplatesModal })));
 import { applyBuildTemplate } from '../../utils/buildTemplate';
 import type { BuildTemplate } from '../../data/buildTemplates';
+import { queueWrite } from '../../utils/idleStorage';
+import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
+import { prefetchClassImages } from '../../data/classMetaCache';
+import bgData from '../../data/db.json';
 
 export function CreatorShell() {
   const {
@@ -74,6 +78,8 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
 
+  useWhyDidYouRender('CreatorShell', { currentStep, character, derivedSheet });
+
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
 
@@ -82,7 +88,13 @@ export function CreatorShell() {
     const ric: (cb: () => void) => number =
       (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback
         ?? ((cb: () => void) => window.setTimeout(cb, 600));
-    const id = ric(() => { STEP_IMPORTERS.forEach(fn => { void fn(); }); });
+    const id = ric(() => {
+      STEP_IMPORTERS.forEach(fn => { void fn(); });
+      // Prefetch class hero art + icons so step 1 is instant on hover/selection
+      try {
+        prefetchClassImages((bgData.classes as Array<{ id: string }>).map(c => c.id));
+      } catch { /* noop */ }
+    });
     return () => {
       const cic = (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
       if (cic) cic(id); else window.clearTimeout(id);
