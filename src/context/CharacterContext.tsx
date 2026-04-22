@@ -375,9 +375,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Effects
   // -------------------------------------------------------------------------
 
-  // Persist playState to localStorage
+  // Persist playState to localStorage (debounced to avoid blocking on rapid HP/temp changes)
   useEffect(() => {
-    localStorage.setItem('dnd_play_state', JSON.stringify(playState));
+    const t = setTimeout(() => {
+      localStorage.setItem('dnd_play_state', JSON.stringify(playState));
+    }, 300);
+    return () => clearTimeout(t);
   }, [playState]);
 
 
