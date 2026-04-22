@@ -77,6 +77,18 @@ export function CreatorShell() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
 
+  // Prefetch all step chunks on idle so navigation never shows a loader flash
+  useEffect(() => {
+    const ric: (cb: () => void) => number =
+      (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback
+        ?? ((cb: () => void) => window.setTimeout(cb, 600));
+    const id = ric(() => { STEP_IMPORTERS.forEach(fn => { void fn(); }); });
+    return () => {
+      const cic = (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+      if (cic) cic(id); else window.clearTimeout(id);
+    };
+  }, []);
+
   const handlePickTemplate = useCallback((tpl: BuildTemplate) => {
     const result = applyBuildTemplate(tpl, character);
     setCharacter(result.character);
