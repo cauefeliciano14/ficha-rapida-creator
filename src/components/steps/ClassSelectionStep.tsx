@@ -256,7 +256,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
     if (compareMode) {
       handleCompareClick(classId);
     } else {
-      const cls = (bgData.classes as Array<{ id: string; name: string; description?: string }>).find(c => c.id === classId);
+      const cls = (bgData.classes as Array<{ id: string; name: string; description: string }>).find(c => c.id === classId);
       if (cls) handleSelectClass(cls);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -332,7 +332,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
         <VirtualizedList
           className={layoutStyles.selectionRail}
           estimatedItemHeight={88}
-          items={(bgData.classes as Array<{ id: string; name: string; description?: string }>).map((cls) => (
+          items={(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
             <ClassCard
               key={cls.id}
               cls={cls}
