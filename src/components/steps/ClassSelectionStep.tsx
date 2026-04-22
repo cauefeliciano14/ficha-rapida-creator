@@ -210,6 +210,13 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
 
   const validationErrors = validationResult.byStep.class;
+
+  useWhyDidYouRender('ClassSelectionStep', {
+    classId: character.characterClass?.id,
+    backgroundId: selectedBackground?.id,
+    characterLevel,
+    validationErrors,
+  });
   const canAdvance = validationErrors.length === 0;
   const selectedClass = character.characterClass;
   const classDetails = selectedClass ? (classDetailsData as Record<string, ClassDetails>)[selectedClass.id] : null;
@@ -228,23 +235,32 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [pinned, setPinned] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleHoverEnter = (classId: string, e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isDesktop || compareMode) return;
-    if (pinned) return;
-    const rect = e.currentTarget.getBoundingClientRect();
+  const handleHoverEnter = useCallback((classId: string, rect: DOMRect) => {
+    if (!isDesktop || compareMode || pinned) return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => {
       setHoverClassId(classId);
       setHoverRect(rect);
     }, 250);
-  };
+  }, [isDesktop, compareMode, pinned]);
 
-  const handleHoverLeave = () => {
+  const handleHoverLeave = useCallback(() => {
     if (pinned) return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setHoverClassId(null);
     setHoverRect(null);
-  };
+  }, [pinned]);
+
+  // Stable per-card activation handler so memoized cards don't churn
+  const handleCardActivate = useCallback((classId: string) => {
+    if (compareMode) {
+      handleCompareClick(classId);
+    } else {
+      const cls = (bgData.classes as Array<{ id: string; name: string; description?: string }>).find(c => c.id === classId);
+      if (cls) handleSelectClass(cls);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compareMode, handleSelectClass]);
 
   // ── Smart hints ──
   const smartHints = computeSmartHints(character, selectedBackground);
@@ -313,69 +329,22 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           </p>
         </div>
 
-        <div className={layoutStyles.selectionRail}>
-          {bgData.classes.map((cls) => {
-            const isSelected = selectedClass?.id === cls.id;
-            const cardMeta = getClassCardMeta(cls.id);
-            return (
-              <button
-                key={cls.id}
-                type="button"
-                onClick={() => { if (compareMode) { handleCompareClick(cls.id); } else { handleSelectClass(cls); } }}
-                onMouseEnter={(e) => handleHoverEnter(cls.id, e)}
-                onMouseLeave={handleHoverLeave}
-                onFocus={(e) => handleHoverEnter(cls.id, e as unknown as React.MouseEvent<HTMLButtonElement>)}
-                onBlur={handleHoverLeave}
-                className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id) ? styles.classMenuButtonSelected : ''}`}
-              >
-                <div className={styles.classMenuIdentity}>
-                  <div className={styles.classMenuIconAndName}>
-                    <span className={styles.classMenuIconWrap}>
-                      <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" className={styles.classCardIcon} />
-                    </span>
-                    <span className={styles.classMenuName}>{cls.name}</span>
-                  </div>
-                  {cardMeta.hitDie ? <span className={styles.classMetaChip}>{cardMeta.hitDie}</span> : null}
-                </div>
-                <div className={styles.classMenuMetaRow}>
-                  {cardMeta.primaryAttribute ? (
-                    <span className={styles.classMetaChip}>{cardMeta.primaryAttribute}</span>
-                  ) : null}
-                  {CLASS_ROLE_META[cls.id]?.roles.map((role) => (
-                    <span
-                      key={role}
-                      className={styles.classMetaChip}
-                      style={{
-                        background: `${ROLE_COLORS[role]}22`,
-                        borderColor: `${ROLE_COLORS[role]}55`,
-                        color: ROLE_COLORS[role],
-                        fontWeight: 600,
-                      }}
-                      title={`Papel: ${role}`}
-                    >
-                      {role}
-                    </span>
-                  ))}
-                  {CLASS_ROLE_META[cls.id]?.difficulty === 'Iniciante' && !isSelected && (
-                    <span
-                      className={styles.classMetaChip}
-                      title="Classe recomendada para iniciantes"
-                      style={{
-                        background: 'rgba(34,197,94,0.15)',
-                        borderColor: 'rgba(34,197,94,0.5)',
-                        color: '#22c55e',
-                        fontWeight: 700,
-                      }}
-                    >
-                      🌱 Iniciante
-                    </span>
-                  )}
-                  {isClassSynergyForBg(selectedBackground?.id, cls.id) && !isSelected && <RecommendedBadge />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+        <VirtualizedList
+          className={layoutStyles.selectionRail}
+          estimatedItemHeight={88}
+          items={(bgData.classes as Array<{ id: string; name: string; description?: string }>).map((cls) => (
+            <ClassCard
+              key={cls.id}
+              cls={cls}
+              isSelected={selectedClass?.id === cls.id}
+              isCompareTarget={compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id)}
+              showSynergy={isClassSynergyForBg(selectedBackground?.id, cls.id)}
+              onActivate={handleCardActivate}
+              onHoverEnter={handleHoverEnter}
+              onHoverLeave={handleHoverLeave}
+            />
+          ))}
+        />
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
 
