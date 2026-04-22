@@ -155,10 +155,12 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const isDesktop = !useMediaQuery('(max-width: 779px)');
   const [hoverClassId, setHoverClassId] = useState<string | null>(null);
   const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
+  const [pinned, setPinned] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleHoverEnter = (classId: string, e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isDesktop || compareMode) return;
+    if (pinned) return;
     const rect = e.currentTarget.getBoundingClientRect();
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => {
@@ -168,6 +170,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   };
 
   const handleHoverLeave = () => {
+    if (pinned) return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setHoverClassId(null);
     setHoverRect(null);
@@ -436,6 +439,9 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             hitDie={hoverMeta.hitDie}
             primaryAttribute={hoverMeta.primaryAttribute}
             anchorRect={hoverRect}
+            pinned={pinned}
+            onPinToggle={() => setPinned(p => !p)}
+            onClose={() => { setPinned(false); setHoverClassId(null); setHoverRect(null); }}
           />
         );
       })()}
