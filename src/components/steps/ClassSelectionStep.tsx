@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo, useCallback } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
 import { FeatureExpandable } from '../FeatureExpandable';
 import { StepLayout } from './StepLayout';
 import styles from './ClassSelectionStep.module.css';
 import layoutStyles from './StepLayout.module.css';
-import { getClassHPData } from '../../rules/data/classRules';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
@@ -16,6 +15,9 @@ import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
 import { computeSmartHints } from '../../utils/smartHints';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { getClassCardMeta as getClassCardMetaCached } from '../../data/classMetaCache';
+import { VirtualizedList } from '../ui/VirtualizedList';
+import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
 
 export interface ClassSelectionStepProps {
   languagesData?: unknown;
@@ -30,20 +32,8 @@ type ClassDetails = {
   options?: Array<any>;
 };
 
-function getTraitValue(traits: Record<string, string>, labels: string[]) {
-  const entry = Object.entries(traits).find(([key]) => labels.includes(key));
-  return entry?.[1] ?? null;
-}
-
-function getClassCardMeta(classId: string) {
-  const details = (classDetailsData as Record<string, ClassDetails>)[classId];
-  const traits = details?.basicTraits ?? {};
-
-  return {
-    primaryAttribute: getTraitValue(traits, ['Atributo Primário']),
-    hitDie: getClassHPData(classId)?.hitDieLabel ?? getTraitValue(traits, ['Dado de Ponto de Vida']),
-  };
-}
+// Class card meta is now memoized in src/data/classMetaCache.ts
+const getClassCardMeta = getClassCardMetaCached;
 
 function getGroupTitle(name: string): string {
   const lower = name.toLowerCase();
