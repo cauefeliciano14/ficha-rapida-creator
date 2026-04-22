@@ -209,32 +209,25 @@ export function CreatorShell() {
     }
   }, [activeCharacterId]);
 
-  // Debounced persistence — avoids serializing the whole character on every keystroke
+  // Persistence routed through the idle queue: writes are coalesced, diffed,
+  // and flushed in requestIdleCallback so they never block typing/clicking.
   useEffect(() => {
+    const payload = {
+      version: CREATION_STATE_VERSION,
+      character,
+      currentStep,
+      auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+      shellState: { sidebarCollapsed, summaryCollapsed },
+    };
+    queueWrite(CREATION_STORAGE_KEY, payload);
+
     if (isFirstSave.current) {
       isFirstSave.current = false;
-      // Initial sync write so reloads pick up state even if nothing changes again
-      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-        version: CREATION_STATE_VERSION,
-        character,
-        currentStep,
-        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-        shellState: { sidebarCollapsed, summaryCollapsed },
-      }));
       return;
     }
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(() => {
-      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-        version: CREATION_STATE_VERSION,
-        character,
-        currentStep,
-        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-        shellState: { sidebarCollapsed, summaryCollapsed },
-      }));
-      setShowSaved(true);
-      window.setTimeout(() => setShowSaved(false), 1600);
-    }, 450);
+    setShowSaved(true);
+    saveTimerRef.current = setTimeout(() => setShowSaved(false), 1600);
   }, [
     character,
     currentStep,
