@@ -7,7 +7,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,2-2,1m) ou Pequeno (0,60-1,2m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -59,7 +59,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,20-1,50m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -87,7 +87,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,50-2,10m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -131,7 +131,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,50-1,80m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -192,7 +192,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Pequeno (0,90-1,20m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -230,7 +230,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (2,10-2,40m)",
-        "speed": "10,5 metros"
+        "speed": "10,5 metros\n\n"
       },
       "racialTraits": [
         {
@@ -262,7 +262,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,2-2,1m) ou Pequeno (0,6-1,2m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -286,7 +286,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,80-2,10m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -310,7 +310,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Pequeno (0,60-0,90m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {
@@ -338,7 +338,7 @@
       "vitalInfo": {
         "type": "Humanoide",
         "size": "Médio (1,20-2,10m) ou Pequeno (0,90-1,20m)",
-        "speed": "9 metros"
+        "speed": "9 metros\n\n"
       },
       "racialTraits": [
         {

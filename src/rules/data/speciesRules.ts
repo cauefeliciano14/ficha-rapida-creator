@@ -110,7 +110,7 @@ export function getSpeciesData(speciesId: string): RawSpecies | null {
 }
 
 export function getSpeciesSpeed(speciesId: string): string {
-  return getSpeciesData(speciesId)?.vitalInfo.speed ?? '9 metros';
+  return getSpeciesData(speciesId)?.vitalInfo.speed ?? '9 metros\n\n';
 }
 
 export function getSpecialSenses(speciesId: string): string[] {

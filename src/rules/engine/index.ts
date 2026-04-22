@@ -206,7 +206,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
 
   const speciesData = speciesId ? getSpeciesData(speciesId) : null;
   const creatureSize = speciesData?.vitalInfo?.size ?? 'Médio';
-  const speed = speciesEffects?.speed ?? '9 metros';
+  const speed = speciesEffects?.speed ?? '9 metros\n\n';
   const specialSenses = [...(speciesEffects?.specialSenses ?? [])];
   const derivedDefenses = [...(speciesEffects?.derivedDefenses ?? [])];
   const racialCantrips = [...(speciesEffects?.racialCantrips ?? [])];
