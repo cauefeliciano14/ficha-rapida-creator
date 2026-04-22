@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, lazy, Suspense, useCallback, useMemo } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense, useCallback } from 'react';
 import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
@@ -197,23 +197,32 @@ export function CreatorShell() {
     }
   }, [activeCharacterId]);
 
+  // Debounced persistence — avoids serializing the whole character on every keystroke
   useEffect(() => {
-    localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-      version: CREATION_STATE_VERSION,
-      character,
-      currentStep,
-      auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-      shellState: { sidebarCollapsed, summaryCollapsed },
-    }));
-
     if (isFirstSave.current) {
       isFirstSave.current = false;
+      // Initial sync write so reloads pick up state even if nothing changes again
+      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
+        version: CREATION_STATE_VERSION,
+        character,
+        currentStep,
+        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+        shellState: { sidebarCollapsed, summaryCollapsed },
+      }));
       return;
     }
-
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    setShowSaved(true);
-    saveTimerRef.current = setTimeout(() => setShowSaved(false), 2200);
+    saveTimerRef.current = setTimeout(() => {
+      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
+        version: CREATION_STATE_VERSION,
+        character,
+        currentStep,
+        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+        shellState: { sidebarCollapsed, summaryCollapsed },
+      }));
+      setShowSaved(true);
+      window.setTimeout(() => setShowSaved(false), 1600);
+    }, 450);
   }, [
     character,
     currentStep,
