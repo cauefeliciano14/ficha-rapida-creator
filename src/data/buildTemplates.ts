@@ -20,6 +20,8 @@ export interface BuildTemplate {
   tags: string[];
   /** Descrição estratégica da build */
   strategy: string;
+  /** Marcador visual para builds amigáveis a iniciantes */
+  beginnerFriendly?: boolean;
 }
 
 export const BUILD_TEMPLATES: BuildTemplate[] = [

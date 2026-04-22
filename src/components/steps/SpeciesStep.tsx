@@ -6,6 +6,8 @@ import styles from "./StepLayout.module.css";
 import { useCharacter } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
 import { ComparisonModal } from "../ComparisonModal";
+import { SmartHints } from "../ui/SmartHints";
+import { computeSpeciesHints } from "../../utils/smartHints";
 import type languagesDataType from "../../data/languages.json";
 
 export interface SpeciesStepProps {
@@ -24,6 +26,8 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
 
   const validationErrors = validationResult.byStep.species;
   const canAdvance = validationErrors.length === 0;
+
+  const speciesHints = computeSpeciesHints(character);
 
   // ── Comparison mode ──
   const [compareMode, setCompareMode] = useState(false);
@@ -97,6 +101,8 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
         >
           {compareMode ? '✕ Sair da comparação' : '⚖ Comparar espécies'}
         </button>
+
+        {speciesHints.length > 0 && <SmartHints hints={speciesHints} />}
 
         <div className={styles.selectionLayout}>
           <div className={styles.selectionRail} style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
