@@ -614,7 +614,7 @@ export function CharacterSheetPage({
         return (
           <div>
             <div className={styles.sidebarInfoItem}>
-              <span>{derivedSheet.speed}m</span>
+              <span>{derivedSheet.speed}</span>
             </div>
             <div className={styles.sidebarDescription}>{SPEED_DESCRIPTION}</div>
           </div>
@@ -932,7 +932,7 @@ export function CharacterSheetPage({
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
           >
             <div className={styles.statValueInline}>
-              {derivedSheet.speed}<span className={styles.statUnit}>m</span>
+              {derivedSheet.speed}
             </div>
             <div className={styles.statLabel}>VELOCIDADE</div>
           </div>
