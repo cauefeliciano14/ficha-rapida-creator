@@ -36,6 +36,10 @@ const OnboardingModal = lazy(() => import('../../components/ui/OnboardingModal')
 const BuildTemplatesModal = lazy(() => import('./templates/BuildTemplatesModal').then(m => ({ default: m.BuildTemplatesModal })));
 import { applyBuildTemplate } from '../../utils/buildTemplate';
 import type { BuildTemplate } from '../../data/buildTemplates';
+import { queueWrite } from '../../utils/idleStorage';
+import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
+import { prefetchClassImages } from '../../data/classMetaCache';
+import bgData from '../../data/db.json';
 
 export function CreatorShell() {
   const {
@@ -74,6 +78,8 @@ export function CreatorShell() {
   useKeyboardShortcuts({ currentStep, goToStep, maxStep: 5, isModalOpen: isPortraitModalOpen });
   useCompletionCelebration(validationResult.isValid);
 
+  useWhyDidYouRender('CreatorShell', { currentStep, character, derivedSheet });
+
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false);
 
@@ -82,7 +88,13 @@ export function CreatorShell() {
     const ric: (cb: () => void) => number =
       (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback
         ?? ((cb: () => void) => window.setTimeout(cb, 600));
-    const id = ric(() => { STEP_IMPORTERS.forEach(fn => { void fn(); }); });
+    const id = ric(() => {
+      STEP_IMPORTERS.forEach(fn => { void fn(); });
+      // Prefetch class hero art + icons so step 1 is instant on hover/selection
+      try {
+        prefetchClassImages((bgData.classes as Array<{ id: string }>).map(c => c.id));
+      } catch { /* noop */ }
+    });
     return () => {
       const cic = (window as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
       if (cic) cic(id); else window.clearTimeout(id);
@@ -197,32 +209,25 @@ export function CreatorShell() {
     }
   }, [activeCharacterId]);
 
-  // Debounced persistence — avoids serializing the whole character on every keystroke
+  // Persistence routed through the idle queue: writes are coalesced, diffed,
+  // and flushed in requestIdleCallback so they never block typing/clicking.
   useEffect(() => {
+    const payload = {
+      version: CREATION_STATE_VERSION,
+      character,
+      currentStep,
+      auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
+      shellState: { sidebarCollapsed, summaryCollapsed },
+    };
+    queueWrite(CREATION_STORAGE_KEY, payload);
+
     if (isFirstSave.current) {
       isFirstSave.current = false;
-      // Initial sync write so reloads pick up state even if nothing changes again
-      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-        version: CREATION_STATE_VERSION,
-        character,
-        currentStep,
-        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-        shellState: { sidebarCollapsed, summaryCollapsed },
-      }));
       return;
     }
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(() => {
-      localStorage.setItem(CREATION_STORAGE_KEY, JSON.stringify({
-        version: CREATION_STATE_VERSION,
-        character,
-        currentStep,
-        auxiliaryState: { selectedBackground, attrChoiceMode, attrPlus1, attrPlus2, characterLevel },
-        shellState: { sidebarCollapsed, summaryCollapsed },
-      }));
-      setShowSaved(true);
-      window.setTimeout(() => setShowSaved(false), 1600);
-    }, 450);
+    setShowSaved(true);
+    saveTimerRef.current = setTimeout(() => setShowSaved(false), 1600);
   }, [
     character,
     currentStep,

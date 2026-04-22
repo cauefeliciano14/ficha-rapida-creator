@@ -21,6 +21,7 @@ import {
 import { sanitizeEquipmentState } from '../rules/utils/equipment';
 
 import { ATTR_META } from '../utils/attributeConstants';
+import { queueWrite } from '../utils/idleStorage';
 
 // ---------------------------------------------------------------------------
 // ATTR_METADATA constant (re-export para backward-compat)
@@ -375,12 +376,10 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Effects
   // -------------------------------------------------------------------------
 
-  // Persist playState to localStorage (debounced to avoid blocking on rapid HP/temp changes)
+  // Persist playState through the idle queue (coalesces rapid HP/temp clicks
+  // and skips the write entirely when the serialized payload is unchanged).
   useEffect(() => {
-    const t = setTimeout(() => {
-      localStorage.setItem('dnd_play_state', JSON.stringify(playState));
-    }, 300);
-    return () => clearTimeout(t);
+    queueWrite('dnd_play_state', playState);
   }, [playState]);
 
 

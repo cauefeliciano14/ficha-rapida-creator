@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { memo, useMemo, useRef, useEffect, useState } from 'react';
 import { useCharacter } from '../../../context/CharacterContext';
 import { useWizard } from '../../../context/WizardContext';
 import { getLanguageDisplayNames } from '../../../utils/languagePresentation';
@@ -8,6 +8,7 @@ import { HelpTooltip } from '../../../components/ui/HelpTooltip';
 import { alignmentsData } from '../../../data/alignmentsData';
 import { IdentityFieldsPanel } from './IdentityFieldsPanel';
 import styles from './CharacterSummaryPanel.module.css';
+import { useWhyDidYouRender } from '../../../utils/renderDiagnostics';
 
 const STEP_LABELS: Record<string, string> = {
   class: 'Classe',
@@ -25,9 +26,18 @@ const STEP_INDEX: Record<string, number> = {
   equipment: 4,
 };
 
-export function CharacterSummaryPanel() {
+function CharacterSummaryPanelInner() {
   const { character, setCharacter, selectedBackground, derivedSheet, characterLevel, validationResult } = useCharacter();
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
+
+  useWhyDidYouRender('CharacterSummaryPanel', {
+    characterClassId: character.characterClass?.id,
+    speciesId: character.species?.id,
+    backgroundId: selectedBackground?.id,
+    derivedSheet,
+    validationResult,
+    characterLevel,
+  });
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -329,7 +339,7 @@ export function CharacterSummaryPanel() {
   );
 }
 
-function SummaryPill({ label, value, flash, tooltip }: { label: string; value: string; flash?: boolean; tooltip?: string | null }) {
+const SummaryPill = memo(function SummaryPill({ label, value, flash, tooltip }: { label: string; value: string; flash?: boolean; tooltip?: string | null }) {
   return (
     <div className={`${styles.summaryPillCard} ${flash ? styles.flashHighlight : ''}`}>
       <div className={styles.pillLabelRow}>
@@ -343,4 +353,13 @@ function SummaryPill({ label, value, flash, tooltip }: { label: string; value: s
       <div className={styles.pillValue}>{value}</div>
     </div>
   );
-}
+});
+
+/**
+ * Outer memo: the summary reads many fields from CharacterContext, but the
+ * provider itself rebuilds a new value object on every state tick. This memo
+ * is a no-op against context changes (context updates always flow through),
+ * but it short-circuits parent-driven re-renders — i.e., when the wizard
+ * shell re-renders for unrelated reasons (currentStep tick, sidebar toggle).
+ */
+export const CharacterSummaryPanel = memo(CharacterSummaryPanelInner);

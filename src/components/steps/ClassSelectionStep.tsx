@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo, useCallback } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
 import { FeatureExpandable } from '../FeatureExpandable';
 import { StepLayout } from './StepLayout';
 import styles from './ClassSelectionStep.module.css';
 import layoutStyles from './StepLayout.module.css';
-import { getClassHPData } from '../../rules/data/classRules';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
@@ -16,6 +15,9 @@ import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
 import { computeSmartHints } from '../../utils/smartHints';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { getClassCardMeta as getClassCardMetaCached } from '../../data/classMetaCache';
+import { VirtualizedList } from '../ui/VirtualizedList';
+import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
 
 export interface ClassSelectionStepProps {
   languagesData?: unknown;
@@ -30,20 +32,88 @@ type ClassDetails = {
   options?: Array<any>;
 };
 
-function getTraitValue(traits: Record<string, string>, labels: string[]) {
-  const entry = Object.entries(traits).find(([key]) => labels.includes(key));
-  return entry?.[1] ?? null;
-}
+// Class card meta is now memoized in src/data/classMetaCache.ts
+const getClassCardMeta = getClassCardMetaCached;
 
-function getClassCardMeta(classId: string) {
-  const details = (classDetailsData as Record<string, ClassDetails>)[classId];
-  const traits = details?.basicTraits ?? {};
-
-  return {
-    primaryAttribute: getTraitValue(traits, ['Atributo Primário']),
-    hitDie: getClassHPData(classId)?.hitDieLabel ?? getTraitValue(traits, ['Dado de Ponto de Vida']),
-  };
+// ── Memoized class card ───────────────────────────────────────────────────
+// Pulled out so React.memo can skip re-rendering 12+ buttons whenever an
+// unrelated piece of state in the parent step changes (hover preview, hints…).
+interface ClassCardProps {
+  cls: { id: string; name: string; description?: string };
+  isSelected: boolean;
+  isCompareTarget: boolean;
+  showSynergy: boolean;
+  onActivate: (id: string) => void;
+  onHoverEnter: (id: string, rect: DOMRect) => void;
+  onHoverLeave: () => void;
 }
+const ClassCard = memo(function ClassCard({
+  cls, isSelected, isCompareTarget, showSynergy, onActivate, onHoverEnter, onHoverLeave,
+}: ClassCardProps) {
+  const meta = getClassCardMeta(cls.id);
+  const roleMeta = CLASS_ROLE_META[cls.id];
+  const handleEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
+  }, [cls.id, onHoverEnter]);
+  const handleFocus = useCallback((e: React.FocusEvent<HTMLButtonElement>) => {
+    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
+  }, [cls.id, onHoverEnter]);
+  const handleClick = useCallback(() => onActivate(cls.id), [cls.id, onActivate]);
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      onMouseEnter={handleEnter}
+      onMouseLeave={onHoverLeave}
+      onFocus={handleFocus}
+      onBlur={onHoverLeave}
+      className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${isCompareTarget ? styles.classMenuButtonSelected : ''}`}
+    >
+      <div className={styles.classMenuIdentity}>
+        <div className={styles.classMenuIconAndName}>
+          <span className={styles.classMenuIconWrap}>
+            <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" loading="lazy" decoding="async" className={styles.classCardIcon} />
+          </span>
+          <span className={styles.classMenuName}>{cls.name}</span>
+        </div>
+        {meta.hitDie ? <span className={styles.classMetaChip}>{meta.hitDie}</span> : null}
+      </div>
+      <div className={styles.classMenuMetaRow}>
+        {meta.primaryAttribute ? <span className={styles.classMetaChip}>{meta.primaryAttribute}</span> : null}
+        {roleMeta?.roles.map((role) => (
+          <span
+            key={role}
+            className={styles.classMetaChip}
+            style={{
+              background: `${ROLE_COLORS[role]}22`,
+              borderColor: `${ROLE_COLORS[role]}55`,
+              color: ROLE_COLORS[role],
+              fontWeight: 600,
+            }}
+            title={`Papel: ${role}`}
+          >
+            {role}
+          </span>
+        ))}
+        {roleMeta?.difficulty === 'Iniciante' && !isSelected && (
+          <span
+            className={styles.classMetaChip}
+            title="Classe recomendada para iniciantes"
+            style={{
+              background: 'rgba(34,197,94,0.15)',
+              borderColor: 'rgba(34,197,94,0.5)',
+              color: '#22c55e',
+              fontWeight: 700,
+            }}
+          >
+            🌱 Iniciante
+          </span>
+        )}
+        {showSynergy && !isSelected && <RecommendedBadge />}
+      </div>
+    </button>
+  );
+});
 
 function getGroupTitle(name: string): string {
   const lower = name.toLowerCase();
@@ -140,6 +210,13 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
 
   const validationErrors = validationResult.byStep.class;
+
+  useWhyDidYouRender('ClassSelectionStep', {
+    classId: character.characterClass?.id,
+    backgroundId: selectedBackground?.id,
+    characterLevel,
+    validationErrors,
+  });
   const canAdvance = validationErrors.length === 0;
   const selectedClass = character.characterClass;
   const classDetails = selectedClass ? (classDetailsData as Record<string, ClassDetails>)[selectedClass.id] : null;
@@ -158,23 +235,32 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [pinned, setPinned] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleHoverEnter = (classId: string, e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isDesktop || compareMode) return;
-    if (pinned) return;
-    const rect = e.currentTarget.getBoundingClientRect();
+  const handleHoverEnter = useCallback((classId: string, rect: DOMRect) => {
+    if (!isDesktop || compareMode || pinned) return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => {
       setHoverClassId(classId);
       setHoverRect(rect);
     }, 250);
-  };
+  }, [isDesktop, compareMode, pinned]);
 
-  const handleHoverLeave = () => {
+  const handleHoverLeave = useCallback(() => {
     if (pinned) return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setHoverClassId(null);
     setHoverRect(null);
-  };
+  }, [pinned]);
+
+  // Stable per-card activation handler so memoized cards don't churn
+  const handleCardActivate = useCallback((classId: string) => {
+    if (compareMode) {
+      handleCompareClick(classId);
+    } else {
+      const cls = (bgData.classes as Array<{ id: string; name: string; description: string }>).find(c => c.id === classId);
+      if (cls) handleSelectClass(cls);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compareMode, handleSelectClass]);
 
   // ── Smart hints ──
   const smartHints = computeSmartHints(character, selectedBackground);
@@ -243,69 +329,22 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           </p>
         </div>
 
-        <div className={layoutStyles.selectionRail}>
-          {bgData.classes.map((cls) => {
-            const isSelected = selectedClass?.id === cls.id;
-            const cardMeta = getClassCardMeta(cls.id);
-            return (
-              <button
-                key={cls.id}
-                type="button"
-                onClick={() => { if (compareMode) { handleCompareClick(cls.id); } else { handleSelectClass(cls); } }}
-                onMouseEnter={(e) => handleHoverEnter(cls.id, e)}
-                onMouseLeave={handleHoverLeave}
-                onFocus={(e) => handleHoverEnter(cls.id, e as unknown as React.MouseEvent<HTMLButtonElement>)}
-                onBlur={handleHoverLeave}
-                className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id) ? styles.classMenuButtonSelected : ''}`}
-              >
-                <div className={styles.classMenuIdentity}>
-                  <div className={styles.classMenuIconAndName}>
-                    <span className={styles.classMenuIconWrap}>
-                      <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" className={styles.classCardIcon} />
-                    </span>
-                    <span className={styles.classMenuName}>{cls.name}</span>
-                  </div>
-                  {cardMeta.hitDie ? <span className={styles.classMetaChip}>{cardMeta.hitDie}</span> : null}
-                </div>
-                <div className={styles.classMenuMetaRow}>
-                  {cardMeta.primaryAttribute ? (
-                    <span className={styles.classMetaChip}>{cardMeta.primaryAttribute}</span>
-                  ) : null}
-                  {CLASS_ROLE_META[cls.id]?.roles.map((role) => (
-                    <span
-                      key={role}
-                      className={styles.classMetaChip}
-                      style={{
-                        background: `${ROLE_COLORS[role]}22`,
-                        borderColor: `${ROLE_COLORS[role]}55`,
-                        color: ROLE_COLORS[role],
-                        fontWeight: 600,
-                      }}
-                      title={`Papel: ${role}`}
-                    >
-                      {role}
-                    </span>
-                  ))}
-                  {CLASS_ROLE_META[cls.id]?.difficulty === 'Iniciante' && !isSelected && (
-                    <span
-                      className={styles.classMetaChip}
-                      title="Classe recomendada para iniciantes"
-                      style={{
-                        background: 'rgba(34,197,94,0.15)',
-                        borderColor: 'rgba(34,197,94,0.5)',
-                        color: '#22c55e',
-                        fontWeight: 700,
-                      }}
-                    >
-                      🌱 Iniciante
-                    </span>
-                  )}
-                  {isClassSynergyForBg(selectedBackground?.id, cls.id) && !isSelected && <RecommendedBadge />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+        <VirtualizedList
+          className={layoutStyles.selectionRail}
+          estimatedItemHeight={88}
+          items={(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
+            <ClassCard
+              key={cls.id}
+              cls={cls}
+              isSelected={selectedClass?.id === cls.id}
+              isCompareTarget={compareMode && (compareIds[0] === cls.id || compareIds[1] === cls.id)}
+              showSynergy={isClassSynergyForBg(selectedBackground?.id, cls.id)}
+              onActivate={handleCardActivate}
+              onHoverEnter={handleHoverEnter}
+              onHoverLeave={handleHoverLeave}
+            />
+          ))}
+        />
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
 
@@ -349,7 +388,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
                     <h3 className={styles.summaryTitle}>{selectedClass.name}</h3>
                     <p className={styles.summaryDescription}>{selectedClass.description}</p>
                     <div className={styles.summaryStatsInline}>
-                      <SummaryStat label="Dado de vida" value={getClassHPData(selectedClass.id)?.hitDieLabel || '—'} />
+                      <SummaryStat label="Dado de vida" value={selectedClassMeta?.hitDie || '—'} />
                       {selectedClassMeta?.primaryAttribute ? (
                         <SummaryStat label="Atributo-chave" value={selectedClassMeta.primaryAttribute || '—'} />
                       ) : null}
