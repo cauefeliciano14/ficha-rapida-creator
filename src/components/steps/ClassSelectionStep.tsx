@@ -9,15 +9,15 @@ import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
 import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
-import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
 import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
 import { computeSmartHints } from '../../utils/smartHints';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { getClassCardMeta as getClassCardMetaCached } from '../../data/classMetaCache';
-import { VirtualizedList } from '../ui/VirtualizedList';
 import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
+import { getClassTheme } from '../../data/classThemeColors';
+import cardStyles from './ClassCardTrading.module.css';
 
 export interface ClassSelectionStepProps {
   languagesData?: unknown;
@@ -52,6 +52,7 @@ const ClassCard = memo(function ClassCard({
 }: ClassCardProps) {
   const meta = getClassCardMeta(cls.id);
   const roleMeta = CLASS_ROLE_META[cls.id];
+  const theme = getClassTheme(cls.id);
   const handleEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
   }, [cls.id, onHoverEnter]);
@@ -59,6 +60,11 @@ const ClassCard = memo(function ClassCard({
     onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
   }, [cls.id, onHoverEnter]);
   const handleClick = useCallback(() => onActivate(cls.id), [cls.id, onActivate]);
+  const handleLearnMore = useCallback((e: React.MouseEvent) => {
+    // Hover-preview já é a "Learn more" — força exibição on click
+    e.stopPropagation();
+    onHoverEnter(cls.id, (e.currentTarget as HTMLElement).closest('button')!.getBoundingClientRect());
+  }, [cls.id, onHoverEnter]);
   return (
     <button
       type="button"
@@ -67,49 +73,88 @@ const ClassCard = memo(function ClassCard({
       onMouseLeave={onHoverLeave}
       onFocus={handleFocus}
       onBlur={onHoverLeave}
-      className={`${styles.classMenuButton} ${isSelected ? styles.classMenuButtonSelected : ''} ${isCompareTarget ? styles.classMenuButtonSelected : ''}`}
+      className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ''} ${isCompareTarget ? cardStyles.cardCompareTarget : ''}`}
+      style={{
+        ['--card-glow' as string]: theme.glow,
+        ['--banner-color' as string]: theme.banner,
+        ['--tag-bg' as string]: theme.archetypeBg,
+        ['--tag-border' as string]: theme.archetypeBorder,
+        ['--tag-text' as string]: theme.archetypeText,
+      } as React.CSSProperties}
+      aria-label={`Selecionar classe ${cls.name}`}
     >
-      <div className={styles.classMenuIdentity}>
-        <div className={styles.classMenuIconAndName}>
-          <span className={styles.classMenuIconWrap}>
-            <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" loading="lazy" decoding="async" className={styles.classCardIcon} />
-          </span>
-          <span className={styles.classMenuName}>{cls.name}</span>
-        </div>
-        {meta.hitDie ? <span className={styles.classMetaChip}>{meta.hitDie}</span> : null}
+      {/* Background art ocupando todo o card */}
+      <img
+        src={getClassHeroArtSrc(cls.id)}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        className={cardStyles.art}
+      />
+      <div className={cardStyles.scrim} />
+
+      {/* Banner / flâmula com ícone da classe */}
+      <div className={cardStyles.banner}>
+        <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" className={cardStyles.bannerIcon} />
       </div>
-      <div className={styles.classMenuMetaRow}>
-        {meta.primaryAttribute ? <span className={styles.classMetaChip}>{meta.primaryAttribute}</span> : null}
-        {roleMeta?.roles.map((role) => (
-          <span
-            key={role}
-            className={styles.classMetaChip}
-            style={{
-              background: `${ROLE_COLORS[role]}22`,
-              borderColor: `${ROLE_COLORS[role]}55`,
-              color: ROLE_COLORS[role],
-              fontWeight: 600,
-            }}
-            title={`Papel: ${role}`}
+
+      {/* Recomendado para iniciantes ou pelo background */}
+      {(roleMeta?.difficulty === 'Iniciante' || showSynergy) && !isSelected && (
+        <span className={cardStyles.recommendedRibbon}>
+          {showSynergy ? '★ Combina' : '🌱 Iniciante'}
+        </span>
+      )}
+
+      {/* Conteúdo (nome + tags + descrição + ações) */}
+      <div className={cardStyles.content}>
+        <h3 className={cardStyles.title}>{cls.name}</h3>
+        <div className={cardStyles.tagsRow}>
+          <span className={cardStyles.tag}>{theme.archetypeLabel}</span>
+          {meta.primaryAttribute ? (
+            <span
+              className={cardStyles.tag}
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderColor: 'rgba(255,255,255,0.22)',
+                color: '#f1f5f9',
+              }}
+            >
+              {meta.primaryAttribute}
+            </span>
+          ) : null}
+          {roleMeta?.roles.slice(0, 1).map((role) => (
+            <span
+              key={role}
+              className={cardStyles.tag}
+              style={{
+                background: `${ROLE_COLORS[role]}1f`,
+                borderColor: `${ROLE_COLORS[role]}80`,
+                color: ROLE_COLORS[role],
+              }}
+            >
+              {role}
+            </span>
+          ))}
+        </div>
+        {cls.description ? <p className={cardStyles.description}>{cls.description}</p> : null}
+        <div className={cardStyles.actions}>
+          <button
+            type="button"
+            className={cardStyles.actionBtn}
+            onClick={handleLearnMore}
+            aria-label={`Saber mais sobre ${cls.name}`}
           >
-            {role}
-          </span>
-        ))}
-        {roleMeta?.difficulty === 'Iniciante' && !isSelected && (
-          <span
-            className={styles.classMetaChip}
-            title="Classe recomendada para iniciantes"
-            style={{
-              background: 'rgba(34,197,94,0.15)',
-              borderColor: 'rgba(34,197,94,0.5)',
-              color: '#22c55e',
-              fontWeight: 700,
-            }}
+            Saber mais
+          </button>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ''}`}
+            onClick={(e) => { e.stopPropagation(); handleClick(); }}
           >
-            🌱 Iniciante
-          </span>
-        )}
-        {showSynergy && !isSelected && <RecommendedBadge />}
+            {isSelected ? '✓ Selecionada' : 'Selecionar'}
+          </button>
+        </div>
       </div>
     </button>
   );
@@ -329,10 +374,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           </p>
         </div>
 
-        <VirtualizedList
-          className={layoutStyles.selectionRail}
-          estimatedItemHeight={88}
-          items={(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
+        <div className={cardStyles.cardGrid}>
+          {(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
             <ClassCard
               key={cls.id}
               cls={cls}
@@ -344,7 +387,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
               onHoverLeave={handleHoverLeave}
             />
           ))}
-        />
+        </div>
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
 
