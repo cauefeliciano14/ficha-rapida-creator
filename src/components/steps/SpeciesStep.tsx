@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import speciesData from "../../data/species.json";
 import { SpeciesDetails } from "../SpeciesDetails";
 import { StepLayout } from "./StepLayout";
@@ -9,10 +9,77 @@ import { ComparisonModal } from "../ComparisonModal";
 import { SmartHints } from "../ui/SmartHints";
 import { computeSpeciesHints } from "../../utils/smartHints";
 import type languagesDataType from "../../data/languages.json";
+import { getSpeciesTheme } from "../../data/speciesThemeColors";
+import cardStyles from "./SpeciesCardTrading.module.css";
 
 export interface SpeciesStepProps {
   languagesData: typeof languagesDataType;
 }
+
+// ── Memoized species card (mesmo padrão do ClassCard) ──────────────────
+interface SpeciesCardProps {
+  sp: { id: string; name: string; description?: string };
+  isSelected: boolean;
+  isCompareTarget: boolean;
+  onActivate: (id: string) => void;
+  onDetails: (id: string) => void;
+}
+const SpeciesCard = memo(function SpeciesCard({
+  sp, isSelected, isCompareTarget, onActivate, onDetails,
+}: SpeciesCardProps) {
+  const theme = getSpeciesTheme(sp.id);
+  const handleClick = useCallback(() => onActivate(sp.id), [sp.id, onActivate]);
+  const handleDetails = useCallback(
+    (e: React.MouseEvent) => { e.stopPropagation(); onDetails(sp.id); },
+    [sp.id, onDetails],
+  );
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      style={{
+        ['--card-glow' as string]: theme.glow,
+        ['--banner-color' as string]: theme.banner,
+      } as React.CSSProperties}
+      aria-label={`Selecionar espécie ${sp.name}`}
+    >
+      {theme.art ? (
+        <img
+          src={theme.art}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          className={cardStyles.art}
+        />
+      ) : null}
+      <div className={cardStyles.scrim} />
+      <div className={cardStyles.banner}>{sp.name.charAt(0)}</div>
+
+      <div className={cardStyles.content}>
+        <h3 className={cardStyles.title}>{sp.name}</h3>
+        {sp.description ? <p className={cardStyles.description}>{sp.description}</p> : null}
+      </div>
+
+      <div className={cardStyles.footerRow}>
+        <span className={cardStyles.sourceLabel}>Player&apos;s Handbook</span>
+        <div className={cardStyles.actions}>
+          <button type="button" className={cardStyles.detailsLink} onClick={handleDetails}>
+            Detalhes ↗
+          </button>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ""}`}
+            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+          >
+            {isSelected ? "✓ Selecionada" : "Selecionar"}
+          </button>
+        </div>
+      </div>
+    </button>
+  );
+});
 
 export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
   const {
@@ -104,30 +171,32 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
 
         {speciesHints.length > 0 && <SmartHints hints={speciesHints} />}
 
-        <div className={styles.selectionLayout}>
-          <div className={styles.selectionRail} style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
-            {speciesData.species.map((sp: any) => {
-              const isSelected = character.species?.id === sp.id;
-              const isComparing = compareMode && (compareIds[0] === sp.id || compareIds[1] === sp.id);
-              return (
-                <button
-                  key={sp.id}
-                  style={{ minHeight: '44px', padding: '10px 12px' }}
-                  type="button"
-                  className={`${styles.selectionButton} ${isSelected || isComparing ? styles.selectionButtonActive : ""}`.trim()}
-                  onClick={() => {
-                    if (compareMode) { handleCompareClick(sp.id); return; }
-                    handleSelectSpecies(sp);
-                  }}
-                >
-                  <span className={styles.selectionButtonName}>{sp.name}</span>
-                  {isSelected && <span className={styles.selectionButtonMarker}>✓</span>}
-                </button>
-              );
-            })}
-          </div>
+        <div className={cardStyles.cardGrid}>
+          {speciesData.species.map((sp: any) => {
+            const isSelected = character.species?.id === sp.id;
+            const isComparing = compareMode && (compareIds[0] === sp.id || compareIds[1] === sp.id);
+            return (
+              <SpeciesCard
+                key={sp.id}
+                sp={sp}
+                isSelected={isSelected}
+                isCompareTarget={isComparing}
+                onActivate={(id) => {
+                  if (compareMode) { handleCompareClick(id); return; }
+                  handleSelectSpecies(sp);
+                }}
+                onDetails={(id) => {
+                  // Selecionar abre o painel de detalhes embaixo
+                  if (compareMode) { handleCompareClick(id); return; }
+                  handleSelectSpecies(sp);
+                }}
+              />
+            );
+          })}
+        </div>
 
-          <div className={styles.selectionDetails}>
+        <div className={styles.selectionLayout}>
+          <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }}>
             {character.species ? (
               <SpeciesDetails
                 character={character}
@@ -151,7 +220,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
                   Nenhuma espécie selecionada
                 </p>
                 <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.82rem", lineHeight: 1.5, maxWidth: "28rem" }}>
-                  Escolha uma espécie ao lado para ver traços raciais, linhagens e idiomas disponíveis.
+                  Escolha uma espécie acima para ver traços raciais, linhagens e idiomas disponíveis.
                 </p>
               </div>
             )}
