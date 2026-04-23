@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import speciesData from "../../data/species.json";
 import { SpeciesDetails } from "../SpeciesDetails";
 import { StepLayout } from "./StepLayout";
@@ -9,10 +9,77 @@ import { ComparisonModal } from "../ComparisonModal";
 import { SmartHints } from "../ui/SmartHints";
 import { computeSpeciesHints } from "../../utils/smartHints";
 import type languagesDataType from "../../data/languages.json";
+import { getSpeciesTheme } from "../../data/speciesThemeColors";
+import cardStyles from "./SpeciesCardTrading.module.css";
 
 export interface SpeciesStepProps {
   languagesData: typeof languagesDataType;
 }
+
+// ── Memoized species card (mesmo padrão do ClassCard) ──────────────────
+interface SpeciesCardProps {
+  sp: { id: string; name: string; description?: string };
+  isSelected: boolean;
+  isCompareTarget: boolean;
+  onActivate: (id: string) => void;
+  onDetails: (id: string) => void;
+}
+const SpeciesCard = memo(function SpeciesCard({
+  sp, isSelected, isCompareTarget, onActivate, onDetails,
+}: SpeciesCardProps) {
+  const theme = getSpeciesTheme(sp.id);
+  const handleClick = useCallback(() => onActivate(sp.id), [sp.id, onActivate]);
+  const handleDetails = useCallback(
+    (e: React.MouseEvent) => { e.stopPropagation(); onDetails(sp.id); },
+    [sp.id, onDetails],
+  );
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      style={{
+        ['--card-glow' as string]: theme.glow,
+        ['--banner-color' as string]: theme.banner,
+      } as React.CSSProperties}
+      aria-label={`Selecionar espécie ${sp.name}`}
+    >
+      {theme.art ? (
+        <img
+          src={theme.art}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          className={cardStyles.art}
+        />
+      ) : null}
+      <div className={cardStyles.scrim} />
+      <div className={cardStyles.banner}>{sp.name.charAt(0)}</div>
+
+      <div className={cardStyles.content}>
+        <h3 className={cardStyles.title}>{sp.name}</h3>
+        {sp.description ? <p className={cardStyles.description}>{sp.description}</p> : null}
+      </div>
+
+      <div className={cardStyles.footerRow}>
+        <span className={cardStyles.sourceLabel}>Player&apos;s Handbook</span>
+        <div className={cardStyles.actions}>
+          <button type="button" className={cardStyles.detailsLink} onClick={handleDetails}>
+            Detalhes ↗
+          </button>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ""}`}
+            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+          >
+            {isSelected ? "✓ Selecionada" : "Selecionar"}
+          </button>
+        </div>
+      </div>
+    </button>
+  );
+});
 
 export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
   const {
