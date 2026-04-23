@@ -9,7 +9,6 @@ import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
 import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
-import { RecommendedBadge } from '../ui/RecommendedBadge';
 import { ComparisonModal } from '../ComparisonModal';
 import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
@@ -375,10 +374,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           </p>
         </div>
 
-        <VirtualizedList
-          className={layoutStyles.selectionRail}
-          estimatedItemHeight={88}
-          items={(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
+        <div className={cardStyles.cardGrid}>
+          {(bgData.classes as Array<{ id: string; name: string; description: string }>).map((cls) => (
             <ClassCard
               key={cls.id}
               cls={cls}
@@ -390,7 +387,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
               onHoverLeave={handleHoverLeave}
             />
           ))}
-        />
+        </div>
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
 
