@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, memo, useCallback } from "react";
 import backgroundsData from "../../data/backgrounds.json";
 import talentsData from "../../data/talents.json";
 import {
@@ -14,8 +14,83 @@ import { formatDice, getSkillParts } from "../../utils/formatting";
 import { useCharacter, ATTR_METADATA } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
 import { isSynergy } from "../../data/classSynergies";
-import { RecommendedBadge } from "../ui/RecommendedBadge";
 import { ComparisonModal } from "../ComparisonModal";
+import { getBackgroundTheme } from "../../data/backgroundThemeColors";
+import cardStyles from "./BackgroundCardTrading.module.css";
+
+// ── Memoized background card (mesmo padrão do SpeciesCard) ─────────────
+interface BackgroundCardProps {
+  bg: { id: string; name: string; description?: string; talent?: string };
+  isSelected: boolean;
+  isCompareTarget: boolean;
+  isRecommended: boolean;
+  onActivate: (id: string) => void;
+}
+const BackgroundCard = memo(function BackgroundCard({
+  bg, isSelected, isCompareTarget, isRecommended, onActivate,
+}: BackgroundCardProps) {
+  const theme = getBackgroundTheme(bg.id);
+  const [artFailed, setArtFailed] = useState(false);
+  const handleClick = useCallback(() => onActivate(bg.id), [bg.id, onActivate]);
+  const showArt = !!theme.art && !artFailed;
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      style={{
+        ['--card-glow' as string]: theme.glow,
+        ['--banner-color' as string]: theme.banner,
+        ['--archetype-text' as string]: theme.archetypeText,
+      } as React.CSSProperties}
+      aria-label={`Selecionar origem ${bg.name}`}
+    >
+      {showArt ? (
+        <img
+          src={theme.art}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          className={cardStyles.art}
+          onError={() => setArtFailed(true)}
+        />
+      ) : (
+        <div className={cardStyles.artFallback} aria-hidden="true" />
+      )}
+      <div className={cardStyles.scrim} />
+      <div className={cardStyles.banner}>{bg.name.charAt(0)}</div>
+
+      {isRecommended && !isSelected && (
+        <span className={cardStyles.recommendedRibbon}>★ Recomendado</span>
+      )}
+
+      <div className={cardStyles.content}>
+        <h3 className={cardStyles.title}>{bg.name}</h3>
+        {bg.description ? <p className={cardStyles.description}>{bg.description}</p> : null}
+        {bg.talent ? (
+          <span className={cardStyles.featLine}>
+            <span className={cardStyles.featLabel}>Talento:</span>
+            <span className={cardStyles.featName}>{bg.talent}</span>
+          </span>
+        ) : null}
+      </div>
+
+      <div className={cardStyles.footerRow}>
+        <span className={cardStyles.sourceLabel}>Player&apos;s Handbook</span>
+        <div className={cardStyles.actions}>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ""}`}
+            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+          >
+            {isSelected ? "✓ Selecionada" : "Selecionar"}
+          </button>
+        </div>
+      </div>
+    </button>
+  );
+});
 
 export const BackgroundStep: React.FC = () => {
   const detailsRef = useRef<HTMLDivElement | null>(null);
@@ -115,43 +190,41 @@ export const BackgroundStep: React.FC = () => {
           {compareMode ? '✕ Sair da comparação' : '⚖ Comparar origens'}
         </button>
 
-        <div className={styles.selectionLayout}>
-          <div className={styles.selectionRail}>
-            {(backgroundsData.backgrounds as any[]).map((bg: any) => {
-              const isSelected = selectedBackground?.id === bg.id;
-              const isComparing = compareMode && (compareIds[0] === bg.id || compareIds[1] === bg.id);
-              return (
-                <button
-                  key={bg.id}
-                  type="button"
-                  className={`${styles.selectionButton} ${isSelected || isComparing ? styles.selectionButtonActive : ""}`.trim()}
-                  onClick={() => {
-                    if (compareMode) {
-                      handleCompareClick(bg.id);
-                      return;
-                    }
-                    setSelectedBackground(bg);
-                    requestAnimationFrame(() => {
-                      detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                    });
-                    setAttrChoiceMode("");
-                    setAttrPlus1("");
-                    setAttrPlus2("");
-                    setCharacter((prev) => ({
-                      ...prev,
-                      choices: { ...prev.choices, toolProficiency: "" },
-                    }));
-                  }}
-                >
-                  <span className={styles.selectionButtonName}>{bg.name}</span>
-                  {isSynergy(character.characterClass?.id, bg.id) && !isSelected && <RecommendedBadge />}
-                  {isSelected && <span className={styles.selectionButtonMarker}>✓</span>}
-                </button>
-              );
-            })}
-          </div>
+        <div className={cardStyles.cardGrid}>
+          {(backgroundsData.backgrounds as any[]).map((bg: any) => {
+            const isSelected = selectedBackground?.id === bg.id;
+            const isComparing = compareMode && (compareIds[0] === bg.id || compareIds[1] === bg.id);
+            const recommended = isSynergy(character.characterClass?.id, bg.id);
+            return (
+              <BackgroundCard
+                key={bg.id}
+                bg={bg}
+                isSelected={isSelected}
+                isCompareTarget={isComparing}
+                isRecommended={recommended}
+                onActivate={(id) => {
+                  if (compareMode) { handleCompareClick(id); return; }
+                  setSelectedBackground(bg);
+                  requestAnimationFrame(() => {
+                    detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                  });
+                  setAttrChoiceMode("");
+                  setAttrPlus1("");
+                  setAttrPlus2("");
+                  setCharacter((prev) => ({
+                    ...prev,
+                    choices: { ...prev.choices, toolProficiency: "" },
+                  }));
+                  // suprime warning de variável não usada
+                  void id;
+                }}
+              />
+            );
+          })}
+        </div>
 
-          <div className={styles.selectionDetails} ref={detailsRef}>
+        <div className={styles.selectionLayout}>
+          <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }} ref={detailsRef}>
             {selectedBackground ? (
               <div id="background-details" className={styles.selectionDetails}>
                 <div className={`${styles.summaryCardBase} ${styles.selectionPanel} ${bgStyles.detailsCard}`}>
