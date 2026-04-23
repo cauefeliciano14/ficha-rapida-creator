@@ -14,7 +14,6 @@ import { formatDice, getSkillParts } from "../../utils/formatting";
 import { useCharacter, ATTR_METADATA } from "../../context/CharacterContext";
 import { useWizard } from "../../context/WizardContext";
 import { isSynergy } from "../../data/classSynergies";
-import { RecommendedBadge } from "../ui/RecommendedBadge";
 import { ComparisonModal } from "../ComparisonModal";
 import { getBackgroundTheme } from "../../data/backgroundThemeColors";
 import cardStyles from "./BackgroundCardTrading.module.css";
