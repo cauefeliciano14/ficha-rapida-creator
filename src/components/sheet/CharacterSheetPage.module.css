@@ -882,7 +882,7 @@
   align-self: stretch;
   flex: 0 0 auto;
   border: 2.5px solid hsl(43, 50%, 35%);
-  border-radius: 6px;
+  border-radius: 0;
   /* Octogonal — mesma silhueta dos atributos para preservar a simetria */
   clip-path: polygon(50% 0%, 100% 15%, 100% 85%, 50% 100%, 0% 85%, 0% 15%);
   background: linear-gradient(135deg, hsl(43, 30%, 12%), hsl(43, 20%, 8%));
@@ -891,7 +891,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 12px 6px 22px;
+  padding: 22px 6px 22px;
   cursor: pointer;
   position: relative;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
