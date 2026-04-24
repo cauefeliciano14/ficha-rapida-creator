@@ -811,8 +811,8 @@
 }
 
 .statValue {
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  font-weight: 700;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  font-weight: 900;
   color: var(--text-bright);
   line-height: 1;
 }
@@ -821,26 +821,50 @@
   display: flex;
   align-items: baseline;
   gap: 2px;
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  font-weight: 700;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  font-weight: 900;
   color: var(--text-bright);
   line-height: 1;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .statUnit {
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 0.65rem;
+  font-weight: 600;
   color: var(--text-dim);
+  letter-spacing: 0.05em;
 }
 
 .statLabel {
   font-family: var(--font-label);
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
-  line-height: 1.2;
+  line-height: 1;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* Sub-rótulo na base do octógono (BÔNUS, VELOCIDADE, etc.) */
+.statSubLabel {
+  font-family: var(--font-label);
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  line-height: 1;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .statFraction {
