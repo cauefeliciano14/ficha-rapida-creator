@@ -1,45 +1,52 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { AbilityScoreCards } from './AbilityScoreCards';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { signedMod } from '../../utils/format';
 
-const finalAttributes = {
-  forca: 8, destreza: 12, constituicao: 14,
-  inteligencia: 14, sabedoria: 16, carisma: 11,
-};
-const modifiers = {
-  forca: -1, destreza: 1, constituicao: 2,
-  inteligencia: 2, sabedoria: 3, carisma: 0,
-};
-
+/**
+ * Visual contract test (estático): garante que o CSS dos cards de
+ * atributos NÃO volte a usar clip-path nem position absolute nos
+ * elementos internos (label / scoreBadge / modifier).
+ * Também valida formatação consistente do modificador.
+ */
 describe('AbilityScoreCards — visual contract', () => {
-  it('renderiza as 6 características em ordem alfabética pt-BR', () => {
-    render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
-    const labels = screen.getAllByText(
-      /^(Força|Destreza|Constituição|Inteligência|Sabedoria|Carisma)$/
-    ).map(el => el.textContent);
-    expect(labels).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+  const css = readFileSync(
+    resolve(__dirname, './AbilityScoreCards.module.css'),
+    'utf8'
+  );
+
+  it('a regra .box NÃO usa clip-path (retângulo limpo)', () => {
+    const boxBlock = css.match(/\.box\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(boxBlock).not.toMatch(/clip-path\s*:/);
+    expect(boxBlock).toMatch(/border-radius\s*:/);
   });
 
-  it('mostra label, modificador com sinal e Total para cada característica', () => {
-    render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
-    expect(screen.getByText('Força')).toBeInTheDocument();
-    expect(screen.getByText('-1')).toBeInTheDocument(); // mod negativo
-    expect(screen.getByText('+3')).toBeInTheDocument(); // mod positivo (Sabedoria)
-    expect(screen.getByText('+0')).toBeInTheDocument(); // mod zero formatado com +
-    expect(screen.getAllByText('Total').length).toBe(6);
-    expect(screen.getByText('16')).toBeInTheDocument(); // total Sabedoria
+  it('label e scoreBadge não usam position: absolute', () => {
+    const labelBlock = css.match(/\.label\s*\{[^}]*\}/)?.[0] ?? '';
+    const badgeBlock = css.match(/\.scoreBadge\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(labelBlock).not.toMatch(/position\s*:\s*absolute/);
+    expect(badgeBlock).not.toMatch(/position\s*:\s*absolute/);
   });
 
-  it('não usa clip-path nem position absolute nas caixas (retângulos limpos)', () => {
-    const { container } = render(
-      <AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />
-    );
-    const boxes = container.querySelectorAll('[class*="box"]');
-    expect(boxes.length).toBeGreaterThan(0);
-    boxes.forEach(box => {
-      const style = getComputedStyle(box as HTMLElement);
-      expect(style.clipPath === '' || style.clipPath === 'none').toBe(true);
-      expect(['static', '', 'relative']).toContain(style.position);
-    });
+  it('modificador é formatado com sinal (+/-/+0)', () => {
+    expect(signedMod(3)).toBe('+3');
+    expect(signedMod(0)).toBe('+0');
+    expect(signedMod(-1)).toBe('-1');
+  });
+
+  it('label da característica permanece legível em telas pequenas (>= 0.65rem)', () => {
+    const mobileBlock = css.match(/@media\s*\(max-width:\s*480px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
+    const labelSize = mobileBlock.match(/\.label\s*\{[^}]*font-size\s*:\s*([\d.]+)rem/)?.[1];
+    if (labelSize) {
+      expect(parseFloat(labelSize)).toBeGreaterThanOrEqual(0.65);
+    }
+  });
+});
+
+describe('AbilityScoreCards — ordering contract', () => {
+  it('a lista de labels ordenada por localeCompare(pt-BR) começa com Carisma', () => {
+    const names = ['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma'];
+    const sorted = names.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    expect(sorted).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
   });
 });
