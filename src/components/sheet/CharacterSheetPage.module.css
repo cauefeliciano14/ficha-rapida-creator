@@ -767,16 +767,9 @@
 
 /* AC — Shield shape */
 .statBoxShield {
-  border-radius: 0;
+  border-radius: 6px;
   border: 2px solid var(--border-theme);
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 70%,
-    50% 100%,
-    0% 70%
-  );
-  padding: 14px 12px 28px;
+  padding: 10px 8px;
   width: 96px;
   min-width: 96px;
   height: 100%;
@@ -788,17 +781,9 @@
 
 /* Initiative — Hexagonal shape */
 .statBoxHex {
-  border-radius: 0;
+  border-radius: 6px;
   border: 2px solid var(--border-theme);
-  clip-path: polygon(
-    50% 0%,
-    100% 25%,
-    100% 75%,
-    50% 100%,
-    0% 75%,
-    0% 25%
-  );
-  padding: 18px 12px;
+  padding: 10px 8px;
   width: 96px;
   min-width: 96px;
   height: 100%;
