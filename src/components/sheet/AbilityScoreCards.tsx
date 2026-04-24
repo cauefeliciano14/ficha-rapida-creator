@@ -40,7 +40,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
           >
             <div className={styles.label}>{label}</div>
             <div className={styles.modifier}>{signedMod(mod)}</div>
-            <div className={styles.scoreBadge}>{score}</div>
+            <div className={styles.scoreBadge}>Total {score}</div>
           </div>
         );
 
