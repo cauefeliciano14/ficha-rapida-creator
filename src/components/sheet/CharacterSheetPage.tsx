@@ -919,8 +919,9 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
           >
+            <div className={styles.statLabel}>PROFICIÊNCIA</div>
             <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
-            <div className={styles.statLabel}>BÔNUS PROF.</div>
+            <div className={styles.statSubLabel}>BÔNUS</div>
           </div>
 
           {/* Walking Speed */}
@@ -931,10 +932,11 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
           >
+            <div className={styles.statLabel}>CAMINHADA</div>
             <div className={styles.statValueInline}>
               {derivedSheet.speed}
             </div>
-            <div className={styles.statLabel}>VELOCIDADE</div>
+            <div className={styles.statSubLabel}>VELOCIDADE</div>
           </div>
 
           {/* Heroic Inspiration */}
