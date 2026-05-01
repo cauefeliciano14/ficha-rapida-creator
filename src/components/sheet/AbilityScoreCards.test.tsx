@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { signedMod } from '../../utils/format';
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { AbilityScoreCards } from './AbilityScoreCards';
+
+// @ts-expect-error jsdom test env flag for React act
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 /**
  * Visual contract test (estático): garante que o CSS dos cards de
@@ -41,6 +47,13 @@ describe('AbilityScoreCards — visual contract', () => {
       expect(parseFloat(labelSize)).toBeGreaterThanOrEqual(0.65);
     }
   });
+
+  it('gridHorizontal usa 6 colunas iguais (linha única no desktop)', () => {
+    const block = css.match(/\.gridHorizontal\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(block).toMatch(/grid-template-columns\s*:\s*repeat\(6,\s*1fr\)/);
+    expect(block).not.toMatch(/clip-path\s*:/);
+    expect(block).not.toMatch(/position\s*:\s*absolute/);
+  });
 });
 
 describe('AbilityScoreCards — ordering contract', () => {
@@ -48,5 +61,79 @@ describe('AbilityScoreCards — ordering contract', () => {
     const names = ['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma'];
     const sorted = names.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'));
     expect(sorted).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+  });
+
+  it('renderiza os 6 cards na ordem alfabética pt-BR (DOM)', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const finalAttributes = { forca: 14, destreza: 12, constituicao: 13, inteligencia: 10, sabedoria: 11, carisma: 8 };
+    const modifiers = { forca: 2, destreza: 1, constituicao: 1, inteligencia: 0, sabedoria: 0, carisma: -1 };
+
+    act(() => {
+      root.render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
+    });
+
+    const labels = Array.from(container.querySelectorAll('[class*="label"]'))
+      .map(el => el.textContent?.trim())
+      .filter(Boolean);
+    expect(labels.slice(0, 6)).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+
+    act(() => root.unmount());
+    container.remove();
+  });
+
+  it('cada label tem tooltip (title) explicando como o modificador é calculado', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const finalAttributes = { forca: 14, destreza: 12, constituicao: 13, inteligencia: 10, sabedoria: 11, carisma: 8 };
+    const modifiers = { forca: 2, destreza: 1, constituicao: 1, inteligencia: 0, sabedoria: 0, carisma: -1 };
+
+    act(() => {
+      root.render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
+    });
+
+    const labelsWithTitle = Array.from(container.querySelectorAll('[title]'))
+      .filter(el => /Modificador\s*=\s*\(Total\s*-\s*10\)/i.test(el.getAttribute('title') ?? ''));
+    expect(labelsWithTitle.length).toBeGreaterThanOrEqual(6);
+
+    act(() => root.unmount());
+    container.remove();
+  });
+});
+
+describe('CharacterSheetPage statsBand — single-row contract', () => {
+  const css = readFileSync(
+    resolve(__dirname, './CharacterSheetPage.module.css'),
+    'utf8'
+  );
+
+  it('.statsBand é flex row no desktop (linha única)', () => {
+    const block = css.match(/\.statsBand\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(block).toMatch(/flex-direction\s*:\s*row/);
+  });
+
+  it('.statsBandAbilities distribui 6 colunas iguais', () => {
+    const block = css.match(/\.statsBandAbilities\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(block).toMatch(/grid-template-columns\s*:\s*repeat\(6,\s*1fr\)/);
+  });
+
+  it('.statsBandRight não quebra linha por padrão (nowrap) no desktop', () => {
+    const block = css.match(/\.statsBandRight\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(block).toMatch(/flex-wrap\s*:\s*nowrap/);
+  });
+
+  it('empilha somente abaixo de 1100px (mantém linha única acima)', () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?\.statsBand\s*\{[^}]*flex-direction\s*:\s*column/);
+  });
+
+  it('blocos de PB, Caminhada, Inspiração e HP têm a mesma altura mínima (110px)', () => {
+    const statBox = css.match(/\.statBox\s*\{[^}]*\}/)?.[0] ?? '';
+    const heroicBox = css.match(/\.heroicBox\s*\{[^}]*\}/)?.[0] ?? '';
+    const hpPanel = css.match(/\.hpPanel\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(statBox).toMatch(/min-height\s*:\s*110px/);
+    expect(heroicBox).toMatch(/min-height\s*:\s*110px/);
+    expect(hpPanel).toMatch(/min-height\s*:\s*110px/);
   });
 });
