@@ -919,7 +919,10 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'proficiency' }); }}
           >
-            <div className={styles.statLabel}>PROFICIÊNCIA</div>
+            <div
+              className={styles.statLabel}
+              title="Bônus de Proficiência: somado a ataques, testes e perícias treinadas. Cresce conforme o nível (+2 a +6)."
+            >PROFICIÊNCIA</div>
             <div className={styles.statValue}>{signedMod(derivedSheet.proficiencyBonus)}</div>
             <div className={styles.statSubLabel}>BÔNUS</div>
           </div>
@@ -932,7 +935,10 @@ export function CharacterSheetPage({
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSidebar({ type: 'speed' }); }}
           >
-            <div className={styles.statLabel}>CAMINHADA</div>
+            <div
+              className={styles.statLabel}
+              title="Velocidade de Caminhada: distância percorrida em metros por turno (1 quadrado = 1,5 m)."
+            >CAMINHADA</div>
             <div className={styles.statValueInline}>
               {derivedSheet.speed}
             </div>
@@ -948,6 +954,7 @@ export function CharacterSheetPage({
             aria-label="Inspiração Heróica"
             tabIndex={0}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') toggleInspiration(); }}
+            title="Inspiração Heróica: gaste para rolar novamente um d20. Clique para alternar."
           >
             {playState.heroicInspiration && <span className={styles.heroicCheck}>★</span>}
             <span className={styles.heroicLabel}>INSPIRAÇÃO</span>
