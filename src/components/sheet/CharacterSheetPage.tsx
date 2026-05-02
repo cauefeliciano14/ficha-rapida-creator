@@ -182,7 +182,9 @@ export function CharacterSheetPage({
   const isDesktopWide = useMediaQuery('(min-width: 1200px)');
 
   /* ── Modo de visualização dos atributos (persistido em localStorage) ── */
-  const [abilityViewMode, , toggleAbilityViewMode] = useAbilityViewMode();
+  const abilityView = useAbilityViewMode();
+  const abilityViewMode = abilityView[0];
+  const toggleAbilityViewMode = abilityView[2];
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
