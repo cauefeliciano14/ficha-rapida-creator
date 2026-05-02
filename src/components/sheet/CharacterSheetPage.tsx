@@ -905,13 +905,26 @@ export function CharacterSheetPage({
       {/* ===== STATS BAND (full-width: Abilities + PB/Speed + Heroic/HP) ===== */}
       <div className={styles.statsBand}>
         {/* 6 ability scores in horizontal row */}
-        <div className={styles.statsBandAbilities}>
+        <div
+          className={styles.statsBandAbilities}
+          data-view-mode={abilityViewMode}
+          style={abilityViewMode === 'stacked' ? { gridTemplateColumns: 'repeat(3, 1fr)' } : undefined}
+        >
+          <button
+            type="button"
+            onClick={toggleAbilityViewMode}
+            className={styles.viewModeToggle}
+            aria-label={`Alternar modo de visualização dos atributos (atual: ${abilityViewMode === 'horizontal' ? 'horizontal' : 'empilhado'})`}
+            title="Alternar visualização dos atributos (horizontal / empilhado). A escolha é lembrada entre recarregamentos."
+          >
+            {abilityViewMode === 'horizontal' ? '▦' : '▤'}
+          </button>
           <AbilityScoreCards
             finalAttributes={derivedSheet.finalAttributes}
             modifiers={derivedSheet.modifiers}
             attributeBreakdowns={derivedSheet.attributeBreakdowns}
             onAbilityClick={handleAbilityClick}
-            horizontal
+            horizontal={abilityViewMode === 'horizontal'}
           />
         </div>
 
