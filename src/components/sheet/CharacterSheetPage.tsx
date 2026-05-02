@@ -22,7 +22,7 @@ import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { useAbilityViewMode } from '../../hooks/useAbilityViewMode';
+import { useAbilityViewMode, markToggleFocus, shouldRestoreToggleFocus } from '../../hooks/useAbilityViewMode';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
@@ -185,6 +185,12 @@ export function CharacterSheetPage({
   const abilityView = useAbilityViewMode();
   const abilityViewMode = abilityView[0];
   const toggleAbilityViewMode = abilityView[2];
+  const viewModeBtnRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (shouldRestoreToggleFocus()) {
+      viewModeBtnRef.current?.focus();
+    }
+  }, []);
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
@@ -912,7 +918,10 @@ export function CharacterSheetPage({
         >
           <button
             type="button"
+            ref={viewModeBtnRef}
             onClick={toggleAbilityViewMode}
+            onFocus={() => markToggleFocus(true)}
+            onBlur={() => markToggleFocus(false)}
             className={styles.viewModeToggle}
             aria-label={`Alternar modo de visualização dos atributos (atual: ${abilityViewMode === 'horizontal' ? 'horizontal' : 'empilhado'})`}
             title="Alternar visualização dos atributos (horizontal / empilhado). A escolha é lembrada entre recarregamentos."

@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { signedMod } from '../../utils/format';
 import { CalculationTooltip } from '../ui/CalculationTooltip';
 import type { AttributeBreakdownRow } from '../../rules/types/DerivedSheet';
+import { getAbilityLabelTexts } from '../../utils/abilityLabels';
 import styles from './AbilityScoreCards.module.css';
 
 const ABILITY_LABELS: Array<{ key: string; label: string; abbr: string }> = ([
@@ -12,15 +13,6 @@ const ABILITY_LABELS: Array<{ key: string; label: string; abbr: string }> = ([
   { key: 'sabedoria', label: 'Sabedoria', abbr: 'SAB' },
   { key: 'carisma', label: 'Carisma', abbr: 'CAR' },
 ] as const).slice().sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
-
-const MOD_DESCRIPTIONS: Record<string, string> = {
-  forca: 'Mede o poder físico e a força bruta.',
-  destreza: 'Mede a agilidade, reflexos e equilíbrio.',
-  constituicao: 'Mede a resistência, saúde e vitalidade.',
-  inteligencia: 'Mede o raciocínio, memória e conhecimento.',
-  sabedoria: 'Mede a percepção, intuição e sintonia.',
-  carisma: 'Mede a personalidade, influência e persuasão.',
-};
 
 interface AbilityScoreCardsProps {
   finalAttributes: Record<string, number>;
@@ -37,8 +29,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
         const score = finalAttributes[key] ?? 8;
         const mod = modifiers[key] ?? 0;
         const breakdown = attributeBreakdowns?.[key];
-        const tooltipHint = `${MOD_DESCRIPTIONS[key] ?? ''} Modificador = (Total - 10) ÷ 2, arredondado para baixo.`;
-        const ariaDescription = `${label}. Total ${score}. Modificador ${signedMod(mod)}. ${tooltipHint}`;
+        const texts = getAbilityLabelTexts(key, label, score, mod);
 
         const card = (
           <div
@@ -48,19 +39,20 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
             role={onAbilityClick ? 'button' : undefined}
             tabIndex={onAbilityClick ? 0 : undefined}
             onKeyDown={onAbilityClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onAbilityClick(key, label, score, mod); } : undefined}
-            aria-label={ariaDescription}
-            title={tooltipHint}
+            aria-label={texts.cardAriaLabel}
+            title={texts.tooltip}
+            data-ability-key={key}
           >
             <div
               className={styles.label}
-              title={tooltipHint}
-              aria-label={`${label} — clique ou pressione Enter para detalhes`}
+              title={texts.tooltip}
+              aria-label={texts.labelAriaLabel}
               tabIndex={onAbilityClick ? 0 : -1}
             >{label}</div>
             <div
               className={`${styles.modifier} ${mod >= 0 ? styles.modPositive : styles.modNegative}`}
-              title={`Modificador ${signedMod(mod)} — usado em testes, ataques e magias.`}
-              aria-label={`Modificador ${signedMod(mod)}`}
+              title={texts.modifierTitle}
+              aria-label={texts.modifierAriaLabel}
             >
               {signedMod(mod)}
             </div>
