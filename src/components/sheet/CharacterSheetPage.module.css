@@ -196,6 +196,33 @@
   grid-template-columns: repeat(6, 1fr);
   gap: 6px;
   align-items: stretch;
+  position: relative;
+}
+
+.viewModeToggle {
+  position: absolute;
+  top: -22px;
+  right: 0;
+  width: 22px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.viewModeToggle:hover,
+.viewModeToggle:focus-visible {
+  color: var(--text-bright);
+  border-color: var(--border-theme);
+  background: var(--color-primary-subtle);
+  outline: none;
 }
 
 .statsBandRight {
