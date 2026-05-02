@@ -22,6 +22,7 @@ import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useAbilityViewMode } from '../../hooks/useAbilityViewMode';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
