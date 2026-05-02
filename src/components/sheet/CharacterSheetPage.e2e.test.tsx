@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, vi, afterEach } from 'vitest';
-import { render, screen, cleanup, within } from '@testing-library/react';
+import { act } from 'react';
+import { render, screen, cleanup, within, fireEvent } from '@testing-library/react';
 import { CharacterSheetPage } from './CharacterSheetPage';
 import { DiceProvider } from '../../context/DiceContext';
 import { deriveSheet } from '../../rules/engine';
@@ -105,9 +106,9 @@ describe('CharacterSheetPage — E2E (Etapa 6) ordem alfabética + alturas', () 
     setViewport(1280);
     const { unmount } = renderSheet();
     const toggle = screen.getByRole('button', { name: /Alternar modo de visualização/ });
-    toggle.focus();
+    act(() => { toggle.focus(); });
     expect(window.localStorage.getItem('sheet:abilityViewMode:focused')).toBe('1');
-    toggle.click();
+    act(() => { fireEvent.click(toggle); });
     expect(window.localStorage.getItem('sheet:abilityViewMode')).toBe('stacked');
     unmount();
 
