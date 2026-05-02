@@ -22,6 +22,7 @@ import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useAbilityViewMode } from '../../hooks/useAbilityViewMode';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
@@ -179,6 +180,11 @@ export function CharacterSheetPage({
   /* ── Responsive layout ── */
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const isDesktopWide = useMediaQuery('(min-width: 1200px)');
+
+  /* ── Modo de visualização dos atributos (persistido em localStorage) ── */
+  const abilityView = useAbilityViewMode();
+  const abilityViewMode = abilityView[0];
+  const toggleAbilityViewMode = abilityView[2];
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
@@ -899,13 +905,26 @@ export function CharacterSheetPage({
       {/* ===== STATS BAND (full-width: Abilities + PB/Speed + Heroic/HP) ===== */}
       <div className={styles.statsBand}>
         {/* 6 ability scores in horizontal row */}
-        <div className={styles.statsBandAbilities}>
+        <div
+          className={styles.statsBandAbilities}
+          data-view-mode={abilityViewMode}
+          style={abilityViewMode === 'stacked' ? { gridTemplateColumns: 'repeat(3, 1fr)' } : undefined}
+        >
+          <button
+            type="button"
+            onClick={toggleAbilityViewMode}
+            className={styles.viewModeToggle}
+            aria-label={`Alternar modo de visualização dos atributos (atual: ${abilityViewMode === 'horizontal' ? 'horizontal' : 'empilhado'})`}
+            title="Alternar visualização dos atributos (horizontal / empilhado). A escolha é lembrada entre recarregamentos."
+          >
+            {abilityViewMode === 'horizontal' ? '▦' : '▤'}
+          </button>
           <AbilityScoreCards
             finalAttributes={derivedSheet.finalAttributes}
             modifiers={derivedSheet.modifiers}
             attributeBreakdowns={derivedSheet.attributeBreakdowns}
             onAbilityClick={handleAbilityClick}
-            horizontal
+            horizontal={abilityViewMode === 'horizontal'}
           />
         </div>
 

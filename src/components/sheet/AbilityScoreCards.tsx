@@ -38,6 +38,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
         const mod = modifiers[key] ?? 0;
         const breakdown = attributeBreakdowns?.[key];
         const tooltipHint = `${MOD_DESCRIPTIONS[key] ?? ''} Modificador = (Total - 10) ÷ 2, arredondado para baixo.`;
+        const ariaDescription = `${label}. Total ${score}. Modificador ${signedMod(mod)}. ${tooltipHint}`;
 
         const card = (
           <div
@@ -47,10 +48,20 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
             role={onAbilityClick ? 'button' : undefined}
             tabIndex={onAbilityClick ? 0 : undefined}
             onKeyDown={onAbilityClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onAbilityClick(key, label, score, mod); } : undefined}
-            aria-label={`${label}: total ${score}, modificador ${signedMod(mod)}`}
+            aria-label={ariaDescription}
+            title={tooltipHint}
           >
-            <div className={styles.label} title={tooltipHint}>{label}</div>
-            <div className={`${styles.modifier} ${mod >= 0 ? styles.modPositive : styles.modNegative}`}>
+            <div
+              className={styles.label}
+              title={tooltipHint}
+              aria-label={`${label} — clique ou pressione Enter para detalhes`}
+              tabIndex={onAbilityClick ? 0 : -1}
+            >{label}</div>
+            <div
+              className={`${styles.modifier} ${mod >= 0 ? styles.modPositive : styles.modNegative}`}
+              title={`Modificador ${signedMod(mod)} — usado em testes, ataques e magias.`}
+              aria-label={`Modificador ${signedMod(mod)}`}
+            >
               {signedMod(mod)}
             </div>
             <div className={styles.scoreBadge}>

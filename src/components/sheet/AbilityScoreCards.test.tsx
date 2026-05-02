@@ -136,4 +136,133 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     expect(heroicBox).toMatch(/min-height\s*:\s*110px/);
     expect(hpPanel).toMatch(/min-height\s*:\s*110px/);
   });
+
+  it('na quebra <=1100px todos os blocos preservam altura mínima de 110px e largura fluida', () => {
+    const block = css.match(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
+      ?? css.match(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?^\}/m)?.[0]
+      ?? '';
+    expect(block).toMatch(/\.statsBandRight\s*>\s*\.statBox[\s\S]*?min-height\s*:\s*110px/);
+    expect(block).toMatch(/\.statsBandRight\s*>\s*\.hpPanel[\s\S]*?min-height\s*:\s*110px/);
+    expect(block).toMatch(/flex-wrap\s*:\s*wrap/);
+  });
+
+  it('em <=640px mantém espaçamento consistente e blocos com pelo menos 96px de altura', () => {
+    const block = css.match(/@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
+      ?? css.match(/@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?^\}/m)?.[0]
+      ?? '';
+    expect(block).toMatch(/\.statsBandAbilities[\s\S]*?grid-template-columns\s*:\s*repeat\(3,\s*1fr\)/);
+    expect(block).toMatch(/\.statsBandRight[\s\S]*?gap\s*:\s*6px/);
+    expect(block).toMatch(/min-height\s*:\s*96px/);
+  });
+
+  it('toggle de modo de visualização tem estilo focável (focus-visible)', () => {
+    expect(css).toMatch(/\.viewModeToggle[\s\S]*?\{[^}]*\}/);
+    expect(css).toMatch(/\.viewModeToggle:hover,?\s*\.viewModeToggle:focus-visible/);
+  });
+});
+
+describe('AbilityScoreCards — accessibility & ordering on stacked layout', () => {
+  it('label de cada característica é focável por teclado (tabIndex=0) quando há onAbilityClick', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const finalAttributes = { forca: 14, destreza: 12, constituicao: 13, inteligencia: 10, sabedoria: 11, carisma: 8 };
+    const modifiers = { forca: 2, destreza: 1, constituicao: 1, inteligencia: 0, sabedoria: 0, carisma: -1 };
+
+    act(() => {
+      root.render(
+        <AbilityScoreCards
+          finalAttributes={finalAttributes}
+          modifiers={modifiers}
+          horizontal
+          onAbilityClick={() => {}}
+        />
+      );
+    });
+
+    const focusableLabels = Array.from(container.querySelectorAll('[class*="label"][tabindex="0"]'));
+    expect(focusableLabels.length).toBeGreaterThanOrEqual(6);
+
+    act(() => root.unmount());
+    container.remove();
+  });
+
+  it('modificador tem aria-label padronizado com sinal +/-', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const finalAttributes = { forca: 14, destreza: 12, constituicao: 13, inteligencia: 10, sabedoria: 11, carisma: 8 };
+    const modifiers = { forca: 2, destreza: 1, constituicao: 1, inteligencia: 0, sabedoria: 0, carisma: -1 };
+
+    act(() => {
+      root.render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
+    });
+
+    const ariaMods = Array.from(container.querySelectorAll('[aria-label^="Modificador"]'));
+    expect(ariaMods.length).toBe(6);
+    expect(ariaMods.some(el => /\+2/.test(el.getAttribute('aria-label') ?? ''))).toBe(true);
+    expect(ariaMods.some(el => /-1/.test(el.getAttribute('aria-label') ?? ''))).toBe(true);
+
+    act(() => root.unmount());
+    container.remove();
+  });
+
+  it('mantém ordem alfabética pt-BR também no layout empilhado (horizontal=false)', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const finalAttributes = { forca: 14, destreza: 12, constituicao: 13, inteligencia: 10, sabedoria: 11, carisma: 8 };
+    const modifiers = { forca: 2, destreza: 1, constituicao: 1, inteligencia: 0, sabedoria: 0, carisma: -1 };
+
+    act(() => {
+      root.render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal={false} />);
+    });
+
+    const labels = Array.from(container.querySelectorAll('[class*="label"]'))
+      .map(el => el.textContent?.trim())
+      .filter(Boolean);
+    expect(labels.slice(0, 6)).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+
+    act(() => root.unmount());
+    container.remove();
+  });
+});
+
+describe('useAbilityViewMode — persistência localStorage', () => {
+  it('lê/escreve modo no localStorage entre instâncias do hook', async () => {
+    const { useAbilityViewMode, ABILITY_VIEW_MODE_STORAGE_KEY } = await import('../../hooks/useAbilityViewMode');
+    window.localStorage.removeItem(ABILITY_VIEW_MODE_STORAGE_KEY);
+
+    function Probe({ onReady }: { onReady: (api: ReturnType<typeof useAbilityViewMode>) => void }) {
+      const api = useAbilityViewMode();
+      onReady(api);
+      return <span data-testid="m">{api[0]}</span>;
+    }
+
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    let api: ReturnType<typeof useAbilityViewMode> | null = null;
+    act(() => { root.render(<Probe onReady={a => { api = a; }} />); });
+    expect(api![0]).toBe('horizontal');
+
+    act(() => { api![2](); /* toggle -> stacked */ });
+    expect(window.localStorage.getItem(ABILITY_VIEW_MODE_STORAGE_KEY)).toBe('stacked');
+
+    act(() => root.unmount());
+    container.remove();
+
+    // Nova instância lê valor persistido
+    const container2 = document.createElement('div');
+    document.body.appendChild(container2);
+    const root2 = createRoot(container2);
+    let api2: ReturnType<typeof useAbilityViewMode> | null = null;
+    act(() => { root2.render(<Probe onReady={a => { api2 = a; }} />); });
+    expect(api2![0]).toBe('stacked');
+
+    act(() => root2.unmount());
+    container2.remove();
+    window.localStorage.removeItem(ABILITY_VIEW_MODE_STORAGE_KEY);
+  });
 });
