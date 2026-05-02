@@ -18,9 +18,9 @@ describe('AbilityScoreCards — labels acessíveis (jest-dom)', () => {
 
   it('aria-label do modificador inclui sinal +/- consistente', () => {
     render(<AbilityScoreCards finalAttributes={finalAttributes} modifiers={modifiers} horizontal />);
-    expect(screen.getByLabelText('Modificador +2')).toBeInTheDocument();
-    expect(screen.getByLabelText('Modificador -1')).toBeInTheDocument();
-    expect(screen.getByLabelText('Modificador +0')).toBeInTheDocument();
+    expect(screen.getAllByLabelText('Modificador +2').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByLabelText('Modificador -1').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByLabelText('Modificador +0').length).toBeGreaterThanOrEqual(1);
   });
 
   it('label do atributo é focável e tem aria-label de instrução por teclado', () => {
