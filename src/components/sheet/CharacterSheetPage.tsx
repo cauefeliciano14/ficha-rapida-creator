@@ -181,6 +181,9 @@ export function CharacterSheetPage({
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const isDesktopWide = useMediaQuery('(min-width: 1200px)');
 
+  /* ── Modo de visualização dos atributos (persistido em localStorage) ── */
+  const [abilityViewMode, , toggleAbilityViewMode] = useAbilityViewMode();
+
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
   const [shortRestOpen, setShortRestOpen] = useState(false);
