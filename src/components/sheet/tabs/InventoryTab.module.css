@@ -659,7 +659,7 @@
   max-width: 90px;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 767px) {
   .tableHeader, .tableRow {
     grid-template-columns: 1fr 36px 48px 68px 68px;
     gap: 4px;
@@ -671,7 +671,7 @@
   .coinCard { min-width: 44px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .tableHeader, .tableRow {
     grid-template-columns: 1fr 32px 60px;
   }

@@ -30,6 +30,7 @@
   width: 90%;
   max-width: 560px;
   max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
 
   animation: panelEnter var(--transition-base) var(--ease-out);

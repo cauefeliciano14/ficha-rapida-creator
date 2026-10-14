@@ -2,7 +2,7 @@ import { useEffect, useId, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useIsMobile } from '../../hooks/useBreakpoints';
 import { BottomSheet } from './BottomSheet';
 
 export interface ModalProps {
@@ -22,7 +22,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
-  const isMobile = useMediaQuery('(max-width: 779px)');
+  const isMobile = useIsMobile();
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

@@ -58,6 +58,7 @@
 .page {
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: var(--font-body, 'Roboto', sans-serif);
   padding: clamp(4px, 1vw, 12px);
   background-color: #10141a;
@@ -234,86 +235,11 @@
   flex-wrap: nowrap;
 }
 
-/* Mantém linha única até 1100px; abaixo, empilha mantendo
+/* Mantém linha única a partir de 1024px; abaixo, empilha mantendo
    a mesma hierarquia tipográfica e alinhamento entre blocos. */
-@media (max-width: 1100px) {
-  .statsBand {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-  .statsBandAbilities {
-    width: 100%;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 6px;
-  }
-  .statsBandRight {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: stretch;
-    gap: 6px;
-  }
-  .statsBandRight > .statBox,
-  .statsBandRight > .heroicBox {
-    flex: 1 1 120px;
-    min-height: 110px;
-    width: auto;
-  }
-  .statsBandRight > .hpPanel {
-    flex: 1 1 100%;
-    min-height: 110px;
-  }
-}
 
-@media (max-width: 640px) {
-  .statsBand {
-    gap: 6px;
-  }
-  .statsBandAbilities {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-  }
-  .statsBandRight {
-    gap: 6px;
-  }
-  .statsBandRight > .statBox,
-  .statsBandRight > .heroicBox {
-    flex: 1 1 calc(50% - 6px);
-    min-height: 96px;
-  }
-}
-
-/* ── Telas muito estreitas (≤360px): preserva hierarquia tipográfica
+/* ── Telas muito estreitas (≤479px): preserva hierarquia tipográfica
    e mantém alinhamento vertical entre PB, Caminhada, Inspiração e HP. */
-@media (max-width: 360px) {
-  .statsBand {
-    gap: 4px;
-  }
-  .statsBandAbilities {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
-  }
-  .statsBandRight {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-  }
-  .statsBandRight > .statBox,
-  .statsBandRight > .heroicBox,
-  .statsBandRight > .hpPanel {
-    width: 100%;
-    min-width: 0;
-    flex: 1 1 auto;
-    min-height: 88px;
-  }
-  .viewModeToggle {
-    top: -20px;
-    width: 20px;
-    height: 16px;
-    font-size: 0.65rem;
-  }
-}
 
 /* ── Main 3-Column Grid (D&D Beyond layout) ── */
 .mainGrid {
@@ -392,6 +318,7 @@
   right: 12px;
   width: clamp(260px, 22vw, 320px);
   max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
   overflow-y: auto;
   background: rgba(16, 20, 28, 0.96);
   backdrop-filter: blur(16px);
@@ -790,14 +717,6 @@
 }
 
 /* ── Dice toast responsive ── */
-@media (max-width: 480px) {
-  .diceToast {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    bottom: 12px;
-  }
-}
 
 /* ── D&D Beyond themed panel box ── */
 .redBox {
@@ -1711,46 +1630,49 @@
 }
 
 /* ── Responsive: < 768px (single column, fully stacked) ── */
-@media (max-width: 767px) {
-  .mainGrid {
-    grid-template-columns: 1fr;
-  }
-  .colSidebar {
-    width: calc(100vw - 24px);
-    max-width: 340px;
-  }
-  .statsBand {
-    grid-template-columns: 1fr;
-  }
-  .statsBandAbilities {
-    grid-column: 1;
-  }
-  .statsBandRight {
-    grid-column: 1;
-    flex-wrap: wrap;
-  }
-  .hpPanel {
-    flex: 1 1 100%;
-  }
-  .combatRow {
-    flex-wrap: wrap;
-  }
-  .combatRowPanels {
-    flex-direction: column;
-  }
-  .topBar {
-    padding: 0;
-  }
-  .topBarRow1 {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .topBarActions {
-    flex-wrap: wrap;
-  }
-}
 
 /* ── Responsive: 768–1023px (2 columns, skills hidden) ── */
+
+/* ── Responsive: 1024–1279px (3 columns, compact) ── */
+
+/* ── Reduced Motion ── */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .statsBand {
+    grid-template-columns: 200px minmax(150px, 240px) 1fr;
+  }
+  .mainGrid {
+    grid-template-columns: 200px minmax(150px, 240px) 1fr;
+  }
+}
+@media (max-width: 1023px) {
+  .statsBand {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .statsBandAbilities {
+    width: 100%;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+  }
+  .statsBandRight {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .statsBandRight > .statBox,
+  .statsBandRight > .heroicBox {
+    flex: 1 1 120px;
+    min-height: 110px;
+    width: auto;
+  }
+  .statsBandRight > .hpPanel {
+    flex: 1 1 100%;
+    min-height: 110px;
+  }
+}
 @media (min-width: 768px) and (max-width: 1023px) {
   .statsBand {
     grid-template-columns: minmax(160px, 1fr) minmax(280px, 2.5fr);
@@ -1776,18 +1698,87 @@
     flex-wrap: wrap;
   }
 }
-
-/* ── Responsive: 1024–1199px (3 columns, compact) ── */
-@media (min-width: 1024px) and (max-width: 1199px) {
-  .statsBand {
-    grid-template-columns: 200px minmax(150px, 240px) 1fr;
-  }
+@media (max-width: 767px) {
   .mainGrid {
-    grid-template-columns: 200px minmax(150px, 240px) 1fr;
+    grid-template-columns: 1fr;
+  }
+  .colSidebar {
+    width: calc(100vw - 24px);
+    max-width: 340px;
+  }
+  .statsBand {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .statsBandAbilities {
+    grid-column: 1;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .statsBandRight {
+    grid-column: 1;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .hpPanel {
+    flex: 1 1 100%;
+  }
+  .combatRow {
+    flex-wrap: wrap;
+  }
+  .combatRowPanels {
+    flex-direction: column;
+  }
+  .topBar {
+    padding: 0;
+  }
+  .topBarRow1 {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .topBarActions {
+    flex-wrap: wrap;
+  }
+  .statsBandRight > .statBox,
+  .statsBandRight > .heroicBox {
+    flex: 1 1 calc(50% - 6px);
+    min-height: 96px;
   }
 }
-
-/* ── Reduced Motion ── */
+@media (max-width: 479px) {
+  .diceToast {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: 12px;
+  }
+  .statsBand {
+    gap: 4px;
+  }
+  .statsBandAbilities {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+  .statsBandRight {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .statsBandRight > .statBox,
+  .statsBandRight > .heroicBox,
+  .statsBandRight > .hpPanel {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    min-height: 88px;
+  }
+  .viewModeToggle {
+    top: -20px;
+    width: 20px;
+    height: 16px;
+    font-size: 0.65rem;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .topBar,
   .mainGrid,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
+import styles from './ContextualOverlay.module.css';
 
 interface ContextualOverlayProps {
   anchorRect?: DOMRect | null;
@@ -15,12 +16,12 @@ export function ContextualOverlay({ anchorRect, width = 360, children, title, on
 
   return createPortal(
     <div
+      className={anchorRect ? styles.anchoredHeight : styles.viewportHeight}
       style={{
         position: 'fixed',
         top,
         left,
         width,
-        maxHeight: anchorRect ? 'min(420px, calc(100vh - 40px))' : 'calc(100vh - 40px)',
         overflowY: 'auto',
         background: 'rgba(17,18,24,0.96)',
         backdropFilter: 'blur(14px)',

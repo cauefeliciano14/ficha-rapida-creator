@@ -1,0 +1,9 @@
+.viewportHeight {
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+}
+
+.anchoredHeight {
+  max-height: min(420px, calc(100vh - 40px));
+  max-height: min(420px, calc(100dvh - 40px));
+}

@@ -21,7 +21,7 @@ import { SheetSidebar } from './SheetSidebar';
 import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useIsDesktop, useIsWide } from '../../hooks/useBreakpoints';
 import { useAbilityViewMode, markToggleFocus, shouldRestoreToggleFocus } from '../../hooks/useAbilityViewMode';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
@@ -178,8 +178,8 @@ export function CharacterSheetPage({
   }, []);
 
   /* ── Responsive layout ── */
-  const isMobile = useMediaQuery('(max-width: 1023px)');
-  const isDesktopWide = useMediaQuery('(min-width: 1200px)');
+  const isMobile = !useIsDesktop();
+  const isDesktopWide = useIsWide();
 
   /* ── Modo de visualização dos atributos (persistido em localStorage) ── */
   const abilityView = useAbilityViewMode();

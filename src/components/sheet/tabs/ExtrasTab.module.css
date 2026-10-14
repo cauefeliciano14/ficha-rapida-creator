@@ -304,6 +304,10 @@
   border-color: var(--color-primary);
 }
 
+@media (max-width: 479px) {
+  .iconPicker { grid-template-columns: repeat(6, 1fr); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .addBtn { transition: none; }
   .slotAvailable, .slotSpent { animation: none; }
@@ -343,9 +347,6 @@
   border-color: var(--color-primary);
   background: var(--color-primary-faint);
   box-shadow: 0 0 0 1px var(--color-primary) inset;
-}
-@media (max-width: 480px) {
-  .iconPicker { grid-template-columns: repeat(6, 1fr); }
 }
 
 /* Emoji toolbar — search + category tabs */

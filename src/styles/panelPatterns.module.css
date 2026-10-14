@@ -122,9 +122,8 @@
   gap: var(--space-sm);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .responsiveGrid3,
   .responsiveGrid2 {
     grid-template-columns: 1fr;
-  }
-}
+  } }

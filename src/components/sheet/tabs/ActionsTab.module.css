@@ -402,7 +402,7 @@
   gap: 8px;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 767px) {
   .attackHeader, .attackRow {
     grid-template-columns: minmax(80px, 1fr) 50px 50px 70px;
     gap: 4px;
@@ -412,7 +412,7 @@
   .attackRange { font-size: 0.68rem; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .attackHeader, .attackRow {
     grid-template-columns: minmax(80px, 1fr) 50px 70px;
   }

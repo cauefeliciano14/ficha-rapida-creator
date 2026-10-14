@@ -99,7 +99,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 767px) {
   .grid {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -108,7 +108,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .grid {
     gap: 4px;
   }
