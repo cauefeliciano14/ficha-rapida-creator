@@ -41,7 +41,7 @@ describe('AbilityScoreCards — visual contract', () => {
   });
 
   it('label da característica permanece legível em telas pequenas (>= 0.65rem)', () => {
-    const mobileBlock = css.match(/@media\s*\(max-width:\s*480px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
+    const mobileBlock = css.match(/@media\s*\(max-width:\s*479px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
     const labelSize = mobileBlock.match(/\.label\s*\{[^}]*font-size\s*:\s*([\d.]+)rem/)?.[1];
     if (labelSize) {
       expect(parseFloat(labelSize)).toBeGreaterThanOrEqual(0.65);
@@ -124,8 +124,8 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     expect(block).toMatch(/flex-wrap\s*:\s*nowrap/);
   });
 
-  it('empilha somente abaixo de 1100px (mantém linha única acima)', () => {
-    expect(css).toMatch(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?\.statsBand\s*\{[^}]*flex-direction\s*:\s*column/);
+  it('empilha até 1023px (mantém linha única acima)', () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?\.statsBand\s*\{[^}]*flex-direction\s*:\s*column/);
   });
 
   it('blocos de PB, Caminhada, Inspiração e HP têm a mesma altura mínima (110px)', () => {
@@ -137,18 +137,18 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     expect(hpPanel).toMatch(/min-height\s*:\s*110px/);
   });
 
-  it('na quebra <=1100px todos os blocos preservam altura mínima de 110px e largura fluida', () => {
-    const block = css.match(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
-      ?? css.match(/@media\s*\(max-width:\s*1100px\)\s*\{[\s\S]*?^\}/m)?.[0]
+  it('na quebra <=1023px todos os blocos preservam altura mínima de 110px e largura fluida', () => {
+    const block = css.match(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
+      ?? css.match(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?^\}/m)?.[0]
       ?? '';
     expect(block).toMatch(/\.statsBandRight\s*>\s*\.statBox[\s\S]*?min-height\s*:\s*110px/);
     expect(block).toMatch(/\.statsBandRight\s*>\s*\.hpPanel[\s\S]*?min-height\s*:\s*110px/);
     expect(block).toMatch(/flex-wrap\s*:\s*wrap/);
   });
 
-  it('em <=640px mantém espaçamento consistente e blocos com pelo menos 96px de altura', () => {
-    const block = css.match(/@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
-      ?? css.match(/@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?^\}/m)?.[0]
+  it('em <=767px mantém espaçamento consistente e blocos com pelo menos 96px de altura', () => {
+    const block = css.match(/@media\s*\(max-width:\s*767px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
+      ?? css.match(/@media\s*\(max-width:\s*767px\)\s*\{[\s\S]*?^\}/m)?.[0]
       ?? '';
     expect(block).toMatch(/\.statsBandAbilities[\s\S]*?grid-template-columns\s*:\s*repeat\(3,\s*1fr\)/);
     expect(block).toMatch(/\.statsBandRight[\s\S]*?gap\s*:\s*6px/);

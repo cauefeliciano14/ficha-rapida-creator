@@ -1,3 +1,6 @@
+/* Responsive ranges (inclusive maxima): sm 479px, md 767px,
+   lg 1023px, xl 1279px. Complementary minima: 480/768/1024/1280px.
+   JavaScript queries are defined in src/styles/breakpoints.ts. */
 /* ═══════════════════════════════════════════════════
    Design Tokens — D&D Beyond Underdark Theme
    Single source of truth for the app
@@ -6,6 +9,13 @@
 /* ── Anti-FOUC: aplica tema antes do React carregar ── */
 :root,
 [data-theme="dark"] {
+  /* Compatibility aliases: reuse the existing palette and timing scale. */
+  --surface-drawer: var(--surface-panel-dark);
+  --border-dark: var(--border-default);
+  --text-heading: var(--text-primary);
+  --surface-sunken: var(--surface-inset);
+  --transition-medium: var(--transition-base);
+  --font-code: var(--font-mono);
   /* ── Colors: Primary (D&D Red) ── */
   --color-primary: #C53131;
   --color-primary-hover: #a82828;
@@ -280,6 +290,12 @@
    Light Theme — Parchment / Classic Manual
    ═══════════════════════════════════════════════════ */
 [data-theme="light"] {
+  --surface-drawer: var(--surface-panel-dark);
+  --border-dark: var(--border-default);
+  --text-heading: var(--text-primary);
+  --surface-sunken: var(--surface-inset);
+  --transition-medium: var(--transition-base);
+  --font-code: var(--font-mono);
   /* ── Colors: Primary (D&D Red) ── */
   --color-primary: #b72b2b;
   --color-primary-hover: #9a2323;
