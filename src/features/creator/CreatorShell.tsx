@@ -24,7 +24,7 @@ import styles from './layout/CreatorShell.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useCompletionCelebration } from '../../hooks/useCompletionCelebration';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useIsMobile } from '../../hooks/useBreakpoints';
 import { ChangeHistoryLogger } from '../../components/ChangeHistoryLogger';
 import { MobileTopBar, MobileBottomNav } from './mobile/MobileNavBar';
 import mobileStyles from './mobile/MobileNavBar.module.css';
@@ -140,7 +140,7 @@ export function CreatorShell() {
     setCharacter((prev) => ({ ...prev, characterClass: cls }));
     goToStep(0);
   }, [setCharacter, goToStep]);
-  const isMobile = useMediaQuery('(max-width: 779px)');
+  const isMobile = useIsMobile();
   const prevStepRef = useRef(currentStep);
   const slideDirection = currentStep >= prevStepRef.current ? 1 : -1;
 

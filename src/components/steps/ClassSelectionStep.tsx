@@ -13,7 +13,7 @@ import { ComparisonModal } from '../ComparisonModal';
 import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
 import { computeSmartHints } from '../../utils/smartHints';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { useIsMobile } from '../../hooks/useBreakpoints';
 import { getClassCardMeta as getClassCardMetaCached } from '../../data/classMetaCache';
 import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
 import { getClassTheme } from '../../data/classThemeColors';
@@ -274,7 +274,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [compareOpen, setCompareOpen] = useState(false);
 
   // ── Hero hover preview (desktop only) ──
-  const isDesktop = !useMediaQuery('(max-width: 779px)');
+  const isDesktop = !useIsMobile();
   const [hoverClassId, setHoverClassId] = useState<string | null>(null);
   const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
   const [pinned, setPinned] = useState(false);
