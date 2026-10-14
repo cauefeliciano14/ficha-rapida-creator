@@ -235,10 +235,10 @@
   flex-wrap: nowrap;
 }
 
-/* Mantém linha única até 1100px; abaixo, empilha mantendo
+/* Mantém linha única a partir de 1024px; abaixo, empilha mantendo
    a mesma hierarquia tipográfica e alinhamento entre blocos. */
 
-/* ── Telas muito estreitas (≤360px): preserva hierarquia tipográfica
+/* ── Telas muito estreitas (≤479px): preserva hierarquia tipográfica
    e mantém alinhamento vertical entre PB, Caminhada, Inspiração e HP. */
 
 /* ── Main 3-Column Grid (D&D Beyond layout) ── */
@@ -1633,7 +1633,7 @@
 
 /* ── Responsive: 768–1023px (2 columns, skills hidden) ── */
 
-/* ── Responsive: 1024–1199px (3 columns, compact) ── */
+/* ── Responsive: 1024–1279px (3 columns, compact) ── */
 
 /* ── Reduced Motion ── */
 @media (min-width: 1024px) and (max-width: 1279px) {
