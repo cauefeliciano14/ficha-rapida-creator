@@ -13,7 +13,7 @@
 .mainRow {
   display: flex;
   align-items: center;
-  gap: var(--space-lg) / 2;
+  gap: calc(var(--space-lg) / 2);
   padding: 0 18px;
 }
 
@@ -276,7 +276,7 @@
 
 .modalIcon {
   font-size: 2.4rem;
-  margin-bottom: var(--space-lg) / 2;
+  margin-bottom: calc(var(--space-lg) / 2);
 }
 
 .modalTitle {
@@ -295,7 +295,7 @@
 
 .modalActions {
   display: flex;
-  gap: var(--space-lg) / 2;
+  gap: calc(var(--space-lg) / 2);
   justify-content: center;
 }
 
@@ -343,7 +343,7 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .mainRow {
     flex-wrap: wrap;
     gap: 10px;

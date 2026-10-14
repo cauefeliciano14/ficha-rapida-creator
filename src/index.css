@@ -1,4 +1,10 @@
+
+
 @import "./styles/tokens.css";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 /* ═══════════════════════════════════════════════════
    Global Styles — Only resets, base typography,
@@ -82,10 +88,13 @@ button:hover::before {
   opacity: 1;
 }
 
+@media (hover: hover) and (pointer: fine){
+
 button:hover {
   background: var(--color-primary-hover);
   transform: translateY(-2px) scale(1.02);
   box-shadow: var(--shadow-glow-primary);
+}
 }
 
 button:active:not(:disabled) {
@@ -356,11 +365,14 @@ details[open] > summary .summary-chevron {
   box-shadow: var(--shadow-inner-glow);
 }
 
+@media (hover: hover) and (pointer: fine){
+
 .selectable-card:hover {
   background: var(--surface-subtle-hover);
   border-color: var(--border-primary);
   transform: translateY(-3px) scale(1.01);
   box-shadow: var(--shadow-hover);
+}
 }
 
 .selectable-card:active {
@@ -398,13 +410,6 @@ details[open] > summary .summary-chevron {
   gap: clamp(8px, 1.5vh, 16px) clamp(8px, 1vw, 16px);
   margin-top: 1vh;
   min-height: 0;
-}
-
-@media (max-width: 768px) {
-  .classes-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 480px) {
-  .classes-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ── Class Card (Double-Bezel style) ── */
@@ -455,10 +460,13 @@ details[open] > summary .summary-chevron {
 
 .class-card:hover::after { opacity: 1; }
 
+@media (hover: hover) and (pointer: fine){
+
 .class-card:hover {
   transform: scale(1.04);
   box-shadow: var(--shadow-elevated);
   border-color: var(--color-accent-border);
+}
 }
 
 @keyframes cardSelect {
@@ -500,6 +508,7 @@ details[open] > summary .summary-chevron {
 .class-icon-placeholder {
   width: clamp(24px, 4vh, 32px);
   height: clamp(24px, 4vh, 32px);
+  height: clamp(24px, 4dvh, 32px);
   background: transparent;
   flex-shrink: 0;
   display: flex;
@@ -517,9 +526,12 @@ details[open] > summary .summary-chevron {
   transform-origin: center;
 }
 
+@media (hover: hover) and (pointer: fine){
+
 .class-card:hover .class-icon-image {
   transform: scale(1.15) rotate(5deg);
   filter: drop-shadow(0 0 8px var(--color-orange-glow)) brightness(1.2);
+}
 }
 
 .class-card.selected .class-icon-image {
@@ -550,9 +562,12 @@ details[open] > summary .summary-chevron {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
+@media (hover: hover) and (pointer: fine){
+
 .class-card:hover .class-card-chevron {
   opacity: 1;
   transform: translateX(4px);
+}
 }
 
 /* ── Page Title ── */
@@ -684,7 +699,15 @@ details[open] > summary .summary-chevron {
   box-shadow: none;
 }
 
-.help-tooltip-trigger:hover,
+@media (hover: hover) and (pointer: fine){
+
+.help-tooltip-trigger:hover {
+  background: var(--color-orange-bg-hover);
+  border-color: rgba(249, 115, 22, 0.45);
+  transform: translateY(-1px);
+}
+}
+
 .help-tooltip-trigger:focus-visible {
   background: var(--color-orange-bg-hover);
   border-color: rgba(249, 115, 22, 0.45);
@@ -737,6 +760,7 @@ details[open] > summary .summary-chevron {
   position: relative;
   width: min(800px, 92vw);
   max-height: min(85vh, 860px);
+  max-height: min(85dvh, 860px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -901,9 +925,12 @@ details[open] > summary .summary-chevron {
   box-shadow: none;
 }
 
+@media (hover: hover) and (pointer: fine){
+
 .portrait-item:hover {
   transform: scale(1.05);
   border-color: var(--color-accent);
+}
 }
 
 .portrait-item.selected {
@@ -993,10 +1020,22 @@ details[open] > summary .summary-chevron {
 }
 
 /* ── Accessibility: Reduced Motion ── */
+@media (max-width: 767px){
+  .classes-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 479px){
+  .classes-grid { grid-template-columns: repeat(2, 1fr); }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+/* iOS zoom prevention: do not shrink form controls on touch devices. */
+@media (pointer: coarse) {
+  input, select, textarea {
+    font-size: max(16px, 1em) !important;
   }
 }

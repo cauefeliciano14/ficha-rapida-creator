@@ -33,6 +33,7 @@
   width: 100%;
   max-width: 520px;
   max-height: 80vh;
+  max-height: 80dvh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

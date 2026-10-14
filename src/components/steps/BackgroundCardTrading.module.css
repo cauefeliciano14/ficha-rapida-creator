@@ -254,7 +254,7 @@
 }
 .detailsLink:hover { color: #f1c84a; }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .cardGrid { grid-template-columns: 1fr; gap: 12px; }
   .card { aspect-ratio: 16 / 8; min-height: 156px; }
   .title { font-size: 1.4rem; }

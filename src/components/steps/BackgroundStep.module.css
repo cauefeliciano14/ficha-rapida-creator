@@ -291,7 +291,7 @@
   max-width: 28rem;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 767px) {
   .attributeBody {
     padding: var(--space-md);
   }

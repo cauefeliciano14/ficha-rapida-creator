@@ -120,7 +120,7 @@
   overflow-y: auto;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 767px) {
   .sidebar {
     width: 100vw;
   }
