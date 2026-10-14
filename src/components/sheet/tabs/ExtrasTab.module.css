@@ -304,10 +304,6 @@
   border-color: var(--color-primary);
 }
 
-@media (max-width: 479px) {
-  .iconPicker { grid-template-columns: repeat(6, 1fr); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .addBtn { transition: none; }
   .slotAvailable, .slotSpent { animation: none; }
@@ -326,6 +322,9 @@
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 4px;
+}
+@media (max-width: 479px) {
+  .iconPicker { grid-template-columns: repeat(6, 1fr); }
 }
 .iconPickerBtn {
   width: 28px;

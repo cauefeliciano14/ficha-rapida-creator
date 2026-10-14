@@ -196,11 +196,13 @@
   cursor: default;
 }
 
-/* Progress bar */
+/* Progress bar — pinned to the bottom edge of .topBar so it follows the bar's
+   real height (content + safe-area inset) instead of a hard-coded offset. */
 .progressBar {
-  position: sticky;
-  top: 52px;
-  z-index: 799;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
   height: 3px;
   background: rgba(255, 255, 255, 0.06);
 }
@@ -228,7 +230,7 @@
 .swipeHintRight::after {
   content: "";
   position: fixed;
-  top: 56px;
+  top: calc(56px + env(safe-area-inset-top, 0px));
   bottom: 56px;
   width: 6px;
   z-index: 50;

@@ -1033,9 +1033,13 @@ details[open] > summary .summary-chevron {
     transition-duration: 0.01ms !important;
   }
 }
-/* iOS zoom prevention: do not shrink form controls on touch devices. */
+/* iOS zoom prevention: Safari zooms into any field under 16px. Every text field
+   in the app is at most 1rem, so 16px only raises small ones; .character-name-input
+   keeps its larger size because its own !important rule is more specific. */
 @media (pointer: coarse) {
-  input, select, textarea {
-    font-size: max(16px, 1em) !important;
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }

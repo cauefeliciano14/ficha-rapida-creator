@@ -54,9 +54,9 @@ export function MobileTopBar({
           <button onClick={onRedo} disabled={!canRedo} className={styles.topBtn} title="Refazer">↪</button>
           <button onClick={onOpenManager} className={styles.topBtn} title="Personagens">📚</button>
         </div>
-      </div>
-      <div className={styles.progressBar}>
-        <div className={styles.progressFill} style={{ width: `${progressPercent}%` }} />
+        <div className={styles.progressBar}>
+          <div className={styles.progressFill} style={{ width: `${progressPercent}%` }} />
+        </div>
       </div>
     </>
   );
