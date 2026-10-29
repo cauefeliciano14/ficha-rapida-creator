@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StepSidebar } from './StepSidebar';
 import { countUniqueIssues } from '../../../utils/wizardProgress';
 import { DEFAULT_CHARACTER, type Character, type Selection } from '../../../types/character';
