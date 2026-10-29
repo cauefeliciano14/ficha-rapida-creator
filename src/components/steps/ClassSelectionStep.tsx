@@ -279,6 +279,9 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
   const [pinned, setPinned] = useState(false);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Scroll após selecionar classe: painel de detalhe para sempre na mesma altura
+  const detailsRef = useRef<HTMLDivElement | null>(null);
+  const pendingScrollRef = useRef(false);
 
   const handleHoverEnter = useCallback((classId: string, rect: DOMRect) => {
     if (!isDesktop || compareMode || pinned) return;
@@ -302,10 +305,27 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
       handleCompareClick(classId);
     } else {
       const cls = (bgData.classes as Array<{ id: string; name: string; description: string }>).find(c => c.id === classId);
-      if (cls) handleSelectClass(cls);
+      if (cls) {
+        handleSelectClass(cls);
+        pendingScrollRef.current = true;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compareMode, handleSelectClass]);
+
+  // Rola a página até o painel de detalhe da classe, parando sempre na mesma
+  // altura: logo abaixo da barra de progresso fixa do topo.
+  useEffect(() => {
+    if (!pendingScrollRef.current || !selectedClass) return;
+    pendingScrollRef.current = false;
+    const el = detailsRef.current;
+    if (!el) return;
+    const bar = document.getElementById('creator-progress-bar');
+    const barH = bar ? bar.getBoundingClientRect().height : 0;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const top = el.getBoundingClientRect().top + window.scrollY - barH - 12;
+    window.scrollTo({ top: Math.max(top, 0), behavior: reduce ? 'auto' : 'smooth' });
+  }, [selectedClass]);
 
   // ── Smart hints ──
   const smartHints = computeSmartHints(character, selectedBackground);
