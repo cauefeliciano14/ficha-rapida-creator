@@ -58,6 +58,7 @@ function seedCreationState(currentStep: number) {
 // Pre-import lazy modules so React.lazy resolves synchronously
 beforeAll(async () => {
   await Promise.all([
+    import('./features/creator/CreatorShell'),
     import('./components/steps/ClassSelectionStep'),
     import('./components/steps/BackgroundStep'),
     import('./components/steps/SpeciesStep'),
@@ -162,7 +163,7 @@ describe('App validation banners by creation step', () => {
     const view = await renderAppAtStep(2);
 
     expect(view.container.textContent).toContain('Escolha sua Espécie: Raça');
-    expect(view.container.textContent).toContain('Escolha uma espécie ao lado');
+    expect(view.container.textContent).toContain('Escolha uma espécie acima');
 
     view.cleanup();
   });
