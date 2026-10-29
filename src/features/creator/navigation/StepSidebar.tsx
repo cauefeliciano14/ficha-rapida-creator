@@ -65,7 +65,7 @@ export function StepSidebar() {
           const pending = pendingMap[item.key];
           const complete = item.key === 'sheet'
             ? validationResult.isValid
-            : pending === 0 && item.index < currentStep;
+            : pending === 0 && stepHasSelection(character, selectedBackground, item.key);
 
           const badgeClass = complete
             ? styles.badgeComplete

@@ -1,6 +1,7 @@
 import styles from './MobileNavBar.module.css';
 import { useWizard } from '../../../context/WizardContext';
 import { useCharacter } from '../../../context/CharacterContext';
+import { countUniqueIssues, stepHasSelection } from '../../../utils/wizardProgress';
 
 const STEPS = [
   { label: 'Classe', icon: '⚔️', key: 'class' },
@@ -90,9 +91,16 @@ export function MobileBottomNav() {
   };
 
   const getPendingCount = (index: number): number => {
-    if (index === 5) return validationResult.errors.length;
+    if (index === 5) return countUniqueIssues(validationResult.errors);
     const key = STEPS[index]?.key as keyof typeof validationResult.byStep;
-    return validationResult.byStep[key]?.length ?? 0;
+    return countUniqueIssues(validationResult.byStep[key]);
+  };
+
+  const isStepComplete = (index: number): boolean => {
+    if (index === 5) return validationResult.isValid;
+    const key = STEPS[index]?.key as 'class' | 'background' | 'species' | 'attributes' | 'equipment';
+    if (!key) return false;
+    return getPendingCount(index) === 0 && stepHasSelection(character, selectedBackground, key);
   };
 
   return (
