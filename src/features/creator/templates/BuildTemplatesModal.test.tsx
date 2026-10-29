@@ -16,7 +16,6 @@ describe('BuildTemplatesModal — filtro por classe', () => {
   it('ao clicar no chip de uma classe, mostra só os templates daquela classe', async () => {
     render(<BuildTemplatesModal onClose={() => {}} onPick={() => {}} />);
     const group = screen.getByRole('group', { name: 'Filtrar templates por classe' });
-    const mago = BUILD_TEMPLATES.find(t => t.classId === 'mago')!;
     fireEvent.click(within(group).getByRole('button', { name: 'Mago' }));
 
     const grid = group.parentElement!;
