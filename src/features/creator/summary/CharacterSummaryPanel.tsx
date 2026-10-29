@@ -7,6 +7,8 @@ import { FANTASY_NAMES } from '../../../data/fantasyNames';
 import { HelpTooltip } from '../../../components/ui/HelpTooltip';
 import { alignmentsData } from '../../../data/alignmentsData';
 import { IdentityFieldsPanel } from './IdentityFieldsPanel';
+import { copyTextToClipboard } from '../../../utils/clipboard';
+import { buildSummaryCopyText } from '../../../utils/summaryCopy';
 import styles from './CharacterSummaryPanel.module.css';
 import { useWhyDidYouRender } from '../../../utils/renderDiagnostics';
 
@@ -42,6 +44,7 @@ function CharacterSummaryPanelInner() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
   const generateAndShow = () => {
     if (suggestionsOpen) {
