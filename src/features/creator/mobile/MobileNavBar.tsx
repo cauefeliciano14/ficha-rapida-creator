@@ -108,21 +108,27 @@ export function MobileBottomNav() {
       {STEPS.map((step, index) => {
         const state = getStepState(index);
         const pending = getPendingCount(index);
+        const complete = isStepComplete(index);
+        const showBadge = state !== 'done' && (pending > 0 || complete);
 
         return (
           <button
             key={index}
             className={`${styles.navItem} ${state === 'active' ? styles.navItemActive : ''} ${state === 'done' ? styles.navItemDone : ''}`}
             onClick={() => goToStep(index)}
-            aria-label={`${step.label} - Etapa ${index + 1}`}
+            aria-label={`${step.label} - Etapa ${index + 1}${pending > 0 ? ` - ${pending} pendência${pending > 1 ? 's' : ''}` : complete ? ' - concluída' : ''}`}
             aria-current={state === 'active' ? 'step' : undefined}
           >
             <span className={styles.navIcon}>
               {state === 'done' ? '✓' : step.icon}
             </span>
             <span className={styles.navLabel}>{step.label}</span>
-            {state === 'pending' && pending > 0 && (
-              <span className={styles.badge}>{pending}</span>
+            {showBadge && (
+              <span
+                className={`${styles.badge} ${pending > 0 ? styles.badgePending : styles.badgeDone}`.trim()}
+              >
+                {pending > 0 ? pending : '✓'}
+              </span>
             )}
           </button>
         );
