@@ -53,7 +53,9 @@ describe('MobileNavBar — selos de pendências por etapa', () => {
   it('mostra selo azul com contagem em todas as etapas com pendências', () => {
     state.validationResult = makeValidation({
       class: ['Escolha uma classe.', 'Escolha uma classe.'],
+      background: ['Escolha um antecedente.'],
       species: ['Escolha uma espécie.'],
+      attributes: ['Escolha um método para definir os atributos do personagem.'],
       equipment: ['Escolha o pacote de equipamento da classe.', 'Escolha o pacote de equipamento do antecedente.'],
     });
     render(<MobileBottomNav />);
