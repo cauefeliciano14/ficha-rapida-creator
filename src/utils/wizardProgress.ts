@@ -33,12 +33,6 @@ export function computeWizardProgress(
   const steps: StepProgress[] = STEP_DEFS.map(({ key, label, index }) => {
     const issues = validationResult.byStep[key] ?? [];
     const pending = issues.length;
-    let hasSelection = true;
-    if (key === 'class') hasSelection = !!character.characterClass;
-    else if (key === 'background') hasSelection = !!selectedBackground;
-    else if (key === 'species') hasSelection = !!character.species;
-    else if (key === 'attributes') hasSelection = !!character.attributes.method;
-    else if (key === 'equipment') hasSelection = character.equipment.classOption !== null;
 
     const completed = pending === 0 && stepHasSelection(character, selectedBackground, key);
     return { key, label, index, completed, pending };
