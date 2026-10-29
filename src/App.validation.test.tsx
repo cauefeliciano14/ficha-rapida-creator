@@ -58,6 +58,7 @@ function seedCreationState(currentStep: number) {
 // Pre-import lazy modules so React.lazy resolves synchronously
 beforeAll(async () => {
   await Promise.all([
+    import('./features/creator/CreatorShell'),
     import('./components/steps/ClassSelectionStep'),
     import('./components/steps/BackgroundStep'),
     import('./components/steps/SpeciesStep'),
