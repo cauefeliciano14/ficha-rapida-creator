@@ -61,6 +61,21 @@ function CharacterSummaryPanelInner() {
     setSuggestionsOpen(false);
   };
 
+  const handleCopySummary = async () => {
+    const text = buildSummaryCopyText(
+      character.characterClass?.name,
+      character.species?.name,
+      selectedBackground?.name,
+      derivedSheet.finalAttributes,
+    );
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    }
+  };
+
+
   useEffect(() => {
     if (!suggestionsOpen) return;
     const handler = (e: MouseEvent) => {
@@ -172,7 +187,17 @@ function CharacterSummaryPanelInner() {
     <div className={styles.panel}>
       <div className={styles.headerRow}>
         <div className={styles.sectionTitle}>Resumo</div>
+        <button
+          type="button"
+          className={styles.copyBtn}
+          onClick={handleCopySummary}
+          title="Copiar classe, espécie, origem e atributos como texto"
+          aria-label="Copiar resumo do personagem"
+        >
+          {copied ? '✓ Copiado' : '⧉ Copiar'}
+        </button>
       </div>
+
 
       <div className={`${styles.identityCard} ${identityFlash ? styles.flashHighlight : ''}`}>
         <div className={styles.identityHeader}>
