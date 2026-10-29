@@ -26,7 +26,7 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz
   const isComplete = progress.percent === 100;
 
   return (
-    <div className={styles.bar} role="region" aria-label="Progresso da criação do personagem">
+    <div id="creator-progress-bar" className={styles.bar} role="region" aria-label="Progresso da criação do personagem">
       <div className={styles.percentBlock}>
         <span className={styles.percentValue}>{progress.percent}%</span>
         <span className={styles.percentLabel}>completo</span>
