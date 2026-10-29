@@ -1,6 +1,7 @@
 import styles from './MobileNavBar.module.css';
 import { useWizard } from '../../../context/WizardContext';
 import { useCharacter } from '../../../context/CharacterContext';
+import { countUniqueIssues, stepHasSelection } from '../../../utils/wizardProgress';
 
 const STEPS = [
   { label: 'Classe', icon: '⚔️', key: 'class' },
@@ -90,9 +91,16 @@ export function MobileBottomNav() {
   };
 
   const getPendingCount = (index: number): number => {
-    if (index === 5) return validationResult.errors.length;
+    if (index === 5) return countUniqueIssues(validationResult.errors);
     const key = STEPS[index]?.key as keyof typeof validationResult.byStep;
-    return validationResult.byStep[key]?.length ?? 0;
+    return countUniqueIssues(validationResult.byStep[key]);
+  };
+
+  const isStepComplete = (index: number): boolean => {
+    if (index === 5) return validationResult.isValid;
+    const key = STEPS[index]?.key as 'class' | 'background' | 'species' | 'attributes' | 'equipment';
+    if (!key) return false;
+    return getPendingCount(index) === 0 && stepHasSelection(character, selectedBackground, key);
   };
 
   return (
@@ -100,21 +108,27 @@ export function MobileBottomNav() {
       {STEPS.map((step, index) => {
         const state = getStepState(index);
         const pending = getPendingCount(index);
+        const complete = isStepComplete(index);
+        const showBadge = state !== 'done' && (pending > 0 || complete);
 
         return (
           <button
             key={index}
             className={`${styles.navItem} ${state === 'active' ? styles.navItemActive : ''} ${state === 'done' ? styles.navItemDone : ''}`}
             onClick={() => goToStep(index)}
-            aria-label={`${step.label} - Etapa ${index + 1}`}
+            aria-label={`${step.label} - Etapa ${index + 1}${pending > 0 ? ` - ${pending} pendência${pending > 1 ? 's' : ''}` : complete ? ' - concluída' : ''}`}
             aria-current={state === 'active' ? 'step' : undefined}
           >
             <span className={styles.navIcon}>
               {state === 'done' ? '✓' : step.icon}
             </span>
             <span className={styles.navLabel}>{step.label}</span>
-            {state === 'pending' && pending > 0 && (
-              <span className={styles.badge}>{pending}</span>
+            {showBadge && (
+              <span
+                className={`${styles.badge} ${pending > 0 ? styles.badgePending : styles.badgeDone}`.trim()}
+              >
+                {pending > 0 ? pending : '✓'}
+              </span>
             )}
           </button>
         );

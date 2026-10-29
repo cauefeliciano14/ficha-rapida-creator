@@ -63,6 +63,34 @@
   color: #f1f5f9;
 }
 
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 24px 0;
+}
+
+.chip {
+  background: #1a1f28;
+  border: 1px solid #2c3340;
+  border-radius: 999px;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover {
+  border-color: #4a5568;
+  color: #f1f5f9;
+}
+.chipActive {
+  background: rgba(255, 213, 74, 0.12);
+  border-color: #ffd54a;
+  color: #ffd54a;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { BUILD_TEMPLATES, type BuildTemplate } from '../../../data/buildTemplates';
 import styles from './BuildTemplatesModal.module.css';
 
@@ -7,6 +8,22 @@ interface Props {
 }
 
 export function BuildTemplatesModal({ onClose, onPick }: Props) {
+  // Chips de classe no topo: filtra os templates mostrados.
+  const classes = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const tpl of BUILD_TEMPLATES) {
+      if (!seen.has(tpl.classId)) seen.set(tpl.classId, tpl.className);
+    }
+    return Array.from(seen.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  }, []);
+
+  const [activeClass, setActiveClass] = useState<string | null>(null);
+  const visible = activeClass
+    ? BUILD_TEMPLATES.filter(tpl => tpl.classId === activeClass)
+    : BUILD_TEMPLATES;
+
   return (
     <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -18,8 +35,30 @@ export function BuildTemplatesModal({ onClose, onPick }: Props) {
           <button onClick={onClose} className={styles.close} aria-label="Fechar">×</button>
         </header>
 
+        <div className={styles.filterRow} role="group" aria-label="Filtrar templates por classe">
+          <button
+            type="button"
+            className={`${styles.chip} ${activeClass === null ? styles.chipActive : ''}`.trim()}
+            onClick={() => setActiveClass(null)}
+            aria-pressed={activeClass === null}
+          >
+            Todas
+          </button>
+          {classes.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className={`${styles.chip} ${activeClass === c.id ? styles.chipActive : ''}`.trim()}
+              onClick={() => setActiveClass(c.id)}
+              aria-pressed={activeClass === c.id}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+
         <div className={styles.grid}>
-          {BUILD_TEMPLATES.map((tpl) => (
+          {visible.map((tpl) => (
             <button
               key={tpl.id}
               type="button"

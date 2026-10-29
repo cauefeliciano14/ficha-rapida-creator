@@ -33,14 +33,8 @@ export function computeWizardProgress(
   const steps: StepProgress[] = STEP_DEFS.map(({ key, label, index }) => {
     const issues = validationResult.byStep[key] ?? [];
     const pending = issues.length;
-    let hasSelection = true;
-    if (key === 'class') hasSelection = !!character.characterClass;
-    else if (key === 'background') hasSelection = !!selectedBackground;
-    else if (key === 'species') hasSelection = !!character.species;
-    else if (key === 'attributes') hasSelection = !!character.attributes.method;
-    else if (key === 'equipment') hasSelection = character.equipment.classOption !== null;
 
-    const completed = pending === 0 && hasSelection;
+    const completed = pending === 0 && stepHasSelection(character, selectedBackground, key);
     return { key, label, index, completed, pending };
   });
 
@@ -50,4 +44,22 @@ export function computeWizardProgress(
   const percent = Math.round((completedSteps / totalSteps) * 100);
 
   return { steps, totalPending, completedSteps, totalSteps, percent };
+}
+
+/** Mesma lógica do painel de Pendências: mensagens duplicadas contam uma vez. */
+export function countUniqueIssues(issues: readonly string[] | undefined): number {
+  return issues ? new Set(issues).size : 0;
+}
+
+/** A etapa tem a escolha principal feita (classe, origem, espécie, método, pacote). */
+export function stepHasSelection(
+  character: Character,
+  selectedBackground: Selection | null,
+  key: StepProgress['key'],
+): boolean {
+  if (key === 'class') return !!character.characterClass;
+  if (key === 'background') return !!selectedBackground;
+  if (key === 'species') return !!character.species;
+  if (key === 'attributes') return !!character.attributes.method;
+  return character.equipment.classOption !== null;
 }

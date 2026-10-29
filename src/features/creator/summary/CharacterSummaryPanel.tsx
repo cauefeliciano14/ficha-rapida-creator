@@ -7,6 +7,8 @@ import { FANTASY_NAMES } from '../../../data/fantasyNames';
 import { HelpTooltip } from '../../../components/ui/HelpTooltip';
 import { alignmentsData } from '../../../data/alignmentsData';
 import { IdentityFieldsPanel } from './IdentityFieldsPanel';
+import { copyTextToClipboard } from '../../../utils/clipboard';
+import { buildSummaryCopyText } from '../../../utils/summaryCopy';
 import styles from './CharacterSummaryPanel.module.css';
 import { useWhyDidYouRender } from '../../../utils/renderDiagnostics';
 
@@ -42,6 +44,7 @@ function CharacterSummaryPanelInner() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
   const generateAndShow = () => {
     if (suggestionsOpen) {
@@ -57,6 +60,21 @@ function CharacterSummaryPanelInner() {
     setCharacter((prev: any) => ({ ...prev, name }));
     setSuggestionsOpen(false);
   };
+
+  const handleCopySummary = async () => {
+    const text = buildSummaryCopyText(
+      character.characterClass?.name,
+      character.species?.name,
+      selectedBackground?.name,
+      derivedSheet.finalAttributes,
+    );
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    }
+  };
+
 
   useEffect(() => {
     if (!suggestionsOpen) return;
@@ -169,7 +187,17 @@ function CharacterSummaryPanelInner() {
     <div className={styles.panel}>
       <div className={styles.headerRow}>
         <div className={styles.sectionTitle}>Resumo</div>
+        <button
+          type="button"
+          className={styles.copyBtn}
+          onClick={handleCopySummary}
+          title="Copiar classe, espécie, origem e atributos como texto"
+          aria-label="Copiar resumo do personagem"
+        >
+          {copied ? '✓ Copiado' : '⧉ Copiar'}
+        </button>
       </div>
+
 
       <div className={`${styles.identityCard} ${identityFlash ? styles.flashHighlight : ''}`}>
         <div className={styles.identityHeader}>

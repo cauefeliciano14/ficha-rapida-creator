@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useWizard } from '../../../context/WizardContext';
 import { useCharacter } from '../../../context/CharacterContext';
+import { countUniqueIssues, stepHasSelection } from '../../../utils/wizardProgress';
 import patterns from '../../../styles/panelPatterns.module.css';
 import styles from './StepSidebar.module.css';
 
@@ -17,15 +18,15 @@ const STEP_KEYS = ['class', 'background', 'species', 'attributes', 'equipment'] 
 
 export function StepSidebar() {
   const { currentStep, setCurrentStep } = useWizard();
-  const { validationResult } = useCharacter();
+  const { character, selectedBackground, validationResult } = useCharacter();
 
   const pendingMap = {
-    class: validationResult.byStep.class.length,
-    background: validationResult.byStep.background.length,
-    species: validationResult.byStep.species.length,
-    attributes: validationResult.byStep.attributes.length,
-    equipment: validationResult.byStep.equipment.length,
-    sheet: validationResult.errors.length,
+    class: countUniqueIssues(validationResult.byStep.class),
+    background: countUniqueIssues(validationResult.byStep.background),
+    species: countUniqueIssues(validationResult.byStep.species),
+    attributes: countUniqueIssues(validationResult.byStep.attributes),
+    equipment: countUniqueIssues(validationResult.byStep.equipment),
+    sheet: countUniqueIssues(validationResult.errors),
   };
 
   const completionInfo = useMemo(() => {
@@ -64,7 +65,7 @@ export function StepSidebar() {
           const pending = pendingMap[item.key];
           const complete = item.key === 'sheet'
             ? validationResult.isValid
-            : pending === 0 && item.index < currentStep;
+            : pending === 0 && stepHasSelection(character, selectedBackground, item.key);
 
           const badgeClass = complete
             ? styles.badgeComplete

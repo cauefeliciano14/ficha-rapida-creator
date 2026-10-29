@@ -27,6 +27,25 @@
   font-style: italic;
 }
 
+.copyBtn {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md, 8px);
+  color: var(--text-secondary, var(--text-primary));
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: var(--font-label);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s var(--ease-luxury, ease);
+  white-space: nowrap;
+}
+.copyBtn:hover {
+  border-color: var(--color-info, var(--border-default));
+  color: var(--color-info, var(--text-primary));
+}
+
+
 .identityCard,
 .summaryPillCard {
   background: var(--surface-subtle);
