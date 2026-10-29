@@ -324,6 +324,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
     const barH = bar ? bar.getBoundingClientRect().height : 0;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const top = el.getBoundingClientRect().top + window.scrollY - barH - 12;
+    // eslint-disable-next-line no-console
+    console.log('[class-scroll]', { docTop: el.getBoundingClientRect().top + window.scrollY, barH, target: top });
     window.scrollTo({ top: Math.max(top, 0), behavior: reduce ? 'auto' : 'smooth' });
   }, [selectedClass]);
 
