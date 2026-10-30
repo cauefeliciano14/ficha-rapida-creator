@@ -1127,6 +1127,7 @@ export function CharacterSheetPage({
                 classId={classId}
                 characterLevel={characterLevel}
                 subclassName={subclassName}
+                abilityModifiers={derivedSheet.modifiers}
               />
             </div>
           </CollapsibleSection>

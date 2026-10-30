@@ -24,6 +24,8 @@ import {
   calculateInitiative,
   calculateAC,
   buildWeaponAttack,
+  getArmorPenalties,
+  applySpeedPenalty,
 } from '../calculators/combat';
 
 import {
@@ -268,7 +270,16 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   if (monkLevel >= 2 && !choices.equippedArmorId && !choices.hasShield) {
     classSpeedBonus += MONGE_UNARMORED_MOVEMENT[Math.min(monkLevel, 20) - 1];
   }
-  const speed = addSpeedBonus(speciesEffects?.speed ?? '9 metros\n\n', classSpeedBonus);
+  // Armadura com Força abaixo do requisito: Deslocamento −3 m (Livro do Jogador 2024).
+  const armorPenalties = getArmorPenalties({
+    equippedArmorId: choices.equippedArmorId,
+    strengthScore: finalAttributes['forca'] ?? 10,
+    armorProficiencies: merged.armorCategories,
+  });
+  const speed = applySpeedPenalty(
+    addSpeedBonus(speciesEffects?.speed ?? '9 metros\n\n', classSpeedBonus),
+    armorPenalties.speedPenalty,
+  );
   const specialSenses = [...(speciesEffects?.specialSenses ?? [])];
   const derivedDefenses = [...(speciesEffects?.derivedDefenses ?? [])];
   const racialCantrips = [...(speciesEffects?.racialCantrips ?? [])];
@@ -284,6 +295,9 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     bonusPreparedSpells.push({ name: spell, source: 'species', origin: speciesId });
   }
   addUnique(derivedTraits, speciesEffects?.notes);
+  if (armorPenalties.speedPenalty) derivedTraits.push(`Armadura sem a Força exigida: Deslocamento −${armorPenalties.speedPenalty} m.`);
+  if (armorPenalties.stealthDisadvantage) derivedTraits.push('Armadura: Desvantagem em testes de Destreza (Furtividade).');
+  if (armorPenalties.untrainedArmor) derivedTraits.push('Armadura sem treinamento: Desvantagem em testes de Força e Destreza e não pode conjurar magias.');
 
   for (const appliedTalent of appliedTalentEffects) {
     if (!appliedTalent) continue;

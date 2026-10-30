@@ -5,6 +5,8 @@ import {
   CLASS_RESOURCES,
   SUBCLASS_RESOURCES,
   getResourceTemplate,
+  resolveResourceMax,
+  resolveResourceReset,
 } from '../../data/classResources';
 import styles from './ClassResourcesCard.module.css';
 
@@ -14,6 +16,8 @@ interface ClassResourcesCardProps {
   classId?: string;
   characterLevel?: number;
   subclassName?: string;
+  /** Modificadores de atributo, para recursos que dependem deles (ex.: Inspiração de Bardo = Carisma). */
+  abilityModifiers?: Record<string, number>;
 }
 
 const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
@@ -33,10 +37,11 @@ export function ClassResourcesCard({
   classId,
   characterLevel = 1,
   subclassName,
+  abilityModifiers,
 }: ClassResourcesCardProps) {
   const counters = playState.customCounters ?? [];
   const defaultCounters = classId
-    ? getDefaultClassCounters(classId, characterLevel, subclassName)
+    ? getDefaultClassCounters(classId, characterLevel, subclassName, abilityModifiers)
     : [];
   const knownIds = new Set(defaultCounters.map(d => d.id));
   const subKey = normalizeSubclass(subclassName);
@@ -56,14 +61,15 @@ export function ClassResourcesCard({
      - Update existing counter `max` (preserves used amount)
      - Add subclass-unlocked counters when level threshold reached
      ───────────────────────────────────────────────────────────── */
-  const lastSyncRef = useRef<{ classId?: string; subKey: string; level: number } | null>(null);
+  const modsKey = JSON.stringify(abilityModifiers ?? {});
+  const lastSyncRef = useRef<{ classId?: string; subKey: string; level: number; modsKey: string } | null>(null);
   useEffect(() => {
     if (!classId) return;
     const prev = lastSyncRef.current;
-    if (prev && prev.classId === classId && prev.subKey === subKey && prev.level === characterLevel) return;
+    if (prev && prev.classId === classId && prev.subKey === subKey && prev.level === characterLevel && prev.modsKey === modsKey) return;
     const wasInitial = !prev;
     const prevLevel = prev?.level ?? characterLevel;
-    lastSyncRef.current = { classId, subKey, level: characterLevel };
+    lastSyncRef.current = { classId, subKey, level: characterLevel, modsKey };
     if (wasInitial) return;
 
     const newlyUnlocked: string[] = [];
@@ -77,8 +83,9 @@ export function ClassResourcesCard({
       const updated = list.map(c => {
         const tmpl = allTemplates.find(t => t.id === c.id);
         if (!tmpl) return c;
-        const newMax = tmpl.maxByLevel[Math.max(0, Math.min(19, characterLevel - 1))];
-        if (newMax === c.max) return c;
+        const newMax = resolveResourceMax(tmpl, characterLevel, abilityModifiers);
+        const newReset = resolveResourceReset(tmpl, characterLevel);
+        if (newMax === c.max && newReset === c.resetOn) return c;
         const used = Math.max(0, c.max - c.current);
         const newCurrent = Math.max(0, Math.min(newMax, newMax - used));
         changed = true;
@@ -86,7 +93,7 @@ export function ClassResourcesCard({
           newlyUnlocked.push(c.id);
           newlyUnlockedDetails.push({ id: c.id, name: c.name, icon: c.icon, max: newMax });
         }
-        return { ...c, max: newMax, current: newCurrent };
+        return { ...c, max: newMax, current: newCurrent, resetOn: newReset };
       });
 
       // 2) Auto-add subclass counters that just crossed unlockLevel (if leveling up)
@@ -125,7 +132,7 @@ export function ClassResourcesCard({
       return () => clearTimeout(t);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, characterLevel, subKey]);
+  }, [classId, characterLevel, subKey, modsKey]);
 
   const handleAddClassResources = () => {
     if (missingDefaults.length === 0) return;
