@@ -20,6 +20,18 @@ describe('dados de magias', () => {
     }
   });
 
+  it('nenhuma descrição traz lixo de extração do PDF (rodapé, créditos, bloco de estatísticas)', () => {
+    for (const s of allSpells as Array<{ name: string; description: string }>) {
+      expect(s.description, s.name).not.toMatch(/=== PDF|CAPÍTULO|MOD SG/);
+      expect(s.description, s.name).not.toMatch(/ {2,}/);
+    }
+  });
+
+  it('Animar Objetos e Invocar Aberração não carregam o bloco de estatísticas', () => {
+    expect(byName.get('Animar Objetos')?.description).toMatch(/acima de 5\.$/);
+    expect(byName.get('Invocar Aberração')?.description).toMatch(/bloco de estatísticas\.$/);
+  });
+
   it('Animar Mortos existe para Clérigo e Mago', () => {
     expect(byName.get('Animar Mortos')?.classes).toEqual(['Clérigo', 'Mago']);
   });

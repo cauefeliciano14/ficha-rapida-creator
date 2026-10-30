@@ -8,7 +8,7 @@
     "range": "3 metros",
     "components": "S, M (um pouco de maquiagem)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você emana magicamente um sentimento de amizade em relação a uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo é bem-sucedido automaticamente se não for um Humanoide, se você estiver lutando contra ele ou se tiver conjurado esta magia nele nas últimas 24 horas.",
+    "description": "Você emana magicamente um sentimento de amizade em relação a uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo é bem-sucedido automaticamente se não for um Humanoide, se você estiver lutando contra ele ou se tiver conjurado esta magia nele nas últimas 24 horas.\nA magia encerra se o alvo sofrer dano ou se você realizar uma jogada de ataque, causar dano ou forçar alguém a realizar uma salvaguarda. Quando a magia termina, o alvo sabe que foi Enfeitiçado por você.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -40,7 +40,7 @@
     "range": "Pessoal",
     "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PC)",
     "duration": "Instantânea",
-    "description": "Guiado pelo lampejo de uma intuição mágica, você realiza um ataque com a arma usada na conjuração da magia. O ataque usa seu atributo de conjuração para as jogadas de ataque e dano em vez de usar Força ou Destreza. Se o ataque causar dano, ele pode ser Radiante ou do tipo de dano normal da arma (à sua escolha).",
+    "description": "Guiado pelo lampejo de uma intuição mágica, você realiza um ataque com a arma usada na conjuração da magia. O ataque usa seu atributo de conjuração para as jogadas de ataque e dano em vez de usar Força ou Destreza. Se o ataque causar dano, ele pode ser Radiante ou do tipo de dano normal da arma (à sua escolha).\nAprimoramento de Truque. Seja o dano Radiante ou o tipo de dano normal da arma, o ataque causa dano Radiante adicional quando você atinge os níveis 5 (1d6), 11 (2d6) e 17 (3d6).",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -74,7 +74,7 @@
     "range": "Toque",
     "components": "V, M (um vaga-lume ou musgo fosforescente)",
     "duration": "1 hora",
-    "description": "Você toca em um objeto Grande ou menor que não está sendo usado ou carregado por outra pessoa. Até que a magia termine, o objeto emite Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros. A luz pode ter a cor que você desejar.\nCobrir o objeto com algo opaco bloqueia a luz. A magia se encerra se você a conjurar novamente.",
+    "description": "Você toca em um objeto Grande ou menor que não está sendo usado ou carregado por outra pessoa. Até que a magia termine, o objeto emite Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros. A luz pode ter a cor que você desejar.\nCobrir o objeto com algo opaco bloqueia a luz. A magia se encerra se você a conjurar novamente.\nUm elfo Clérigo usa a magia Luz do Dia para trazer a luz do amanhecer para uma corte de vampiros.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -107,7 +107,7 @@
     "range": "36 metros",
     "components": "S, M (um fio de cobre)",
     "duration": "1 rodada",
-    "description": "Você aponta para uma criatura no alcance da magia e sussurra uma mensagem. Somente o alvo ouve a mensagem e pode responder em um sussurro que apenas você consegue ouvir.",
+    "description": "Você aponta para uma criatura no alcance da magia e sussurra uma mensagem. Somente o alvo ouve a mensagem e pode responder em um sussurro que apenas você consegue ouvir.\nVocê pode conjurar essa magia através de objetos sólidos se estiver familiarizado com o alvo e souber que ele está além da barreira. Silêncio mágico, 30 centímetros de pedra, metal ou madeira, ou uma fina folha de chumbo bloqueiam a magia.",
     "classes": [
       "Bardo",
       "Druida",
@@ -124,7 +124,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "1 minuto",
-    "description": "Uma mão espectral flutuante aparece em um ponto que você escolher no alcance da magia. A mão permanece pela duração. A mão desaparece se estiver a mais de 9 metros de você ou se você conjurar esta magia novamente.\nAo conjurar a magia, você pode usar a mão para manipular um objeto, abrir uma porta ou um recipiente destrancado, guardar ou recolher itens de recipientes abertos, ou despejar o conteúdo de um frasco.\nComo uma ação Usar Magia em seus próximos turnos, você pode controlar a mão novamente. Como parte dessa ação, você pode mover a mão até 9 metros.",
+    "description": "Uma mão espectral flutuante aparece em um ponto que você escolher no alcance da magia. A mão permanece pela duração. A mão desaparece se estiver a mais de 9 metros de você ou se você conjurar esta magia novamente.\nAo conjurar a magia, você pode usar a mão para manipular um objeto, abrir uma porta ou um recipiente destrancado, guardar ou recolher itens de recipientes abertos, ou despejar o conteúdo de um frasco.\nComo uma ação Usar Magia em seus próximos turnos, você pode controlar a mão novamente. Como parte dessa ação, você pode mover a mão até 9 metros.\nA mão não pode atacar, ativar itens mágicos ou carregar mais de 5 quilos.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -141,7 +141,7 @@
     "range": "3 metros",
     "components": "V, S",
     "duration": "Até 1 hora",
-    "description": "Você cria um efeito mágico no alcance da magia. Escolha o efeito entre as opções abaixo. Se conjurar esta magia várias vezes, você pode ter até três de seus efeitos não instantâneos ativos ao mesmo tempo.\nBrincar com Fogo. Você instantaneamente acende ou apaga uma vela, uma tocha ou uma pequena fogueira.\nCriação Menor. Você cria uma bugiganga não mágica, sem valor monetário e incapaz de causar dano, ou uma imagem ilusória, sendo que ambas devem caber na sua mão.\nEfeito Sensorial. Você cria um efeito sensorial instantâneo e inofensivo, como uma chuva de faíscas, um sopro de vento, notas musicais suaves ou um odor estranho.\nLimpar ou Sujar. Você limpa ou suja instantaneamente um objeto com menos de 30 centímetros cúbicos.\nMarca Mágica. Você faz aparecer uma cor, uma pequena marca ou um símbolo em um objeto ou superfície por 1 hora.",
+    "description": "Você cria um efeito mágico no alcance da magia. Escolha o efeito entre as opções abaixo. Se conjurar esta magia várias vezes, você pode ter até três de seus efeitos não instantâneos ativos ao mesmo tempo.\nBrincar com Fogo. Você instantaneamente acende ou apaga uma vela, uma tocha ou uma pequena fogueira.\nCriação Menor. Você cria uma bugiganga não mágica, sem valor monetário e incapaz de causar dano, ou uma imagem ilusória, sendo que ambas devem caber na sua mão. Ela dura até o final do seu próximo turno.\nEfeito Sensorial. Você cria um efeito sensorial instantâneo e inofensivo, como uma chuva de faíscas, um sopro de vento, notas musicais suaves ou um odor estranho.\nLimpar ou Sujar. Você limpa ou suja instantaneamente um objeto com menos de 30 centímetros cúbicos.\nMarca Mágica. Você faz aparecer uma cor, uma pequena marca ou um símbolo em um objeto ou superfície por 1 hora.\nSensação Ideal. Você esfria, aquece ou dá sabor a um material não vivo com menos de 30 centímetros cúbicos por 1 hora.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -193,7 +193,7 @@
     "range": "Pessoal",
     "components": "S",
     "duration": "Instantânea",
-    "description": "Cada criatura em uma Emanação de 1,5 metro originada em você deve ser bem-sucedida em uma salvaguarda de Constituição ou sofre 1d6 pontos de dano Trovejante. O som estrondoso da magia pode ser ouvido a até 30 metros de distância.",
+    "description": "Cada criatura em uma Emanação de 1,5 metro originada em você deve ser bem-sucedida em uma salvaguarda de Constituição ou sofre 1d6 pontos de dano Trovejante. O som estrondoso da magia pode ser ouvido a até 30 metros de distância.\nAprimoramento de Truque. O dano aumenta em 1d6 quando você atinge os níveis 5 (2d6), 11 (3d6) e 17 (4d6).",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -211,7 +211,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Você libera uma série de insultos carregados com encantamentos sutis em uma criatura que pode ouvir você e que esteja à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou sofre 1d6 pontos de dano Psíquico e tem Desvantagem na próxima jogada de ataque que realizar antes do final do próximo turno dele.",
+    "description": "Você libera uma série de insultos carregados com encantamentos sutis em uma criatura que pode ouvir você e que esteja à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de\nSabedoria ou sofre 1d6 pontos de dano Psíquico e tem Desvantagem na próxima jogada de ataque que realizar antes do final do próximo turno dele.\nAprimoramento de Truque. O dano aumenta em 1d6 quando você atinge os níveis 5 (2d6), 11 (3d6) e 17 (4d6).",
     "classes": [
       "Bardo"
     ]
@@ -225,7 +225,7 @@
     "range": "9 metros",
     "components": "V, S, M (um bocado de comida)",
     "duration": "24 horas",
-    "description": "Escolha como alvo uma Fera à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. Se você ou um de seus aliados causar dano ao alvo, a magia encerra.",
+    "description": "Escolha como alvo uma Fera à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. Se você ou um de seus aliados causar dano ao alvo, a magia encerra.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Druida",
@@ -241,7 +241,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Você profere uma palavra única de comando para uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou segue o comando no próximo turno dele. Escolha o comando a partir destas opções:\nAbaixar. O alvo tem a condição Caído e, em seguida, termina o turno.\nAproximar. O alvo se move em sua direção pela rota mais curta e direta, terminando o turno dele se ele se mover a até 1,5 metro de você.\nFugir. O alvo usa o próprio turno se afastando de você pelos meios mais rápidos disponíveis.\nLargar. O alvo solta o que estiver segurando e, em seguida, termina o turno.\nParar. No turno do alvo, ele não se move e não executa nenhuma ação ou Ação Bônus.",
+    "description": "Você profere uma palavra única de comando para uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou segue o comando no próximo turno dele. Escolha o comando a partir destas opções:\nAbaixar. O alvo tem a condição Caído e, em seguida, termina o turno.\nAproximar. O alvo se move em sua direção pela rota mais curta e direta, terminando o turno dele se ele se mover a até 1,5 metro de você.\nFugir. O alvo usa o próprio turno se afastando de você pelos meios mais rápidos disponíveis.\nLargar. O alvo solta o que estiver segurando e, em seguida, termina o turno.\nParar. No turno do alvo, ele não se move e não executa nenhuma ação ou Ação Bônus.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -274,7 +274,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "Uma criatura que você toca recupera um número de Pontos de Vida igual a 2d8 mais seu modificador de atributo de conjuração.",
+    "description": "Uma criatura que você toca recupera um número de Pontos de Vida igual a 2d8 mais seu modificador de atributo de conjuração.\nUsando um Espaço de Magia de Círculo Superior. A cura aumenta em 2d8 para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -292,7 +292,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 10 minutos",
-    "description": "Pela duração da magia, você sente a presença de efeitos mágicos a até 9 metros de você. Se você sentir tais efeitos, pode executar a ação Usar Magia para ver uma aura fraca ao redor de qualquer criatura ou objeto visível na área que contém a magia, e se um efeito foi criado por uma magia, você descobre a escola dessa magia.",
+    "description": "Pela duração da magia, você sente a presença de efeitos mágicos a até 9 metros de você. Se você sentir tais efeitos, pode executar a ação Usar Magia para ver uma aura fraca ao redor de qualquer criatura ou objeto visível na área que contém a magia, e se um efeito foi criado por uma magia, você descobre a escola dessa magia.\nA magia é bloqueada por 30 centímetros de pedra, terra ou madeira, 2,5 centímetros de metal ou uma folha fina de chumbo.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -313,7 +313,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "Você faz com que você mesmo — incluindo suas roupas, armaduras, armas e outros pertences — pareça diferente até que a magia termine. Você pode parecer 30 centímetros mais baixo ou mais alto e pode parecer mais pesado ou mais leve. Você deve adotar uma forma que tenha a mesma disposição básica de membros que você. Caso contrário, a extensão da ilusão depende de você.\nAs mudanças causadas por esta magia falham em uma inspeção física. Por exemplo, se você usar esta magia para adicionar um chapéu ao seu traje, objetos passarão através do chapéu, e qualquer um que o tocar não sentirá nada.",
+    "description": "Você faz com que você mesmo — incluindo suas roupas, armaduras, armas e outros pertences — pareça diferente até que a magia termine. Você pode parecer 30 centímetros mais baixo ou mais alto e pode parecer mais pesado ou mais leve. Você deve adotar uma forma que tenha a mesma disposição básica de membros que você. Caso contrário, a extensão da ilusão depende de você.\nAs mudanças causadas por esta magia falham em uma inspeção física. Por exemplo, se você usar esta magia para adicionar um chapéu ao seu traje, objetos passarão através do chapéu, e qualquer um que o tocar não sentirá nada.\nPara descobrir se você está disfarçado, uma criatura deve executar a ação Analisar para inspecionar sua aparência e ser bem-sucedido em um teste de Inteligência (Investigação) contra a CD para evitar sua magia.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -329,7 +329,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "Um Humanoide à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Ele tem Vantagem se você ou seus aliados estiverem lutando contra ele. Se falhar, o alvo tem a condição Enfeitiçado até que a magia termine ou até que você ou seus aliados causem dano a ele. A criatura Enfeitiçada é Amigável a você. Quando a magia termina, o alvo sabe que foi Enfeitiçado por você.",
+    "description": "Um Humanoide à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Ele tem Vantagem se você ou seus aliados estiverem lutando contra ele. Se falhar, o alvo tem a condição Enfeitiçado até que a magia termine ou até que você ou seus aliados causem dano a ele. A criatura Enfeitiçada é Amigável a você. Quando a magia termina, o alvo sabe que foi Enfeitiçado por você.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -347,7 +347,7 @@
     "range": "Toque",
     "components": "S, M (tinta no valor de 10 ou mais PO, que a magia consome)",
     "duration": "10 dias",
-    "description": "Você escreve em pergaminho, papel ou outro material apropriado e o imbuí com uma ilusão que permanece pela duração. Para você e quaisquer criaturas que escolher ao conjurar a magia, a escrita parece normal, como se estivesse escrita por sua mão, e transmite o significado de sua intenção no momento em que o texto foi redigido. Para os demais, as palavras aparecem como se estivessem em um alfabeto desconhecido ou mágico, tornando-se ininteligíveis. Se preferir, a ilusão pode alterar o significado, a caligrafia e o idioma do texto, embora você deva conhecer o idioma.\nSe a magia for dissipada, o texto original e a ilusão desaparecem.",
+    "description": "Você escreve em pergaminho, papel ou outro material apropriado e o imbuí com uma ilusão que permanece pela duração. Para você e quaisquer criaturas que escolher ao conjurar a magia, a escrita parece normal, como se estivesse escrita por sua mão, e transmite o significado de sua intenção no momento em que o texto foi redigido. Para os demais, as palavras aparecem como se estivessem em um alfabeto desconhecido ou mágico, tornando-se ininteligíveis. Se preferir, a ilusão pode alterar o significado, a caligrafia e o idioma do texto, embora você deva conhecer o idioma.\nSe a magia for dissipada, o texto original e a ilusão desaparecem.\nUma criatura que possui Visão Verdadeira pode ler a mensagem oculta.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -363,7 +363,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "10 minutos",
-    "description": "Pela duração da magia, você pode compreender e se comunicar verbalmente com Feras, e pode usar com elas qualquer uma das opções de perícia da ação Influenciar.",
+    "description": "Pela duração da magia, você pode compreender e se comunicar verbalmente com Feras, e pode usar com elas qualquer uma das opções de perícia da ação Influenciar.\nA maioria das Feras oferece pouca informação sobre assuntos que não estejam diretamente ligados à sobrevivência ou ao companheirismo mas, no mínimo, uma Fera pode fornecer informações sobre áreas vizinhas e monstros, incluindo o que percebeu no último dia.\nUm Druida humano usa Falar com Animais para conversar com seu melhor amigo urso.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -380,7 +380,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": "Objetos em um Cubo de 6 metros de lado no alcance da magia são delineados por luz azul, verde ou violeta (à sua escolha). Cada criatura no Cubo também é delineada se falhar em uma salvaguarda de Destreza. Pela duração da magia, objetos e criaturas afetadas emitem Meia-Luz em um raio de 3 metros e não podem se beneficiar da condição Invisível.\nJogadas de ataque contra uma criatura ou objeto afetado têm Vantagem se o atacante puder vê-la.",
+    "description": "Objetos em um Cubo de 6 metros de lado no alcance da magia são delineados por luz azul, verde ou violeta (à sua escolha). Cada criatura no Cubo também é delineada se falhar em uma salvaguarda de Destreza. Pela duração da magia, objetos e criaturas afetadas emitem\nMeia-Luz em um raio de 3 metros e não podem se beneficiar da condição Invisível.\nJogadas de ataque contra uma criatura ou objeto afetado têm Vantagem se o atacante puder vê-la.",
     "classes": [
       "Bardo",
       "Druida"
@@ -395,7 +395,7 @@
     "range": "9 metros",
     "components": "V, S, M (uma torta e uma pena)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Uma criatura à sua escolha à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Se falhar, ela está com as condições Caído e Incapacitado pela duração da magia. Durante esse tempo, ela ri incontrolavelmente se for capaz de rir e não pode encerrar a condição Caído por si só.\nNo final de cada um dos turnos dela e cada vez que sofrer dano, a criatura realiza outra salvaguarda de Sabedoria. O alvo tem Vantagem na salvaguarda se a salvaguarda for acionada por dano. Em caso de sucesso, a magia encerra.",
+    "description": "Uma criatura à sua escolha à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Se falhar, ela está com as condições Caído e Incapacitado pela duração da magia. Durante esse tempo, ela ri incontrolavelmente se for capaz de rir, e não pode encerrar a condição Caído por si só.\nNo final de cada um dos turnos dela e cada vez que sofrer dano, a criatura realiza outra salvaguarda de Sabedoria. O alvo tem Vantagem na salvaguarda se a salvaguarda for acionada por dano. Em caso de sucesso, a magia encerra.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -426,7 +426,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pérola no valor de 100 ou mais PO)",
     "duration": "Instantânea",
-    "description": "Você toca um objeto durante a conjuração da magia. Se for um item mágico ou algum outro objeto mágico, você descobre suas propriedades e como usá-las, se ele requer Sintonização e quantas cargas possui, se houver. Você também descobre se alguma magia está afetando o item e quais são elas. Se o item foi criado por uma magia, você identifica o nome dessa magia.",
+    "description": "Você toca um objeto durante a conjuração da magia. Se for um item mágico ou algum outro objeto mágico, você descobre suas propriedades e como usá-las, se ele requer Sintonização e quantas cargas possui, se houver. Você também descobre se alguma magia está afetando o item e quais são elas. Se o item foi criado por uma magia, você identifica o nome dessa magia.\nSe em vez disso você tocar uma criatura durante a conjuração, você descobre quais magias a estão afetando, caso estejam.",
     "classes": [
       "Bardo",
       "Mago"
@@ -441,7 +441,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pouco de lã)",
     "duration": "Concentração, até 10 minutos",
-    "description": "Você cria a imagem de um objeto, uma criatura ou algum outro fenômeno visível que não seja maior do que um Cubo de 4,5 metros de lado. A imagem aparece em um local pela duração e no alcance da magia. A imagem é puramente visual; não é acompanhada por som, cheiro ou outros efeitos sensoriais.\nComo uma ação Usar Magia, você pode mover a imagem para qualquer ponto no alcance da magia. À medida que a imagem muda de local, você pode alterar a aparência da imagem para que os movimentos dela pareçam naturais para a imagem. Por exemplo, se você criar a imagem de uma criatura e movê-la, pode alterá-la para que pareça estar andando.",
+    "description": "Você cria a imagem de um objeto, uma criatura ou algum outro fenômeno visível que não seja maior do que um Cubo de 4,5 metros de lado. A imagem aparece em um local pela duração e no alcance da magia. A imagem é puramente visual; não é acompanhada por som, cheiro ou outros efeitos sensoriais.\nComo uma ação Usar Magia, você pode mover a imagem para qualquer ponto no alcance da magia. À medida que a imagem muda de local, você pode alterar a aparência da imagem para que os movimentos dela pareçam naturais para a imagem. Por exemplo, se você criar a imagem de uma criatura e movê-la, pode alterá-la para que pareça estar andando.\nA interação física com a imagem revela que ela é uma ilusão, pois as coisas podem passar por ela. Uma criatura que executa uma ação Analisar para examinar a imagem pode determinar que ela é uma ilusão com um teste bem-sucedido de Inteligência (Investigação) contra a CD para evitar sua magia. Se uma criatura perceber a ilusão pelo que ela é, a criatura pode ver através da imagem.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -473,7 +473,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "Você libera uma onda de energia estrondosa. Cada criatura em um Cubo de 4,5 metros originado em você realiza uma salvaguarda de Constituição. Se falhar, uma criatura sofre 2d8 pontos de dano Trovejante e é empurrada a 3 metros de distância de você. Em caso de sucesso, uma criatura sofre apenas metade do dano.\nAlém disso, objetos soltos que estão totalmente dentro do Cubo são empurrados 3 metros para longe de você, e um estrondo trovejante é audível a até 90 metros.",
+    "description": "Você libera uma onda de energia estrondosa. Cada criatura em um Cubo de 4,5 metros originado em você realiza uma salvaguarda de Constituição. Se falhar, uma criatura sofre 2d8 pontos de dano Trovejante e é empurrada a 3 metros de distância de você. Em caso de sucesso, uma criatura sofre apenas metade do dano.\nAlém disso, objetos soltos que estão totalmente dentro do Cubo são empurrados 3 metros para longe de você, e um estrondo trovejante é audível a até 90 metros.\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Druida",
@@ -490,7 +490,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Uma criatura à sua escolha, à sua vista e no alcance da magia recupera Pontos de Vida iguais a 2d4 mais seu modificador de atributo de conjuração.",
+    "description": "Uma criatura à sua escolha, à sua vista e no alcance da magia recupera Pontos de Vida iguais a 2d4 mais seu modificador de atributo de conjuração.\nUsando um Espaço de Magia de Círculo Superior. A cura aumenta em 2d4 para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -506,7 +506,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pitada de poeira)",
     "duration": "1 hora",
-    "description": "Você toca uma criatura. O Deslocamento do alvo aumenta em 3 metros até que a magia termine.",
+    "description": "Você toca uma criatura. O Deslocamento do alvo aumenta em 3 metros até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Druida",
@@ -523,7 +523,7 @@
     "range": "9 metros",
     "components": "V, S, M (uma gota de sangue)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Até três criaturas à sua escolha à sua vista e no alcance da magia devem realizar uma salvaguarda de Carisma. Sempre que um alvo que falhar nesta salvaguarda realizar uma jogada de ataque ou uma salvaguarda antes da magia terminar, o alvo deve subtrair 1d4 da jogada de ataque ou salvaguarda.",
+    "description": "Até três criaturas à sua escolha à sua vista e no alcance da magia devem realizar uma salvaguarda de Carisma. Sempre que um alvo que falhar nesta salvaguarda realizar uma jogada de ataque ou uma salvaguarda antes da magia terminar, o alvo deve subtrair 1d4 da jogada de ataque ou salvaguarda.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 1.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -555,7 +555,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pedaço de barbante e de madeira)",
     "duration": "1 hora",
-    "description": "Esta magia cria uma força Invisível, sem mente, disforme e Média que executa tarefas simples ao seu comando até que a magia termine. O servo nasce em um espaço desocupado no chão no alcance da magia. Ele tem CA 10, 1 Ponto de Vida e Força 2, e não pode atacar. Se ele é reduzido a 0 Pontos de Vida, a magia encerra.\nUma vez em cada um de seus turnos como uma Ação Bônus, você pode comandar mentalmente o servo a se mover até 4,5 metros e interagir com um objeto. O servo pode realizar tarefas simples que um humano poderia fazer, como buscar coisas, limpar, consertar, dobrar roupas, acender fogueiras, servir comida e bebidas. Depois de dar o comando, o servo executa a tarefa da melhor forma possível até que conclua a tarefa e, em seguida, aguarda seu próximo comando.",
+    "description": "Esta magia cria uma força Invisível, sem mente, disforme e Média que executa tarefas simples ao seu comando até que a magia termine. O servo nasce em um espaço desocupado no chão no alcance da magia. Ele tem CA 10, 1 Ponto de Vida e Força 2, e não pode atacar. Se ele é reduzido a 0 Pontos de Vida, a magia encerra.\nUma vez em cada um de seus turnos como uma Ação Bônus, você pode comandar mentalmente o servo a se mover até 4,5 metros e interagir com um objeto. O servo pode realizar tarefas simples que um humano poderia fazer, como buscar coisas, limpar, consertar, dobrar roupas, acender fogueiras, servir comida e bebidas. Depois de dar o comando, o servo executa a tarefa da melhor forma possível até que conclua a tarefa e, em seguida, aguarda seu próximo comando.\nAo ordenar ao servo que realize uma tarefa que o mova a mais de 18 metros de distância de você, a magia se encerra.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -571,7 +571,7 @@
     "range": "18 metros",
     "components": "V, S, M (uma pitada de areia ou pétalas de rosa)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Cada criatura à sua escolha em uma Esfera de 1,5 metro de raio centrada em um ponto no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Incapacitado até o final do próximo turno dela, quando deve repetir a salvaguarda. Se o alvo falhar na segunda salvaguarda, ele tem a condição Inconsciente pela duração da magia. A magia encerra em um alvo se ele sofrer dano ou se alguém a até 1,5 metro dele executar uma ação para sacudi-lo, liberando-o do efeito da magia.",
+    "description": "Cada criatura à sua escolha em uma Esfera de 1,5 metro de raio centrada em um ponto no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Incapacitado até o final do próximo turno dela, quando deve repetir a salvaguarda. Se o alvo falhar na segunda salvaguarda, ele tem a condição Inconsciente pela duração da magia. A magia encerra em um alvo se ele sofrer dano ou se alguém a até 1,5 metro dele executar uma ação para sacudi-lo, liberando-o do efeito da magia.\nCriaturas que não dormem, como elfos, ou que têm Imunidade à condição Exaustão, são automaticamente bem-sucedidas nas salvaguardas contra esta magia.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -601,7 +601,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Cada Humanoide em uma Esfera de 6 metros de raio centrada em um ponto à sua escolha no alcance da magia deve ser bem-sucedido em uma salvaguarda de Carisma ou é afetado por um dos seguintes efeitos (escolha um para cada criatura):\nA criatura tem Imunidade às condições Amedrontado e Enfeitiçado até que a magia termine. Se a criatura já estiver Amedrontada ou Enfeitiçada, essas condições são suprimidas pela duração da magia.",
+    "description": "Cada Humanoide em uma Esfera de 6 metros de raio centrada em um ponto à sua escolha no alcance da magia deve ser bem-sucedido em uma salvaguarda de Carisma ou é afetado por um dos seguintes efeitos (escolha um para cada criatura):\nA criatura tem Imunidade às condições Amedrontado e Enfeitiçado até que a magia termine. Se a criatura já estiver Amedrontada ou Enfeitiçada, essas condições são suprimidas pela duração da magia.\nA criatura se torna Indiferente às criaturas à sua escolha em relação às quais é Hostil. Essa indiferença encerra se o alvo sofrer dano ou testemunhar os aliados dela sofrendo dano. Quando a magia termina, a atitude da criatura volta ao normal.",
     "classes": [
       "Bardo",
       "Clérigo"
@@ -651,7 +651,7 @@
     "range": "9 metros",
     "components": "V, S, M (uma pitada de ferro em pó)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Pela duração da magia, você amplia ou reduz uma criatura, ou objeto, à sua vista e no alcance da magia (veja o efeito escolhido abaixo). Um objeto à vista não deve ser usado nem transportado. Se o alvo for uma criatura involuntária, ele pode realizar uma salvaguarda de Constituição. Em caso de sucesso, a magia não surte efeito.\nTudo o que uma criatura estiver usando e carregando muda de tamanho com ela. Qualquer item que cair retorna ao tamanho normal de uma só vez. Uma arma ou munição arremessada retorna ao tamanho normal imediatamente após atingir ou errar um alvo.\nAumentar. O tamanho do alvo aumenta em uma categoria — de Médio para Grande, por exemplo. O alvo também tem Vantagem em testes de Força e salvaguardas de Força. Os ataques do alvo com suas armas ampliadas ou Ataques Desarmados causam 1d4 pontos de dano adicionais em caso de acerto.",
+    "description": "Pela duração da magia, você amplia ou reduz uma criatura, ou objeto, à sua vista e no alcance da magia (veja o efeito escolhido abaixo). Um objeto à vista não deve ser usado nem transportado. Se o alvo for uma criatura involuntária, ele pode realizar uma salvaguarda de Constituição. Em caso de sucesso, a magia não surte efeito.\nTudo o que uma criatura estiver usando e carregando muda de tamanho com ela. Qualquer item que cair retorna ao tamanho normal de uma só vez. Uma arma ou munição arremessada retorna ao tamanho normal imediatamente após atingir ou errar um alvo.\nAumentar. O tamanho do alvo aumenta em uma categoria — de Médio para Grande, por exemplo. O alvo também tem Vantagem em testes de Força e salvaguardas de Força. Os ataques do alvo com suas armas ampliadas ou Ataques Desarmados causam 1d4 pontos de dano adicionais em caso de acerto.\nReduzir. O tamanho do alvo diminui em uma categoria — de Médio para Pequeno, por exemplo. O alvo também tem Desvantagem em testes de Força e salvaguardas de Força. Os ataques do alvo com suas armas reduzidas ou Ataques Desarmados causam 1d4 pontos de dano a menos em caso de acerto (isso não pode reduzir o dano abaixo de 1).",
     "classes": [
       "Bardo",
       "Druida",
@@ -716,7 +716,7 @@
     "range": "36 metros",
     "components": "V",
     "duration": "1 minuto",
-    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Constituição, ou ela tem a condição Cego ou Surdo (à sua escolha) pela duração da magia. O alvo repete a salvaguarda no final de cada um dos turnos dele, encerrando a magia em caso de sucesso.",
+    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Constituição, ou ela tem a condição Cego ou Surdo (à sua escolha) pela duração da magia. O alvo repete a salvaguarda no final de cada um dos turnos dele, encerrando a magia em caso de sucesso.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -733,7 +733,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. A criatura é bem-sucedida automaticamente se não for Humanoide.\nUma coroa espectral aparece na cabeça do alvo Enfeitiçado, e ele deve executar uma ação antes de se mover em cada um de seus turnos para realizar um ataque corpo a corpo contra uma criatura diferente dela própria que você escolher mentalmente. O alvo pode agir normalmente no turno dele se você não escolher nenhuma criatura ou se nenhuma criatura estiver ao alcance dele. O alvo repete a salvaguarda no final de cada um dos turnos dele, encerrando a magia em caso de sucesso.",
+    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. A criatura é bem-sucedida automaticamente se não for Humanoide.\nUma coroa espectral aparece na cabeça do alvo Enfeitiçado, e ele deve executar uma ação antes de se mover em cada um de seus turnos para realizar um ataque corpo a corpo contra uma criatura diferente dela própria que você escolher mentalmente. O alvo pode agir normalmente no turno dele se você não escolher nenhuma criatura ou se nenhuma criatura estiver ao alcance dele. O alvo repete a salvaguarda no final de cada um dos turnos dele, encerrando a magia em caso de sucesso.\nNos seus turnos subsequentes, você deve executar a ação Usar Magia para manter o controle sobre o alvo, ou a magia encerra.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -750,7 +750,7 @@
     "range": "18 metros",
     "components": "V, S, M (uma lasca de mica)",
     "duration": "Instantânea",
-    "description": "Um barulho alto irrompe de um ponto à sua escolha no alcance da magia. Cada criatura em uma esfera com raio de 3 metros centrada nesse ponto realiza uma salvaguarda de Constituição, sofrendo 3d8 pontos de dano Trovejante se falhar, ou metade desse dano em caso de sucesso. Um Constructo tem Desvantagem na salvaguarda.\nUm objeto não mágico que não esteja sendo usado ou carregado também sofre o dano se estiver na área da magia.",
+    "description": "Um barulho alto irrompe de um ponto à sua escolha no alcance da magia. Cada criatura em uma esfera com raio de 3 metros centrada nesse ponto realiza uma salvaguarda de Constituição, sofrendo 3d8 pontos de dano Trovejante se falhar, ou metade desse dano em caso de sucesso. Um Constructo tem Desvantagem na salvaguarda.\nUm objeto não mágico que não esteja sendo usado ou carregado também sofre o dano se estiver na área da magia.\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -766,7 +766,7 @@
     "range": "Pessoal",
     "components": "V, S, M (1 Peça de Cobre)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você ativa um dos efeitos abaixo. Até que a magia termine, você pode ativar qualquer um dos efeitos como uma ação Usar Magia em seus turnos posteriores.\nSentir Pensamentos. Você sente a presença de pensamentos a até 9 metros de você que pertencem a criaturas que conhecem idiomas ou são telepáticas. Você não lê os pensamentos, mas sabe o que uma criatura presente está pensando.\nA magia é bloqueada por 30 centímetros de pedra, terra ou madeira, 2,5 centímetros de metal ou uma folha fina de chumbo.\nLer Pensamentos. Escolha uma criatura à sua vista a até 9 metros de você ou uma criatura a até 9 metros de você que você tenha detectado com a opção Sentir Pensamentos. Você agora descobre o que mais se destaca no pensamento do alvo. Se o alvo não souber nenhum idioma e não for telepático, você não descobre nada.",
+    "description": "Você ativa um dos efeitos abaixo. Até que a magia termine, você pode ativar qualquer um dos efeitos como uma ação Usar Magia em seus turnos posteriores.\nSentir Pensamentos. Você sente a presença de pensamentos a até 9 metros de você que pertencem a criaturas que conhecem idiomas ou são telepáticas. Você não lê os pensamentos, mas sabe o que uma criatura presente está pensando.\nA magia é bloqueada por 30 centímetros de pedra, terra ou madeira, 2,5 centímetros de metal ou uma folha fina de chumbo.\nLer Pensamentos. Escolha uma criatura à sua vista a até 9 metros de você ou uma criatura a até 9 metros de você que você tenha detectado com a opção Sentir Pensamentos. Você agora descobre o que mais se destaca no pensamento do alvo. Se o alvo não souber nenhum idioma e não for telepático, você não descobre nada.\nComo uma ação Usar Magia em seu próximo turno, você pode tentar sondar mais profundamente a mente do alvo. Se você investigar mais profundamente, o alvo realiza uma salvaguarda de Sabedoria. Se falhar, você descobre o raciocínio, as emoções e algo que paira na mente dele (como preocupação, amor ou ódio). Em caso de sucesso, a magia encerra. De qualquer forma, o alvo sabe que você está sondando a mente dele e, até que você desvie sua atenção da mente do alvo, o alvo pode executar uma ação no turno dele para realizar um teste de Inteligência (Arcanismo) contra a CD para evitar sua magia, encerrando a magia em caso de sucesso.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -782,7 +782,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pedaço de ferro e uma chama)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Escolha um objeto de metal fabricado, como uma arma ou uma armadura de metal pesada ou média, à sua vista e no alcance da magia. Você faz com que o objeto brilhe em brasa. Qualquer criatura em contato físico com o objeto sofre 2d8 pontos de dano ígneo quando você conjura a magia. Enquanto a magia durar, você pode executar uma ação Bônus em cada um dos seus turnos subsequentes para causar esse dano novamente, desde que o objeto esteja no alcance da magia.\nSe uma criatura estiver segurando ou usando o objeto e sofrer dano, ela deve ser bem-sucedida em uma salvaguarda de Constituição ou soltar o objeto, se puder. Se não soltar o objeto, ela tem Desvantagem em jogadas de ataque e testes de atributo até o início do seu próximo turno.",
+    "description": "Escolha um objeto de metal fabricado, como uma arma ou uma armadura de metal pesada ou média, à sua vista e no alcance da magia. Você faz com que o objeto brilhe em brasa. Qualquer criatura em contato físico com o objeto sofre 2d8 pontos de dano ígneo quando você conjura a magia. Enquanto a magia durar, você pode executar uma ação Bônus em cada um dos seus turnos subsequentes para causar esse dano novamente, desde que o objeto esteja no alcance da magia.\nSe uma criatura estiver segurando ou usando o objeto e sofrer dano, ela deve ser bem-sucedida em uma salvaguarda de Constituição ou soltar o objeto, se puder. Se não soltar o objeto, ela tem Desvantagem em jogadas de ataque e testes de atributo até o início do seu próximo turno.\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d8 para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Druida"
@@ -813,7 +813,7 @@
     "range": "Toque",
     "components": "V, S, M (um cílio envolto em goma arábica)",
     "duration": "Concentração, até 1 hora",
-    "description": "Uma criatura que você toca tem a condição Invisível até que a magia termine. A magia se encerra antes se o alvo realizar uma jogada de ataque, causar dano ou conjurar uma magia.",
+    "description": "Uma criatura que você toca tem a condição Invisível até que a magia termine. A magia se encerra antes se o alvo realizar uma jogada de ataque, causar dano ou conjurar uma magia.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -846,7 +846,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um galho bifurcado)",
     "duration": "Concentração, até 10 minutos",
-    "description": "Descreva ou nomeie um objeto que você conheça bem. Você descobre a direção e a localização do objeto se ele estiver a até 300 metros de você. Se o objeto estiver se movendo, você sabe em que direção.\nA magia pode localizar um objeto específico que você conheça se você o tiver visto de perto — a até 9 metros — ao menos uma vez. Se preferir, a magia pode localizar o objeto mais próximo de um tipo específico, como um certo tipo de traje, joias, mobília, ferramentas ou armas.",
+    "description": "Descreva ou nomeie um objeto que você conheça bem. Você descobre a direção e a localização do objeto se ele estiver a até 300 metros de você. Se o objeto estiver se movendo, você sabe em que direção.\nA magia pode localizar um objeto específico que você conheça se você o tiver visto de perto — a até 9 metros — ao menos uma vez. Se preferir, a magia pode localizar o objeto mais próximo de um tipo específico, como um certo tipo de traje, joias, mobília, ferramentas ou armas.\nEsta magia não pode localizar um objeto se qualquer espessura de chumbo bloquear um caminho direto entre você e o objeto.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -865,7 +865,7 @@
     "range": "9 metros",
     "components": "V, S, M (um bocado de comida)",
     "duration": "24 horas",
-    "description": "Uma Besta Minúscula à sua escolha à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Carisma, ou ela tenta entregar uma mensagem por você (se o Nível de Desafio do alvo não for 0, ele é automaticamente bem-sucedido). Você especifica um local que visitou e um destinatário que corresponda a uma descrição geral, como \"uma pessoa vestida com o uniforme da guarda da cidade\" ou \"um anão ruivo usando um chapéu pontudo\". Você também comunica uma mensagem de até vinte e cinco palavras. A Fera viaja pela duração da magia em direção ao local especificado, cobrindo cerca de 40 quilômetros a cada 24 horas ou 80 quilômetros se a Fera puder voar.\nQuando a Fera chega, ela entrega sua mensagem à criatura que você descreveu, imitando sua comunicação. Se a Fera não chegar ao seu destino antes que a magia termine, a mensagem é perdida e a Besta retorna para onde você conjurou a magia.",
+    "description": "Uma Besta Minúscula à sua escolha à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Carisma, ou ela tenta entregar uma mensagem por você (se o Nível de Desafio do alvo não for 0, ele é automaticamente bem-sucedido). Você especifica um local que visitou e um destinatário que corresponda a uma descrição geral, como “uma pessoa vestida com o uniforme da guarda da cidade” ou “um anão ruivo usando um chapéu pontudo”. Você também comunica uma mensagem de até vinte e cinco palavras. A Fera viaja pela duração da magia em direção ao local especificado, cobrindo cerca de 40 quilômetros a cada 24 horas ou 80 quilômetros se a Fera puder voar.\nQuando a Fera chega, ela entrega sua mensagem à criatura que você descreveu, imitando sua comunicação. Se a Fera não chegar ao seu destino antes que a magia termine, a mensagem é perdida e a Besta retorna para onde você conjurou a magia.\nUsando um Espaço de Magia de Círculo Superior. A duração da magia aumenta em 48 horas para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Druida",
@@ -881,7 +881,7 @@
     "range": "18 metros",
     "components": "V, S, M (um caco de vidro)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você conjura adagas rodopiantes em um Cubo de 1,5 metro de lado centrado em um ponto no alcance da magia. Cada criatura nessa área sofre 4d4 pontos de dano Cortante. Uma criatura também sofre esse dano se entrar no Cubo, terminar o turno nele ou se o Cubo se mover para o espaço dela. Uma criatura sofre esse dano apenas uma vez por turno.\nNos seus turnos subsequentes, você pode executar uma ação Usar Magia para teleportar o Cubo até 9 metros.",
+    "description": "Você conjura adagas rodopiantes em um Cubo de 1,5 metro de lado centrado em um ponto no alcance da magia. Cada criatura nessa área sofre 4d4 pontos de dano Cortante. Uma criatura também sofre esse dano se entrar no Cubo, terminar o turno nele ou se o Cubo se mover para o espaço dela. Uma criatura sofre esse dano apenas uma vez por turno.\nNos seus turnos subsequentes, você pode executar uma ação Usar Magia para teleportar o Cubo até 9 metros.\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 2d4 para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -898,7 +898,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pedaço reto de ferro)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Escolha um Humanoide à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Paralisado pela duração da magia. No final de cada um dos turnos dele, o alvo realiza uma nova salvaguarda, encerrando a magia em caso de sucesso.",
+    "description": "Escolha um Humanoide à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Paralisado pela duração da magia. No final de cada um dos turnos dele, o alvo realiza uma nova salvaguarda, encerrando a magia em caso de sucesso.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher um Humanoide adicional para cada círculo de espaço de magia acima de 2.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -917,7 +917,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "1 minuto",
-    "description": "Três cópias ilusórias suas aparecem em seu espaço. Até que a magia termine, as cópias se movem com você e imitam suas ações, mudando de posição de forma que seja impossível rastrear qual imagem é a verdadeira.\nCada vez que uma criatura atinge você com uma jogada de ataque pela duração da magia, jogue um d6 para cada uma das cópias restantes. Se qualquer um dos d6s resultar em 3 ou mais, uma das cópias é atingida em seu lugar e é destruída. As cópias ignoram todos os outros danos e efeitos. A magia se encerra quando as três cópias são destruídas.",
+    "description": "Três cópias ilusórias suas aparecem em seu espaço. Até que a magia termine, as cópias se movem com você e imitam suas ações, mudando de posição de forma que seja impossível rastrear qual imagem é a verdadeira.\nCada vez que uma criatura atinge você com uma jogada de ataque pela duração da magia, jogue um d6 para cada uma das cópias restantes. Se qualquer um dos d6s resultar em 3 ou mais, uma das cópias é atingida em seu lugar e é destruída. As cópias ignoram todos os outros danos e efeitos. A magia se encerra quando as três cópias são destruídas.\nUma criatura não é afetada por esta magia se tem a condição Cego, ou se possuir Visão às Cegas ou Visão Verdadeira.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -968,7 +968,7 @@
     "range": "9 metros",
     "components": "V, M (uma gota de mel)",
     "duration": "Concentração, até 8 horas",
-    "description": "Você sugere um curso de ação — descrito em no máximo 25 palavras — para uma criatura à sua vista e no alcance da magia e que possa ouvi-lo e entendê-lo. A sugestão deve parecer razoável e não envolver nada que obviamente cause dano ao alvo ou aos aliados dele. Por exemplo, você poderia dizer: “Pegue a chave do cofre do tesouro do culto e a traga para mim” ou “Pare de lutar, saia desta biblioteca em paz e não volte”.",
+    "description": "Você sugere um curso de ação — descrito em no máximo 25 palavras — para uma criatura à sua vista e no alcance da magia e que possa ouvi-lo e entendê-lo. A sugestão deve parecer razoável e não envolver nada que obviamente cause dano ao alvo ou aos aliados dele. Por exemplo, você poderia dizer: “Pegue a chave do cofre do tesouro do culto e a traga para mim” ou “Pare de lutar, saia desta biblioteca em paz e não volte”.\nO alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia ou até que você ou seus aliados causem dano a ele. O alvo Enfeitiçado executa a sugestão da melhor forma possível. A atividade sugerida pode durar enquanto a magia estiver ativa, mas se puder ser concluída mais rapidamente, a magia se encerra ao finalizá-la.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -985,7 +985,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de talco)",
     "duration": "1 hora",
-    "description": "Pela duração da magia, você vê criaturas e objetos que têm a condição Invisível como se estivessem visíveis e pode ver o Plano Etéreo. Criaturas e objetos nele tem aparência fantasmagórica..",
+    "description": "Pela duração da magia, você vê criaturas e objetos que têm a condição Invisível como se estivessem visíveis e pode ver o Plano Etéreo. Criaturas e objetos nele tem aparência fantasmagórica.\nA magia Vidência ajuda um gnomo Bardo a manter contato com amigos e familiares em todo o mundo.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1017,7 +1017,7 @@
     "range": "1,5 km",
     "components": "V, S, M (um foco no valor de 100 ou mais PO, seja um chifre adornado com joias e usado para escutar, ou um olho de vidro usado para enxergar)",
     "duration": "Concentração, até 10 minutos",
-    "description": "Você cria um sensor Invisível no alcance da magia em um local que lhe seja familiar (um lugar que você já viu ou visitou antes) ou em um local óbvio que não lhe seja familiar (como atrás de uma porta, em uma esquina ou em um bosque). O sensor não pode ser atacado e permanece no lugar pela duração da magia.\nAo conjurar a magia, escolha ver ou ouvir. Você pode usar o sentido escolhido através do sensor como se estivesse em seu espaço. Como uma Ação Bônus, você pode alternar entre ver e ouvir.",
+    "description": "Você cria um sensor Invisível no alcance da magia em um local que lhe seja familiar (um lugar que você já viu ou visitou antes) ou em um local óbvio que não lhe seja familiar (como atrás de uma porta, em uma esquina ou em um bosque). O sensor não pode ser atacado e permanece no lugar pela duração da magia.\nAo conjurar a magia, escolha ver ou ouvir. Você pode usar o sentido escolhido através do sensor como se estivesse em seu espaço. Como uma Ação Bônus, você pode alternar entre ver e ouvir.\nUma criatura que veja o sensor (como uma criatura que se beneficia de Ver o Invisível ou Visão Verdadeira) enxerga uma esfera luminosa do tamanho do seu punho.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1034,7 +1034,7 @@
     "range": "45 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "Esta magia canaliza vitalidade para as plantas. O tempo de conjuração que você usa determina se a magia tem o efeito Crescimento Excessivo ou Fertilização, apresentados a seguir.\nCrescimento Excessivo. Escolha um ponto no alcance da magia. Todas as plantas normais em uma Esfera de 30 metros de raio centrada nesse ponto tornam-se espessas e crescem. Uma criatura que se move por essa área deve gastar 4 metros de deslocamento para cada 1 metro que se move. Você pode anular o efeito em uma ou mais áreas de qualquer tamanho dentro da área da magia.",
+    "description": "Esta magia canaliza vitalidade para as plantas. O tempo de conjuração que você usa determina se a magia tem o efeito Crescimento Excessivo ou Fertilização, apresentados a seguir.\nCrescimento Excessivo. Escolha um ponto no alcance da magia. Todas as plantas normais em uma Esfera de 30 metros de raio centrada nesse ponto tornam-se espessas e crescem. Uma criatura que se move por essa área deve gastar 4 metros de deslocamento para cada 1 metro que se move. Você pode anular o efeito em uma ou mais áreas de qualquer tamanho dentro da área da magia.\nFertilização. Todas as plantas em um raio de 800 metros centradas em um ponto no alcance da magia ficam fertilizadas por 365 dias. As plantas produzem o dobro da quantidade normal de alimento quando colhidas. Elas podem se beneficiar de apenas um Crescimento de Plantas por ano.",
     "classes": [
       "Bardo",
       "Druida",
@@ -1071,7 +1071,7 @@
     "range": "3 metros",
     "components": "V, S, M (um incenso aceso)",
     "duration": "10 minutos",
-    "description": "Você confere uma aparência de vida a um cadáver à sua escolha que esteja no alcance da magia, permitindo que ele responda às perguntas que você fizer. O cadáver precisa ter boca, e a magia falha se a criatura morta era um Morto-Vivo quando pereceu ou se foi o alvo desta magia nos últimos 10 dias.",
+    "description": "Você confere uma aparência de vida a um cadáver à sua escolha que esteja no alcance da magia, permitindo que ele responda às perguntas que você fizer. O cadáver precisa ter boca, e a magia falha se a criatura morta era um Morto-Vivo quando pereceu ou se foi o alvo desta magia nos últimos 10 dias.\nAté que a magia termine, você pode fazer até cinco perguntas ao cadáver. O cadáver sabe apenas o que sabia em vida, incluindo os idiomas que conhecia. As respostas geralmente são breves, enigmáticas ou repetitivas, e o cadáver não tem obrigação de oferecer uma resposta verdadeira se você for hostil a ele ou se ele o reconhecer como um inimigo. Esta magia não devolve a alma da criatura ao corpo dela, apenas o espírito animado. Assim, o cadáver não pode aprender novas informações, não compreende nada do que aconteceu desde que morreu e não pode discorrer sobre eventos futuros.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1087,7 +1087,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "10 minutos",
-    "description": "Você imbuí plantas em uma Emanação imóvel de 9 metros com razão e intelecto limitado, permitindo que elas se comuniquem com você e sigam seus comandos simples. Você pode questionar as plantas sobre eventos na área da magia nas últimas 24 horas, obtendo informações sobre criaturas que passaram, clima e outras circunstâncias.\nAlém disso, você pode transformar Terreno Difícil causado pelo crescimento vegetal (como moitas e vegetação densa) em terreno comum pela duração da magia. Como alternativa, você pode transformar terreno comum onde há plantas em Terreno Difícil, também pela duração da magia.\nA magia não permite que as plantas se desloquem, mas elas podem mover seus galhos, cipós e caules para você.",
+    "description": "Você imbuí plantas em uma Emanação imóvel de 9 metros com razão e intelecto limitado, permitindo que elas se comuniquem com você e sigam seus comandos simples. Você pode questionar as plantas sobre eventos na área da magia nas últimas 24 horas, obtendo informações sobre criaturas que passaram, clima e outras circunstâncias.\nAlém disso, você pode transformar Terreno Difícil causado pelo crescimento vegetal (como moitas e vegetação densa) em terreno comum pela duração da magia. Como alternativa, você pode transformar terreno comum onde há plantas em Terreno Difícil, também pela duração da magia.\nA magia não permite que as plantas se desloquem, mas elas podem mover seus galhos, cipós e caules para você.\nCaso haja uma criatura do tipo Planta na área, você pode se comunicar com ela como se compartilhassem um idioma em comum.",
     "classes": [
       "Bardo",
       "Druida",
@@ -1103,7 +1103,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante em pó no valor de 200 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada ou acionada",
-    "description": "Você inscreve um glifo que mais tarde aciona um efeito mágico. Você o inscreve em uma superfície (como uma mesa ou uma seção de piso no chão) ou dentro de um objeto que pode ser fechado (como um livro ou baú) para ocultar o glifo. O glifo pode cobrir uma área não superior a 3 metros de diâmetro. Se a superfície ou objeto for movido a mais de 3 metros de onde você conjurou esta magia, o glifo é quebrado e a magia encerra sem ser acionada.\nO glifo é quase imperceptível e requer um teste bem-sucedido de Sabedoria (Percepção) contra a CD para evitar sua magia para ser notado.\nQuando inscreve o glifo, você define o gatilho dele e escolhe se ele é uma runa explosiva ou um glifo de magia, conforme explicado abaixo.\nDefina o Gatilho. Você decide o que aciona o glifo quando conjura a magia. Para glifos inscritos em uma superfície, os gatilhos comuns incluem tocar ou pisar no glifo, remover outro objeto que o cubra ou se aproximar a uma certa distância dele. Para glifos inscritos em um objeto, os gatilhos comuns incluem abrir esse objeto ou ver o glifo. Uma vez que um glifo é acionado, esta magia se encerra.\nVocê pode ajustar o gatilho para que apenas criaturas de certos tipos o ativem (por exemplo, o glifo pode ser definido para afetar Aberrações). Você também pode definir condições para criaturas que não acionam o glifo, como aquelas que dizem uma determinada senha.\nRuna Explosiva. Quando acionado, o glifo irrompe com energia mágica em uma Esfera de 6 metros de raio centrada no glifo. Cada criatura na área realiza uma salvaguarda de Destreza. Se falhar, uma criatura sofre 5d8 pontos de dano Ácido, Elétrico, Gélido, Ígneo ou Trovejante (à sua escolha ao criar o glifo), ou metade desse dano em caso de sucesso.\nGlifo de Magia. Você pode armazenar uma magia preparada de 3º círculo ou inferior no glifo, conjurando-a como parte da criação do glifo. A magia deve ter como alvo uma única criatura ou uma área. A magia que está sendo armazenada não tem efeito imediato quando conjurada desse modo.\nQuando o glifo é acionado, a magia armazenada entra em efeito. Se a magia tiver um alvo, ela tem como alvo a criatura que acionou o glifo. Se a magia afetar uma área, a área está centrada nessa criatura. Se a magia invocar criaturas hostis ou criar objetos ou armadilhas prejudiciais, elas aparecem o mais próximo possível do intruso e o atacam. Se a magia exigir Concentração, ela dura até o final da duração total da magia.",
+    "description": "Você inscreve um glifo que mais tarde aciona um efeito mágico. Você o inscreve em uma superfície (como uma mesa ou uma seção de piso no chão) ou dentro de um objeto que pode ser fechado (como um livro ou baú) para ocultar o glifo. O glifo pode cobrir uma área não superior a 3 metros de diâmetro. Se a superfície ou objeto for movido a mais de 3 metros de onde você conjurou esta magia, o glifo é quebrado e a magia encerra sem ser acionada.\nO glifo é quase imperceptível e requer um teste bem-sucedido de Sabedoria (Percepção) contra a CD para evitar sua magia para ser notado.\nQuando inscreve o glifo, você define o gatilho dele e escolhe se ele é uma runa explosiva ou um glifo de magia, conforme explicado abaixo.\nDefina o Gatilho. Você decide o que aciona o glifo quando conjura a magia. Para glifos inscritos em uma superfície, os gatilhos comuns incluem tocar ou pisar no glifo, remover outro objeto que o cubra ou se aproximar a uma certa distância dele. Para glifos inscritos em um objeto, os gatilhos comuns incluem abrir esse objeto ou ver o glifo. Uma vez que um glifo é acionado, esta magia se encerra.\nVocê pode ajustar o gatilho para que apenas criaturas de certos tipos o ativem (por exemplo, o glifo pode ser definido para afetar Aberrações). Você também pode definir condições para criaturas que não acionam o glifo, como aquelas que dizem uma determinada senha.\nRuna Explosiva. Quando acionado, o glifo irrompe com energia mágica em uma Esfera de 6 metros de raio centrada no glifo. Cada criatura na área realiza uma salvaguarda de Destreza. Se falhar, uma criatura sofre 5d8 pontos de dano Ácido, Elétrico, Gélido, Ígneo ou Trovejante (à sua escolha ao criar o glifo), ou metade desse dano em caso de sucesso.\nGlifo de Magia. Você pode armazenar uma magia preparada de 3º círculo ou inferior no glifo, conjurando-a como parte da criação do glifo. A magia deve ter como alvo uma única criatura ou uma área. A magia que está sendo armazenada não tem efeito imediato quando conjurada desse modo.\nQuando o glifo é acionado, a magia armazenada entra em efeito. Se a magia tiver um alvo, ela tem como alvo a criatura que acionou o glifo. Se a magia afetar uma área, a área está centrada nessa criatura. Se a magia invocar criaturas hostis ou criar objetos ou armadilhas prejudiciais, elas aparecem o mais próximo possível do intruso e o atacam. Se a magia exigir Concentração, ela dura até o final da duração total da magia.\nUsando um Espaço de Magia de Círculo Superior. O dano de uma runa explosiva aumenta em 1d8 para cada círculo de espaço de magia acima de 3. Se você criar um glifo de magia, você pode armazenar qualquer magia de até o mesmo círculo que o espaço de magia que você usa para o Glifo de Proteção.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1152,7 +1152,7 @@
     "range": "36 metros",
     "components": "V, S, M (uma gota de melaço)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você altera a passagem do tempo em torno de até seis criaturas à sua escolha em um Cubo de 12 metros de lado no alcance da magia. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou é afetado por esta magia pela sua duração.\nO Deslocamento de um alvo afetado é reduzido pela metade, sofre uma penalidade de -2 em salvaguardas de Destreza e na CA e não pode executar Reações. Nos turnos do alvo, ele pode executar uma ação ou uma Ação Bônus, não ambas, e pode realizar apenas um ataque se executar a ação Atacar. Se conjurar uma magia com um componente Somático, há uma chance de 25% da magia falhar como resultado do alvo fazer os gestos da magia muito lentamente.",
+    "description": "Você altera a passagem do tempo em torno de até seis criaturas à sua escolha em um Cubo de 12 metros de lado no alcance da magia. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou é afetado por esta magia pela sua duração.\nO Deslocamento de um alvo afetado é reduzido pela metade, sofre uma penalidade de -2 em salvaguardas de Destreza e na CA e não pode executar Reações. Nos turnos do alvo, ele pode executar uma ação ou uma Ação Bônus, não ambas, e pode realizar apenas um ataque se executar a ação Atacar. Se conjurar uma magia com um componente Somático, há uma chance de 25% da magia falhar como resultado do alvo fazer os gestos da magia muito lentamente.\nUm alvo afetado repete a salvaguarda no final de cada um dos turnos dele, encerrando a magia em caso de sucesso.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1186,7 +1186,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pena branca)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Cada criatura em um Cone de 9 metros deve ser bem-sucedida em uma salvaguarda de Sabedoria ou larga o que estiver segurando e tem a condição Amedrontado pela duração da magia.",
+    "description": "Cada criatura em um Cone de 9 metros deve ser bem-sucedida em uma salvaguarda de Sabedoria ou larga o que estiver segurando e tem a condição Amedrontado pela duração da magia.\nUma criatura Amedrontada executa a ação Correr e se afasta de você pela rota mais segura em cada um dos turnos dela, a menos que não haja para onde se mover. Se a criatura encerrar o turno dela em um espaço onde não tenha linha de visão para você, a criatura realiza uma salvaguarda de Sabedoria. Em caso de sucesso, a magia encerra naquela criatura.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1203,7 +1203,7 @@
     "range": "27 metros",
     "components": "V, S, M (um ovo podre)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você cria uma Esfera de 6 metros de raio de gás amarelo nauseante centrada em um ponto no alcance da magia. A nuvem é Totalmente Obscurecida. A nuvem permanece no ar pela duração da magia ou até que um vento forte (como o criado por Lufada de Vento) a disperse.",
+    "description": "Você cria uma Esfera de 6 metros de raio de gás amarelo nauseante centrada em um ponto no alcance da magia. A nuvem é Totalmente Obscurecida. A nuvem permanece no ar pela duração da magia ou até que um vento forte (como o criado por Lufada de Vento) a disperse.\nCada criatura que começa seu turno na Esfera deve ser bem-sucedida em uma salvaguarda de Constituição ou tem a condição Envenenado até o final do turno atual. Enquanto Envenenada desse modo, a criatura não pode executar uma ação ou uma Ação Bônus.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1219,7 +1219,7 @@
     "range": "36 metros",
     "components": "S, M (uma pitada de confete)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você cria um padrão distorcido de cores em um cubo de 9 metros de lado no alcance da magia. O padrão aparece por um momento e desaparece. Cada criatura na área, que pode ver o padrão, deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração. Enquanto Enfeitiçado, a criatura tem a condição Incapacitado e Deslocamento 0.",
+    "description": "Você cria um padrão distorcido de cores em um cubo de 9 metros de lado no alcance da magia. O padrão aparece por um momento e desaparece. Cada criatura na área, que pode ver o padrão, deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração. Enquanto Enfeitiçado, a criatura tem a condição Incapacitado e Deslocamento 0.\nA magia se encerra para uma criatura afetada se ela sofrer algum dano ou se outra pessoa executar uma ação para sacudi-la, removendo-a de seu estupor.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1236,7 +1236,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Até seis criaturas à sua escolha, à sua vista e no alcance da magia, recuperam Pontos de Vida iguais a 2d4 mais o seu modificador de atributo de conjuração.",
+    "description": "Até seis criaturas à sua escolha, à sua vista e no alcance da magia, recuperam Pontos de Vida iguais a 2d4 mais o seu modificador de atributo de conjuração.\nUsando um Espaço de Magia de Círculo Superior. A cura aumenta em 1d4 para cada círculo de espaço de magia acima de 3.",
     "classes": [
       "Bardo",
       "Clérigo"
@@ -1251,7 +1251,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma conta de cristal)",
     "duration": "8 horas",
-    "description": "Uma Emanação de 3 metros surge ao seu redor e permanece estacionária pela duração. A magia falha quando você a conjura se a Emanação não for grande o suficiente para envolver totalmente todas as criaturas em sua área.\nCriaturas e objetos dentro da Emanação quando você conjura a magia podem se mover livremente através dela. Todas as outras criaturas e objetos são impedidos de atravessá-la. Magias de 3º círculo ou inferior não podem ser conjuradas através dela, e os efeitos dessas magias não podem se estender para dentro dela.\nA atmosfera no interior da Emanação é confortável e seca, independentemente do clima externo. Até que a magia termine, você pode determinar se no interior há Meia-luz ou Escuridão (nenhuma ação é necessária). A Emanação é opaca por fora e de qualquer cor que você escolher, mas é transparente por dentro.",
+    "description": "Uma Emanação de 3 metros surge ao seu redor e permanece estacionária pela duração. A magia falha quando você a conjura se a Emanação não for grande o suficiente para envolver totalmente todas as criaturas em sua área.\nCriaturas e objetos dentro da Emanação quando você conjura a magia podem se mover livremente através dela. Todas as outras criaturas e objetos são impedidos de atravessá-la. Magias de 3º círculo ou inferior não podem ser conjuradas através dela, e os efeitos dessas magias não podem se estender para dentro dela.\nA atmosfera no interior da Emanação é confortável e seca, independentemente do clima externo. Até que a magia termine, você pode determinar se no interior há Meia-luz ou Escuridão (nenhuma ação é necessária). A Emanação é opaca por fora e de qualquer cor que você escolher, mas é transparente por dentro.\nA magia encerra se você sair da Emanação ou se a conjurar novamente.",
     "classes": [
       "Bardo",
       "Mago"
@@ -1266,7 +1266,7 @@
     "range": "Ilimitado",
     "components": "V, S, M (um fio de cobre)",
     "duration": "Instantânea",
-    "description": "Você envia uma mensagem curta de 25 palavras ou menos para uma criatura que você já encontrou ou que foi descrita a você por alguém que a tenha conhecido. O alvo ouve a mensagem na mente, reconhece você como remetente se o conhecer e pode responder da mesma forma imediatamente. A magia permite que o alvo compreenda o significado da sua mensagem.\nVocê pode enviar a mensagem através de qualquer distância e até para outros planos de existência, mas se o alvo estiver em um plano diferente do seu, há uma chance de 5% de que a mensagem não chegue. Você sabe se a entrega falha.",
+    "description": "Você envia uma mensagem curta de 25 palavras ou menos para uma criatura que você já encontrou ou que foi descrita a você por alguém que a tenha conhecido. O alvo ouve a mensagem na mente, reconhece você como remetente se o conhecer e pode responder da mesma forma imediatamente. A magia permite que o alvo compreenda o significado da sua mensagem.\nVocê pode enviar a mensagem através de qualquer distância e até para outros planos de existência, mas se o alvo estiver em um plano diferente do seu, há uma chance de 5% de que a mensagem não chegue. Você sabe se a entrega falha.\nAo receber sua mensagem, a criatura pode bloquear sua capacidade de contactá-la novamente com essa magia por 8 horas. Se você tentar enviar outra mensagem durante esse período, descobre que está bloqueado e a magia falha.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1298,7 +1298,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pitada de terra de cemitério)",
     "duration": "1 hora",
-    "description": "Você toca uma criatura voluntária e a coloca em um estado cataléptico que é indistinguível da morte.\nPela duração da magia, o alvo parece morto em uma inspeção externa e para magias usadas para determinar a situação do alvo. O alvo está com as condições Cego e Incapacitado, e o Deslocamento dele é 0.",
+    "description": "Você toca uma criatura voluntária e a coloca em um estado cataléptico que é indistinguível da morte.\nPela duração da magia, o alvo parece morto em uma inspeção externa e para magias usadas para determinar a situação do alvo. O alvo está com as condições Cego e Incapacitado, e o Deslocamento dele é 0.\nO alvo também tem Resistência a todos os tipos de dano, exceto dano Psíquico, e tem Imunidade à condição Envenenado.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1315,7 +1315,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você entra nos pesadelos de uma criatura à sua vista e no alcance da magia e cria uma ilusão dos medos mais profundos dela, visíveis apenas para essa criatura. O alvo realiza uma salvaguarda de Sabedoria. Se falhar, o alvo sofre 4d10 pontos de dano Psíquico e tem Desvantagem em testes de atributo e jogadas de ataque pela duração da magia. Em caso de sucesso, o alvo sofre metade do dano e a magia encerra.\nPela duração da magia, o alvo realiza uma salvaguarda de Sabedoria no final de cada um dos turnos dele. Se falhar, sofre dano Psíquico novamente. Em caso de sucesso, a magia encerra.",
+    "description": "Você entra nos pesadelos de uma criatura à sua vista e no alcance da magia e cria uma ilusão dos medos mais profundos dela, visíveis apenas para essa criatura. O alvo realiza uma salvaguarda de Sabedoria. Se falhar, o alvo sofre 4d10 pontos de dano Psíquico e tem Desvantagem em testes de atributo e jogadas de ataque pela duração da magia. Em caso de sucesso, o alvo sofre metade do dano e a magia encerra.\nPela duração da magia, o alvo realiza uma salvaguarda de Sabedoria no final de cada um dos turnos dele. Se falhar, sofre dano Psíquico novamente. Em caso de sucesso, a magia encerra.\nUsando um Espaço de Magia de Círculo Superior. O dano aumenta em 1d10 para cada círculo de espaço de magia acima de 4.",
     "classes": [
       "Bardo",
       "Mago"
@@ -1330,7 +1330,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Cada criatura à sua escolha à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado até que a magia termine.",
+    "description": "Cada criatura à sua escolha à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado até que a magia termine.\nPela duração da magia, você pode executar uma Ação Bônus para designar uma direção que seja horizontal para você. Cada alvo Enfeitiçado deve usar o máximo possível do movimento dele para se mover nessa direção no turno dele, seguindo o caminho mais seguro. Após se mover desse modo, um alvo repete a salvaguarda, encerrando a magia em caso de sucesso.",
     "classes": [
       "Bardo"
     ]
@@ -1361,7 +1361,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "Uma criatura à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Ela tem Vantagem se você ou seus aliados estiverem lutando contra ela. Se falhar, o alvo tem a condição Enfeitiçado até que a magia termine ou até que você ou seus aliados causem dano a ele. A criatura Enfeitiçada é Amigável a você. Quando a magia termina, o alvo sabe que foi Enfeitiçado por você.",
+    "description": "Uma criatura à sua vista e no alcance da magia realiza uma salvaguarda de Sabedoria. Ela tem Vantagem se você ou seus aliados estiverem lutando contra ela. Se falhar, o alvo tem a condição Enfeitiçado até que a magia termine ou até que você ou seus aliados causem dano a ele. A criatura Enfeitiçada é Amigável a você. Quando a magia termina, o alvo sabe que foi Enfeitiçado por você.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 4.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1379,7 +1379,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 10 minutos",
-    "description": "Uma luz fria envolve seu corpo pela duração da magia, emitindo Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros.\nAté que a magia termine, você tem Resistência a dano Radiante e seus ataques corpo a corpo causam 2d6 pontos de dano Radiante adicionais em caso de acerto.",
+    "description": "Uma luz fria envolve seu corpo pela duração da magia, emitindo Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros.\nAté que a magia termine, você tem Resistência a dano Radiante e seus ataques corpo a corpo causam 2d6 pontos de dano Radiante adicionais em caso de acerto.\nAlém disso, imediatamente após sofrer dano de uma criatura à sua vista a até 18 metros de si, você pode executar uma Reação para forçar a criatura a realizar uma salvaguarda de Constituição. Se falhar, a criatura tem a condição Cego até o final do seu próximo turno.\nUm Aasimar Bruxo expõe inimigos à Fome de Hadar, que tudo consome.",
     "classes": [
       "Bardo",
       "Druida"
@@ -1410,7 +1410,7 @@
     "range": "Pessoal",
     "components": "V, S, M (pelo de um cão de caça)",
     "duration": "Concentração, até 1 hora",
-    "description": "Descreva ou nomeie uma criatura que você conheça bem. Você descobre a direção e a localização da criatura se ela estiver a até 300 metros de distância. Se a criatura estiver se movendo, você sabe em que direção.\nA magia pode localizar uma criatura específica que você conheça ou a criatura mais próxima de um tipo específico (como um humano ou um unicórnio) se você tiver visto tal criatura de perto — a até 9 metros — ao menos uma vez. Se a criatura que você descreveu ou nomeou estiver em uma forma diferente, como sob os efeitos de uma magia De Carne para Pedra ou Polimorfia, esta magia não localiza a criatura.",
+    "description": "Descreva ou nomeie uma criatura que você conheça bem. Você descobre a direção e a localização da criatura se ela estiver a até 300 metros de distância. Se a criatura estiver se movendo, você sabe em que direção.\nA magia pode localizar uma criatura específica que você conheça ou a criatura mais próxima de um tipo específico (como um humano ou um unicórnio) se você tiver visto tal criatura de perto — a até 9 metros — ao menos uma vez. Se a criatura que você descreveu ou nomeou estiver em uma forma diferente, como sob os efeitos de uma magia De Carne para Pedra ou Polimorfia, esta magia não localiza a criatura.\nEsta magia não pode localizar uma criatura se qualquer espessura de chumbo bloquear um caminho direto entre você e a criatura.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1429,7 +1429,7 @@
     "range": "Toque",
     "components": "V, S, M (uma alça de couro)",
     "duration": "1 hora",
-    "description": "Você toca uma criatura voluntária. Pela duração da magia, o movimento do alvo não é afetado por Terreno Difícil, e magias e outros efeitos mágicos não podem reduzir o Deslocamento do alvo nem fazer com que ele tenha as condições Contido ou Paralisado. O alvo também tem um Deslocamento de Natação igual ao Deslocamento de caminhada.\nAlém disso, o alvo pode gastar 1,5 metro de movimento para escapar automaticamente de restrições não mágicas, como grilhões ou uma criatura impondo a condição Imobilizado.",
+    "description": "Você toca uma criatura voluntária. Pela duração da magia, o movimento do alvo não é afetado por Terreno Difícil, e magias e outros efeitos mágicos não podem reduzir o Deslocamento do alvo nem fazer com que ele tenha as condições Contido ou Paralisado. O alvo também tem um Deslocamento de Natação igual ao Deslocamento de caminhada.\nAlém disso, o alvo pode gastar 1,5 metro de movimento para escapar automaticamente de restrições não mágicas, como grilhões ou uma criatura impondo a condição Imobilizado.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 4.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1463,7 +1463,7 @@
     "range": "150 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Você se teleporta para um local no alcance da magia. Você chega exatamente ao local desejado. Pode ser um lugar que você pode ver, um que você pode visualizar ou um que você pode descrever indicando distância e direção, como “60 metros para baixo” ou “90 metros para cima em direção ao noroeste em um ângulo de 45 graus”.\nVocê também pode teleportar uma criatura voluntária. A criatura deve estar a até 1,5 metro de você quando você se teleporta, e ela se teleporta para um espaço a até 1,5 metro do seu espaço de destino.",
+    "description": "Você se teleporta para um local no alcance da magia. Você chega exatamente ao local desejado. Pode ser um lugar que você pode ver, um que você pode visualizar ou um que você pode descrever indicando distância e direção, como “60 metros para baixo” ou “90 metros para cima em direção ao noroeste em um ângulo de 45 graus”.\nVocê também pode teleportar uma criatura voluntária. A criatura deve estar a até 1,5 metro de você quando você se teleporta, e ela se teleporta para um espaço a até 1,5 metro do seu espaço de destino.\nSe você, a outra criatura ou ambas chegarem a um espaço ocupado por uma criatura, ou completamente preenchido por um ou mais objetos, você e qualquer criatura viajando com você sofre 4d6 pontos de dano Energético, e o teleporte falha.\nOtto, o Bardo, conjura Portal para abrir um portal para as Terras Além.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1480,7 +1480,7 @@
     "range": "90 metros",
     "components": "V, S, M (um cogumelo)",
     "duration": "24 horas",
-    "description": "Você cria um terreno natural em um cubo de 45 metros de comprimento que possui a aparência, o som e o cheiro de outro tipo de terreno natural. Assim, campos abertos ou uma estrada podem ser moldados para se assemelhar a um pântano, colina, fenda ou algum outro terreno difícil ou intransitável. Uma lagoa pode ser formada para parecer um prado verdejante, um precipício como uma encosta suave ou um barranco pedregoso como uma estrada larga e plana. Criaturas, estruturas e equipamentos manufaturados dentro da área não são alterados.",
+    "description": "Você cria um terreno natural em um cubo de 45 metros de comprimento que possui a aparência, o som e o cheiro de outro tipo de terreno natural. Assim, campos abertos ou uma estrada podem ser moldados para se assemelhar a um pântano, colina, fenda ou algum outro terreno difícil ou intransitável. Uma lagoa pode ser formada para parecer um prado verdejante, um precipício como uma encosta suave ou um barranco pedregoso como uma estrada larga e plana. Criaturas, estruturas e equipamentos manufaturados dentro da área não são alterados.\nAs características táteis do terreno permanecem inalteradas, portanto, é provável que as criaturas que entram na área percebam a ilusão. Se a diferença não for evidente ao toque, uma criatura que examina a ilusão pode executar a ação Analisar para realizar um teste de Inteligência (Investigação) contra a CD para evitar sua magia, a fim de não acreditar nela. Se uma criatura perceber que o terreno é ilusório, ela vê uma imagem vaga sobreposta ao terreno real.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1513,7 +1513,7 @@
     "range": "3 metros",
     "components": "V, M (tintas raras no valor de 50 ou mais PO, que a magia consome)",
     "duration": "1 rodada",
-    "description": "Ao conjurar a magia, você desenha um círculo de 1,5 metro de raio no chão inscrito com símbolos que ligam sua localização a um círculo de teleporte permanente à sua escolha, cuja sequência de símbolos você conhece e que está no mesmo plano de existência que você. Um portal cintilante se abre dentro do círculo que você desenhou e permanece aberto até o final do seu próximo turno. Qualquer criatura que entre no portal aparece instantaneamente a 1,5 metro do círculo de destino ou no espaço desocupado mais próximo, se esse espaço estiver ocupado.\nMuitos dos principais templos, guildas e outros lugares importantes têm círculos de teleporte permanentes. Cada círculo inclui uma sequência de símbolos única — uma sequência de runas dispostas em um determinado padrão.\nAo adquirir a capacidade de conjurar essa magia pela primeira vez, você aprende as sequências de símbolos para dois destinos no Plano Material, escolhidos pelo Mestre. Durante suas aventuras, é possível aprender sequências adicionais. Você pode memorizar um novo símbolo após estudá-lo por 1 minuto.",
+    "description": "Ao conjurar a magia, você desenha um círculo de 1,5 metro de raio no chão inscrito com símbolos que ligam sua localização a um círculo de teleporte permanente à sua escolha, cuja sequência de símbolos você conhece e que está no mesmo plano de existência que você. Um portal cintilante se abre dentro do círculo que você desenhou e permanece aberto até o final do seu próximo turno. Qualquer criatura que entre no portal aparece instantaneamente a 1,5 metro do círculo de destino ou no espaço desocupado mais próximo, se esse espaço estiver ocupado.\nMuitos dos principais templos, guildas e outros lugares importantes têm círculos de teleporte permanentes. Cada círculo inclui uma sequência de símbolos única — uma sequência de runas dispostas em um determinado padrão.\nAo adquirir a capacidade de conjurar essa magia pela primeira vez, você aprende as sequências de símbolos para dois destinos no Plano Material, escolhidos pelo Mestre. Durante suas aventuras, é possível aprender sequências adicionais. Você pode memorizar um novo símbolo após estudá-lo por 1 minuto.\nVocê pode criar um círculo de teleporte permanente conjurando essa magia no mesmo local todos os dias por 365 dias.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1545,7 +1545,7 @@
     "range": "Pessoal",
     "components": "S",
     "duration": "Concentração, até 1 hora",
-    "description": "Você tem a condição Invisível ao mesmo tempo que uma cópia ilusória sua aparece onde você está. A cópia permanece pela duração da magia, mas a invisibilidade termina imediatamente após você realizar uma jogada de ataque, causar dano ou conjurar uma magia.\nCom uma ação Usar Magia, você pode mover a cópia ilusória até duas vezes o seu Deslocamento e fazer com que ela gesticule, fale e se comporte da forma que você desejar. Ela é intangível e invulnerável.",
+    "description": "Você tem a condição Invisível ao mesmo tempo que uma cópia ilusória sua aparece onde você está. A cópia permanece pela duração da magia, mas a invisibilidade termina imediatamente após você realizar uma jogada de ataque, causar dano ou conjurar uma magia.\nCom uma ação Usar Magia, você pode mover a cópia ilusória até duas vezes o seu Deslocamento e fazer com que ela gesticule, fale e se comporte da forma que você desejar. Ela é intangível e invulnerável.\nVocê pode ver através dos olhos dela e ouvir pelos ouvidos dela, como se estivesse onde ela está.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1561,7 +1561,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Um humanoide à sua vista e no alcance da magia deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo tem Vantagem na salvaguarda se você ou seus aliados estiverem lutando contra ele. Sempre que o alvo sofre dano, ele repete a salvaguarda, encerrando a magia em caso de sucesso.\nVocê tem um vínculo telepático com o alvo Enfeitiçado enquanto vocês dois estão no mesmo plano de existência. No seu turno, você pode usar este vínculo para emitir comandos para o alvo (nenhuma ação é necessária), como “Ataque essa criatura”, “Mova-se para lá” ou “Busque aquele objeto”. O alvo faz o possível para obedecer no turno dele. Se ele concluir um pedido e não receber mais instruções de você, ele age e se move como quiser, concentrando-se em se proteger.\nVocê pode ordenar o alvo a executar uma Reação, mas deve executar sua própria Reação para tanto.",
+    "description": "Um humanoide à sua vista e no alcance da magia deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo tem Vantagem na salvaguarda se você ou seus aliados estiverem lutando contra ele. Sempre que o alvo sofre dano, ele repete a salvaguarda, encerrando a magia em caso de sucesso.\nVocê tem um vínculo telepático com o alvo Enfeitiçado enquanto vocês dois estão no mesmo plano de existência. No seu turno, você pode usar este vínculo para emitir comandos para o alvo (nenhuma ação é necessária), como “Ataque essa criatura”, “Mova-se para lá” ou “Busque aquele objeto”. O alvo faz o possível para obedecer no turno dele. Se ele concluir um pedido e não receber mais instruções de você, ele age e se move como quiser, concentrando-se em se proteger.\nVocê pode ordenar o alvo a executar uma Reação, mas deve executar sua própria Reação para tanto.\nUsando um Espaço de Magia de Círculo Superior. Sua Concentração pode durar mais com um espaço de magia de 6º círculo (até 10 minutos), 7º círculo (até 1 hora) ou 8º círculo ou superior (até 8 horas).",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1577,7 +1577,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "Você faz com que a energia psíquica entre em erupção em um ponto no alcance da magia. Cada criatura em uma Esfera de 6 metros de raio centrada nesse ponto realiza uma salvaguarda de Inteligência, sofrendo 8d6 pontos de dano Psíquico se falhar, ou metade desse dano em caso de sucesso.",
+    "description": "Você faz com que a energia psíquica entre em erupção em um ponto no alcance da magia. Cada criatura em uma Esfera de 6 metros de raio centrada nesse ponto realiza uma salvaguarda de Inteligência, sofrendo 8d6 pontos de dano Psíquico se falhar, ou metade desse dano em caso de sucesso.\nSe falhar, um alvo também tem pensamentos confusos por 1 minuto. Durante esse tempo, ele subtrai 1d6 de todas as suas jogadas de ataque e testes de atributo, bem como quaisquer salvaguardas de Constituição para manter a Concentração. A criatura realiza uma salvaguarda de Inteligência no final de cada um dos turnos dela, encerrando o efeito sobre si em caso de sucesso.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1594,7 +1594,7 @@
     "range": "Pessoal",
     "components": "V, S, M (incenso no valor de 250 ou mais PO, que a magia consome, e quatro tiras de marfim no valor de 50 ou mais PO cada)",
     "duration": "Instantânea",
-    "description": "Nomeie ou descreva uma pessoa, lugar ou objeto famoso. A magia traz à sua mente um breve resumo do conhecimento significativo sobre essa coisa famosa, conforme descrito pelo Mestre.",
+    "description": "Nomeie ou descreva uma pessoa, lugar ou objeto famoso. A magia traz à sua mente um breve resumo do conhecimento significativo sobre essa coisa famosa, conforme descrito pelo Mestre.\nO conhecimento pode incluir detalhes significativos, revelações intrigantes ou até mesmo informações secretas que nunca foram amplamente divulgadas. Quanto mais você já sabe sobre o assunto, mais precisas e detalhadas se tornam as informações que recebe. Essas informações são exatas, mas podem ser expressas em linguagem figurada ou poesia, conforme determinado pelo Mestre. Se a coisa famosa que você escolheu não for realmente famosa, você ouve notas musicais tristes tocadas em um trombone, e a magia falha.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1610,7 +1610,7 @@
     "range": "9 metros",
     "components": "V, S, M (dois ovos)",
     "duration": "1 hora",
-    "description": "Você cria uma ligação telepática entre até oito criaturas voluntárias à sua escolha no alcance da magia, vinculando psiquicamente cada criatura a todas as outras pela duração da magia. Criaturas que não podem se comunicar em nenhum idioma não são afetadas por esta magia.",
+    "description": "Você cria uma ligação telepática entre até oito criaturas voluntárias à sua escolha no alcance da magia, vinculando psiquicamente cada criatura a todas as outras pela duração da magia. Criaturas que não podem se comunicar em nenhum idioma não são afetadas por esta magia.\nAté que a magia termine, os alvos podem se comunicar telepaticamente através da ligação, mesmo que não compartilhem um idioma. A comunicação é possível a qualquer distância, embora não possa se estender para outros planos de existência.",
     "classes": [
       "Bardo",
       "Mago"
@@ -1625,7 +1625,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "30 dias",
-    "description": "Você dá um comando verbal a uma criatura à sua vista no alcance da magia, ordenando que ela realize algum serviço ou não realize uma ação ou um curso de atividade conforme você decidir. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo é bem-sucedido automaticamente se não conseguir entender seu comando.\nEnquanto Enfeitiçada, a criatura sofre 5d10 pontos de dano Psíquico se agir de maneira diretamente contrária ao seu comando. Ela não sofre esse dano mais do que uma vez por dia.\nVocê pode dar qualquer comando à sua escolha, exceto uma atividade que resultaria em morte certa. Se você der um comando suicida, a magia se encerra.\nUma magia Desejo, Remover Maldição ou Restauração Maior encerra esta magia.",
+    "description": "Você dá um comando verbal a uma criatura à sua vista no alcance da magia, ordenando que ela realize algum serviço ou não realize uma ação ou um curso de atividade conforme você decidir. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo é bem-sucedido automaticamente se não conseguir entender seu comando.\nEnquanto Enfeitiçada, a criatura sofre 5d10 pontos de dano Psíquico se agir de maneira diretamente contrária ao seu comando. Ela não sofre esse dano mais do que uma vez por dia.\nVocê pode dar qualquer comando à sua escolha, exceto uma atividade que resultaria em morte certa. Se você der um comando suicida, a magia se encerra.\nUma magia Desejo, Remover Maldição ou Restauração Maior encerra esta magia.\nUsando um Espaço de Magia de Círculo Superior. Se você usar um espaço de magia de 7º ou 8º círculo, a duração é de 365 dias. Se você usar um espaço de magia de 9º círculo, a magia dura até que seja encerrada por uma das magias mencionadas acima.\nUm Mago humano afasta o perigo com a Armadura Arcana e os raios infalíveis dos Mísseis Mágicos.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1658,7 +1658,7 @@
     "range": "27 metros",
     "components": "V, S, M (um pedaço reto de ferro)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Escolha uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Paralisado pela duração da magia. No final de cada um dos turnos do alvo, ele realiza uma nova salvaguarda, encerrando a magia em caso de sucesso.",
+    "description": "Escolha uma criatura à sua vista e no alcance da magia. O alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Paralisado pela duração da magia. No final de cada um dos turnos do alvo, ele realiza uma nova salvaguarda, encerrando a magia em caso de sucesso.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher uma criatura adicional para cada círculo de espaço de magia acima de 5.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1708,7 +1708,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 500 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "Com um toque, você revive uma criatura morta, se tiver falecido há no máximo 10 dias e não era um Morto-Vivo quando morreu.\nA criatura retorna à vida com 1 Ponto de Vida. Esta magia também neutraliza quaisquer venenos que afetavam a criatura no momento da morte.\nEsta magia fecha todas as feridas fatais, mas não restaura membros ou partes do corpo faltantes. Se a criatura estiver sem partes do corpo ou órgãos essenciais para sua sobrevivência — como a cabeça, por exemplo — a magia falha automaticamente.",
+    "description": "Com um toque, você revive uma criatura morta, se tiver falecido há no máximo 10 dias e não era um Morto-Vivo quando morreu.\nA criatura retorna à vida com 1 Ponto de Vida. Esta magia também neutraliza quaisquer venenos que afetavam a criatura no momento da morte.\nEsta magia fecha todas as feridas fatais, mas não restaura membros ou partes do corpo faltantes. Se a criatura estiver sem partes do corpo ou órgãos essenciais para sua sobrevivência — como a cabeça, por exemplo — a magia falha automaticamente.\nVoltar à vida é um processo difícil. O alvo sofre uma penalidade de -4 em Testes de D20. Sempre que o alvo completar um Descanso Longo, a penalidade é reduzida em 1 até se tornar 0.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1724,7 +1724,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "8 horas",
-    "description": "Você dá uma aparência ilusória a cada criatura à sua escolha à sua vista e no alcance da magia. Um alvo involuntário pode realizar uma salvaguarda de Carisma e, se for bem-sucedido, não é afetado por esta magia.\nVocê pode dar a mesma aparência ou aparências diferentes aos alvos. A magia pode alterar a aparência dos corpos e equipamentos dos alvos, fazendo com que cada criatura pareça até 30 centímetros mais alta ou mais baixa e mais pesada ou mais leve. A nova aparência deve manter os aspectos básicos de membros do corpo do alvo, mas o restante da ilusão fica a seu critério. Os efeitos permanecem pela duração da magia.\nAs mudanças causadas por esta magia falham mediante uma inspeção física. Por exemplo, se você usar a magia para adicionar um chapéu ao traje de uma criatura, objetos passam através do chapéu.",
+    "description": "Você dá uma aparência ilusória a cada criatura à sua escolha à sua vista e no alcance da magia. Um alvo involuntário pode realizar uma salvaguarda de Carisma e, se for bem-sucedido, não é afetado por esta magia.\nVocê pode dar a mesma aparência ou aparências diferentes aos alvos. A magia pode alterar a aparência dos corpos e equipamentos dos alvos, fazendo com que cada criatura pareça até 30 centímetros mais alta ou mais baixa e mais pesada ou mais leve. A nova aparência deve manter os aspectos básicos de membros do corpo do alvo, mas o restante da ilusão fica a seu critério. Os efeitos permanecem pela duração da magia.\nAs mudanças causadas por esta magia falham mediante uma inspeção física. Por exemplo, se você usar a magia para adicionar um chapéu ao traje de uma criatura, objetos passam através do chapéu.\nUma criatura que executa a ação Analisar para examinar um alvo pode realizar um teste de Inteligência (Investigação) contra a CD para evitar sua magia. Em caso de sucesso, a criatura percebe que o alvo está disfarçado.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1740,7 +1740,7 @@
     "range": "Especial",
     "components": "V, S, M (um punhado de areia)",
     "duration": "8 horas",
-    "description": "Você tem como alvo uma criatura que você conhece no mesmo plano de existência. Você ou uma criatura voluntária que você toca entra em um estado de transe para agir como um mensageiro dos sonhos. Enquanto estiver em transe, o mensageiro está Incapacitado e tem Deslocamento 0.\nSe o alvo estiver dormindo, o mensageiro aparece nos sonhos do alvo e pode conversar com ele enquanto ele permanecer dormindo, pela duração da magia. O mensageiro também pode moldar o ambiente do sonho, criando paisagens, objetos e outras imagens. O mensageiro pode emergir do transe a qualquer momento, encerrando a magia. O alvo se lembra do sonho perfeitamente ao acordar.\nSe o alvo estiver acordado quando você conjurar a magia, o mensageiro sabe disso e pode encerrar o transe (e a magia) ou esperar que o alvo durma, momento em que o mensageiro entra nos sonhos do alvo.",
+    "description": "Você tem como alvo uma criatura que você conhece no mesmo plano de existência. Você ou uma criatura voluntária que você toca entra em um estado de transe para agir como um mensageiro dos sonhos. Enquanto estiver em transe, o mensageiro está Incapacitado e tem Deslocamento 0.\nSe o alvo estiver dormindo, o mensageiro aparece nos sonhos do alvo e pode conversar com ele enquanto ele permanecer dormindo, pela duração da magia. O mensageiro também pode moldar o ambiente do sonho, criando paisagens, objetos e outras imagens. O mensageiro pode emergir do transe a qualquer momento, encerrando a magia. O alvo se lembra do sonho perfeitamente ao acordar.\nSe o alvo estiver acordado quando você conjurar a magia, o mensageiro sabe disso e pode encerrar o transe (e a magia) ou esperar que o alvo durma, momento em que o mensageiro entra nos sonhos do alvo.\nVocê pode tornar o mensageiro aterrorizante para o alvo. Se você fizer isso, o mensageiro pode entregar uma mensagem de no máximo dez palavras e, em seguida, o alvo realiza uma salvaguarda de Sabedoria. Se falhar, o alvo não recebe nenhum benefício do descanso e sofre 3d6 pontos de dano Psíquico quando acordar.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1792,7 +1792,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ele compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.\nObjetos Animados\nConstruto Grande ou Menor, Sem Alinhamento\nCA 15\nPV 10 (Médio ou menor), 20 (Grande), 40 (Enorme)\nDeslocamento 9 m\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n10\n+0\n+0\nInt\n3\n-4\n-4\nSab\n3\n-4\n-4\nCar\n1\n-5\n-5\nImunidades Psíquico, Venenoso; Amedrontado, Enfeitiçado, Envenenado, Exaustão, Paralisado\nSentidos Visão às Cegas 9 m, Percepção Passiva 6\nIdiomas Compreende os idiomas que você conhece\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nAções",
+    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ela compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1808,7 +1808,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma tigela incrustada de pedras preciosas no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "Você conjura um banquete que aparece em uma superfície em um Cubo desocupado de 3 metros de lado próximo a você. O banquete leva 1 hora para ser consumido e desaparece no final dessa duração, e os efeitos benéficos não aparecem até que essa hora passe. Até doze criaturas podem participar do banquete.",
+    "description": "Você conjura um banquete que aparece em uma superfície em um Cubo desocupado de 3 metros de lado próximo a você. O banquete leva 1 hora para ser consumido e desaparece no final dessa duração, e os efeitos benéficos não aparecem até que essa hora passe. Até doze criaturas podem participar do banquete.\nUma criatura que partilha do banquete recebe vários benefícios, que duram 24 horas. A criatura tem Resistência a dano Venenoso e Imunidade às condições Amedrontado e Envenenado. Seus Pontos de Vida máximos também aumentam em 2d10 e recebe o mesmo valor de Pontos de Vida.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1824,7 +1824,7 @@
     "range": "9 metros",
     "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": "Uma criatura à sua vista e no alcance da magia deve realizar uma salvaguarda de Sabedoria. Em caso de sucesso, o alvo dança comicamente até o final do próximo turno dele, durante o qual ele deve gastar todo o movimento para dançar no mesmo lugar.",
+    "description": "Uma criatura à sua vista e no alcance da magia deve realizar uma salvaguarda de Sabedoria. Em caso de sucesso, o alvo dança comicamente até o final do próximo turno dele, durante o qual ele deve gastar todo o movimento para dançar no mesmo lugar.\nSe falhar, o alvo tem a condição Enfeitiçado pela duração da magia. Enquanto Enfeitiçado, o alvo dança comicamente, deve usar todo o seu movimento para dançar no mesmo lugar e tem Desvantagem em salvaguardas de Destreza e jogadas de ataque, e outras criaturas têm Vantagem em jogadas de ataque contra ele. Em cada um dos turnos do alvo, ele pode executar uma ação para se recompor e repetir a salvaguarda, encerrando a magia em caso de sucesso.",
     "classes": [
       "Bardo",
       "Mago"
@@ -1839,7 +1839,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um conjunto de ferramentas de adivinhação — como cartas ou runas — no valor de 100 ou mais PO)",
     "duration": "Concentração, até 1 dia",
-    "description": "Você sente magicamente a rota física mais direta para um local que você nomeia. Você deve estar familiarizado com o local, e a magia falha se você declarar um destino em outro plano de existência, um destino em movimento (como uma fortaleza móvel) ou um destino inespecífico (como “o covil de um dragão verde”).",
+    "description": "Você sente magicamente a rota física mais direta para um local que você nomeia. Você deve estar familiarizado com o local, e a magia falha se você declarar um destino em outro plano de existência, um destino em movimento (como uma fortaleza móvel) ou um destino inespecífico (como “o covil de um dragão verde”).\nEnquanto durar a magia, desde que você esteja no mesmo plano de existência do destino, você sabe a que distância ele está e em que direção se encontra. Sempre que se depara com uma escolha de caminhos ao longo do trajeto, você sabe qual é o caminho mais direto.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -1870,7 +1870,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "Pela duração da magia, seus olhos se tornam um vazio escuro. Uma criatura à sua escolha à sua vista e a até 18 metros de você deve ser bem-sucedida em uma salvaguarda de Sabedoria ou é afetada por um dos seguintes efeitos à sua escolha pela duração da magia.\nEm cada um dos seus turnos até que a magia termine, você pode executar uma ação Usar Magia para atingir outra criatura, mas não pode atingir uma criatura novamente se ela tiver sido bem-sucedida em uma salvaguarda contra a conjuração desta magia.\nAdoecer. O alvo tem a condição Envenenado.\nAdormecer. O alvo tem a condição Inconsciente. Ele acorda se sofrer algum dano ou se outra criatura executar uma ação para sacudi-la.",
+    "description": "Pela duração da magia, seus olhos se tornam um vazio escuro. Uma criatura à sua escolha à sua vista e a até 18 metros de você deve ser bem-sucedida em uma salvaguarda de Sabedoria ou é afetada por um dos seguintes efeitos à sua escolha pela duração da magia.\nEm cada um dos seus turnos até que a magia termine, você pode executar uma ação Usar Magia para atingir outra criatura, mas não pode atingir uma criatura novamente se ela tiver sido bem-sucedida em uma salvaguarda contra a conjuração desta magia.\nAdoecer. O alvo tem a condição Envenenado.\nAdormecer. O alvo tem a condição Inconsciente. Ele acorda se sofrer algum dano ou se outra criatura executar uma ação para sacudi-la.\nApavorar. O alvo tem a condição Amedrontado. Em cada um dos turnos dele, o alvo Amedrontado deve executar a ação Correr e se afastar de você pela rota mais segura e curta disponível. Se o alvo se mover para um espaço a pelo menos 18 metros de distância de você onde não possa vê-lo, esse efeito encerra.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1902,7 +1902,7 @@
     "range": "18 metros",
     "components": "V, M (a língua de uma cobra)",
     "duration": "24 horas",
-    "description": "Você sugere um curso de ação — descrito em não mais de 25 palavras — para até doze criaturas à sua vista e no alcance da magia que possam ouvi-lo e entendê-lo. A sugestão deve parecer acessível e não envolver nada que obviamente cause dano a qualquer um dos alvos ou seus aliados. Por exemplo, você poderia dizer: “Caminhe até a aldeia por essa estrada e auxilie os aldeões a realizar a colheita até o pôr do sol” ou dizer: “Agora não é hora para violência. Larguem as armas e dancem! Parem em uma hora”.\nCada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia ou até que você ou seus aliados causem dano ao alvo. Cada alvo Enfeitiçado cumpre a sugestão com o melhor de sua capacidade. A atividade sugerida pode continuar por toda a duração da magia, mas se a atividade sugerida puder ser concluída em um tempo mais curto, a magia encerra para um alvo que a complete.",
+    "description": "Você sugere um curso de ação — descrito em não mais de 25 palavras — para até doze criaturas à sua vista e no alcance da magia que possam ouvi-lo e entendê-lo. A sugestão deve parecer acessível e não envolver nada que obviamente cause dano a qualquer um dos alvos ou seus aliados. Por exemplo, você poderia dizer: “Caminhe até a aldeia por essa estrada e auxilie os aldeões a realizar a colheita até o pôr do sol” ou dizer: “Agora não é hora para violência. Larguem as armas e dancem! Parem em uma hora”.\nCada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia ou até que você ou seus aliados causem dano ao alvo. Cada alvo Enfeitiçado cumpre a sugestão com o melhor de sua capacidade. A atividade sugerida pode continuar por toda a duração da magia, mas se a atividade sugerida puder ser concluída em um tempo mais curto, a magia encerra para um alvo que a complete.\nUsando um Espaço de Magia de Círculo Superior. A duração é maior com um espaço de magia 7º círculo (10 dias), 8º círculo (30 dias) ou 9º círculo (366 dias).",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1936,7 +1936,7 @@
     "range": "30 metros",
     "components": "V, S, M (rubi em pó no valor de 1.500 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": "Uma prisão imóvel, invisível e em forma de Cubo composta de força energética surge em torno de uma área à sua escolha no alcance da magia. A prisão pode ser uma jaula ou uma caixa sólida, à sua escolha.\nUma prisão na forma de uma jaula pode ter até 6 metros de lado e é formada com barras de 1,5 centímetro de diâmetro com espaços de 1,5 centímetro entre elas. Uma prisão na forma de caixa pode ter até 3 metros de lado, criando uma barreira sólida que impede que qualquer matéria passe por ela e bloqueia quaisquer magias conjuradas para dentro ou para fora da área.\nAo conjurar a magia, qualquer criatura que esteja completamente na área da jaula fica presa. Criaturas apenas parcialmente dentro da área, ou aquelas grandes demais para caber dentro dela, são empurradas para longe do centro da área até que estejam completamente fora dela.\nUma criatura na jaula não pode deixá-la por meios não mágicos. Se a criatura tentar usar teleporte ou viagem interplanar para sair, ela deve primeiro realizar uma salvaguarda de Carisma. Em caso de sucesso, a criatura pode usar essa magia para sair da jaula. Se falhar, a criatura não sai da jaula e desperdiça a magia ou o efeito. A jaula também se estende para o Plano Etéreo, bloqueando viagens etéreas.",
+    "description": "Uma prisão imóvel, invisível e em forma de Cubo composta de força energética surge em torno de uma área à sua escolha no alcance da magia. A prisão pode ser uma jaula ou uma caixa sólida, à sua escolha.\nUma prisão na forma de uma jaula pode ter até 6 metros de lado e é formada com barras de 1,5 centímetro de diâmetro com espaços de 1,5 centímetro entre elas. Uma prisão na forma de caixa pode ter até 3 metros de lado, criando uma barreira sólida que impede que qualquer matéria passe por ela e bloqueia quaisquer magias conjuradas para dentro ou para fora da área.\nAo conjurar a magia, qualquer criatura que esteja completamente na área da jaula fica presa. Criaturas apenas parcialmente dentro da área, ou aquelas grandes demais para caber dentro dela, são empurradas para longe do centro da área até que estejam completamente fora dela.\nUma criatura na jaula não pode deixá-la por meios não mágicos. Se a criatura tentar usar teleporte ou viagem interplanar para sair, ela deve primeiro realizar uma salvaguarda de Carisma. Em caso de sucesso, a criatura pode usar essa magia para sair da jaula. Se falhar, a criatura não sai da jaula e desperdiça a magia ou o efeito. A jaula também se estende para o Plano Etéreo, bloqueando viagens etéreas.\nEsta magia não pode ser dissipada por Dissipar Magia.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1952,7 +1952,7 @@
     "range": "27 metros",
     "components": "V, S, M (uma espada em miniatura no valor de 250 ou mais PO)",
     "duration": "Concentração, até 1 minuto",
-    "description": "Você cria uma espada espectral que fica suspensa no alcance da magia. Ela permanece pela duração da magia.\nQuando a espada aparece, você realiza um ataque mágico corpo a corpo contra um alvo a até 1,5 metro da espada. Em um acerto, o alvo sofre um dano Energético igual a 4d12 mais o seu modificador de atributo de conjuração.",
+    "description": "Você cria uma espada espectral que fica suspensa no alcance da magia. Ela permanece pela duração da magia.\nQuando a espada aparece, você realiza um ataque mágico corpo a corpo contra um alvo a até 1,5 metro da espada. Em um acerto, o alvo sofre um dano Energético igual a 4d12 mais o seu modificador de atributo de conjuração.\nNos turnos seguintes, você pode executar uma Ação Bônus para mover a espada até 9 metros para um ponto à sua vista e repetir o ataque contra o mesmo alvo ou um diferente.",
     "classes": [
       "Bardo",
       "Mago"
@@ -1967,7 +1967,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Até 8 horas",
-    "description": "Você entra nas regiões de fronteira do Plano Etéreo, onde ele se sobrepõe ao seu plano atual.\nVocê permanece na Fronteira Etérea pela duração da magia. Durante esse período, você pode se mover em qualquer direção. Se você se mover para cima ou para baixo, cada metro de movimento custa um metro adicional. Você pode ver o plano que você deixou, que parece cinza, e você não pode ver nada lá a mais de 18 metros de distância.\nEnquanto estiver no Plano Etéreo, você pode afetar e ser afetado apenas por criaturas, objetos e efeitos nesse plano. Criaturas que não estão no Plano Etéreo não podem perceber ou interagir com você, a menos que uma característica lhes dê a capacidade de fazê-lo.\nQuando a magia termina, você retorna ao plano que deixou no local que corresponde ao seu espaço na Fronteira Etérea. Se você aparecer em um espaço ocupado, você é direcionado para o espaço desocupado mais próximo e sofre dano Energético igual a 10 pontos para cada 1,5 metro que é movido.\nEsta magia se encerra instantaneamente se você a conjurar enquanto estiver no Plano Etéreo ou em um plano que não faz fronteira com ele, como um dos Planos Externos.",
+    "description": "Você entra nas regiões de fronteira do Plano Etéreo, onde ele se sobrepõe ao seu plano atual.\nVocê permanece na Fronteira Etérea pela duração da magia. Durante esse período, você pode se mover em qualquer direção. Se você se mover para cima ou para baixo, cada metro de movimento custa um metro adicional. Você pode ver o plano que você deixou, que parece cinza, e você não pode ver nada lá a mais de 18 metros de distância.\nEnquanto estiver no Plano Etéreo, você pode afetar e ser afetado apenas por criaturas, objetos e efeitos nesse plano. Criaturas que não estão no Plano Etéreo não podem perceber ou interagir com você, a menos que uma característica lhes dê a capacidade de fazê-lo.\nQuando a magia termina, você retorna ao plano que deixou no local que corresponde ao seu espaço na Fronteira Etérea. Se você aparecer em um espaço ocupado, você é direcionado para o espaço desocupado mais próximo e sofre dano Energético igual a 10 pontos para cada 1,5 metro que é movido.\nEsta magia se encerra instantaneamente se você a conjurar enquanto estiver no Plano Etéreo ou em um plano que não faz fronteira com ele, como um dos Planos Externos.\nUsando um Espaço de Magia de Círculo Superior. Você pode escolher até três criaturas voluntárias (incluindo você) para cada círculo de espaço de magia acima de 7. As criaturas devem estar a até 3 metros de você quando você conjurar a magia.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1985,7 +1985,7 @@
     "range": "90 metros",
     "components": "V, S, M (uma porta em miniatura no valor de 15 ou mais PO)",
     "duration": "24 horas",
-    "description": "Você conjura uma porta cintilante no alcance da magia que permanece por toda a duração da magia. A porta leva a uma moradia extradimensional e tem 1,5 metro de largura e 3 metros de altura. Você e qualquer criatura que você designe ao conjurar a magia podem entrar na residência extradimensional enquanto a porta permanecer aberta. Você pode abri-la ou fechá-la (nenhuma ação é necessária) se estiver a até 9 metros de distância dela. Quando fechada, a porta é imperceptível.\nAlém da porta, há um magnífico saguão com várias câmaras ao fundo. A atmosfera da moradia é limpa, fresca e aquecida.\nVocê pode criar qualquer projeto que desejar para a moradia, mas ela não pode exceder 50 Cubos contíguos de 3 metros de lado. O local é mobiliado e decorado à sua escolha. Contém comida suficiente para servir um banquete de nove pratos para até 100 pessoas. Mobílias e outros objetos criados por essa magia se dissipam em fumaça se removidos dela.\nUma equipe de 100 servos quase transparentes atende a todos que entrarem. Você determina a aparência desses servos e as vestes deles. Eles são invulneráveis e obedecem aos seus comandos. Cada servo pode realizar tarefas que um humano poderia realizar, mas eles não podem atacar ou realizar qualquer ação que cause dano direto a outra criatura. Assim, os servos podem buscar coisas, limpar, remendar, dobrar roupas, acender fogos, servir comida, servir vinho, entre outras atividades. Os servos não podem deixar a moradia.",
+    "description": "Você conjura uma porta cintilante no alcance da magia que permanece por toda a duração da magia. A porta leva a uma moradia extradimensional e tem 1,5 metro de largura e 3 metros de altura. Você e qualquer criatura que você designe ao conjurar a magia podem entrar na residência extradimensional enquanto a porta permanecer aberta. Você pode abri-la ou fechá-la (nenhuma ação é necessária) se estiver a até 9 metros de distância dela. Quando fechada, a porta é imperceptível.\nAlém da porta, há um magnífico saguão com várias câmaras ao fundo. A atmosfera da moradia é limpa, fresca e aquecida.\nVocê pode criar qualquer projeto que desejar para a moradia, mas ela não pode exceder 50 Cubos contíguos de 3 metros de lado. O local é mobiliado e decorado à sua escolha. Contém comida suficiente para servir um banquete de nove pratos para até 100 pessoas. Mobílias e outros objetos criados por essa magia se dissipam em fumaça se removidos dela.\nUma equipe de 100 servos quase transparentes atende a todos que entrarem. Você determina a aparência desses servos e as vestes deles. Eles são invulneráveis e obedecem aos seus comandos. Cada servo pode realizar tarefas que um humano poderia realizar, mas eles não podem atacar ou realizar qualquer ação que cause dano direto a outra criatura. Assim, os servos podem buscar coisas, limpar, remendar, dobrar roupas, acender fogos, servir comida, servir vinho, entre outras atividades. Os servos não podem deixar a moradia.\nQuando a magia termina, qualquer criatura ou objeto deixado no espaço extradimensional é expulso para os espaços desocupados mais próximos à entrada.\nO Mago Bigby usa sua magia autoral, Mão de Bigby, para evitar interrupções em sua pesquisa.",
     "classes": [
       "Bardo",
       "Mago"
@@ -2000,7 +2000,7 @@
     "range": "À sua vista",
     "components": "V, S",
     "duration": "10 dias",
-    "description": "Você faz com que o terreno em uma área de até 2,5 quilômetros quadrados pareça, soe, cheire e até mesmo seja sentido como algum outro tipo de terreno. Campos abertos ou uma estrada podem ser transformados em um pântano, colina, fenda ou qualquer outro tipo de terreno irregular ou intransitável. Um lago pode ser formado para parecer um prado gramado, um precipício como uma suave encosta ou uma ravina cheia de pedras como uma estrada larga e lisa.\nDa mesma forma, você pode alterar a aparência de estruturas ou adicioná-las onde não há nenhuma presente. A magia não disfarça, oculta ou adiciona criaturas.\nA ilusão inclui elementos audíveis, visuais, táteis e olfativos, podendo transformar terreno desimpedido em Terreno Difícil (ou vice-versa) ou, de outra forma, dificultar o movimento pela área. Qualquer parte do terreno ilusório (como uma pedra ou um galho) que for removida da área da magia desaparece imediatamente.",
+    "description": "Magos rivais usam Metamorfose para se transformar em um Observador e um Beír durante um duelo mágico.\nVocê faz com que o terreno em uma área de até 2,5 quilômetros quadrados pareça, soe, cheire e até mesmo seja sentido como algum outro tipo de terreno. Campos abertos ou uma estrada podem ser transformados em um pântano, colina, fenda ou qualquer outro tipo de terreno irregular ou intransitável. Um lago pode ser formado para parecer um prado gramado, um precipício como uma suave encosta ou uma ravina cheia de pedras como uma estrada larga e lisa.\nDa mesma forma, você pode alterar a aparência de estruturas ou adicioná-las onde não há nenhuma presente. A magia não disfarça, oculta ou adiciona criaturas.\nA ilusão inclui elementos audíveis, visuais, táteis e olfativos, podendo transformar terreno desimpedido em Terreno Difícil (ou vice-versa) ou, de outra forma, dificultar o movimento pela área. Qualquer parte do terreno ilusório (como uma pedra ou um galho) que for removida da área da magia desaparece imediatamente.\nCriaturas com Visão Verdadeira podem ver através da ilusão e discernir a verdadeira forma do terreno; no entanto, todos os outros elementos da ilusão permanecem, de modo que, embora a criatura esteja ciente da ilusão, ainda pode interagir fisicamente com ela.",
     "classes": [
       "Bardo",
       "Druida",
@@ -2031,7 +2031,7 @@
     "range": "800 quilômetros",
     "components": "V, S, M (uma estatueta de si mesmo no valor de 5 ou mais PO)",
     "duration": "Concentração, até 1 dia",
-    "description": "Você cria uma cópia ilusória de si mesmo que dura enquanto a magia estiver ativa. A cópia pode surgir em qualquer lugar que você já tenha visto e que esteja no alcance da magia, ignorando obstáculos. A ilusão se parece e soa como você, mas é intangível. Se a ilusão sofrer qualquer dano, ela desaparece e a magia se encerra.\nVocê pode ver através dos olhos da ilusão e ouvir através dos ouvidos dela, como se você estivesse no espaço dela. Com uma ação Usar Magia, você pode movê-la até 18 metros e fazer com que ela gesticule, fale e se comporte da maneira que desejar. Ela imita seus maneirismos perfeitamente.",
+    "description": "Você cria uma cópia ilusória de si mesmo que dura enquanto a magia estiver ativa. A cópia pode surgir em qualquer lugar que você já tenha visto e que esteja no alcance da magia, ignorando obstáculos. A ilusão se parece e soa como você, mas é intangível. Se a ilusão sofrer qualquer dano, ela desaparece e a magia se encerra.\nVocê pode ver através dos olhos da ilusão e ouvir através dos ouvidos dela, como se você estivesse no espaço dela. Com uma ação Usar Magia, você pode movê-la até 18 metros e fazer com que ela gesticule, fale e se comporte da maneira que desejar. Ela imita seus maneirismos perfeitamente.\nInteração física com a imagem revela sua natureza ilusória, já que objetos podem atravessá-la. Uma criatura que executa a ação Analisar para examinar a imagem pode determinar que se trata de uma ilusão com um teste bem-sucedido de Inteligência (Investigação) contra a CD para evitar sua magia. Se uma criatura perceber a ilusão, ela pode ver através da imagem, e qualquer som que a ilusão emita parece vago para essa criatura.",
     "classes": [
       "Bardo",
       "Mago"
@@ -2078,7 +2078,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "Com um toque, você revive uma criatura morta há no máximo um século, que não faleceu de velhice nem era um Morto-Vivo.\nA criatura retorna à vida com todos os seus Pontos de Vida, e a magia neutraliza quaisquer venenos que a afetavam na hora da morte, fecha feridas letais e restaura partes do corpo ausentes.\nVoltar à vida é um processo difícil. O alvo sofre uma penalidade de -4 em Testes de D20. Sempre que o alvo completar um Descanso Longo, a penalidade é reduzida em 1 até se tornar 0.",
+    "description": "Com um toque, você revive uma criatura morta há no máximo um século, que não faleceu de velhice nem era um Morto-Vivo.\nA criatura retorna à vida com todos os seus Pontos de Vida, e a magia neutraliza quaisquer venenos que a afetavam na hora da morte, fecha feridas letais e restaura partes do corpo ausentes.\nVoltar à vida é um processo difícil. O alvo sofre uma penalidade de -4 em Testes de D20. Sempre que o alvo completar um Descanso Longo, a penalidade é reduzida em 1 até se tornar 0.\nConjurar essa magia para reviver uma criatura morta há 365 dias ou mais sobrecarrega você. Até completar um Descanso Longo, você não pode conjurar magias novamente e tem Desvantagem nos Testes de D20.",
     "classes": [
       "Bardo",
       "Clérigo"
@@ -2093,7 +2093,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante em pó no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada ou acionada",
-    "description": "Você inscreve um glifo prejudicial em uma superfície (como uma seção do chão ou parede) ou dentro de um objeto que pode ser fechado (como um livro ou baú). O glifo pode cobrir uma área não superior a 3 metros de diâmetro. Se você escolher um objeto, ele deve permanecer no lugar; se for movido a mais de 3 metros de onde você conjurou esta magia, o glifo é quebrado e a magia se encerra sem ser acionada.\nO glifo é quase imperceptível e requer um teste bem-sucedido de Sabedoria (Percepção) contra a CD para evitar sua magia para ser notado.\nQuando inscreve o glifo, você define seu gatilho e escolhe qual efeito o símbolo possui: Atordoamento, Discórdia, Dor, Medo, Morte ou Sono. Cada um é explicado abaixo.\nDefina o Gatilho. Você decide o que aciona o glifo quando conjura a magia. Para glifos inscritos em uma superfície, os gatilhos comuns incluem tocar ou ficar em pé sobre o glifo, remover outro objeto que o cubra, aproximar-se a uma certa distância ou manipular o objeto que o contém. Para glifos inscritos em um objeto, os gatilhos comuns incluem abrir esse objeto ou ver o glifo. Você pode ajustar o gatilho para que apenas criaturas de certos tipos o ativem (por exemplo, o glifo pode ser definido para afetar Aberrações). Você também pode definir condições para criaturas que não acionam o glifo, como aquelas que dizem uma determinada senha.\nUma vez acionado, o glifo brilha, preenchendo uma Esfera de 18 metros de raio com Meia-Luz por 10 minutos, após os quais a magia termina. Cada criatura na Esfera quando o glifo é ativado é alvo de seu efeito, assim como uma criatura que entra na Esfera pela primeira vez em um turno ou termina o turno nela. Uma criatura é atingida apenas uma vez por turno.\nAtordoamento. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Atordoado por 1 minuto.\nDiscórdia. Cada alvo realiza uma salvaguarda de Sabedoria. Se falhar, um alvo discute com outras criaturas por 1 minuto. Durante esse tempo, é incapaz de se comunicar efetivamente e tem Desvantagem em jogadas de ataque e testes de atributo.\nDor. Cada alvo deve ser bem-sucedido em uma salvaguarda de Constituição ou tem a condição Incapacitado por 1 minuto.\nMedo. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Amedrontado por 1 minuto. Enquanto Amedrontado, o alvo deve se mover pelo menos 9 metros para longe do glifo em cada um dos turnos dele, se possível.\nMorte. Cada alvo realiza uma salvaguarda de Constituição, sofrendo 10d10 pontos de dano Necrótico se falhar, ou metade desse dano em caso de sucesso.",
+    "description": "Você inscreve um glifo prejudicial em uma superfície (como uma seção do chão ou parede) ou dentro de um objeto que pode ser fechado (como um livro ou baú). O glifo pode cobrir uma área não superior a 3 metros de diâmetro. Se você escolher um objeto, ele deve permanecer no lugar; se for movido a mais de 3 metros de onde você conjurou esta magia, o glifo é quebrado e a magia se encerra sem ser acionada.\nO glifo é quase imperceptível e requer um teste bem-sucedido de Sabedoria (Percepção) contra a CD para evitar sua magia para ser notado.\nQuando inscreve o glifo, você define seu gatilho e escolhe qual efeito o símbolo possui: Atordoamento, Discórdia, Dor, Medo, Morte ou Sono. Cada um é explicado abaixo.\nDefina o Gatilho. Você decide o que aciona o glifo quando conjura a magia. Para glifos inscritos em uma superfície, os gatilhos comuns incluem tocar ou ficar em pé sobre o glifo, remover outro objeto que o cubra, aproximar-se a uma certa distância ou manipular o objeto que o contém. Para glifos inscritos em um objeto, os gatilhos comuns incluem abrir esse objeto ou ver o glifo. Você pode ajustar o gatilho para que apenas criaturas de certos tipos o ativem (por exemplo, o glifo pode ser definido para afetar Aberrações). Você também pode definir condições para criaturas que não acionam o glifo, como aquelas que dizem uma determinada senha.\nUma vez acionado, o glifo brilha, preenchendo uma Esfera de 18 metros de raio com Meia-Luz por 10 minutos, após os quais a magia termina. Cada criatura na Esfera quando o glifo é ativado é alvo de seu efeito, assim como uma criatura que entra na Esfera pela primeira vez em um turno ou termina o turno nela. Uma criatura é atingida apenas uma vez por turno.\nAtordoamento. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Atordoado por 1 minuto.\nDiscórdia. Cada alvo realiza uma salvaguarda de Sabedoria. Se falhar, um alvo discute com outras criaturas por 1 minuto. Durante esse tempo, é incapaz de se comunicar efetivamente e tem Desvantagem em jogadas de ataque e testes de atributo.\nDor. Cada alvo deve ser bem-sucedido em uma salvaguarda de Constituição ou tem a condição Incapacitado por 1 minuto.\nMedo. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Amedrontado por 1 minuto. Enquanto Amedrontado, o alvo deve se mover pelo menos 9 metros para longe do glifo em cada um dos turnos dele, se possível.\nMorte. Cada alvo realiza uma salvaguarda de Constituição, sofrendo 10d10 pontos de dano Necrótico se falhar, ou metade desse dano em caso de sucesso.\nSono. Cada alvo deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Inconsciente por 10 minutos. Uma criatura desperta se sofrer dano ou se alguém executar uma ação para sacudi-la.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -2126,7 +2126,7 @@
     "range": "18 metros",
     "components": "V, S, M (uma mistura de vinagre e mel)",
     "duration": "10 dias",
-    "description": "Ao conjurar a magia, decida se ela cria antipatia ou simpatia, e escolha como alvo uma criatura ou objeto que seja Enorme ou menor. Em seguida, especifique um tipo de criatura, como dragões vermelhos, goblins ou vampiros. Uma criatura do tipo escolhido realiza uma salvaguarda de Sabedoria quando estiver a até 36 metros do alvo. Sua escolha entre antipatia ou simpatia determina o que acontece com uma criatura ao falhar nessa salvaguarda:\nAntipatia: A criatura tem a condição Amedrontado. A criatura Amedrontada deve usar o movimento nos turnos dela para se afastar o máximo possível do alvo, movendo-se pela rota mais segura.\nSimpatia: A criatura tem a condição Enfeitiçado. A criatura Enfeitiçada deve usar o movimento nos turnos dela para chegar o mais próximo possível do alvo, movendo-se pela rota mais segura. Se a criatura estiver a até 1,5 metro do alvo, a criatura não pode se afastar voluntariamente. Se o alvo causar dano à criatura Enfeitiçada, essa criatura deve realizar uma salvaguarda de Sabedoria para encerrar o efeito, conforme descrito abaixo.",
+    "description": "Ao conjurar a magia, decida se ela cria antipatia ou simpatia, e escolha como alvo uma criatura ou objeto que seja Enorme ou menor. Em seguida, especifique um tipo de criatura, como dragões vermelhos, goblins ou vampiros. Uma criatura do tipo escolhido realiza uma salvaguarda de Sabedoria quando estiver a até 36 metros do alvo. Sua escolha entre antipatia ou simpatia determina o que acontece com uma criatura ao falhar nessa salvaguarda:\nAntipatia: A criatura tem a condição Amedrontado. A criatura Amedrontada deve usar o movimento nos turnos dela para se afastar o máximo possível do alvo, movendo-se pela rota mais segura.\nSimpatia: A criatura tem a condição Enfeitiçado. A criatura Enfeitiçada deve usar o movimento nos turnos dela para chegar o mais próximo possível do alvo, movendo-se pela rota mais segura. Se a criatura estiver a até 1,5 metro do alvo, a criatura não pode se afastar voluntariamente. Se o alvo causar dano à criatura Enfeitiçada, essa criatura deve realizar uma salvaguarda de Sabedoria para encerrar o efeito, conforme descrito abaixo.\nEncerrando o Efeito. Se a criatura Amedrontada ou Enfeitiçada terminar o turno a mais de 36 metros de distância do alvo, a criatura realiza uma salvaguarda de Sabedoria. Em caso de sucesso, a criatura não é mais afetada pelo alvo e fica imune a ele por 1 minuto, após o qual pode ser afetada novamente.",
     "classes": [
       "Bardo",
       "Druida",
@@ -2142,7 +2142,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo tem Vantagem na salvaguarda se você ou seus aliados estiverem lutando contra ele. Sempre que o alvo sofre dano, ele repete a salvaguarda, encerrando a magia em caso de sucesso.\nVocê tem um vínculo telepático com o alvo Enfeitiçado enquanto vocês dois estão no mesmo plano de existência. No seu turno, você pode usar este vínculo para emitir comandos para o alvo (nenhuma ação é necessária), como “Ataque essa criatura”, “Mova-se para lá” ou “Busque aquele objeto”. O alvo faz o possível para obedecer no turno dele. Se ele concluir um pedido e não receber mais instruções de você, ele age e se move como quiser, concentrando-se em se proteger.\nVocê pode ordenar o alvo a executar uma Reação, mas deve executar sua própria Reação para tanto.",
+    "description": "Uma criatura à sua vista e no alcance da magia deve ser bem-sucedida em uma salvaguarda de Sabedoria ou tem a condição Enfeitiçado pela duração da magia. O alvo tem Vantagem na salvaguarda se você ou seus aliados estiverem lutando contra ele. Sempre que o alvo sofre dano, ele repete a salvaguarda, encerrando a magia em caso de sucesso.\nVocê tem um vínculo telepático com o alvo Enfeitiçado enquanto vocês dois estão no mesmo plano de existência. No seu turno, você pode usar este vínculo para emitir comandos para o alvo (nenhuma ação é necessária), como “Ataque essa criatura”, “Mova-se para lá” ou “Busque aquele objeto”. O alvo faz o possível para obedecer no turno dele. Se ele concluir um pedido e não receber mais instruções de você, ele age e se move como quiser, concentrando-se em se proteger.\nVocê pode ordenar o alvo a executar uma Reação, mas deve executar sua própria Reação para tanto.\nUsando um Espaço de Magia de Círculo Superior. Sua Concentração pode durar mais com um espaço de magia de 9º círculo (em até 8 horas).",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -2189,7 +2189,7 @@
     "range": "18 metros",
     "components": "V",
     "duration": "Instantânea",
-    "description": "Você domina a mente de uma criatura à sua vista e no alcance da magia. Se o alvo tiver 150 Pontos de Vida ou menos, ele tem a condição Atordoado. Caso contrário, o Deslocamento dele é 0 até o início do seu próximo turno.",
+    "description": "Você domina a mente de uma criatura à sua vista e no alcance da magia. Se o alvo tiver 150 Pontos de Vida ou menos, ele tem a condição Atordoado. Caso contrário, o Deslocamento dele é 0 até o início do seu próximo turno.\nO alvo Atordoado realiza uma salvaguarda de Constituição no final de cada um dos turnos dele, encerrando a condição em caso de sucesso.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -2206,7 +2206,7 @@
     "range": "45 metros",
     "components": "V, S, M (um chaveiro sem chaves)",
     "duration": "Instantânea",
-    "description": "Você sobrecarrega a mente de uma criatura à sua vista e no alcance da magia. O alvo realiza uma salvaguarda de Inteligência.\nSe falhar, o alvo sofre 10d12 pontos de dano Psíquico e não pode conjurar magias ou executar a ação Usar Magia. Ao final de cada 30 dias, o alvo repete a salvaguarda, encerrando o efeito em caso de sucesso. O efeito também pode ser encerrado pela magia Cura Completa, Desejo ou Restauração Maior.",
+    "description": "Você sobrecarrega a mente de uma criatura à sua vista e no alcance da magia. O alvo realiza uma salvaguarda de Inteligência.\nSe falhar, o alvo sofre 10d12 pontos de dano Psíquico e não pode conjurar magias ou executar a ação Usar Magia. Ao final de cada 30 dias, o alvo repete a salvaguarda, encerrando o efeito em caso de sucesso. O efeito também pode ser encerrado pela magia Cura Completa, Desejo ou Restauração Maior.\nEm uma salvaguarda bem-sucedida, o alvo recebe apenas metade do dano.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -2270,7 +2270,7 @@
     "range": "9 metros",
     "components": "V, S, M (uma porção de mercúrio, uma dose de goma arábica e um fiapo de fumaça)",
     "duration": "Concentração, até 1 hora",
-    "description": "Escolha uma criatura ou objeto não mágico à sua vista e no alcance da magia. A criatura se multimorfa para uma criatura diferente, um objeto não mágico, ou o objeto se multimorfa para uma criatura (o objeto não pode estar sendo usado nem carregado). A transformação permanece pela duração da magia ou até que o alvo morra ou seja destruído, mas se você mantiver a Concentração nesta magia pela duração completa, a magia permanece até ser dissipada.\nUma criatura involuntária pode realizar uma salvaguarda de Sabedoria e, se for bem-sucedida, não é afetada por esta magia.\nCriatura em Criatura. Se você transformar uma criatura em outro tipo de criatura, a nova forma pode ser qualquer tipo que você escolher que tenha um Nível de Desafio igual ou menor do que o Nível de Desafio ou nível do alvo. As estatísticas de jogo do alvo são substituídas pelo bloco de estatísticas da nova forma, mas ele mantém seus Pontos de Vida, Dados de Pontos de Vida e alinhamento.\nO alvo recebe um número de Pontos de Vida Temporários igual aos Pontos de Vida da nova forma. A magia se encerra no alvo se ele não tiver Pontos de Vida Temporários restantes.\nO alvo é limitado às ações que pode realizar pela anatomia de sua nova forma, e não pode falar ou conjurar magias.\nO equipamento do alvo se funde com a nova forma. A criatura não pode usar ou se beneficiar de nenhum desses equipamentos.\nObjeto em Criatura. Você pode transformar um objeto em qualquer tipo de criatura, desde que o tamanho da criatura não seja maior que o tamanho do objeto e a criatura tenha um Nível de Desafio de 9 ou menor. A criatura é Amigável a você e seus aliados. Em combate, ela age imediatamente após o seu turno e obedece aos seus comandos.\nSe a magia durar mais de uma hora, você não controla mais a criatura. Ela pode permanecer Amigável a você, dependendo de como você a tratou.",
+    "description": "Escolha uma criatura ou objeto não mágico à sua vista e no alcance da magia. A criatura se multimorfa para uma criatura diferente, um objeto não mágico, ou o objeto se multimorfa para uma criatura (o objeto não pode estar sendo usado nem carregado). A transformação permanece pela duração da magia ou até que o alvo morra ou seja destruído, mas se você mantiver a Concentração nesta magia pela duração completa, a magia permanece até ser dissipada.\nUma criatura involuntária pode realizar uma salvaguarda de Sabedoria e, se for bem-sucedida, não é afetada por esta magia.\nCriatura em Criatura. Se você transformar uma criatura em outro tipo de criatura, a nova forma pode ser qualquer tipo que você escolher que tenha um Nível de Desafio igual ou menor do que o Nível de Desafio ou nível do alvo. As estatísticas de jogo do alvo são substituídas pelo bloco de estatísticas da nova forma, mas ele mantém seus Pontos de Vida, Dados de Pontos de Vida e alinhamento.\nO alvo recebe um número de Pontos de Vida Temporários igual aos Pontos de Vida da nova forma. Esses Pontos de Vida Temporários desaparecem, caso ainda restem, quando a magia terminar.\nO alvo é limitado às ações que pode realizar pela anatomia de sua nova forma, e não pode falar ou conjurar magias.\nO equipamento do alvo se funde com a nova forma. A criatura não pode usar ou se beneficiar de nenhum desses equipamentos.\nObjeto em Criatura. Você pode transformar um objeto em qualquer tipo de criatura, desde que o tamanho da criatura não seja maior que o tamanho do objeto e a criatura tenha um Nível de Desafio de 9 ou menor. A criatura é Amigável a você e seus aliados. Em combate, ela age imediatamente após o seu turno e obedece aos seus comandos.\nSe a magia durar mais de uma hora, você não controla mais a criatura. Ela pode permanecer Amigável a você, dependendo de como você a tratou.\nCriatura em Objeto. Se você transformar uma criatura em um objeto, ela se transforma junto com o que quer que esteja vestindo e carregando nessa forma, desde que o tamanho do objeto não seja maior do que o tamanho da criatura. As estatísticas da criatura se tornam as do objeto, ela não tem memórias do período que passou em forma de objeto e volta ao normal após a magia terminar.",
     "classes": [
       "Bardo",
       "Bruxo",
