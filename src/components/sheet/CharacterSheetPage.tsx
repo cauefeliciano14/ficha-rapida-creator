@@ -6,6 +6,7 @@ import type { CharacterAppearance, PersonalityTraits, CharacterIdentityUpdate } 
 import { rollD20Check, rollDamage } from '../../utils/diceRoller';
 
 import { signedMod } from '../../utils/format';
+import { openPrintableSheet } from '../../utils/printSheet';
 import { ATTR_ABBR } from '../../utils/attributeConstants';
 import { SheetHeader } from './SheetHeader';
 import { AbilityScoreCards } from './AbilityScoreCards';
@@ -856,6 +857,28 @@ export function CharacterSheetPage({
               className={styles.restBtn}
             >
               🔴 DESCANSO LONGO
+            </button>
+            <button
+              onClick={() => {
+                const opened = openPrintableSheet({
+                  characterName, className, subclassName, speciesName, backgroundName, alignment,
+                  level: characterLevel,
+                  maxHp: effectiveMaxHP,
+                  derivedSheet,
+                  features: classFeatures.filter(f => f.level <= characterLevel),
+                  traits: speciesTraits,
+                  inventory,
+                  currency,
+                  cantrips: learnedCantrips,
+                  preparedSpells,
+                  backstory,
+                });
+                if (!opened) window.alert('Não foi possível preparar a impressão da ficha. Tente de novo.');
+              }}
+              className={styles.restBtn}
+              title="Imprimir a ficha ou salvar como PDF"
+            >
+              📄 EXPORTAR PDF
             </button>
           </div>
         </div>

@@ -199,6 +199,31 @@ function CharacterSummaryPanelInner() {
       </div>
 
 
+      {pendingItems.length > 0 && (
+        <div className={`${styles.identityCard} ${styles.pendingCard}`}>
+          <div className={styles.cardHeader}>
+            <div>
+              <div className={styles.pendingTitle}>Pendências ({pendingItems.length})</div>
+            </div>
+            <span className={styles.pendingHint}>clique para resolver</span>
+          </div>
+          <div className={styles.pendingList}>
+            {pendingItems.map((item) => (
+              <button
+                key={item.key}
+                className={styles.pendingRow}
+                onClick={() => { if (item.stepIndex >= 0) setCurrentStep(item.stepIndex); }}
+                title={`Ir para ${item.label}`}
+                disabled={item.stepIndex < 0}
+              >
+                <span className={styles.pendingLabel}>{item.label}</span>
+                <span className={styles.pendingCount}>{item.count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className={`${styles.identityCard} ${identityFlash ? styles.flashHighlight : ''}`}>
         <div className={styles.identityHeader}>
           <button
@@ -221,7 +246,7 @@ function CharacterSummaryPanelInner() {
                 className={styles.characterNameInput}
                 value={character.name || ''}
                 onChange={(e) => setCharacter((prev: any) => ({ ...prev, name: e.target.value }))}
-                placeholder="Nome do personagem"
+                placeholder="Nome"
                 aria-label="Nome do personagem"
               />
               <button
@@ -248,40 +273,40 @@ function CharacterSummaryPanelInner() {
                 </div>
               )}
             </div>
-            <div className={styles.identityMetaList}>
-              <div className={styles.identityMetaRow}>
-                <span className={styles.identityMetaLabel}>Classe</span>
-                <span className={character.characterClass?.name ? styles.identityMetaValuePrimary : styles.identityMetaValueEmpty}>
-                  {character.characterClass?.name || 'Não definida'}
-                </span>
-              </div>
-              <div className={styles.identityMetaRow}>
-                <span className={styles.identityMetaLabel}>Origem</span>
-                <span className={selectedBackground?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
-                  {selectedBackground?.name || 'Não definida'}
-                </span>
-              </div>
-              <div className={styles.identityMetaRow}>
-                <span className={styles.identityMetaLabel}>Espécie</span>
-                <span className={character.species?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
-                  {character.species?.name || 'Não definida'}
-                </span>
-              </div>
-              <div className={styles.identityMetaRow}>
-                <span className={styles.identityMetaLabel}>Alinhamento</span>
-                <select
-                  className={styles.alignmentSelect}
-                  value={character.alignment ?? ''}
-                  onChange={e => setCharacter((prev: any) => ({ ...prev, alignment: e.target.value || null }))}
-                  aria-label="Alinhamento do personagem"
-                >
-                  <option value="">— Escolher —</option>
-                  {alignmentsData.map(a => (
-                    <option key={a.id} value={a.title}>{a.title}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div className={styles.identityMetaList}>
+          <div className={styles.identityMetaRow}>
+            <span className={styles.identityMetaLabel}>Classe</span>
+            <span className={character.characterClass?.name ? styles.identityMetaValuePrimary : styles.identityMetaValueEmpty}>
+              {character.characterClass?.name || 'Não definida'}
+            </span>
+          </div>
+          <div className={styles.identityMetaRow}>
+            <span className={styles.identityMetaLabel}>Origem</span>
+            <span className={selectedBackground?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
+              {selectedBackground?.name || 'Não definida'}
+            </span>
+          </div>
+          <div className={styles.identityMetaRow}>
+            <span className={styles.identityMetaLabel}>Espécie</span>
+            <span className={character.species?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
+              {character.species?.name || 'Não definida'}
+            </span>
+          </div>
+          <div className={styles.identityMetaRow}>
+            <span className={styles.identityMetaLabel}>Alinhamento</span>
+            <select
+              className={styles.alignmentSelect}
+              value={character.alignment ?? ''}
+              onChange={e => setCharacter((prev: any) => ({ ...prev, alignment: e.target.value || null }))}
+              aria-label="Alinhamento do personagem"
+            >
+              <option value="">— Escolher —</option>
+              {alignmentsData.map(a => (
+                <option key={a.id} value={a.title}>{a.title}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -337,31 +362,6 @@ function CharacterSummaryPanelInner() {
         onUpdateCharacter={setCharacter}
       />
 
-      {pendingItems.length > 0 && (
-        <div className={`${styles.identityCard} ${styles.pendingCard}`}>
-          <div className={styles.cardHeader}>
-            <div>
-              <div className={styles.pendingTitle}>Pendências ({pendingItems.length})</div>
-              <p className={styles.pendingDescription}>Resolva os pontos abaixo para avançar com segurança.</p>
-            </div>
-            <span className={styles.pendingHint}>clique para ir</span>
-          </div>
-          <div className={styles.pendingList}>
-            {pendingItems.map((item) => (
-              <button
-                key={item.key}
-                className={styles.pendingRow}
-                onClick={() => { if (item.stepIndex >= 0) setCurrentStep(item.stepIndex); }}
-                title={`Ir para ${item.label}`}
-                disabled={item.stepIndex < 0}
-              >
-                <span className={styles.pendingLabel}>{item.label}</span>
-                <span className={styles.pendingCount}>{item.count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
     </div>
   );

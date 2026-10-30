@@ -117,3 +117,32 @@ export function setActiveCharacterId(id: string | null): void {
 export function makeEmptyPlayState(): CharacterPlayState {
   return { ...DEFAULT_PLAY_STATE };
 }
+
+// ── Arquivo de personagem (exportar / importar) ─────────────────────────────
+
+const CHARACTER_FILE_FORMAT = 'ficha-rapida-personagem';
+
+/** Baixa o personagem salvo como .json, para backup ou para abrir em outro navegador. */
+export function downloadCharacterFile(saved: SavedCharacter): void {
+  const payload = { format: CHARACTER_FILE_FORMAT, version: 1, character: saved };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (saved.name || 'personagem').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w-]+/g, '-').toLowerCase();
+  a.href = url;
+  a.download = `${safeName}-nivel-${saved.level}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** Lê um arquivo exportado e devolve o personagem com id novo. Lança erro se o arquivo não for de ficha. */
+export function parseCharacterFile(text: string): SavedCharacter {
+  const data = JSON.parse(text);
+  const character = data?.format === CHARACTER_FILE_FORMAT ? data.character : null;
+  if (!character || typeof character !== 'object' || !character.creationSnapshot) {
+    throw new Error('Este arquivo não é uma ficha exportada por este app.');
+  }
+  return { ...character, id: `char-${Date.now()}`, savedAt: Date.now() } as SavedCharacter;
+}

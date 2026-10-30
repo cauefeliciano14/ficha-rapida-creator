@@ -251,3 +251,13 @@
   font-size: 0.62rem;
   cursor: pointer;
 }
+
+.importError {
+  margin: -4px 0 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(127, 29, 29, 0.2);
+  color: var(--color-error-pale, #fecaca);
+  font-size: 0.75rem;
+}

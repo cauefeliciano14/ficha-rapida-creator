@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   listSavedCharacters,
   loadSavedCharacter,
   saveCharacter,
   deleteCharacter,
+  downloadCharacterFile,
+  parseCharacterFile,
   type SavedCharacterMeta,
   type SavedCharacter,
   CREATION_STORAGE_KEY,
@@ -35,6 +37,8 @@ export function CharacterManager({
   const [characters, setCharacters] = useState<SavedCharacterMeta[]>([]);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) setCharacters(listSavedCharacters());
@@ -77,6 +81,22 @@ export function CharacterManager({
     setTimeout(() => setSavedFlash(false), 2000);
   };
 
+  const handleExport = (meta: SavedCharacterMeta) => {
+    const saved = loadSavedCharacter(meta.id);
+    if (saved) downloadCharacterFile(saved);
+  };
+
+  const handleImport = async (file: File) => {
+    setImportError(null);
+    try {
+      const saved = parseCharacterFile(await file.text());
+      saveCharacter(saved);
+      setCharacters(listSavedCharacters());
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Não foi possível ler o arquivo.');
+    }
+  };
+
   const handleLoad = (meta: SavedCharacterMeta) => {
     const saved = loadSavedCharacter(meta.id);
     if (saved) {
@@ -112,7 +132,22 @@ export function CharacterManager({
               <button onClick={() => { onNewCharacter(); setOpen(false); }} className={styles.actionBtnSecondary}>
                 ＋ Novo Personagem
               </button>
+              <button onClick={() => fileInputRef.current?.click()} className={styles.actionBtnSecondary}>
+                ⬆ Importar arquivo
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                hidden
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleImport(file);
+                  e.target.value = '';
+                }}
+              />
             </div>
+            {importError && <div className={styles.importError} role="alert">{importError}</div>}
 
             <div className={styles.listTitle}>PERSONAGENS SALVOS ({characters.length})</div>
 
@@ -140,6 +175,7 @@ export function CharacterManager({
                     </div>
                     <div className={styles.charActions}>
                       <button onClick={() => handleLoad(meta)} className={styles.loadBtn}>Carregar</button>
+                      <button onClick={() => handleExport(meta)} className={styles.loadBtn} title="Baixar arquivo do personagem (.json)">Baixar</button>
                       {confirmDelete === meta.id ? (
                         <div className={styles.confirmRow}>
                           <span className={styles.confirmText}>Deletar?</span>
