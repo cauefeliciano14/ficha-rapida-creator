@@ -39,22 +39,34 @@ export function checkMulticlassPrerequisite(
 }
 
 // ---------------------------------------------------------------------------
-// Proficiências ganhas ao multiclassar (subconjunto reduzido)
+// Proficiências ganhas ao multiclassar (seção "Como um Personagem Multiclasse"
+// de cada classe no capítulo 3 do Livro do Jogador 2024). Os nomes seguem as
+// categorias de CLASS_PROFICIENCY_DATA. `skills`/`toolChoices` = quantas
+// escolhas livres a classe concede (a perícia vem da lista da classe, exceto
+// Bardo, que permite qualquer perícia).
 // ---------------------------------------------------------------------------
 
-export const MULTICLASS_PROFICIENCIES: Record<string, { armor: string[]; weapons: string[]; skills: number }> = {
-  barbaro:    { armor: ['Escudo'],             weapons: ['Arma Simples', 'Arma Marcial'], skills: 0 },
-  bardo:      { armor: [],                     weapons: [],                                skills: 1 },
-  bruxo:      { armor: [],                     weapons: [],                                skills: 0 },
-  clerigo:    { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: [], skills: 0 },
-  druida:     { armor: [],                     weapons: [],                                skills: 0 },
-  feiticeiro: { armor: [],                     weapons: [],                                skills: 0 },
-  guardiao:   { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Arma Simples', 'Arma Marcial'], skills: 1 },
-  guerreiro:  { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Arma Simples', 'Arma Marcial'], skills: 0 },
-  ladino:     { armor: ['Armadura Leve'],      weapons: [],                                skills: 1 },
-  mago:       { armor: [],                     weapons: [],                                skills: 0 },
-  monge:      { armor: [],                     weapons: ['Arma Simples'],                  skills: 0 },
-  paladino:   { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Arma Simples', 'Arma Marcial'], skills: 0 },
+export interface MulticlassProficiencyGrant {
+  armor: string[];
+  weapons: string[];
+  tools: string[];
+  skills: number;
+  toolChoices: number;
+}
+
+export const MULTICLASS_PROFICIENCIES: Record<string, MulticlassProficiencyGrant> = {
+  barbaro:    { armor: ['Escudo'],                                    weapons: ['Armas Marciais'], tools: [],                        skills: 0, toolChoices: 0 },
+  bardo:      { armor: ['Armadura Leve'],                             weapons: [],                 tools: [],                        skills: 1, toolChoices: 1 },
+  bruxo:      { armor: ['Armadura Leve'],                             weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  clerigo:    { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  druida:     { armor: ['Armadura Leve', 'Escudo'],                   weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  feiticeiro: { armor: [],                                            weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  guardiao:   { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Armas Marciais'], tools: [],                        skills: 1, toolChoices: 0 },
+  guerreiro:  { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Armas Marciais'], tools: [],                        skills: 0, toolChoices: 0 },
+  ladino:     { armor: ['Armadura Leve'],                             weapons: [],                 tools: ['Ferramentas de Ladrão'], skills: 1, toolChoices: 0 },
+  mago:       { armor: [],                                            weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  monge:      { armor: [],                                            weapons: [],                 tools: [],                        skills: 0, toolChoices: 0 },
+  paladino:   { armor: ['Armadura Leve', 'Armadura Média', 'Escudo'], weapons: ['Armas Marciais'], tools: [],                        skills: 0, toolChoices: 0 },
 };
 
 // ---------------------------------------------------------------------------
@@ -92,17 +104,33 @@ const CASTING_PROGRESSION: Record<string, number> = {
   // bruxo usa Pact Magic (separado), não entra na tabela multiclasse
 };
 
+// Subclasses que conjuram como "um terço" (Livro do Jogador 2024, cap. 2).
+const THIRD_CASTER_SUBCLASSES: Record<string, string> = {
+  guerreiro: 'Cavaleiro Místico',
+  ladino: 'Trapaceiro Arcano',
+};
+
 /**
- * Calcula o nível efetivo de conjurador para multiclasse.
- * Full casters contam 1:1, half casters contam 1:2 (arredondado para baixo).
- * Bruxo NÃO entra neste cálculo (usa Pact Magic separado).
+ * Calcula o nível efetivo de conjurador para multiclasse (Livro do Jogador 2024):
+ * - todos os níveis de Bardo, Clérigo, Druida, Feiticeiro e Mago;
+ * - metade dos níveis de Guardião e Paladino (arredonde para cima);
+ * - um terço dos níveis de Guerreiro/Ladino (arredondado para baixo) com a
+ *   subclasse Cavaleiro Místico / Trapaceiro Arcano.
+ * Bruxo NÃO entra neste cálculo (usa Magia de Pacto separada).
+ * `subclassByClass` mapeia classId → nome da subclasse escolhida.
  */
-export function getMulticlassCasterLevel(classLevels: ClassLevel[]): number {
+export function getMulticlassCasterLevel(
+  classLevels: ClassLevel[],
+  subclassByClass: Record<string, string | undefined> = {},
+): number {
   let total = 0;
   for (const cl of classLevels) {
     const prog = CASTING_PROGRESSION[cl.classId] ?? 0;
     if (prog === 1) total += cl.level;
-    else if (prog === 0.5) total += Math.floor(cl.level / 2);
+    else if (prog === 0.5) total += Math.ceil(cl.level / 2);
+    else if (THIRD_CASTER_SUBCLASSES[cl.classId] && subclassByClass[cl.classId] === THIRD_CASTER_SUBCLASSES[cl.classId]) {
+      total += Math.floor(cl.level / 3);
+    }
   }
   return total;
 }

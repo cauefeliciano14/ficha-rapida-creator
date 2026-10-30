@@ -44,7 +44,8 @@ import {
 } from '../calculators/sheet';
 
 import { aggregateMagicItemEffects } from '../utils/magicItemEffects';
-import { getMulticlassCasterLevel, getMulticlassSpellSlots } from '../data/multiclassRules';
+import { getMulticlassCasterLevel, getMulticlassSpellSlots, MULTICLASS_PROFICIENCIES } from '../data/multiclassRules';
+import { getArmorById } from '../data/armorRules';
 
 function addUnique(target: string[], values: string[] = []) {
   values.forEach((value) => {
@@ -71,11 +72,37 @@ const JACK_OF_ALL_TRADES_CLASSES: Record<string, number> = {
   bardo: 2,
 };
 
-/** Classes e níveis mínimos que conferem Expertise (e quantas perícias) */
-const EXPERTISE_CLASSES: Record<string, { level: number; count: number }> = {
-  ladino: { level: 1, count: 2 },
-  bardo:  { level: 3, count: 2 },
+/**
+ * Especialização concedida por nível de classe (Livro do Jogador 2024):
+ * Ladino 2 no nível 1 e +2 no 6; Bardo 2 no nível 2 e +2 no 9;
+ * Guardião 1 no nível 2 (Explorador Hábil) e +2 no 9.
+ */
+const EXPERTISE_CLASSES: Record<string, Array<{ level: number; count: number }>> = {
+  ladino:   [{ level: 1, count: 2 }, { level: 6, count: 2 }],
+  bardo:    [{ level: 2, count: 2 }, { level: 9, count: 2 }],
+  guardiao: [{ level: 2, count: 1 }, { level: 9, count: 2 }],
 };
+
+/** Movimento sem Armadura do Monge (metros), índice = nível de Monge - 1. */
+const MONGE_UNARMORED_MOVEMENT = [0,3,3,3,3,4.5,4.5,4.5,4.5,6,6,6,6,7.5,7.5,7.5,7.5,9,9,9];
+
+/** Dado de Artes Marciais do Monge: d6 (1–4), d8 (5–10), d10 (11–16), d12 (17–20). */
+function getMartialArtsDie(monkLevel: number): string {
+  if (monkLevel >= 17) return '1d12';
+  if (monkLevel >= 11) return '1d10';
+  if (monkLevel >= 5) return '1d8';
+  return '1d6';
+}
+
+/** Soma metros a um deslocamento no formato "9 metros", preservando o restante do texto. */
+function addSpeedBonus(speed: string, bonusMeters: number): string {
+  if (!bonusMeters) return speed;
+  return speed.replace(/(\d+(?:,\d+)?)(\s*metros)/, (_m, num: string, unit: string) => {
+    const total = Number(num.replace(',', '.')) + bonusMeters;
+    const text = Number.isInteger(total) ? String(total) : total.toFixed(1).replace('.', ',');
+    return `${text}${unit}`;
+  });
+}
 
 export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[] = [], attunedItemIds: string[] = []): DerivedSheet {
   const classId = choices.classId ?? '';
@@ -137,10 +164,23 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const classLevels = choices.classLevels;
   const isMulticlass = classLevels && classLevels.length > 1;
 
+  // Classe inicial: a que recebeu o nível 1 do personagem.
+  const primaryClassId = isMulticlass
+    ? (classLevels.some(cl => cl.classId === classId) ? classId : classLevels[0].classId)
+    : classId;
+  const levelInClass = (id: string): number => isMulticlass
+    ? (classLevels.find(cl => cl.classId === id)?.level ?? 0)
+    : (id === classId ? level : 0);
+
   let maxHP: number;
   if (isMulticlass) {
-    // Multiclass: first class level 1 uses full HP, rest use fixedHpPerLevel
-    maxHP = classLevels.reduce((sum, cl) => sum + calculateMaxHP(cl.classId, cl.level, conMod), 0);
+    // Multiclasse: o PV cheio do nível 1 só vale para a classe inicial (nível 1 do
+    // personagem); todo nível de outra classe usa o valor fixo + CON.
+    maxHP = classLevels.reduce((sum, cl) => {
+      if (cl.classId === primaryClassId) return sum + calculateMaxHP(cl.classId, cl.level, conMod);
+      const hpData = getClassHPData(cl.classId);
+      return sum + (hpData ? cl.level * (hpData.fixedHpPerLevel + conMod) : 0);
+    }, 0);
   } else {
     maxHP = classId ? calculateMaxHP(classId, level, conMod) : 0;
   }
@@ -155,12 +195,24 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const initiativeBonusFromTalents = appliedTalentEffects.reduce((sum, effect) => sum + (effect?.initiativeBonus ?? 0), 0);
   const initiative = initiativeBase + initiativeBonusFromTalents;
 
-  const classProfs = getClassBaseProficiencies(classId);
+  const classProfs = getClassBaseProficiencies(classId, choices.featureChoices ?? {});
   const bgProfs = getBackgroundProficiencies(backgroundId);
   const chosenSkills = getChosenSkillProficiencies(classId, choices.featureChoices);
   const merged = mergeProficiencies(classProfs, bgProfs);
 
   addUnique(merged.skills, chosenSkills);
+
+  // Multiclasse: cada classe adicional concede só parte das proficiências iniciais.
+  if (isMulticlass) {
+    for (const cl of classLevels) {
+      if (cl.classId === primaryClassId) continue;
+      const grant = MULTICLASS_PROFICIENCIES[cl.classId];
+      if (!grant) continue;
+      addUnique(merged.armorCategories, grant.armor);
+      addUnique(merged.weaponCategories, grant.weapons);
+      addUnique(merged.tools, grant.tools);
+    }
+  }
   addUnique(merged.skills, speciesEffects?.skillProficiencies);
 
   for (const appliedTalent of appliedTalentEffects) {
@@ -207,7 +259,16 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
 
   const speciesData = speciesId ? getSpeciesData(speciesId) : null;
   const creatureSize = speciesData?.vitalInfo?.size ?? 'Médio';
-  const speed = speciesEffects?.speed ?? '9 metros\n\n';
+  const equippedArmor = choices.equippedArmorId ? getArmorById(choices.equippedArmorId) : null;
+  let classSpeedBonus = 0;
+  // Bárbaro nível 5 — Movimento Rápido: +3 m sem armadura Pesada.
+  if (levelInClass('barbaro') >= 5 && equippedArmor?.type !== 'heavy') classSpeedBonus += 3;
+  // Monge nível 2 — Movimento sem Armadura: sem armadura e sem Escudo.
+  const monkLevel = levelInClass('monge');
+  if (monkLevel >= 2 && !choices.equippedArmorId && !choices.hasShield) {
+    classSpeedBonus += MONGE_UNARMORED_MOVEMENT[Math.min(monkLevel, 20) - 1];
+  }
+  const speed = addSpeedBonus(speciesEffects?.speed ?? '9 metros\n\n', classSpeedBonus);
   const specialSenses = [...(speciesEffects?.specialSenses ?? [])];
   const derivedDefenses = [...(speciesEffects?.derivedDefenses ?? [])];
   const racialCantrips = [...(speciesEffects?.racialCantrips ?? [])];
@@ -244,8 +305,11 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const jackOfAllTradesMinLevel = JACK_OF_ALL_TRADES_CLASSES[classId] ?? Infinity;
   const jackOfAllTrades = level >= jackOfAllTradesMinLevel;
 
-  const expertiseClassConfig = EXPERTISE_CLASSES[classId];
-  const classGrantsExpertise = expertiseClassConfig ? level >= expertiseClassConfig.level : false;
+  const expertiseCount = Object.entries(EXPERTISE_CLASSES).reduce((sum, [id, tiers]) => {
+    const lvl = levelInClass(id);
+    return sum + tiers.filter(t => lvl >= t.level).reduce((acc, t) => acc + t.count, 0);
+  }, 0);
+  const classGrantsExpertise = expertiseCount > 0;
   const activeExpertiseSkills = classGrantsExpertise ? expertiseSkills : [];
 
   const skills = deriveSkills(modifiers, profBonus, merged.skills, activeExpertiseSkills, jackOfAllTrades);
@@ -258,12 +322,19 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
   const strMod = modifiers['forca'] ?? 0;
   const computedWeaponAttacks = [] as DerivedSheet['weaponAttacks'];
   const unarmedDamageDice = appliedTalentEffects.find((effect) => effect?.unarmedDamageDice)?.unarmedDamageDice;
-  computedWeaponAttacks.push(deriveUnarmedAttack(strMod, profBonus, unarmedDamageDice));
+  // Artes Marciais (Monge): desarmado, sem armadura e sem Escudo.
+  const hasMartialArts = monkLevel >= 1 && !choices.equippedArmorId && !choices.hasShield;
+  computedWeaponAttacks.push(deriveUnarmedAttack(strMod, profBonus, unarmedDamageDice, hasMartialArts
+    ? { dexMod, martialArtsDie: getMartialArtsDie(monkLevel) }
+    : {}));
 
   for (const weaponName of choices.inventoryWeapons ?? []) {
     const atk = buildWeaponAttack(weaponName, strMod, dexMod, profBonus, merged.weaponCategories);
     if (atk) computedWeaponAttacks.push(atk);
   }
+
+  const subclassByClass: Record<string, string | undefined> = {};
+  for (const cl of classLevels ?? []) subclassByClass[cl.classId] = choices.featureChoices?.[`${cl.classId}-subclasse`];
 
   const casterFlag = isMulticlass
     ? classLevels.some(cl => isCaster(cl.classId))
@@ -285,7 +356,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
 
     // Multiclass spell slots: use combined caster level table
     if (isMulticlass) {
-      const mcCasterLevel = getMulticlassCasterLevel(classLevels);
+      const mcCasterLevel = getMulticlassCasterLevel(classLevels, subclassByClass);
       spellSlots = (mcCasterLevel > 0 ? getMulticlassSpellSlots(mcCasterLevel) : null) ?? undefined;
     } else {
       spellSlots = getSpellSlots(classId, level) ?? undefined;
@@ -302,7 +373,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
       const abilityMod = abilityKey ? (modifiers[abilityKey] ?? 0) : 0;
       spellSaveDC = calculateSpellSaveDC(abilityMod, profBonus) + magicEffects.spellDCBonus;
       spellAttackBonus = calculateSpellAttackBonus(abilityMod, profBonus) + magicEffects.spellAttackBonus;
-      const mcCasterLevel = getMulticlassCasterLevel(classLevels);
+      const mcCasterLevel = getMulticlassCasterLevel(classLevels, subclassByClass);
       spellSlots = (mcCasterLevel > 0 ? getMulticlassSpellSlots(mcCasterLevel) : null) ?? undefined;
       preparedSpellCount = getPreparedSpellCount(casterClass.classId, casterClass.level, abilityMod);
       cantripsKnown = getCantripsKnown(casterClass.classId, casterClass.level);
@@ -369,7 +440,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     originTalent,
     activeTalents,
     classGrantsExpertise,
-    expertiseCount: expertiseClassConfig?.count ?? 0,
+    expertiseCount,
     jackOfAllTrades,
     classLevels: classLevels ?? undefined,
   };

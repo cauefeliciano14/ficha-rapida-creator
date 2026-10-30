@@ -145,14 +145,41 @@ export function derivePassives(skills: DerivedSkill[]): {
 // Ataque Desarmado
 // ---------------------------------------------------------------------------
 
-export function deriveUnarmedAttack(strMod: number, profBonus: number, damageDice = '1'): WeaponAttack {
+export interface UnarmedAttackOptions {
+  /** Modificador de Destreza (Monge: Ataques com Destreza em Artes Marciais). */
+  dexMod?: number;
+  /** Dado de Artes Marciais (ex.: '1d6'); quando presente, permite usar Destreza. */
+  martialArtsDie?: string;
+}
+
+/** Converte um dado ("1d8") em valor médio para comparar com dano fixo. */
+function averageDamage(dice: string): number {
+  const m = /^(\d+)d(\d+)$/.exec(dice.trim());
+  if (!m) return Number(dice) || 0;
+  return Number(m[1]) * (Number(m[2]) + 1) / 2;
+}
+
+export function deriveUnarmedAttack(
+  strMod: number,
+  profBonus: number,
+  damageDice = '1',
+  options: UnarmedAttackOptions = {},
+): WeaponAttack {
+  const { martialArtsDie, dexMod } = options;
+  // Artes Marciais (Monge): pode usar Destreza no lugar de Força, e jogar o dado
+  // de Artes Marciais no lugar do dano normal do Ataque Desarmado.
+  const useDex = !!martialArtsDie && dexMod !== undefined && dexMod > strMod;
+  const abilityMod = useDex ? (dexMod as number) : strMod;
+  const dice = martialArtsDie && averageDamage(martialArtsDie) > averageDamage(damageDice)
+    ? martialArtsDie
+    : damageDice;
   return {
     weaponName: 'Ataque Desarmado',
-    attackBonus: strMod + profBonus,
-    damageBonus: strMod,
-    damageDice,
+    attackBonus: abilityMod + profBonus,
+    damageBonus: abilityMod,
+    damageDice: dice,
     damageType: 'Contundente',
-    isFinesse: false,
+    isFinesse: useDex,
     range: 'Corpo a Corpo',
     properties: [],
     actionType: 'attack',

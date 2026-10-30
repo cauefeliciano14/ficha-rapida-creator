@@ -68,19 +68,48 @@ export function mergeProficiencies(...sets: Proficiencies[]): Proficiencies {
 // Proficiências por classe
 // ---------------------------------------------------------------------------
 
+// Ferramentas fixas de classe (Traços Básicos, Livro do Jogador 2024).
+const CLASS_FIXED_TOOLS: Record<string, string[]> = {
+  druida: ['Kit de Herbalismo'],
+  ladino: ['Ferramentas de Ladrão'],
+};
+
+// Ferramentas escolhidas: chaves de featureChoices definidas em classDetails.json.
+const CLASS_TOOL_CHOICE_KEYS: Record<string, string[]> = {
+  bardo: ['bardo-instrumento-1', 'bardo-instrumento-2', 'bardo-instrumento-3'],
+  monge: ['monge-ferramenta'],
+};
+
+/** Ferramentas/instrumentos que a classe concede no nível 1 (fixos + escolhidos). */
+export function getClassToolProficiencies(
+  classId: string,
+  featureChoices: Record<string, string> = {}
+): string[] {
+  const tools = [...(CLASS_FIXED_TOOLS[classId] ?? [])];
+  for (const key of CLASS_TOOL_CHOICE_KEYS[classId] ?? []) {
+    const value = featureChoices[key];
+    if (value && !tools.includes(value)) tools.push(value);
+  }
+  return tools;
+}
+
 /**
  * Retorna as proficiências base da classe (sem perícias escolhidas pelo usuário).
  * As perícias escolhidas são adicionadas pelo engine ao ler featureChoices.
+ * Se `featureChoices` for informado, inclui as ferramentas escolhidas.
  */
-export function getClassBaseProficiencies(classId: string): Proficiencies {
+export function getClassBaseProficiencies(
+  classId: string,
+  featureChoices: Record<string, string> = {}
+): Proficiencies {
   const data = getClassProficiencyData(classId);
   if (!data) return emptyProficiencies();
   return {
     skills: [], // perícias escolhidas pelo usuário, não as do pool
-    weaponCategories: data.weaponProficiencies,
-    armorCategories: data.armorProficiencies,
-    savingThrows: data.savingThrows,
-    tools: [],
+    weaponCategories: [...data.weaponProficiencies],
+    armorCategories: [...data.armorProficiencies],
+    savingThrows: [...data.savingThrows],
+    tools: getClassToolProficiencies(classId, featureChoices),
   };
 }
 

@@ -60,7 +60,8 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
   },
   bardo: {
     savingThrows: ['Destreza', 'Carisma'],
-    skillChoicePool: ['Acrobacia', 'Atletismo', 'Atuação', 'Enganação', 'História', 'Intuição', 'Intimidação', 'Investigação', 'Medicina', 'Natureza', 'Percepção', 'Persuasão', 'Prestidigitação', 'Religião', 'Sobrevivência'],
+    // Livro do Jogador 2024: "Escolha quaisquer 3 perícias" — as 18 perícias.
+    skillChoicePool: ['Acrobacia', 'Arcanismo', 'Atletismo', 'Atuação', 'Enganação', 'Furtividade', 'História', 'Intimidação', 'Intuição', 'Investigação', 'Lidar com Animais', 'Medicina', 'Natureza', 'Percepção', 'Persuasão', 'Prestidigitação', 'Religião', 'Sobrevivência'],
     skillChoiceCount: 3,
     weaponProficiencies: ['Armas Simples'],
     armorProficiencies: ['Armadura Leve'],
@@ -81,7 +82,7 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
   },
   druida: {
     savingThrows: ['Inteligência', 'Sabedoria'],
-    skillChoicePool: ['Arcanismo', 'Atletismo', 'Intuição', 'Lidar com Animais', 'Medicina', 'Natureza', 'Percepção', 'Religião', 'Sobrevivência'],
+    skillChoicePool: ['Arcanismo', 'Intuição', 'Lidar com Animais', 'Medicina', 'Natureza', 'Percepção', 'Religião', 'Sobrevivência'],
     skillChoiceCount: 2,
     weaponProficiencies: ['Armas Simples'],
     armorProficiencies: ['Armadura Leve', 'Escudo'],
@@ -95,28 +96,28 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
   },
   guardiao: {
     savingThrows: ['Força', 'Destreza'],
-    skillChoicePool: ['Atletismo', 'Intuição', 'Investigação', 'Lidar com Animais', 'Natureza', 'Percepção', 'Prestidigitação', 'Sobrevivência', 'Furtividade'],
+    skillChoicePool: ['Atletismo', 'Furtividade', 'Intuição', 'Investigação', 'Lidar com Animais', 'Natureza', 'Percepção', 'Sobrevivência'],
     skillChoiceCount: 3,
     weaponProficiencies: ['Armas Simples', 'Armas Marciais'],
     armorProficiencies: ['Armadura Leve', 'Armadura Média', 'Escudo'],
   },
   guerreiro: {
     savingThrows: ['Força', 'Constituição'],
-    skillChoicePool: ['Acrobacia', 'Atletismo', 'História', 'Intuição', 'Intimidação', 'Percepção', 'Prestidigitação', 'Sobrevivência'],
+    skillChoicePool: ['Acrobacia', 'Atletismo', 'História', 'Intimidação', 'Intuição', 'Lidar com Animais', 'Percepção', 'Persuasão', 'Sobrevivência'],
     skillChoiceCount: 2,
     weaponProficiencies: ['Armas Simples', 'Armas Marciais'],
     armorProficiencies: ['Armadura Leve', 'Armadura Média', 'Armadura Pesada', 'Escudo'],
   },
   ladino: {
     savingThrows: ['Destreza', 'Inteligência'],
-    skillChoicePool: ['Acrobacia', 'Atletismo', 'Atuação', 'Enganação', 'Furtividade', 'Intimidação', 'Investigação', 'Percepção', 'Persuasão', 'Prestidigitação'],
+    skillChoicePool: ['Acrobacia', 'Atletismo', 'Enganação', 'Furtividade', 'Intimidação', 'Intuição', 'Investigação', 'Percepção', 'Persuasão', 'Prestidigitação'],
     skillChoiceCount: 4,
     weaponProficiencies: ['Armas Simples', 'Armas Marciais com Acuidade ou Leve'],
     armorProficiencies: ['Armadura Leve'],
   },
   mago: {
     savingThrows: ['Inteligência', 'Sabedoria'],
-    skillChoicePool: ['Arcanismo', 'História', 'Intuição', 'Investigação', 'Medicina', 'Religião'],
+    skillChoicePool: ['Arcanismo', 'História', 'Intuição', 'Investigação', 'Medicina', 'Natureza', 'Religião'],
     skillChoiceCount: 2,
     weaponProficiencies: ['Armas Simples'],
     armorProficiencies: [],

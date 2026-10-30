@@ -238,6 +238,7 @@
           "Acrobacia",
           "Arcanismo",
           "Atletismo",
+          "Atuação",
           "Enganação",
           "Furtividade",
           "História",
@@ -261,6 +262,7 @@
           "Acrobacia",
           "Arcanismo",
           "Atletismo",
+          "Atuação",
           "Enganação",
           "Furtividade",
           "História",
@@ -284,6 +286,7 @@
           "Acrobacia",
           "Arcanismo",
           "Atletismo",
+          "Atuação",
           "Enganação",
           "Furtividade",
           "História",
@@ -363,6 +366,11 @@
         "name": "Contra-Encantamento",
         "level": 7,
         "description": "<p>Você pode usar notas musicais ou palavras de poder para interromper efeitos que influenciam a mente. Se você ou uma criatura a até 9 metros de você falhar em uma salvaguarda contra um efeito que aplica as condições Amedrontado ou Encantado, você pode executar uma Reação para jogar novamente a salvaguarda, e a nova jogada tem Vantagem.</p>"
+      },
+      {
+        "name": "Especialização",
+        "level": 9,
+        "description": "<p>Você obtém Especialização em mais duas perícias nas quais já seja proficiente, à sua escolha.</p>"
       },
       {
         "name": "Segredos Mágicos",
@@ -839,6 +847,16 @@
         "name": "Feitiçaria Encarnada",
         "level": 7,
         "description": "<p>Quando não houver mais usos de Feitiçaria Inata, você pode usá-la se gastar 2 Pontos de Feitiçaria ao executar a Ação Bônus para ativá-la.</p><p>Além disso, enquanto sua característica Feitiçaria Inata estiver ativa, você pode usar até duas de suas opções de Metamagia em cada magia conjurada.</p>"
+      },
+      {
+        "name": "Metamagia",
+        "level": 10,
+        "description": "<p>Você adquire mais duas opções de Metamagia à sua escolha.</p>"
+      },
+      {
+        "name": "Metamagia",
+        "level": 17,
+        "description": "<p>Você adquire mais duas opções de Metamagia à sua escolha.</p>"
       },
       {
         "name": "Dádiva Épica",
@@ -1627,6 +1645,11 @@
         "name": "Esquiva Sobrenatural",
         "level": 5,
         "description": "<p>Quando um atacante à sua vista o atinge com uma jogada de ataque, você pode executar uma Reação para reduzir o dano pela metade do ataque (arredondado para baixo).</p>"
+      },
+      {
+        "name": "Especialista",
+        "level": 6,
+        "description": "<p>Você obtém Especialização em mais duas perícias nas quais já seja proficiente, à sua escolha.</p>"
       },
       {
         "name": "Evasão",

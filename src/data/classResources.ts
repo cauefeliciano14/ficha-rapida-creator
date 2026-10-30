@@ -12,6 +12,14 @@ export interface ClassResourceTemplate {
   description?: string;
   /** Emoji/glyph icon shown next to the resource name */
   icon?: string;
+  /**
+   * Quando definido, o máximo é o modificador desse atributo (mínimo 1),
+   * desde que maxByLevel[nível] > 0 (maxByLevel funciona como desbloqueio e
+   * como valor de reserva quando os modificadores não são informados).
+   */
+  maxFromAbilityModifier?: string;
+  /** A partir deste nível o recurso passa a recuperar em Descanso Curto (antes: Longo). */
+  shortRestFromLevel?: number;
 }
 
 /** Lookup icon by counter id (used by sheet card to decorate restored counters) */
@@ -23,28 +31,63 @@ export function getResourceIcon(counterId: string): string | undefined {
   return undefined;
 }
 
+/** Máximo do recurso no nível, considerando modificador de atributo quando aplicável. */
+export function resolveResourceMax(
+  t: ClassResourceTemplate,
+  level: number,
+  abilityModifiers?: Record<string, number>,
+): number {
+  const lvlIdx = Math.max(0, Math.min(19, level - 1));
+  const base = t.maxByLevel[lvlIdx];
+  if (base <= 0 || !t.maxFromAbilityModifier || !abilityModifiers) return base;
+  const mod = abilityModifiers[t.maxFromAbilityModifier];
+  return typeof mod === 'number' ? Math.max(1, mod) : base;
+}
+
+/** Tipo de descanso que recupera o recurso no nível informado. */
+export function resolveResourceReset(t: ClassResourceTemplate, level: number): ClassResourceTemplate['resetOn'] {
+  if (t.shortRestFromLevel !== undefined) return level >= t.shortRestFromLevel ? 'short' : 'long';
+  return t.resetOn;
+}
+
 // Level arrays: index 0 = level 1, length 20
+// Valores conferidos nas tabelas de classe do Livro do Jogador 2024.
+// Recursos que recuperam "1 uso em Descanso Curto e todos em Descanso Longo"
+// ficam como 'long' (o contador não suporta recuperação parcial); a descrição avisa.
 const BARBARO_RAGE = [2,2,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6];
-// (Bônus de dano de fúria descrito textualmente em barbaro-rage.description)
-const MONGE_KI = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+const MONGE_FOCO = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
 const LADINO_SNEAK = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10];
-const GUERREIRO_SURTO = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2];
-const BARDO_INSPIRATION = [2,2,2,3,3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5];
-const FEITICEIRO_SORCERY = [2,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-const PALADINO_CD = [1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3];
-const CLERIGO_CD = [1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3];
-const DRUIDA_WILD = [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
-const GUERREIRO_WIND = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+// Surto de Ação: 1 uso a partir do nível 2, 2 usos a partir do nível 17.
+const GUERREIRO_SURTO = [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2];
+// Indomável: 1 uso no nível 9, 2 no 13, 3 no 17.
+const GUERREIRO_INDOMAVEL = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3];
+// Coluna "Recuperar Fôlego": 2 (nív 1–3), 3 (nív 4–9), 4 (nív 10–20).
+const GUERREIRO_FOLEGO = [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4];
+// Inspiração de Bardo: valor de reserva (mín. 1); o máximo real é o mod. de Carisma.
+const BARDO_INSPIRATION: number[] = Array(20).fill(1);
+// Pontos de Feitiçaria: a característica Fonte de Magia chega no nível 2.
+const FEITICEIRO_SORCERY = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+// Canalizar Divindade do Paladino: 2 usos no nível 3, 3 usos a partir do 11.
+const PALADINO_CD = [0,0,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3];
+// Canalizar Divindade do Clérigo: 2 (nív 2–5), 3 (nív 6–17), 4 (nív 18–20).
+const CLERIGO_CD = [0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4];
+// Forma Selvagem: 2 (nív 2–5), 3 (nív 6–16), 4 (nív 17–20).
+const DRUIDA_WILD = [0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4];
+// Inimigo Favorito: conjurações gratuitas de Marca do Predador.
+const GUARDIAO_INIMIGO = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
+// Mãos Consagradas: reserva de cura = 5 × nível de Paladino.
+const PALADINO_MAOS = Array.from({ length: 20 }, (_, i) => 5 * (i + 1));
+const fromLevel = (n: number) => Array.from({ length: 20 }, (_, i) => (i + 1 >= n ? 1 : 0));
 
 export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
   barbaro: [
     {
       id: 'barbaro-rage',
-      name: 'Usos de Fúria',
+      name: 'Fúria',
       icon: '🔥',
       maxByLevel: BARBARO_RAGE,
       resetOn: 'long',
-      description: 'Bônus de dano por fúria (Nív 1–8: +2, 9–16: +3, 17+: +4). Duração: 1 minuto. Vantagem em testes de Força. Resistência a contundente, perfurante e cortante. Termina se você ficar inconsciente ou não atacar/sofrer dano em um turno. Recupera em descanso longo.',
+      description: 'Ação Bônus, sem armadura Pesada. Dano da Fúria em ataques com Força: +2 (nív 1–8), +3 (nív 9–15), +4 (nív 16–20). Resistência a dano Contundente, Cortante e Perfurante; Vantagem em testes e salvaguardas de Força; sem Concentração nem magias. Dura até o fim do seu próximo turno e pode ser estendida (até 10 minutos). Recupera 1 uso em Descanso Curto e todos em Descanso Longo.',
     },
   ],
   bardo: [
@@ -53,8 +96,20 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       name: 'Inspiração de Bardo',
       icon: '🎵',
       maxByLevel: BARDO_INSPIRATION,
-      resetOn: 'short',
-      description: 'Ação bônus para conceder a um aliado a até 18m um Dado de Inspiração (d6 nív 1, d8 nív 5, d10 nív 10, d12 nív 15). Pode ser somado a um teste, ataque ou resistência antes de saber o resultado. Recupera em descanso curto/longo.',
+      maxFromAbilityModifier: 'carisma',
+      resetOn: 'long',
+      shortRestFromLevel: 5,
+      description: 'Ação Bônus: uma criatura a até 18 m recebe um dado de Inspiração (d6; d8 nív 5, d10 nív 10, d12 nív 15) para somar a um Teste de D20 que falhar. Usos = modificador de Carisma (mín. 1). Recupera em Descanso Longo; a partir do nível 5 (Fonte de Inspiração), também em Descanso Curto.',
+    },
+  ],
+  bruxo: [
+    {
+      id: 'bruxo-astucia-magica',
+      name: 'Astúcia Mágica',
+      icon: '🌒',
+      maxByLevel: fromLevel(2),
+      resetOn: 'long',
+      description: 'Rito de 1 minuto: recupere espaços de Magia de Pacto gastos até metade do seu máximo (arredondado para cima). Recupera em Descanso Longo.',
     },
   ],
   clerigo: [
@@ -63,18 +118,18 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       name: 'Canalizar Divindade',
       icon: '⚡',
       maxByLevel: CLERIGO_CD,
-      resetOn: 'short',
-      description: 'Energia divina canalizada do seu deus. Usos: 1× (nív 2), 2× (nív 6), 3× (nív 18). Opções incluem Expulsar Mortos-Vivos e habilidades de domínio. CD = 8 + prof + Sab. Recupera em descanso curto/longo.',
+      resetOn: 'long',
+      description: 'Efeitos: Centelha Divina e Expulsar Mortos-Vivos, além dos da subclasse. Usos: 2 (nív 2), 3 (nív 6), 4 (nív 18). CD = CD de magia de Clérigo. Recupera 1 uso em Descanso Curto e todos em Descanso Longo.',
     },
   ],
   druida: [
     {
       id: 'druida-wildshape',
-      name: 'Transformação Selvagem',
+      name: 'Forma Selvagem',
       icon: '🐺',
       maxByLevel: DRUIDA_WILD,
-      resetOn: 'short',
-      description: 'Ação bônus para transformar-se em uma fera com VD ≤ ¼ (nív 2), 1 (nív 4) ou seu nível ÷ 3 (nív 8). Duração: metade do nível em horas. Mantém Inteligência, Sabedoria e Carisma. Recupera 2 usos em descanso curto/longo.',
+      resetOn: 'long',
+      description: 'Ação Bônus para assumir uma forma Animal conhecida (veja a tabela Formas de Feras). Dura horas iguais à metade do seu nível de Druida. Usos: 2 (nív 2), 3 (nív 6), 4 (nív 17). Recupera 1 uso em Descanso Curto e todos em Descanso Longo.',
     },
   ],
   feiticeiro: [
@@ -87,14 +142,24 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       description: 'Recurso para Metamagia (Magia Distante, Sutil, Empoderada, Gêmea, etc.) e conversão em espaços de magia: 2pts→1º, 3pts→2º, 5pts→3º, 6pts→4º, 7pts→5º. Recupera em descanso longo.',
     },
   ],
+  guardiao: [
+    {
+      id: 'guardiao-inimigo-favorito',
+      name: 'Inimigo Favorito',
+      icon: '🎯',
+      maxByLevel: GUARDIAO_INIMIGO,
+      resetOn: 'long',
+      description: 'Conjurações de Marca do Predador sem gastar espaço de magia: 2 (nív 1), 3 (nív 5), 4 (nív 9), 5 (nív 13), 6 (nív 17). Recupera em Descanso Longo.',
+    },
+  ],
   guerreiro: [
     {
       id: 'guerreiro-secondwind',
-      name: 'Segundo Fôlego',
+      name: 'Recuperar Fôlego',
       icon: '💨',
-      maxByLevel: GUERREIRO_WIND,
-      resetOn: 'short',
-      description: 'Ação bônus para recuperar 1d10 + nível de guerreiro PV. Recupera em descanso curto/longo.',
+      maxByLevel: GUERREIRO_FOLEGO,
+      resetOn: 'long',
+      description: 'Ação Bônus para recuperar 1d10 + nível de Guerreiro PV. Usos: 2 (nív 1), 3 (nív 4), 4 (nív 10). Recupera 1 uso em Descanso Curto e todos em Descanso Longo.',
     },
     {
       id: 'guerreiro-actionsurge',
@@ -102,37 +167,72 @@ export const CLASS_RESOURCES: Record<string, ClassResourceTemplate[]> = {
       icon: '⚔️',
       maxByLevel: GUERREIRO_SURTO,
       resetOn: 'short',
-      description: 'Em seu turno, ganhe uma ação adicional (não pode ser usado mais de 1× por turno). Usos: 1 (nív 2), 2 (nív 17). Recupera em descanso curto/longo.',
+      description: 'No seu turno, execute uma ação adicional (exceto Usar Magia). Usos: 1 (nív 2), 2 (nív 17), apenas uma vez por turno. Recupera em Descanso Curto ou Longo.',
+    },
+    {
+      id: 'guerreiro-indomavel',
+      name: 'Indomável',
+      icon: '🛡️',
+      maxByLevel: GUERREIRO_INDOMAVEL,
+      resetOn: 'long',
+      description: 'Ao falhar em uma salvaguarda, jogue-a novamente com bônus igual ao seu nível de Guerreiro. Usos: 1 (nív 9), 2 (nív 13), 3 (nív 17). Recupera em Descanso Longo.',
     },
   ],
   ladino: [
     {
+      // id mantido por compatibilidade com contadores já salvos.
       id: 'ladino-cunningaction',
       name: 'Ataque Furtivo (d6s)',
       icon: '🗡️',
       maxByLevel: LADINO_SNEAK,
-      resetOn: 'short',
-      description: 'Dano extra (d6) 1×/turno quando você tem vantagem ou aliado adjacente ao alvo, com arma de acabamento ou à distância. Não é um recurso limitado — referência da quantidade de d6 por nível. Progressão: +1d6 a cada 2 níveis.',
+      resetOn: 'manual',
+      description: 'Referência, não é um recurso gasto: 1×/turno, dano extra em d6 ao acertar com Vantagem usando arma com Acuidade ou à Distância (ou com um aliado a até 1,5 m do alvo e sem Desvantagem). Quantidade de d6 = metade do nível de Ladino (arredondado para cima).',
+    },
+  ],
+  mago: [
+    {
+      id: 'mago-recuperacao-arcana',
+      name: 'Recuperação Arcana',
+      icon: '📖',
+      maxByLevel: fromLevel(1),
+      resetOn: 'long',
+      description: 'Ao completar um Descanso Curto, recupere espaços de magia gastos com círculo combinado até metade do seu nível de Mago (arredondado para cima), nenhum de 6º círculo ou superior. Recupera em Descanso Longo.',
     },
   ],
   monge: [
     {
       id: 'monge-ki',
-      name: 'Pontos de Ki',
+      name: 'Pontos de Foco',
       icon: '💧',
-      maxByLevel: MONGE_KI,
+      maxByLevel: MONGE_FOCO,
       resetOn: 'short',
-      description: 'Energia mística do monge. Usos básicos: Rajada de Golpes (1pt — 2 ataques desarmados como bônus), Esquiva Marcial (1pt) ou Disparada (1pt). CD de Ki = 8 + prof + Sab. Recupera em descanso curto/longo.',
+      description: 'Gaste 1 ponto como Ação Bônus para: Defesa Paciente (Desengajar e Esquivar), Passo do Vento (Desengajar e Correr, salto dobrado) ou Torrente de Golpes (dois Ataques Desarmados). CD = 8 + Sab + Bônus de Proficiência. Recupera em Descanso Curto ou Longo.',
+    },
+    {
+      id: 'monge-metabolismo-incomum',
+      name: 'Metabolismo Incomum',
+      icon: '🍃',
+      maxByLevel: fromLevel(2),
+      resetOn: 'long',
+      description: 'Ao jogar Iniciativa, restaure todos os Pontos de Foco gastos e recupere PV iguais ao nível de Monge + uma jogada do dado de Artes Marciais. Recupera em Descanso Longo.',
     },
   ],
   paladino: [
+    {
+      id: 'paladino-maos-consagradas',
+      name: 'Mãos Consagradas',
+      icon: '🤲',
+      maxByLevel: PALADINO_MAOS,
+      resetOn: 'long',
+      description: 'Reserva de cura igual a 5 × nível de Paladino. Ação Bônus: toque uma criatura e restaure PV da reserva, ou gaste 5 pontos para remover a condição Envenenado. Recupera em Descanso Longo.',
+    },
     {
       id: 'paladino-channel',
       name: 'Canalizar Divindade',
       icon: '☀️',
       maxByLevel: PALADINO_CD,
-      resetOn: 'short',
-      description: 'Energia divina do juramento. Usos: 1× (nív 3), 2× (nív 7), 3× (nív 15). Opções dependem do juramento (ex: Devoção – Arma Sagrada; Antigos – Natureza Repreendedora). Recupera em descanso curto/longo.',
+      resetOn: 'long',
+      description: 'Efeito inicial: Sentido Divino, além dos efeitos do juramento. Usos: 2 (nív 3), 3 (nív 11). Recupera 1 uso em Descanso Curto e todos em Descanso Longo.',
     },
   ],
 };
@@ -412,16 +512,22 @@ function normalizeSubclass(name?: string): string {
 
 /**
  * Returns default CustomCounter[] for the given class (+ optional subclass) and level.
+ * `abilityModifiers` (ex.: { carisma: 3 }) alimenta recursos cujo máximo é um
+ * modificador de atributo (Inspiração de Bardo); sem ele, usa o valor de reserva.
  */
 export function getDefaultClassCounters(
   classId: string,
   level: number,
   subclassName?: string,
+  abilityModifiers?: Record<string, number>,
 ): Array<{ id: string; name: string; current: number; max: number; resetOn: 'short' | 'long' | 'manual'; icon?: string }> {
   const templates = CLASS_RESOURCES[classId] ?? [];
   const lvlIdx = Math.max(0, Math.min(19, level - 1));
   const base = templates
-    .map(t => ({ id: t.id, name: t.name, icon: t.icon, current: t.maxByLevel[lvlIdx], max: t.maxByLevel[lvlIdx], resetOn: t.resetOn }))
+    .map(t => {
+      const max = resolveResourceMax(t, level, abilityModifiers);
+      return { id: t.id, name: t.name, icon: t.icon, current: max, max, resetOn: resolveResourceReset(t, level) };
+    })
     .filter(c => c.max > 0);
 
   const subKey = normalizeSubclass(subclassName);
