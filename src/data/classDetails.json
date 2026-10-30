@@ -303,17 +303,17 @@
       {
         "id": "bardo-instrumento-1",
         "name": "Escolha um Instrumento Musical",
-        "choices": ["Alaúde", "Charamela", "Flauta", "Flauta de Pã", "Lira", "Tambor", "Trombeta", "Violino", "Xilofone"]
+        "choices": ["Alaúde", "Flauta", "Flauta de Pan", "Gaita de Foles", "Lira", "Oboé", "Tambor", "Trombeta", "Violino", "Xilofone"]
       },
       {
         "id": "bardo-instrumento-2",
         "name": "Escolha um Instrumento Musical",
-        "choices": ["Alaúde", "Charamela", "Flauta", "Flauta de Pã", "Lira", "Tambor", "Trombeta", "Violino", "Xilofone"]
+        "choices": ["Alaúde", "Flauta", "Flauta de Pan", "Gaita de Foles", "Lira", "Oboé", "Tambor", "Trombeta", "Violino", "Xilofone"]
       },
       {
         "id": "bardo-instrumento-3",
         "name": "Escolha um Instrumento Musical",
-        "choices": ["Alaúde", "Charamela", "Flauta", "Flauta de Pã", "Lira", "Tambor", "Trombeta", "Violino", "Xilofone"]
+        "choices": ["Alaúde", "Flauta", "Flauta de Pan", "Gaita de Foles", "Lira", "Oboé", "Tambor", "Trombeta", "Violino", "Xilofone"]
       }
     ],
     "features": [
@@ -1526,7 +1526,7 @@
             "name": "Escolha um Idioma",
             "choices": [
               "Abissal", "Anão", "Celestial", "Comum", "Dracônico", "Dialeto Obscuro",
-              "Élfico", "Gigante", "Gnômico", "Goblin", "Infernal", "Linguagem de Sinais Comum",
+              "Élfico", "Gigante", "Gnômico", "Goblin", "Infernal", "Língua de Sinais Comum",
               "Orc", "Pequenino", "Primordial", "Silvestre", "Subcomum"
             ]
           }
@@ -1810,14 +1810,33 @@
         "id": "monge-ferramenta",
         "name": "Escolha Ferramentas de Artesão ou Instrumento Musical",
         "choices": [
-          "Alaúde", "Charamela", "Flauta", "Flauta de Pã",
-          "Ferramentas de Alvenaria", "Ferramentas de Calígrafo", "Ferramentas de Carpinteiro",
-          "Ferramentas de Cartógrafo", "Ferramentas de Costureiro", "Ferramentas de Coureiro",
-          "Ferramentas de Ferreiro", "Ferramentas de Joalheiro", "Ferramentas de Oleiro",
-          "Ferramentas de Pintor", "Ferramentas de Sapateiro", "Ferramentas de Soprador de Vidro",
-          "Ferramentas de Tecelão", "Ferramentas de Trabalhador em Madeira",
-          "Lira", "Suprimentos de Alquimista", "Suprimentos de Cervejeiro",
-          "Tambor", "Trombeta", "Utensílios de Cozinheiro", "Violino", "Xilofone"
+          "Alaúde",
+          "Ferramentas de Carpinteiro",
+          "Ferramentas de Cartógrafo",
+          "Ferramentas de Coureiro",
+          "Ferramentas de Entalhador",
+          "Ferramentas de Ferreiro",
+          "Ferramentas de Funileiro",
+          "Ferramentas de Joalheiro",
+          "Ferramentas de Oleiro",
+          "Ferramentas de Pedreiro",
+          "Ferramentas de Sapateiro",
+          "Ferramentas de Tecelão",
+          "Ferramentas de Vidreiro",
+          "Flauta",
+          "Flauta de Pan",
+          "Gaita de Foles",
+          "Lira",
+          "Oboé",
+          "Suprimentos de Alquimista",
+          "Suprimentos de Calígrafo",
+          "Suprimentos de Cervejeiro",
+          "Suprimentos de Pintor",
+          "Tambor",
+          "Trombeta",
+          "Utensílios de Cozinheiro",
+          "Violino",
+          "Xilofone"
         ]
       }
     ],

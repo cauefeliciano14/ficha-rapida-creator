@@ -25,16 +25,17 @@ export const SKILLS = [
 ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
 export const ARTISAN_TOOLS = [
-  "Ferramentas de Alvenaria", "Ferramentas de Calígrafo", "Ferramentas de Carpinteiro",
-  "Ferramentas de Cartógrafo", "Ferramentas de Costureiro", "Ferramentas de Coureiro",
-  "Ferramentas de Ferreiro", "Ferramentas de Joalheiro", "Ferramentas de Oleiro",
-  "Ferramentas de Pintor", "Ferramentas de Sapateiro", "Ferramentas de Soprador de Vidro",
-  "Ferramentas de Tecelão", "Ferramentas de Trabalhador em Madeira", "Suprimentos de Alquimista",
-  "Suprimentos de Cervejeiro", "Utensílios de Cozinheiro"
+  "Ferramentas de Carpinteiro", "Ferramentas de Cartógrafo", "Ferramentas de Coureiro", "Ferramentas de Entalhador", "Ferramentas de Ferreiro", "Ferramentas de Funileiro", "Ferramentas de Joalheiro", "Ferramentas de Oleiro", "Ferramentas de Pedreiro", "Ferramentas de Sapateiro", "Ferramentas de Tecelão", "Ferramentas de Vidreiro", "Suprimentos de Alquimista", "Suprimentos de Calígrafo", "Suprimentos de Cervejeiro", "Suprimentos de Pintor", "Utensílios de Cozinheiro"
 ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
+/** Tabela Fabricação Rápida do talento Artifista (Livro do Jogador 2024). */
+export const ARTIFISTA_TOOLS = [
+  "Ferramentas de Carpinteiro", "Ferramentas de Coureiro", "Ferramentas de Entalhador", "Ferramentas de Ferreiro",
+  "Ferramentas de Funileiro", "Ferramentas de Oleiro", "Ferramentas de Pedreiro", "Ferramentas de Tecelão"
+];
+
 export const MUSICAL_INSTRUMENTS = [
-  "Alaúde", "Charamela", "Flauta", "Flauta de Pã", "Lira", "Tambor", "Trombeta", "Violino", "Xilofone"
+  "Alaúde", "Flauta", "Flauta de Pan", "Gaita de Foles", "Lira", "Oboé", "Tambor", "Trombeta", "Violino", "Xilofone"
 ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
 export const GAMING_SETS = [
@@ -45,11 +46,11 @@ export const GAMING_SETS = [
 ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
 export const OTHER_TOOLS = [
-  "Ferramentas de Ladrão", "Ferramentas de Navegador", "Ferramentas de Veneneiro",
+  "Ferramentas de Ladrão", "Ferramentas de Navegador", "Kit de Veneno",
   "Kit de Disfarce", "Kit de Falsificação", "Kit de Herbalismo"
 ].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-export const ALL_TOOLS = [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS, ...OTHER_TOOLS].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+export const ALL_TOOLS = [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS, ...GAMING_SETS, ...OTHER_TOOLS].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
 export const DAMAGE_TYPES_ELEMENTAL = [
   "Ácido", "Elétrico", "Gélido", "Ígneo", "Trovejante"
@@ -114,12 +115,12 @@ export interface TalentChoiceDef {
 
 export const TALENT_CHOICES_CONFIG: Record<string, TalentChoiceDef> = {
   // TALENTOS DE ORIGEM
-  "Artífice": {
-    description: "Escolha 3 Ferramentas de Artesão diferentes para concluir este talento.",
+  "Artifista": {
+    description: "Escolha 3 Ferramentas de Artesão da tabela Fabricação Rápida.",
     fields: [
-      { key: "tool1", label: "Ferramenta 1", type: "select", options: ARTISAN_TOOLS, excludeSelectedFrom: ["tool2", "tool3"] },
-      { key: "tool2", label: "Ferramenta 2", type: "select", options: ARTISAN_TOOLS, excludeSelectedFrom: ["tool1", "tool3"] },
-      { key: "tool3", label: "Ferramenta 3", type: "select", options: ARTISAN_TOOLS, excludeSelectedFrom: ["tool1", "tool2"] }
+      { key: "tool1", label: "Ferramenta 1", type: "select", options: ARTIFISTA_TOOLS, excludeSelectedFrom: ["tool2", "tool3"] },
+      { key: "tool2", label: "Ferramenta 2", type: "select", options: ARTIFISTA_TOOLS, excludeSelectedFrom: ["tool1", "tool3"] },
+      { key: "tool3", label: "Ferramenta 3", type: "select", options: ARTIFISTA_TOOLS, excludeSelectedFrom: ["tool1", "tool2"] }
     ],
     summaryResolver: (s) => [s.tool1, s.tool2, s.tool3].filter(Boolean).join(", ")
   },

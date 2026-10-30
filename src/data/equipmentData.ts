@@ -160,16 +160,16 @@ export const kitContents: Record<string, string> = {
 };
 
 export const itemSubChoices: Record<string, string[]> = {
-  "Kit de Jogos": ["Baralho", "Dados de Osso", "Jogo de Damas", "Jogo de Xadrez Dracônico"],
-  "Kit de Jogo": ["Baralho", "Dados de Osso", "Jogo de Damas", "Jogo de Xadrez Dracônico"],
-  "Instrumento Musical": ["Alaúde", "Flauta", "Flauta de Pã", "Gaita de Foles", "Lira", "Tambor", "Trombeta", "Violino"],
+  "Kit de Jogos": ["Baralho", "Conjunto do Jogo dos Três Dragões", "Dados", "Xadrez-do-Dragão"],
+  "Kit de Jogo": ["Baralho", "Conjunto do Jogo dos Três Dragões", "Dados", "Xadrez-do-Dragão"],
+  "Instrumento Musical": ["Alaúde", "Flauta", "Flauta de Pan", "Gaita de Foles", "Lira", "Oboé", "Tambor", "Trombeta", "Violino", "Xilofone"],
   "Ferramentas de Artesão": [
     "Ferramentas de Carpinteiro", "Ferramentas de Cartógrafo", "Ferramentas de Coureiro",
     "Ferramentas de Entalhador", "Ferramentas de Ferreiro", "Ferramentas de Funileiro",
     "Ferramentas de Joalheiro", "Ferramentas de Oleiro", "Ferramentas de Pedreiro",
-    "Ferramentas de Pintor", "Ferramentas de Sapateiro", "Ferramentas de Soprador de Vidro",
-    "Ferramentas de Tecelão", "Suprimentos de Alquimista", "Suprimentos de Calígrafo",
-    "Suprimentos de Cervejeiro", "Utensílios de Cozinheiro"
+    "Ferramentas de Sapateiro", "Ferramentas de Tecelão", "Ferramentas de Vidreiro",
+    "Suprimentos de Alquimista", "Suprimentos de Calígrafo", "Suprimentos de Cervejeiro",
+    "Suprimentos de Pintor", "Utensílios de Cozinheiro"
   ],
   "Foco Arcano": ["Bastão", "Cajado", "Cristal", "Orbe", "Varinha"],
   "Foco Druídico": ["Cajado", "Ramo de Visco", "Totem", "Varinha de Teixo"],

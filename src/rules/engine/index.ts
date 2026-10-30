@@ -129,7 +129,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
 
   const conMod = modifiers['constituicao'] ?? 0;
   const speciesChoices = normalizeSpeciesChoices(choices);
-  const speciesEffects = speciesId ? getSpeciesLevelOneEffects(speciesId, speciesChoices) : undefined;
+  const speciesEffects = speciesId ? getSpeciesLevelOneEffects(speciesId, speciesChoices, level) : undefined;
 
   const speciesHpBonus = (speciesEffects?.maxHpBonusPerLevel ?? 0) * level;
   const talentHpBonus = appliedTalentEffects.reduce((sum, effect) => sum + (effect?.maxHpBonus ?? 0), 0);
@@ -199,8 +199,9 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     armorProficiencies: merged.armorCategories,
   });
   const isUnarmored = !choices.equippedArmorId;
+  // Defensivo (Estilo de Luta): +1 só vestindo armadura Leve, Média ou Pesada.
   const armorClass = baseAC
-    + (hasDefensivo ? 1 : 0)
+    + (hasDefensivo && !isUnarmored ? 1 : 0)
     + magicEffects.acBonus
     + (isUnarmored ? magicEffects.acBonusUnarmored : 0);
 

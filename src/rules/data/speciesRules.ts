@@ -1,4 +1,5 @@
 import speciesJson from '../../data/species.json';
+import { getProficiencyBonus } from '../calculators/proficiency';
 
 interface RawSpeciesTrait {
   title: string;
@@ -117,7 +118,8 @@ export function getSpecialSenses(speciesId: string): string[] {
   const species = getSpeciesData(speciesId);
   if (!species) return [];
   return species.racialTraits
-    .filter(t => /visão|sentido/i.test(t.title))
+    // "Sentidos Aguçados" do Elfo é perícia, não sentido especial.
+    .filter(t => /visão/i.test(t.title))
     .map(t => {
       const alcance = t.description.match(/alcance de ([\d,]+ metros)/i);
       return alcance ? `${t.title} (${alcance[1]})` : t.title;
@@ -136,7 +138,26 @@ function unique(values: string[] = []): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
-export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<string, string> = {}): SpeciesLevelOneEffects {
+/** Magias de linhagem dos níveis 3 e 5 (Elfo e Tiferino), sempre preparadas. */
+function getLineageSpellsUpToLevel(speciesId: string, lineageId: string | undefined, level: number): string[] {
+  if (!lineageId) return [];
+  const lineage = getSpeciesData(speciesId)?.lineage?.choices.find(c => c.id === lineageId);
+  if (!lineage) return [];
+  const spells: string[] = [];
+  if (level >= 3 && lineage.nv3) spells.push(lineage.nv3);
+  if (level >= 5 && lineage.nv5) spells.push(lineage.nv5);
+  return spells;
+}
+
+function breathWeaponDice(level: number): string {
+  if (level >= 17) return '4d10';
+  if (level >= 11) return '3d10';
+  if (level >= 5) return '2d10';
+  return '1d10';
+}
+
+export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<string, string> = {}, level = 1): SpeciesLevelOneEffects {
+  const pb = getProficiencyBonus(level);
   const baseEffects: SpeciesLevelOneEffects = {
     speed: getSpeciesSpeed(speciesId),
     specialSenses: getSpecialSenses(speciesId),
@@ -151,19 +172,21 @@ export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<str
     case 'aasimar':
       baseEffects.derivedDefenses?.push('Resistência a Necrótico', 'Resistência a Radiante');
       baseEffects.racialCantrips?.push('Luz');
-      baseEffects.notes?.push('Mãos Curativas: uma vez por Descanso Longo, cura 2d4 PV no nível 1.');
+      baseEffects.notes?.push(`Mãos Curativas: uma vez por Descanso Longo, cura ${pb}d4 PV (um d4 por ponto de Bônus de Proficiência).`);
+      if (level >= 3) baseEffects.notes?.push('Revelação Celestial: uma vez por Descanso Longo, ação bônus para se transformar por 1 minuto.');
       break;
     case 'anao':
       baseEffects.derivedDefenses?.push('Resistência a Venenoso', 'Vantagem contra Envenenado');
       baseEffects.specialSenses?.push('Sismiconsciência (18 metros, por 10 minutos ao tocar pedra)');
-      baseEffects.notes?.push('Conhecimento de Pedras: como ação bônus, ganha Sismiconsciência por 10 minutos ao tocar pedra.');
+      baseEffects.notes?.push(`Conhecimento de Pedras: como ação bônus, ganha Sismiconsciência por 10 minutos estando sobre pedra ou tocando-a. ${pb} usos por Descanso Longo.`);
       baseEffects.maxHpBonusPerLevel = 1;
       break;
     case 'draconato': {
       const lineage = choices.draconato;
       const resistance = lineage ? DRACONIC_RESISTANCE_BY_LINEAGE[lineage] : undefined;
       if (resistance) baseEffects.derivedDefenses?.push(resistance);
-      baseEffects.notes?.push('Ataque de Sopro: substitui um ataque por cone de 4,5m ou linha de 9m que causa 1d10 do tipo da herança.');
+      baseEffects.notes?.push(`Ataque de Sopro: substitui um ataque por cone de 4,5m ou linha de 9m × 1,5m; ${breathWeaponDice(level)} do tipo da herança, salvaguarda de Destreza CD 8 + mod. de Constituição + Bônus de Proficiência. ${pb} usos por Descanso Longo.`);
+      if (level >= 5) baseEffects.notes?.push('Voo Dracônico: uma vez por Descanso Longo, ação bônus para ganhar Deslocamento de Voo igual ao seu Deslocamento por 10 minutos.');
       break;
     }
     case 'elfo': {
@@ -177,6 +200,7 @@ export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<str
       if (lineageEffects?.racialCantrips?.length) baseEffects.racialCantrips?.push(...lineageEffects.racialCantrips);
       if (lineage === 'alto-elfo' && choices.cantrip) baseEffects.racialCantrips?.push(choices.cantrip);
       if (lineageEffects?.notes?.length) baseEffects.notes?.push(...lineageEffects.notes);
+      baseEffects.preparedSpells?.push(...getLineageSpellsUpToLevel('elfo', lineage, level));
       break;
     }
     case 'gnomo': {
@@ -195,6 +219,7 @@ export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<str
       const lineage = choices.golias;
       const lineageNote = lineage ? GOLIATH_NOTES_BY_LINEAGE[lineage] : undefined;
       if (lineageNote) baseEffects.notes?.push(lineageNote);
+      if (level >= 5) baseEffects.notes?.push('Forma Grande: uma vez por Descanso Longo, ação bônus para ficar Grande por 10 minutos (se houver espaço), com Vantagem em testes de Força e +3 m de Deslocamento.');
       break;
     }
     case 'humano':
@@ -203,7 +228,7 @@ export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<str
       break;
     case 'orc':
       baseEffects.notes?.push(
-        'Pico de Adrenalina: ação bônus para Correr e ganhar PV temporários iguais ao bônus de proficiência.',
+        `Pico de Adrenalina: ação bônus para Correr e ganhar PV temporários iguais ao Bônus de Proficiência. ${pb} usos por Descanso Curto ou Longo.`,
         'Vigor Implacável: ao cair a 0 PV, fica com 1 PV uma vez por Descanso Longo.',
       );
       break;
@@ -221,6 +246,7 @@ export function getSpeciesLevelOneEffects(speciesId: string, choices: Record<str
       if (lineageEffects?.derivedDefenses?.length) baseEffects.derivedDefenses?.push(...lineageEffects.derivedDefenses);
       baseEffects.racialCantrips?.push('Taumaturgia');
       if (lineageEffects?.racialCantrips?.length) baseEffects.racialCantrips?.push(...lineageEffects.racialCantrips);
+      baseEffects.preparedSpells?.push(...getLineageSpellsUpToLevel('tiferino', lineage, level));
       break;
     }
     default:
