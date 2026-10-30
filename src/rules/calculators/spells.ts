@@ -156,50 +156,21 @@ export function getSpellSlots(classId: string, level: number): SpellSlots | null
 // ---------------------------------------------------------------------------
 
 /**
- * Retorna o número de magias preparadas para o nível 1 (ou nível fornecido).
+ * Retorna o número de magias preparadas no nível informado.
  *
- * Regras por classe:
- * - Mago: INT mod + nível (mínimo 1)
- * - Clérigo/Druida: WIS mod + nível (mínimo 1)
- * - Paladino: CHA mod + floor(nível/2), mínimo 1
- * - Guardião: preparedSpellsByLevel fixo da tabela (2 no nível 1)
- * - Bardo: preparedSpellsByLevel fixo da tabela (4 no nível 1)
- * - Bruxo/Feiticeiro: spellSlotsKnownByLevel fixo (não preparam, conhecem)
+ * Nas regras de 2024 toda classe conjuradora prepara magias por uma tabela fixa
+ * (coluna "Magias Preparadas"); o modificador de atributo não entra mais na conta.
  */
 export function getPreparedSpellCount(
   classId: string,
   level: number,
-  spellcastingAbilityModifier: number
+  _spellcastingAbilityModifier?: number
 ): number {
   const data = getClassSpellcastingData(classId);
   if (!data?.isCaster) return 0;
 
   const idx = Math.max(0, Math.min(level - 1, 19));
-
-  switch (classId) {
-    case 'mago':
-    case 'clerigo':
-    case 'druida':
-      // Mod + nível, mínimo 1
-      return Math.max(1, spellcastingAbilityModifier + level);
-
-    case 'paladino':
-      // CHA mod + floor(nível/2), mínimo 1
-      return Math.max(1, spellcastingAbilityModifier + Math.floor(level / 2));
-
-    case 'guardiao':
-    case 'bardo':
-      // Tabela fixa
-      return data.preparedSpellsByLevel?.[idx] ?? 0;
-
-    case 'bruxo':
-    case 'feiticeiro':
-      // Conhecem (não preparam) — retornar o total de magias conhecidas
-      return data.spellSlotsKnownByLevel?.[idx] ?? 0;
-
-    default:
-      return 0;
-  }
+  return data.preparedSpellsByLevel?.[idx] ?? 0;
 }
 
 // ---------------------------------------------------------------------------

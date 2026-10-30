@@ -73,6 +73,10 @@ function getWeaponTrainingLabels(weapon: WeaponEntry): string[] {
   }
   if (weapon.category === 'martialMelee' || weapon.category === 'martialRanged') {
     labels.push('Armas Marciais');
+    // Ladino e Monge (2024) treinam só parte das marciais, pela propriedade da arma.
+    const isLight = /\bleve\b/i.test(weapon.properties);
+    if (weapon.isFinesse || isLight) labels.push('Armas Marciais com Acuidade ou Leve');
+    if (isLight) labels.push('Armas Marciais com Leve');
   }
   return labels;
 }

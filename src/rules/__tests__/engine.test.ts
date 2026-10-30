@@ -505,3 +505,38 @@ describe('Escolhas de espécie no engine', () => {
     ]));
   });
 });
+
+// ---------------------------------------------------------------------------
+// GOLDEN TEST — Mago Humano (Eremita), ficha real de mesa
+// Antes: perícias do antecedente sem bônus ("Medicina (SAB)" não casava com
+// "Medicina"), armas do Mago pela lista de 2014 e 3 magias preparadas (INT + nível).
+// ---------------------------------------------------------------------------
+describe('Golden Test — Mago Humano (Eremita)', () => {
+  const sheet = deriveSheet(makeChoices({
+    classId: 'mago',
+    backgroundId: 'eremita',
+    speciesId: 'humano',
+    baseAttributes: {
+      forca: 13, destreza: 12, constituicao: 12,
+      inteligencia: 15, sabedoria: 12, carisma: 12,
+    },
+    featureChoices: { 'mago-skill-1': 'Arcanismo', 'mago-skill-2': 'História' },
+    inventoryWeapons: ['Cajado', 'Adaga'],
+  }));
+  const skill = (label: string) => sheet.skills.find(s => s.label === label)?.modifier;
+  const attack = (name: string) => sheet.weaponAttacks.find(a => a.weaponName === name)?.attackBonus;
+
+  it('Medicina +3 e Religião +4 (perícias do Eremita)', () => {
+    expect(skill('Medicina')).toBe(3);
+    expect(skill('Religião')).toBe(4);
+  });
+  it('Mago treina Armas Simples: Cajado e Adaga +3', () => {
+    expect(sheet.weaponProficiencies).toEqual(['Armas Simples']);
+    expect(attack('Cajado')).toBe(3);
+    expect(attack('Adaga')).toBe(3);
+  });
+  it('4 magias preparadas e 3 truques no nível 1', () => {
+    expect(sheet.preparedSpellCount).toBe(4);
+    expect(sheet.cantripsKnown).toBe(3);
+  });
+});

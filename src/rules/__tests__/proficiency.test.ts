@@ -66,14 +66,14 @@ describe('getClassBaseProficiencies', () => {
 describe('getBackgroundProficiencies', () => {
   it('soldado tem perícias de Atletismo e Intimidação', () => {
     const profs = getBackgroundProficiencies('soldado');
-    expect(profs.skills).toContain('Atletismo (FOR)');
-    expect(profs.skills).toContain('Intimidação (CAR)');
+    expect(profs.skills).toContain('Atletismo');
+    expect(profs.skills).toContain('Intimidação');
   });
 
   it('sabio tem perícias de Arcanismo e História', () => {
     const profs = getBackgroundProficiencies('sabio');
-    expect(profs.skills).toContain('Arcanismo (INT)');
-    expect(profs.skills).toContain('História (INT)');
+    expect(profs.skills).toContain('Arcanismo');
+    expect(profs.skills).toContain('História');
   });
 
   it('antecedente desconhecido retorna vazio', () => {

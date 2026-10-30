@@ -401,13 +401,12 @@ describe('Validação de magia — Guerreiro (non-caster)', () => {
   });
 });
 
-describe('Validação de magia — Bruxo (known) vs Bardo (prepared)', () => {
+describe('Validação de magia — Bruxo e Bardo preparam pela tabela (2024)', () => {
   const bruxo = getClassSpellcastingData('bruxo')!;
   const bardo = getClassSpellcastingData('bardo')!;
 
-  it('bruxo usa spellSlotsKnownByLevel (known)', () => {
-    expect(bruxo.spellSlotsKnownByLevel).toBeDefined();
-    expect(bruxo.preparedSpellsByLevel).toBeUndefined();
+  it('bruxo usa preparedSpellsByLevel (2 no nível 1)', () => {
+    expect(bruxo.preparedSpellsByLevel?.[0]).toBe(2);
   });
 
   it('bardo usa preparedSpellsByLevel (prepared)', () => {

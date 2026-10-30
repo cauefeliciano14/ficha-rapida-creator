@@ -38,6 +38,11 @@ function parseAllowedAttributes(values: string[]): AttributeKey[] {
     .filter((v): v is AttributeKey => v !== undefined);
 }
 
+/** "Medicina (SAB)" -> "Medicina": o JSON traz o atributo junto, mas a ficha casa pelo nome puro. */
+function stripAttributeSuffix(skill: string): string {
+  return skill.replace(/\s*\([^)]*\)\s*$/, '').trim();
+}
+
 // Carregar e transformar os dados
 const rawList = (backgroundsJson as { backgrounds: RawBackground[] }).backgrounds;
 
@@ -49,7 +54,7 @@ const BACKGROUND_MAP: Map<string, BackgroundData> = new Map(
       name: b.name,
       allowedBonusAttributes: parseAllowedAttributes(b.attributeValues),
       talent: b.talent,
-      skillProficiencies: b.skillProficiencies,
+      skillProficiencies: b.skillProficiencies.map(stripAttributeSuffix),
       toolProficiency: b.toolProficiency,
       equipment: b.equipment,
     },

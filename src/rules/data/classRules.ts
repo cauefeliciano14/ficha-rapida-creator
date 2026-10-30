@@ -25,7 +25,6 @@ export interface ClassSpellcastingData {
   castingProgression: 1 | 0.5 | 'pact' | 0;
   cantripsKnownByLevel: number[];     // índice = nível-1 (20 entradas)
   preparedSpellsByLevel?: number[];   // para classes que preparam (índice = nível-1)
-  spellSlotsKnownByLevel?: number[];  // para Bruxo/Feiticeiro que "conhecem"
 }
 
 // ---------------------------------------------------------------------------
@@ -63,7 +62,7 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
     savingThrows: ['Destreza', 'Carisma'],
     skillChoicePool: ['Acrobacia', 'Atletismo', 'Atuação', 'Enganação', 'História', 'Intuição', 'Intimidação', 'Investigação', 'Medicina', 'Natureza', 'Percepção', 'Persuasão', 'Prestidigitação', 'Religião', 'Sobrevivência'],
     skillChoiceCount: 3,
-    weaponProficiencies: ['Armas Simples', 'Bestas de Mão', 'Espadas Longas', 'Rapieiras', 'Espadas Curtas'],
+    weaponProficiencies: ['Armas Simples'],
     armorProficiencies: ['Armadura Leve'],
   },
   bruxo: {
@@ -85,7 +84,7 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
     skillChoicePool: ['Arcanismo', 'Atletismo', 'Intuição', 'Lidar com Animais', 'Medicina', 'Natureza', 'Percepção', 'Religião', 'Sobrevivência'],
     skillChoiceCount: 2,
     weaponProficiencies: ['Armas Simples'],
-    armorProficiencies: ['Armadura Leve', 'Armadura Média', 'Escudo'],
+    armorProficiencies: ['Armadura Leve', 'Escudo'],
   },
   feiticeiro: {
     savingThrows: ['Constituição', 'Carisma'],
@@ -112,21 +111,21 @@ export const CLASS_PROFICIENCY_DATA: Record<string, ClassProficiencyData> = {
     savingThrows: ['Destreza', 'Inteligência'],
     skillChoicePool: ['Acrobacia', 'Atletismo', 'Atuação', 'Enganação', 'Furtividade', 'Intimidação', 'Investigação', 'Percepção', 'Persuasão', 'Prestidigitação'],
     skillChoiceCount: 4,
-    weaponProficiencies: ['Armas Simples', 'Bestão de Mão', 'Espadas Longas', 'Rapieiras', 'Espadas Curtas'],
+    weaponProficiencies: ['Armas Simples', 'Armas Marciais com Acuidade ou Leve'],
     armorProficiencies: ['Armadura Leve'],
   },
   mago: {
     savingThrows: ['Inteligência', 'Sabedoria'],
     skillChoicePool: ['Arcanismo', 'História', 'Intuição', 'Investigação', 'Medicina', 'Religião'],
     skillChoiceCount: 2,
-    weaponProficiencies: ['Adagas', 'Dardos', 'Fundas', 'Cajados', 'Bestas Leves'],
+    weaponProficiencies: ['Armas Simples'],
     armorProficiencies: [],
   },
   monge: {
     savingThrows: ['Força', 'Destreza'],
     skillChoicePool: ['Acrobacia', 'Atletismo', 'História', 'Intuição', 'Religião', 'Furtividade'],
     skillChoiceCount: 2,
-    weaponProficiencies: ['Armas Simples', 'Espadas Curtas'],
+    weaponProficiencies: ['Armas Simples', 'Armas Marciais com Leve'],
     armorProficiencies: [],
   },
   paladino: {
@@ -149,12 +148,12 @@ export const CLASS_SPELLCASTING_DATA: Record<string, ClassSpellcastingData> = {
   monge:      { isCaster: false, castingProgression: 0, cantripsKnownByLevel: Array(20).fill(0) },
   ladino:     { isCaster: false, castingProgression: 0, cantripsKnownByLevel: Array(20).fill(0) },
 
+  // Coluna "Magias Preparadas" das tabelas de classe do Livro do Jogador 2024.
   bardo: {
     isCaster: true,
     spellcastingAbility: 'carisma',
     castingProgression: 1,
     cantripsKnownByLevel: [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],
-    // Bardo prepara magias (D&D 2024): 4 no nível 1, sobe pela tabela
     preparedSpellsByLevel: [4,5,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
   },
   clerigo: {
@@ -162,53 +161,49 @@ export const CLASS_SPELLCASTING_DATA: Record<string, ClassSpellcastingData> = {
     spellcastingAbility: 'sabedoria',
     castingProgression: 1,
     cantripsKnownByLevel: [3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],
-    // Clérigo: WIS mod + nível (calculado dinamicamente)
+    preparedSpellsByLevel: [4,5,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
   },
   druida: {
     isCaster: true,
     spellcastingAbility: 'sabedoria',
     castingProgression: 1,
     cantripsKnownByLevel: [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],
-    // Druida: WIS mod + nível (calculado dinamicamente)
+    preparedSpellsByLevel: [4,5,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
   },
   feiticeiro: {
     isCaster: true,
     spellcastingAbility: 'carisma',
     castingProgression: 1,
-    cantripsKnownByLevel: [4,4,4,5,5,5,6,6,6,7,7,7,7,7,7,7,7,7,7,7],
-    // Feiticeiro conhece magias (não prepara): 2 no nível 1
-    spellSlotsKnownByLevel: [2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,15,15,15,15,15],
+    cantripsKnownByLevel: [4,4,4,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6],
+    preparedSpellsByLevel: [2,4,6,7,9,10,11,12,14,15,16,16,17,17,18,18,19,20,21,22],
   },
   guardiao: {
     isCaster: true,
     spellcastingAbility: 'sabedoria',
     castingProgression: 0.5,
     cantripsKnownByLevel: Array(20).fill(0),
-    // Guardião: tabela fixa conforme PHB 2024 ("Magias Preparadas" column) — 2 no nível 1
-    preparedSpellsByLevel: [2,3,4,4,5,5,6,6,7,7,7,7,7,7,7,7,7,7,7,7],
+    preparedSpellsByLevel: [2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15],
   },
   mago: {
     isCaster: true,
     spellcastingAbility: 'inteligencia',
     castingProgression: 1,
     cantripsKnownByLevel: [3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],
-    // Mago: INT mod + nível (calculado dinamicamente)
+    preparedSpellsByLevel: [4,5,6,7,9,10,11,12,14,15,16,16,17,18,19,21,22,23,24,25],
   },
   paladino: {
     isCaster: true,
     spellcastingAbility: 'carisma',
     castingProgression: 0.5,
     cantripsKnownByLevel: Array(20).fill(0),
-    // Paladino: CHA mod + floor(level/2), mínimo 1
-    preparedSpellsByLevel: [2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15],
+    preparedSpellsByLevel: [2,3,4,5,6,6,7,7,9,9,10,10,11,11,12,12,14,14,15,15],
   },
   bruxo: {
     isCaster: true,
     spellcastingAbility: 'carisma',
     castingProgression: 'pact',
     cantripsKnownByLevel: [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],
-    // Bruxo conhece magias: 2 no nível 1
-    spellSlotsKnownByLevel: [2,3,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],
+    preparedSpellsByLevel: [2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,15,15],
   },
 };
 

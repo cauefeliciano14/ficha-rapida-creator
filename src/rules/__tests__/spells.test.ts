@@ -104,29 +104,27 @@ describe('getSpellSlots nível 1', () => {
 // getPreparedSpellCount — nível 1
 // ---------------------------------------------------------------------------
 describe('getPreparedSpellCount nível 1', () => {
-  it('mago INT+3, nível 1 → 4 magias', () => {
-    expect(getPreparedSpellCount('mago', 1, 3)).toBe(4); // 3+1=4
+  // 2024: tabela fixa por classe; o modificador do atributo não altera a conta.
+  it('mago nível 1 → 4, com qualquer INT', () => {
+    expect(getPreparedSpellCount('mago', 1, 3)).toBe(4);
+    expect(getPreparedSpellCount('mago', 1, -1)).toBe(4);
   });
 
-  it('mago INT-1, nível 1 → 1 magia (mínimo 1)', () => {
-    expect(getPreparedSpellCount('mago', 1, -1)).toBe(1);
-  });
-
-  it('clerigo WIS+3, nível 1 → 4 magias', () => {
+  it('clerigo nível 1 → 4', () => {
     expect(getPreparedSpellCount('clerigo', 1, 3)).toBe(4);
   });
 
-  it('druida WIS+2, nível 1 → 3 magias', () => {
-    expect(getPreparedSpellCount('druida', 1, 2)).toBe(3);
+  it('druida nível 1 → 4', () => {
+    expect(getPreparedSpellCount('druida', 1, 2)).toBe(4);
   });
 
-  it('paladino CHA+2, nível 1 → max(1, 2+0)=2', () => {
-    // floor(1/2)=0; 2+0=2
+  it('paladino nível 1 → 2, com qualquer CAR', () => {
     expect(getPreparedSpellCount('paladino', 1, 2)).toBe(2);
+    expect(getPreparedSpellCount('paladino', 1, 0)).toBe(2);
   });
 
-  it('paladino CHA+0, nível 1 → 1 (mínimo)', () => {
-    expect(getPreparedSpellCount('paladino', 1, 0)).toBe(1);
+  it('mago nível 20 → 25', () => {
+    expect(getPreparedSpellCount('mago', 20, 5)).toBe(25);
   });
 
   it('bardo nível 1 → 4 (tabela fixa)', () => {

@@ -263,7 +263,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const allSelections = React.useMemo(() => {
     const baseChoices = Object.values(character.choices);
     const talentChoices = Object.values(character.talentSelections).flatMap(s => Object.values(s));
-    const bgSkills = selectedBackground?.skillProficiencies || [];
+    const bgSkills = (selectedBackground?.skillProficiencies || []).map((s: string) => s.replace(/\s*\([^)]*\)/g, '').trim());
 
     return [
       ...baseChoices,
