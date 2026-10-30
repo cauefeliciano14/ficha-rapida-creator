@@ -1,6 +1,6 @@
 import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import { ATTR_ABBR } from './attributeConstants';
-import { signedMod } from './format';
+import { signedMod, withSquares } from './format';
 import { getLanguageDisplayNames } from './languagePresentation';
 
 /**
@@ -65,7 +65,7 @@ export function buildPrintableSheetHtml(d: PrintableSheetData): string {
     ? s.weaponAttacks.map(a => `
       <tr><td>${esc(a.weaponName)}</td><td>${esc(signedMod(a.attackBonus))}</td>
       <td>${esc(a.damageDice)}${a.damageBonus ? esc(signedMod(a.damageBonus)) : ''} ${esc(a.damageType)}</td>
-      <td>${esc(a.range)}</td><td>${esc(a.properties.join(', '))}</td></tr>`).join('')
+      <td>${esc(withSquares(a.range))}</td><td>${esc(a.properties.join(', '))}</td></tr>`).join('')
     : '<tr><td colspan="5">—</td></tr>';
 
   const slots = Object.entries(s.spellSlots ?? {})
@@ -152,7 +152,7 @@ export function buildPrintableSheetHtml(d: PrintableSheetData): string {
     <div class="box"><div class="lbl">PV máx.</div><div class="val">${esc(d.maxHp)}</div></div>
     <div class="box"><div class="lbl">CA</div><div class="val">${esc(s.armorClass)}</div></div>
     <div class="box"><div class="lbl">Iniciativa</div><div class="val">${esc(signedMod(s.initiative))}</div></div>
-    <div class="box"><div class="lbl">Deslocamento</div><div class="val sm">${esc(s.speed)}</div></div>
+    <div class="box"><div class="lbl">Deslocamento</div><div class="val sm">${esc(withSquares(s.speed))}</div></div>
     <div class="box"><div class="lbl">Proficiência</div><div class="val">${esc(signedMod(s.proficiencyBonus))}</div></div>
     <div class="box"><div class="lbl">Dado de vida</div><div class="val sm">${esc(s.hitDie)}</div></div>
     <div class="box"><div class="lbl">Percepção passiva</div><div class="val">${esc(s.passivePerception)}</div></div>

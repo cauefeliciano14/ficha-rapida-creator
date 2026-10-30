@@ -5,7 +5,7 @@ import type { DiceRollResult, AdvantageMode } from '../../utils/diceRoller';
 import type { CharacterAppearance, PersonalityTraits, CharacterIdentityUpdate } from '../../types/character';
 import { rollD20Check, rollDamage } from '../../utils/diceRoller';
 
-import { signedMod } from '../../utils/format';
+import { signedMod, withSquares, parseMeters, metersToSquares } from '../../utils/format';
 import { openPrintableSheet } from '../../utils/printSheet';
 import { ATTR_ABBR } from '../../utils/attributeConstants';
 import { SheetHeader } from './SheetHeader';
@@ -603,7 +603,7 @@ export function CharacterSheetPage({
         return (
           <AttackDetailPanel
             weaponName={sidebar.attack.weaponName}
-            range={sidebar.attack.range}
+            range={withSquares(sidebar.attack.range)}
             properties={sidebar.attack.properties}
             hitResult={sidebar.hitResult}
             damageResult={sidebar.damageResult}
@@ -627,7 +627,7 @@ export function CharacterSheetPage({
         return (
           <div>
             <div className={styles.sidebarInfoItem}>
-              <span>{derivedSheet.speed}</span>
+              <span>{withSquares(derivedSheet.speed)}</span>
             </div>
             <div className={styles.sidebarDescription}>{SPEED_DESCRIPTION}</div>
           </div>
@@ -746,7 +746,7 @@ export function CharacterSheetPage({
     ? sidebar.type === 'skill' ? `${sidebar.skill.label} (${ATTR_ABBR[sidebar.skill.attribute] ?? sidebar.skill.attribute}) ${signedMod(sidebar.skill.modifier)}`
       : sidebar.type === 'save' ? `${sidebar.save.label} ${signedMod(sidebar.save.modifier)}`
         : sidebar.type === 'ability' ? `Pontuação ${sidebar.score} · Modificador ${signedMod(sidebar.modifier)}`
-          : sidebar.type === 'attack' ? sidebar.attack.range
+          : sidebar.type === 'attack' ? withSquares(sidebar.attack.range)
             : sidebar.type === 'senses' ? `Percepção Passiva ${derivedSheet.passivePerception}`
               : sidebar.type === 'hp' ? `${playState.currentHp} / ${effectiveMaxHP} PV`
                 : sidebar.type === 'history' ? `Últimas ${(playState.diceHistory ?? []).length} rolagens`
@@ -991,9 +991,13 @@ export function CharacterSheetPage({
               title="Velocidade de Caminhada: distância percorrida em metros por turno (1 quadrado = 1,5 m)."
             >CAMINHADA</div>
             <div className={styles.statValueInline}>
-              {derivedSheet.speed}
+              {parseMeters(derivedSheet.speed) !== null
+                ? <>{String(parseMeters(derivedSheet.speed)).replace('.', ',')}<span className={styles.speedUnit}> m</span></>
+                : derivedSheet.speed}
             </div>
-            <div className={styles.statSubLabel}>VELOCIDADE</div>
+            <div className={styles.statSubLabel}>
+              {parseMeters(derivedSheet.speed) !== null ? `${metersToSquares(parseMeters(derivedSheet.speed)!)} QUADRADOS` : 'VELOCIDADE'}
+            </div>
           </div>
 
           {/* Heroic Inspiration */}

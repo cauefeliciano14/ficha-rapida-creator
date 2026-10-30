@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useCharacter } from '../../context/CharacterContext';
 import classDetailsData from '../../data/classDetails.json';
 import { CLASS_HP_DATA, CLASS_PROFICIENCY_DATA } from '../../rules/data/classRules';
+import { withSquares } from '../../utils/format';
 import styles from './ChoiceImpact.module.css';
 
 interface ImpactItem {
@@ -97,7 +98,7 @@ export function ChoiceImpact({ section }: Props) {
           result.push({ icon: '👁', text: derivedSheet.specialSenses.join(', ') });
         }
         if (derivedSheet.speed) {
-          result.push({ icon: '→', text: `Deslocamento: ${derivedSheet.speed}` });
+          result.push({ icon: '→', text: `Deslocamento: ${withSquares(derivedSheet.speed)}` });
         }
         if (derivedSheet.racialCantrips.length > 0) {
           result.push({ icon: '✦', text: `Truques: ${derivedSheet.racialCantrips.join(', ')}` });

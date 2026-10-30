@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { WeaponAttack } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState, CustomAction } from '../../../types/playState';
-import { signedMod } from '../../../utils/format';
+import { signedMod, withSquares } from '../../../utils/format';
 import { ActionTypeBadge } from '../../ui/ActionTypeBadge';
 import styles from './ActionsTab.module.css';
 
@@ -130,7 +130,7 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAtta
                   <div className={styles.weaponProps}>{atk.properties.join(', ')}</div>
                 )}
               </div>
-              <div className={styles.attackRange}>{atk.range}</div>
+              <div className={styles.attackRange}>{withSquares(atk.range)}</div>
               <div style={{ textAlign: 'center' }}>
                 <span className={styles.attackBonus}>{signedMod(atk.attackBonus)}</span>
               </div>

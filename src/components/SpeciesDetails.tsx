@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import magoSpells from '../data/spells/mago_spells.json';
 import talentsData from '../data/talents.json';
 import { highlightKeywords } from '../utils/formatting';
+import { withSquares } from '../utils/format';
 import { TalentChoiceSection, checkTalentComplete } from './TalentChoices';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -241,7 +242,7 @@ const ElfoLinhagem: React.FC<{ species: any } & ChoiceProps> = ({ species, choic
                     {selectedCantrip.name} <span style={{ color: '#64748b', fontWeight: 400, fontSize: '0.78rem' }}>({selectedCantrip.school})</span>
                   </p>
                   <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                    {[['Tempo', selectedCantrip.castingTime], ['Alcance', selectedCantrip.range], ['Duração', selectedCantrip.duration]].map(([k, v]) => (
+                    {[['Tempo', selectedCantrip.castingTime], ['Alcance', withSquares(selectedCantrip.range)], ['Duração', selectedCantrip.duration]].map(([k, v]) => (
                       <span key={k} style={{ fontSize: '0.75rem', color: '#94a3b8' }}><strong style={{ color: '#f1f5f9' }}>{k}:</strong> {v}</span>
                     ))}
                   </div>

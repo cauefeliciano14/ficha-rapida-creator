@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { DerivedSheet } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../../types/playState';
-import { signedMod } from '../../../utils/format';
+import { signedMod, withSquares } from '../../../utils/format';
 import { SpellCardTooltip } from '../SpellCardTooltip';
 import spellsAll from '../../../data/spells/spells_all.json';
 import styles from './SpellsTab.module.css';
@@ -394,7 +394,7 @@ function SpellList({
                       <span className={styles.spellDetailLabel}>Conjuração:</span>
                       <span className={styles.spellDetailValue}>{spellInfo.castingTime}</span>
                       <span className={styles.spellDetailLabel}>Alcance:</span>
-                      <span className={styles.spellDetailValue}>{spellInfo.range}</span>
+                      <span className={styles.spellDetailValue}>{withSquares(spellInfo.range)}</span>
                       <span className={styles.spellDetailLabel}>Componentes:</span>
                       <span className={styles.spellDetailValue}>{spellInfo.components}</span>
                       <span className={styles.spellDetailLabel}>Duração:</span>

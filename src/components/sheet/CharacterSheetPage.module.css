@@ -1803,3 +1803,9 @@
     transition: none;
   }
 }
+
+.speedUnit {
+  font-size: 0.5em;
+  font-weight: 600;
+  margin-left: 2px;
+}

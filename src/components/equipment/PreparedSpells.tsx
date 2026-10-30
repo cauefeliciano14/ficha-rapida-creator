@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withSquares } from '../../utils/format';
 import css from './equipment.module.css';
 
 interface PreparedSpellsProps {
@@ -103,7 +104,7 @@ export const PreparedSpells: React.FC<PreparedSpellsProps> = ({
               {spell.range && (
                 <div>
                   <div style={detailLabel}>Alcance</div>
-                  <div style={detailValue}>{spell.range}</div>
+                  <div style={detailValue}>{withSquares(spell.range)}</div>
                 </div>
               )}
               {spell.components && (

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import spellsAll from '../../data/spells/spells_all.json';
+import { withSquares } from '../../utils/format';
 import styles from './SpellCardTooltip.module.css';
 
 interface SpellData {
@@ -99,7 +100,7 @@ export function SpellCardTooltip({ spellName, children }: SpellCardTooltipProps)
               <span className={styles.detailLabel}>Conjuração:</span>
               <span className={styles.detailValue}>{spell.castingTime}</span>
               <span className={styles.detailLabel}>Alcance:</span>
-              <span className={styles.detailValue}>{spell.range}</span>
+              <span className={styles.detailValue}>{withSquares(spell.range)}</span>
               <span className={styles.detailLabel}>Componentes:</span>
               <span className={styles.detailValue}>{spell.components}</span>
               <span className={styles.detailLabel}>Duração:</span>

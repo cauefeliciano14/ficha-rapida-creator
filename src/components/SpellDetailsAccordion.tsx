@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withSquares } from '../utils/format';
 import allSpellsData from '../data/spells/spells_all.json';
 
 interface SpellDetail {
@@ -58,7 +59,7 @@ export const SpellDetailsAccordion: React.FC<{ spellName: string }> = ({ spellNa
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '4px 12px', fontSize: '0.75rem', marginBottom: '12px', background: 'rgba(0,0,0,0.2)', padding: '8px', borderRadius: '6px' }}>
             <span style={{ color: '#64748b', fontWeight: 600 }}>Conjuração:</span> <span style={{ color: '#e2e8f0' }}>{spell.castingTime}</span>
-            <span style={{ color: '#64748b', fontWeight: 600 }}>Alcance:</span> <span style={{ color: '#e2e8f0' }}>{spell.range}</span>
+            <span style={{ color: '#64748b', fontWeight: 600 }}>Alcance:</span> <span style={{ color: '#e2e8f0' }}>{withSquares(spell.range)}</span>
             <span style={{ color: '#64748b', fontWeight: 600 }}>Componentes:</span> <span style={{ color: '#e2e8f0' }}>{spell.components}</span>
             <span style={{ color: '#64748b', fontWeight: 600 }}>Duração:</span> <span style={{ color: '#e2e8f0' }}>{spell.duration}</span>
           </div>

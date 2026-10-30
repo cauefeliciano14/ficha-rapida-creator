@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { withSquares } from '../../utils/format';
 import css from './equipment.module.css';
 
 interface SpellCatalogProps {
@@ -193,7 +194,7 @@ export const SpellCatalog: React.FC<SpellCatalogProps> = ({
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '10px', padding: '4px 0' }}>
                     {spell.castingTime && <div><div style={detailLabel}>Tempo de Conjuração</div><div style={detailValue}>{spell.castingTime}</div></div>}
-                    {spell.range && <div><div style={detailLabel}>Alcance</div><div style={detailValue}>{spell.range}</div></div>}
+                    {spell.range && <div><div style={detailLabel}>Alcance</div><div style={detailValue}>{withSquares(spell.range)}</div></div>}
                     {spell.components && <div><div style={detailLabel}>Componentes</div><div style={detailValue}>{spell.components}</div></div>}
                     {spell.duration && <div><div style={detailLabel}>Duração</div><div style={detailValue}>{spell.duration}</div></div>}
                   </div>
