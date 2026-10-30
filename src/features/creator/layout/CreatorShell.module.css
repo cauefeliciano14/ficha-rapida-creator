@@ -128,15 +128,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  min-height: var(--creator-collapsed-control-size);
+  align-self: flex-end;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
   background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
   color: var(--text-muted);
   cursor: pointer;
-  font-size: var(--creator-collapsed-control-font-size);
-  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1;
+  margin-bottom: 8px;
   padding: 0;
   transition: color 0.15s;
   flex-shrink: 0;
@@ -257,11 +260,8 @@
 
 /* Top actions row */
 .topActions {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 1000;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 6px;
 }

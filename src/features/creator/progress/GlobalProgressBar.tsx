@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useCharacter } from '../../../context/CharacterContext';
 import { useWizard } from '../../../context/WizardContext';
 import { computeWizardProgress } from '../../../utils/wizardProgress';
@@ -10,11 +10,13 @@ interface Props {
   onOpenQuiz?: () => void;
   onRandomize?: () => void;
   onOpenTemplates?: () => void;
+  /** Ações fixas à esquerda da barra (personagens, desfazer/refazer). */
+  leading?: ReactNode;
 }
 
 const STEP_ABBR = ['Cl', 'Or', 'Es', 'At', 'Eq'];
 
-export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize, onOpenTemplates }: Props) {
+export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize, onOpenTemplates, leading }: Props) {
   const { character, selectedBackground, validationResult } = useCharacter();
   const { currentStep, goToStep } = useWizard();
 
@@ -27,6 +29,7 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz
 
   return (
     <div id="creator-progress-bar" className={styles.bar} role="region" aria-label="Progresso da criação do personagem">
+      {leading}
       <div className={styles.percentBlock}>
         <span className={styles.percentValue}>{progress.percent}%</span>
         <span className={styles.percentLabel}>completo</span>

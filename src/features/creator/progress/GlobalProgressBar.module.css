@@ -222,3 +222,21 @@
     display: none;
   }
 }
+
+/* Telas médias: as bolinhas de etapa repetem o menu lateral, então saem
+   para que os botões da direita não sejam cortados. */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .bar {
+    gap: 10px;
+  }
+  .steps,
+  .percentLabel {
+    display: none;
+  }
+  .percentBlock {
+    min-width: auto;
+  }
+  .track {
+    min-width: 40px;
+  }
+}

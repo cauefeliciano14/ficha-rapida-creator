@@ -259,6 +259,21 @@ export function CreatorShell() {
     </Suspense>
   );
 
+  const topActions = (
+    <div className={styles.topActions}>
+      <button
+        onClick={() => setIsCharacterManagerOpen(true)}
+        className={styles.savesFab}
+        title="Gerenciar Personagens"
+      >
+        <span className={styles.savesFabIcon}>📚</span>
+        Personagens
+      </button>
+      <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
+      <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
+    </div>
+  );
+
   return (
     <div className={`layout-container ${styles.shellFrame}`}>
       <ChangeHistoryLogger />
@@ -296,19 +311,7 @@ export function CreatorShell() {
         </>
       ) : (
         <>
-          <div className={styles.topActions}>
-            <button
-              onClick={() => setIsCharacterManagerOpen(true)}
-              className={styles.savesFab}
-              title="Gerenciar Personagens"
-            >
-              <span className={styles.savesFabIcon}>📚</span>
-              Personagens
-            </button>
-            <button onClick={undo} disabled={!canUndo} className={styles.undoBtn} title="Desfazer (Ctrl+Z)">↩</button>
-            <button onClick={redo} disabled={!canRedo} className={styles.undoBtn} title="Refazer (Ctrl+Shift+Z)">↪</button>
-          </div>
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} leading={topActions} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
