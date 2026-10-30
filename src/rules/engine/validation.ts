@@ -4,7 +4,7 @@ import { isValidBackground, getAllowedBonusAttributes, getBackgroundTalent } fro
 import { isAttributesStepComplete, validateBonusDistribution } from '../calculators/attributes';
 import { checkTalentComplete } from '../../components/TalentChoices';
 import { getClassBaseProficiencies } from '../calculators/proficiency';
-import { getSpellSelectionRequirement, getValidSpellNames } from '../utils/spellSelection';
+import { getMaxSpellCircle, getSpellSelectionRequirement, getValidPreparedSpellNames, getValidSpellNames } from '../utils/spellSelection';
 import { getArmorTrainingLabel, hasArmorInInventory, hasShieldInInventory, resolveEquippedArmor } from '../utils/equipment';
 import { getEquipmentForBackground, getEquipmentForClass, itemSubChoices } from '../../data/equipmentData';
 
@@ -340,7 +340,8 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
       const selectedCantrips = choices.spellSelections.cantrips;
       const preparedSpells = choices.spellSelections.prepared;
       const validCantrips = getValidSpellNames(choices.classId, 'cantrip');
-      const validLevel1Spells = getValidSpellNames(choices.classId, 1);
+      const validPreparedSpells = getValidPreparedSpellNames(choices.classId, level);
+      const maxCircle = getMaxSpellCircle(choices.classId, level);
 
       const duplicateCantrips = findDuplicates(selectedCantrips);
       if (duplicateCantrips.length > 0) {
@@ -361,7 +362,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
 
       const spellVerb = mode === 'known' ? 'Escolha' : 'Prepare';
       if (preparedSpells.length > requiredPreparedSpells) {
-        byStep.equipment.push(`Selecione no máximo ${requiredPreparedSpells} magia(s) de 1º nível para esta classe no nível ${level}.`);
+        byStep.equipment.push(`Selecione no máximo ${requiredPreparedSpells} magia(s) preparada(s) para esta classe no nível ${level}.`);
       } else if (requiredPreparedSpells > 0 && preparedSpells.length < requiredPreparedSpells) {
         const current = preparedSpells.length;
         byStep.equipment.push(`${spellVerb} mais ${requiredPreparedSpells - current} magia(s) para completar a seleção (${current}/${requiredPreparedSpells}).`);
@@ -369,12 +370,12 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
 
       const invalidCantrips = selectedCantrips.filter((spell) => !validCantrips.has(spell));
       if (invalidCantrips.length > 0) {
-        byStep.equipment.push(`Os truques selecionados precisam pertencer à lista válida da classe no nível 1: ${invalidCantrips.join(', ')}.`);
+        byStep.equipment.push(`Os truques selecionados precisam pertencer à lista de truques da classe: ${invalidCantrips.join(', ')}.`);
       }
 
-      const invalidPrepared = preparedSpells.filter((spell) => !validLevel1Spells.has(spell));
+      const invalidPrepared = preparedSpells.filter((spell) => !validPreparedSpells.has(spell));
       if (invalidPrepared.length > 0) {
-        byStep.equipment.push(`As magias selecionadas precisam pertencer à lista válida da classe no nível 1: ${invalidPrepared.join(', ')}.`);
+        byStep.equipment.push(`As magias selecionadas precisam pertencer à lista da classe e ser de um círculo para o qual você tem espaços de magia (até o ${maxCircle}º círculo no nível ${level}): ${invalidPrepared.join(', ')}.`);
       }
     }
   }

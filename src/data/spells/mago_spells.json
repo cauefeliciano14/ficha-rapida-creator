@@ -70,7 +70,7 @@
     "especial": "M",
     "castingTime": "Ação",
     "range": "Pessoal",
-    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PP)",
+    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PC)",
     "duration": "Instantânea",
     "description": "Guiado pelo lampejo de uma intuição mágica, você realiza um ataque com a arma usada na conjuração da magia. O ataque usa seu atributo de conjuração para as jogadas de ataque e dano em vez de usar Força ou Destreza. Se o ataque causar dano, ele pode ser Radiante ou do tipo de dano normal da arma (à sua escolha).",
     "classes": [
@@ -190,7 +190,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Sempre que uma criatura realizar uma jogada de ataque contra você antes que a magia termine, o atacante subtrai 1d4 da jogada de ataque.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -367,7 +367,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de fuligem e sal)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Pela duração da magia, você entende o significado literal de qualquer idioma que ouça ou veja escrito. Você também entende qualquer escrita que veja, mas deve estar tocando a superfície na qual as palavras estão escritas. Leva cerca de 1 minuto para ler uma página de texto. Esta magia não decodifica símbolos ou mensagens secretas.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -483,7 +483,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "1 rodada",
-    "description": "",
+    "description": "Uma barreira imperceptível de energia mágica o protege. Até o início do seu próximo turno, você recebe um bônus de +5 na CA, incluindo contra o ataque que ativou a magia, e não sofre dano de Mísseis Mágicos.",
     "classes": [
       "Feiticeiro",
       "Mago"
@@ -576,7 +576,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de areia colorida)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você lança uma série deslumbrante de luzes ofuscantes e coloridas. Cada criatura em um Cone de 4,5 metros originado em você deve ser bem-sucedida em uma salvaguarda de Constituição ou tem a condição Cego até o final do seu próximo turno.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -688,7 +688,7 @@
     "range": "Toque",
     "components": "V, S, M (um pote de Água Benta no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você tocar está protegida contra criaturas que são Aberrações, Celestiais, Elementais, Feéricos, Ínferos ou Mortos-Vivos. A proteção concede vários benefícios. Criaturas desses tipos têm Desvantagem em jogadas de ataque contra o alvo. O alvo também não pode ser possuído por essas criaturas nem adquirir as condições de Amedrontado ou Enfeitiçado por elas. Se o alvo já estiver possuído, Amedrontado ou Enfeitiçado por uma dessas criaturas, ele tem Vantagem em qualquer nova salvaguarda contra o efeito relevante.",
     "classes": [
       "Clérigo",
       "Bruxo",
@@ -764,10 +764,10 @@
     "name": "Salto",
     "level": "1º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (perna traseira de um gafanhoto)",
     "duration": "1 minuto",
     "description": "Você toca uma criatura voluntária. Uma vez em cada um dos turnos dela até que a magia encerre, essa criatura pode saltar até 9 metros gastando 3 metros de movimento.",
     "classes": [
@@ -979,7 +979,7 @@
     "range": "Toque",
     "components": "V, S, M (rubi em pó no valor de 50 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada",
-    "description": "",
+    "description": "Uma chama brota de um objeto que você toca. O efeito conjura Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros. Ela se parece uma chama comum, mas não cria calor e não consome combustível. A chama pode ser coberta ou escondida, mas não abafada ou extinta.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1256,7 +1256,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Brevemente cercado por uma névoa prateada, você se teleporta até 9 metros para um espaço desocupado à sua vista.",
     "classes": [
       "Bruxo",
       "Feiticeiro",
@@ -1382,7 +1382,7 @@
     "range": "Toque",
     "components": "V, S, M (pó de ouro no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada",
-    "description": "",
+    "description": "Você toca uma porta, janela, portão, contêiner ou escotilha fechada e a tranca magicamente pela duração da magia. Esta fechadura não pode ser destrancada por nenhum meio não mágico. Você e quaisquer criaturas que você designar ao conjurar a magia podem abrir e fechar o objeto apesar da tranca. Você também pode definir uma senha que, quando proferida a até 1,5 metro do objeto, o destranca por 1 minuto.",
     "classes": [
       "Mago"
     ]
@@ -1425,7 +1425,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus",
     "range": "Pessoal",
-    "components": "",
+    "components": "V, S",
     "duration": "Instantânea",
     "description": "Você usa sua energia vital para se curar. Jogue um ou dois de seus Dados de Pontos de Vida não gastos e recupera um número de Pontos de Vida igual ao total do teste mais seu modificador de atributo de conjuração. Esses dados são, então, gastos.",
     "classes": [
@@ -1442,11 +1442,26 @@
     "range": "Toque",
     "components": "V, S, M (uma cenoura seca)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, uma criatura voluntária que você tocar tem Visão no Escuro com um alcance de 45 metros.",
     "classes": [
       "Druida",
       "Feiticeiro",
       "Guardião",
+      "Mago"
+    ]
+  },
+  {
+    "name": "Animar Mortos",
+    "level": "3º Círculo",
+    "school": "Necromancia",
+    "especial": "M",
+    "castingTime": "1 minuto",
+    "range": "3 metros",
+    "components": "V, S, M (uma gota de sangue, um pedaço de carne e uma pitada de pó de osso)",
+    "duration": "Instantânea",
+    "description": "Escolha uma pilha de ossos ou um cadáver de um Humanoide Médio ou Pequeno no alcance da magia. O alvo se torna um Morto-vivo: um Esqueleto se tiver escolhido ossos ou um Zumbi se tiver escolhido um cadáver (veja o apêndice B para os blocos de estatística).\nEm cada um dos seus turnos, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 18 metros de você (se você controlar várias criaturas, pode comandar qualquer uma delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Você decide qual ação a criatura realiza e para onde ela se move no próximo turno dela, ou pode emitir um comando geral, como proteger uma câmara ou um corredor. Se você não der nenhum comando, a criatura executa a ação Esquivar e move-se apenas para evitar dano. Uma vez dada uma ordem, a criatura continua a segui-la até que a tarefa seja concluída.\nA criatura fica sob seu controle por 24 horas, após as quais ela deixa de obedecer a qualquer comando que você tenha dado a ela. Para manter o controle da criatura por mais 24 horas, é necessário conjurar essa magia na criatura novamente antes que o período atual de 24 horas termine. Esse uso da magia reafirma seu controle sobre até quatro criaturas que você animou com essa magia em vez de animar uma nova criatura.\nUsando um Espaço de Magia de Círculo Superior. Você anima ou reafirma o controle sobre duas criaturas Mortas-vivas adicionais para cada círculo de espaço de magia acima de 3. Cada uma das criaturas deve vir de um cadáver ou pilha de ossos diferente.",
+    "classes": [
+      "Clérigo",
       "Mago"
     ]
   },
@@ -1506,7 +1521,7 @@
     "range": "18 metros",
     "components": "S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você tenta interromper uma criatura no processo de conjurar uma magia. A criatura realiza uma salvaguarda de Constituição. Se falhar, a magia se dissipa sem efeito, e a ação, Ação Bônus ou Reação usada para conjurá-la é desperdiçada. Se a magia do alvo foi conjurada com um espaço de magia, o espaço de magia da criatura não é gasto.",
     "classes": [
       "Bruxo",
       "Feiticeiro",
@@ -1518,7 +1533,7 @@
     "level": "3º Círculo",
     "school": "Invocação",
     "especial": "C, M",
-    "castingTime": "ama Ação",
+    "castingTime": "Ação",
     "range": "27 metros",
     "components": "V, S, M (uma flor dourada no valor de 300 ou mais PO)",
     "duration": "Concentração, até 1 hora",
@@ -1642,7 +1657,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pitada de poeira de diamante no valor de 25 ou mais PO, que a magia consome)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, você protege um alvo que tocar contra magias de Adivinhação. O alvo pode ser uma criatura voluntária, um local ou um objeto que não exceda 3 metros em qualquer dimensão. O alvo não pode ser afetado por nenhuma magia de Adivinhação nem percebido através de sensores mágicos de vidência.",
     "classes": [
       "Bardo",
       "Guardião",
@@ -1689,7 +1704,7 @@
     "range": "Toque",
     "components": "V, M (um zigurate em miniatura)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Esta magia concede à criatura que você toca a capacidade de entender qualquer idioma falado ou com língua de sinais que ela ouça ou veja. Além disso, quando o alvo se comunica falando ou usando sinais, qualquer criatura que conheça pelo menos um idioma pode entendê-lo se essa criatura puder ouvir as palavras ou ver os sinais.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1817,7 +1832,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Pela duração da magia, a criatura voluntária que você tocar tem Resistência a um tipo de dano à sua escolha: Ácido, Elétrico, Gélido, Ígneo ou Trovejante.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1866,7 +1881,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Ao seu toque, todas as maldições que afetam uma criatura ou objeto se encerram. Se o objeto for um item mágico amaldiçoado, a maldição permanece, mas a magia quebra a Sintonização do dono com o objeto, permitindo que ele seja removido ou descartado.",
     "classes": [
       "Clérigo",
       "Bruxo",
@@ -1883,7 +1898,7 @@
     "range": "9 metros",
     "components": "V, S, M (um pedaço de junco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Esta magia concede a até dez criaturas voluntárias à sua escolha no alcance da magia a capacidade de respirar debaixo d'água até que a magia termine. As criaturas afetadas também mantêm seu modo normal de respiração.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -2130,21 +2145,6 @@
     ]
   },
   {
-    "name": "Espírito Aberrante (Pseudo-observador)",
-    "level": "4º Círculo",
-    "school": "Invocação",
-    "especial": "C, M",
-    "castingTime": "Ação",
-    "range": "27 metros",
-    "components": "V, S, M (um tentáculo em conserva e um globo ocular em um frasco incrustado de platina no valor de 400 ou mais PO)",
-    "duration": "Concentração, até 1 hora",
-    "description": "Você invoca um Espírito Aberrante. Ele se manifesta em um espaço desocupado à sua vista e no alcance da magia e usa o bloco de estatísticas do Espírito Aberrante. Ao conjurar a magia, escolha entre Devorador de Mentes, Pseudo-observador ou Slaad. A criatura se assemelha a uma Aberração desse tipo, o que determina certos detalhes no bloco de estatísticas da criatura. A criatura desaparece ao ser reduzida a 0 Pontos de Vida ou quando a magia termina.\nA criatura é uma aliada sua e de seus aliados. Em combate, ela compartilha sua contagem de Iniciativa, mas o turno dela é imediatamente após o seu. Ela obedece aos seus comandos verbais (nenhuma ação é necessária). Se você não emitir nenhum, ela executa a ação Esquivar e usa o movimento dela para evitar o perigo.\nUsando um Espaço de Magia de Círculo Superior. Use o círculo do espaço de magia para o círculo da magia no bloco de estatísticas.\nEspírito Aberrante\nAberração Média, Neutra\nCA 11 + o círculo da magia\nPV 40 + 10 para cada círculo de magia acima de 4\nDeslocamento 9 m; Voo 9 m (pairar; apenas Pseudo-observador)\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n15\n+2\n+2\nInt\n16\n+0\n+0\nSab\n10\n+0\n+0\nCar\n6\n-2\n-2\nImunidades Psíquico\nSentidos Visão no Escuro 18 m, Percepção Passiva 10\nIdiomas Dialeto Obscuro, entende os idiomas que você fala\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nTraços\nAura Sussurrante (Apenas Devorador de Mentes). No início de cada turno do espírito, ele emite energia psiônica se não tem a condição Incapacitado. Salvaguarda de Sabedoria: CD é igual a CD para evitar sua magia, cada criatura (exceto você) a até 1,5 metro do espírito. Falha: 2d6 pontos de dano Psíquico.\nRegeneração (Apenas Slaad). O espírito recupera 5 Pontos de Vida no início do turno dele se tiver pelo menos 1 Ponto de Vida.\nAções\nAtaques Múltiplos. O espírito realiza um número de ataques igual à metade do círculo da magia (arredondado para baixo).\nGarras (Apenas Slaad). Jogada de Ataque Corpo a Corpo: Bônus é igual ao seu modificador de ataque mágico, alcance 1,5 m. Dano: 1d10 + 3 + o círculo da magia em pontos de dano Cortante, e o alvo não pode recuperar Pontos de Vida até o início do próximo turno do espírito.\nPancada Psíquica (Apenas Devorador de Mentes). Jogada de Ataque Corpo a Corpo: Bônus é igual ao seu modificador de ataque mágico, alcance 1,5 m. Dano: 1d8 + 3 + o círculo da magia em pontos de dano Psíquico.",
-    "classes": [
-      "Bruxo",
-      "Mago"
-    ]
-  },
-  {
     "name": "Fabricar",
     "level": "4º Círculo",
     "school": "Transmutação",
@@ -2167,10 +2167,25 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Uma criatura que você toca tem a condição Invisível até que a magia termine.",
     "classes": [
       "Bardo",
       "Feiticeiro",
+      "Mago"
+    ]
+  },
+  {
+    "name": "Invocar Aberração",
+    "level": "4º Círculo",
+    "school": "Invocação",
+    "especial": "C, M",
+    "castingTime": "Ação",
+    "range": "27 metros",
+    "components": "V, S, M (um tentáculo em conserva e um globo ocular em um frasco incrustado de platina no valor de 400 ou mais PO)",
+    "duration": "Concentração, até 1 hora",
+    "description": "Você invoca um Espírito Aberrante. Ele se manifesta em um espaço desocupado à sua vista e no alcance da magia e usa o bloco de estatísticas do Espírito Aberrante. Ao conjurar a magia, escolha entre Devorador de Mentes, Pseudo-observador ou Slaad. A criatura se assemelha a uma Aberração desse tipo, o que determina certos detalhes no bloco de estatísticas da criatura. A criatura desaparece ao ser reduzida a 0 Pontos de Vida ou quando a magia termina.\nA criatura é uma aliada sua e de seus aliados. Em combate, ela compartilha sua contagem de Iniciativa, mas o turno dela é imediatamente após o seu. Ela obedece aos seus comandos verbais (nenhuma ação é necessária). Se você não emitir nenhum, ela executa a ação Esquivar e usa o movimento dela para evitar o perigo.\nUsando um Espaço de Magia de Círculo Superior. Use o círculo do espaço de magia para o círculo da magia no bloco de estatísticas.\nEspírito Aberrante\nAberração Média, Neutra\nCA 11 + o círculo da magia\nPV 40 + 10 para cada círculo de magia acima de 4\nDeslocamento 9 m; Voo 9 m (pairar; apenas Pseudo-observador)\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n15\n+2\n+2\nInt\n16\n+0\n+0\nSab\n10\n+0\n+0\nCar\n6\n-2\n-2\nImunidades Psíquico\nSentidos Visão no Escuro 18 m, Percepção Passiva 10\nIdiomas Dialeto Obscuro, entende os idiomas que você fala\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nTraços\nAura Sussurrante (Apenas Devorador de Mentes). No início de cada turno do espírito, ele emite energia psiônica se não tem a condição Incapacitado. Salvaguarda de Sabedoria: CD é igual a CD para evitar sua magia, cada criatura (exceto você) a até 1,5 metro do espírito. Falha: 2d6 pontos de dano Psíquico.\nRegeneração (Apenas Slaad). O espírito recupera 5 Pontos de Vida no início do turno dele se tiver pelo menos 1 Ponto de Vida.\nAções\nAtaques Múltiplos. O espírito realiza um número de ataques igual à metade do círculo da magia (arredondado para baixo).\nGarras (Apenas Slaad). Jogada de Ataque Corpo a Corpo: Bônus é igual ao seu modificador de ataque mágico, alcance 1,5 m. Dano: 1d10 + 3 + o círculo da magia em pontos de dano Cortante, e o alvo não pode recuperar Pontos de Vida até o início do próximo turno do espírito.\nPancada Psíquica (Apenas Devorador de Mentes). Jogada de Ataque Corpo a Corpo: Bônus é igual ao seu modificador de ataque mágico, alcance 1,5 m. Dano: 1d8 + 3 + o círculo da magia em pontos de dano Psíquico.",
+    "classes": [
+      "Bruxo",
       "Mago"
     ]
   },
@@ -2248,7 +2263,7 @@
     "range": "Toque",
     "components": "V, S, M (argila mole)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca um objeto de pedra de tamanho Médio ou menor, ou uma seção de pedra com no máximo 1,5 metro em qualquer dimensão e o molda na forma que desejar. Por exemplo, você pode moldar uma rocha grande em uma arma, estátua ou baú, ou criar uma pequena passagem por uma parede com até 1,5 metro de espessura. Também é possível moldar uma porta de pedra ou seu batente para selar a porta. O objeto criado pode ter até duas dobradiças e uma fechadura, mas detalhes mecânicos mais finos não são possíveis.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -2294,7 +2309,7 @@
     "range": "Toque",
     "components": "V, S, M (poeira de diamante no valor de 100 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você toque tem Resistência a dano Contundente, Cortante e Perfurante.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -2482,7 +2497,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Vantagem em salvaguardas contra magias e outros efeitos mágicos. Quando uma criatura afetada realiza uma salvaguarda contra uma magia ou efeito mágico que permite que sofra apenas metade do dano, ela não sofre dano em caso de sucesso.",
     "classes": [
       "Clérigo",
       "Mago",
@@ -2749,7 +2764,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma tiara em miniatura)",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Você se envolve com uma majestade sobrenatural em uma Emanação de 3 metros. Sempre que a Emanação entra no espaço de uma criatura à sua vista, ou quando uma criatura à sua vista entra na Emanação ou termina seu turno nela, você pode forçar essa criatura a realizar uma salvaguarda de Sabedoria. Se falhar, o alvo sofre 4d6 pontos de dano Psíquico e tem a condição Caído, e você pode empurrá-lo até 3 metros para longe de você. Em caso de sucesso, o alvo sofre apenas metade do dano. Uma criatura realiza essa salvaguarda apenas uma vez por turno.",
     "classes": [
       "Bardo",
       "Mago"
@@ -2806,30 +2821,14 @@
     "name": "Tempestade Radiante de Jallarzi",
     "level": "5º Círculo",
     "school": "Evocação",
-    "especial": "C",
+    "especial": "C, M",
     "castingTime": "Ação",
     "range": "36 metros",
-    "components": "",
+    "components": "V, S, M (uma pitada de fósforo)",
     "duration": "Concentração, até 1 minuto",
     "description": "Você desencadeia uma tempestade de luz intermitente e trovões furiosos em um Cilindro de 3 metros de raio e 12 metros de altura centrado em um ponto à sua vista e no alcance da magia. Enquanto estiverem nesta área, criaturas têm as condições Cego e Surdo, e não podem conjurar magias com um componente Verbal.\nQuando a tempestade aparece, cada criatura dentro dela realiza uma salvaguarda de Constituição, sofrendo 2d10 pontos de dano Radiante e 2d10 pontos de dano Trovejante se falhar, ou metade desse dano em caso de sucesso. Uma criatura também realiza essa salvaguarda quando entra na área da magia pela primeira vez em um turno ou termina o turno dela nela. Uma criatura realiza essa salvaguarda apenas uma vez por turno.\nUsando um Espaço de Magia de Círculo Superior. O dano Radiante e Trovejante aumentam em 1d10 para cada círculo de espaço de magia acima de 5.",
     "classes": [
       "Bruxo",
-      "Mago"
-    ]
-  },
-  {
-    "name": "Um Braseiro Afetado pela Magia Animar Objetos",
-    "level": "5º Círculo",
-    "school": "Transmutação",
-    "especial": "C",
-    "castingTime": "Ação",
-    "range": "36 metros",
-    "components": "V, S",
-    "duration": "Concentração, até 1 minuto",
-    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ele compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.\nObjetos Animados\nConstruto Grande ou Menor, Sem Alinhamento\nCA 15\nPV 10 (Médio ou menor), 20 (Grande), 40 (Enorme)\nDeslocamento 9 m\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n10\n+0\n+0\nInt\n3\n-4\n-4\nSab\n3\n-4\n-4\nCar\n1\n-5\n-5\nImunidades Psíquico, Venenoso; Amedrontado, Enfeitiçado, Envenenado, Exaustão, Paralisado\nSentidos Visão às Cegas 9 m, Percepção Passiva 6\nIdiomas Compreende os idiomas que você conhece\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nAções",
-    "classes": [
-      "Bardo",
-      "Feiticeiro",
       "Mago"
     ]
   },
@@ -2860,12 +2859,28 @@
     "range": "18 metros",
     "components": "V, S, M (uma joia no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "24 horas",
-    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias).\nAnimar Mortos",
+    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias).",
     "classes": [
       "Bardo",
       "Bruxo",
       "Clérigo",
       "Druida",
+      "Mago"
+    ]
+  },
+  {
+    "name": "Animar Objetos",
+    "level": "5º Círculo",
+    "school": "Transmutação",
+    "especial": "C",
+    "castingTime": "Ação",
+    "range": "36 metros",
+    "components": "V, S",
+    "duration": "Concentração, até 1 minuto",
+    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ele compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.\nObjetos Animados\nConstruto Grande ou Menor, Sem Alinhamento\nCA 15\nPV 10 (Médio ou menor), 20 (Grande), 40 (Enorme)\nDeslocamento 9 m\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n10\n+0\n+0\nInt\n3\n-4\n-4\nSab\n3\n-4\n-4\nCar\n1\n-5\n-5\nImunidades Psíquico, Venenoso; Amedrontado, Enfeitiçado, Envenenado, Exaustão, Paralisado\nSentidos Visão às Cegas 9 m, Percepção Passiva 6\nIdiomas Compreende os idiomas que você conhece\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nAções",
+    "classes": [
+      "Bardo",
+      "Feiticeiro",
       "Mago"
     ]
   },
@@ -3195,11 +3210,11 @@
     "level": "6º Círculo",
     "school": "Adivinhação",
     "especial": "M",
-    "castingTime": "1 ação",
+    "castingTime": "Ação",
     "range": "Toque",
     "components": "V, S, M (cogumelo em pó no valor de 25 ou mais PO, que a magia consome)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura voluntária que recebe Visão Verdadeira com um alcance de 36 metros pela duração da magia.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -3563,7 +3578,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "24 horas",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você toca adquire Imunidade a dano Psíquico e à condição Enfeitiçado. O alvo também fica imune a qualquer coisa que possa detectar suas emoções ou alinhamento, ler seus pensamentos, detectar magicamente sua localização, e nenhuma magia — nem mesmo Desejo — pode obter informações sobre o alvo, observá-lo remotamente ou controlar sua mente.",
     "classes": [
       "Bardo",
       "Mago"
@@ -3592,7 +3607,7 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "Você domina a mente de uma criatura à sua vista e no alcance da magia. Se o alvo tiver 150 Pontos de Vida ou menos, ele tem a condição Atordoado. Caso contrário, o Deslocamento dele é 0 até o início do seu próximo turno.",
     "classes": [
@@ -3746,9 +3761,9 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você obriga uma criatura à sua vista e no alcance da magia a morrer. Se o alvo tiver 100 Pontos de Vida ou menos, ele morre. Caso contrário, sofre 12d12 pontos de dano Psíquico.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -3778,7 +3793,7 @@
     "especial": "C, M",
     "castingTime": "Ação",
     "range": "9 metros",
-    "components": "V, S, M (uma gota de mercúrio, uma porção de goma arábica e um fiapo de fumaça)",
+    "components": "V, S, M (uma porção de mercúrio, uma dose de goma arábica e um fiapo de fumaça)",
     "duration": "Concentração, até 1 hora",
     "description": "Escolha uma criatura ou objeto não mágico à sua vista e no alcance da magia. A criatura se multimorfa para uma criatura diferente, um objeto não mágico, ou o objeto se multimorfa para uma criatura (o objeto não pode estar sendo usado nem carregado). A transformação permanece pela duração da magia ou até que o alvo morra ou seja destruído, mas se você mantiver a Concentração nesta magia pela duração completa, a magia permanece até ser dissipada.\nUma criatura involuntária pode realizar uma salvaguarda de Sabedoria e, se for bem-sucedida, não é afetada por esta magia.\nCriatura em Criatura. Se você transformar uma criatura em outro tipo de criatura, a nova forma pode ser qualquer tipo que você escolher que tenha um Nível de Desafio igual ou menor do que o Nível de Desafio ou nível do alvo. As estatísticas de jogo do alvo são substituídas pelo bloco de estatísticas da nova forma, mas ele mantém seus Pontos de Vida, Dados de Pontos de Vida e alinhamento.\nO alvo recebe um número de Pontos de Vida Temporários igual aos Pontos de Vida da nova forma. A magia se encerra no alvo se ele não tiver Pontos de Vida Temporários restantes.\nO alvo é limitado às ações que pode realizar pela anatomia de sua nova forma, e não pode falar ou conjurar magias.\nO equipamento do alvo se funde com a nova forma. A criatura não pode usar ou se beneficiar de nenhum desses equipamentos.\nObjeto em Criatura. Você pode transformar um objeto em qualquer tipo de criatura, desde que o tamanho da criatura não seja maior que o tamanho do objeto e a criatura tenha um Nível de Desafio de 9 ou menor. A criatura é Amigável a você e seus aliados. Em combate, ela age imediatamente após o seu turno e obedece aos seus comandos.\nSe a magia durar mais de uma hora, você não controla mais a criatura. Ela pode permanecer Amigável a você, dependendo de como você a tratou.",
     "classes": [
@@ -3829,7 +3844,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pena de beija-flor)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Você toca uma criatura voluntária e concede a ela a capacidade de ver o futuro imediato. Pela duração da magia, o alvo tem Vantagem em Testes de D20, enquanto outras criaturas têm Desvantagem em jogadas de ataque contra ele. A magia se encerra se você a conjurar novamente.",
     "classes": [
       "Bardo",
       "Bruxo",

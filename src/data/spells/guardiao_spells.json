@@ -39,7 +39,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um ramo de visco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Dez frutos aparecem em sua mão e são infundidos magicamente pela duração da magia. Uma criatura pode executar uma Ação Bônus para comer um fruto. Comer um fruto restaura 1 Ponto de Vida e fornece alimento suficiente para sustentar uma criatura por um dia. Frutos não comidos desaparecem quando a magia termina.",
     "classes": [
       "Druida",
       "Guardião"
@@ -199,10 +199,10 @@
     "name": "Salto",
     "level": "1º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (perna traseira de um gafanhoto)",
     "duration": "1 minuto",
     "description": "Você toca uma criatura voluntária. Uma vez em cada um dos turnos dela até que a magia encerre, essa criatura pode saltar até 9 metros gastando 3 metros de movimento.",
     "classes": [
@@ -349,7 +349,7 @@
     "range": "Pessoal",
     "components": "V, S, M (pelo de um cão de caça)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Descreva ou nomeie uma criatura do tipo Fera, Planta ou planta não mágica. Você descobre a direção e a distância até a criatura ou planta mais próxima desse tipo a até 8 quilômetros, se houver alguma presente.",
     "classes": [
       "Bardo",
       "Druida",
@@ -417,7 +417,7 @@
     "range": "Pessoal",
     "components": "V, S, M (cinzas de ramo de visco queimado)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Você irradia uma aura de ocultação em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e cada criatura escolhida têm um bônus de +10 em testes de Destreza (Furtividade) e não deixam rastros.",
     "classes": [
       "Druida",
       "Guardião"
@@ -427,12 +427,12 @@
     "name": "Pele-Casca",
     "level": "2º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (um punhado de casca de árvore)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura voluntária. Até que a magia termine, a pele do alvo assume uma aparência de casca de árvore, e o alvo tem uma Classe de Armadura de 17 se sua CA for menor que isso.",
     "classes": [
       "Druida",
       "Guardião"
@@ -447,7 +447,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura e encerra nela a condição Envenenado. Pela duração da magia, o alvo tem Vantagem nas salvaguardas para evitar ou encerrar a condição Envenenado e tem Resiste a dano Venenoso.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -464,7 +464,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura e remove uma condição: Cego, Envenenado, Paralisado ou Surdo.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -482,7 +482,7 @@
     "range": "Toque",
     "components": "S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Você toca uma Fera voluntária. Pela duração da magia, você pode perceber através dos sentidos da Fera, bem como dos seus próprios. Ao perceber através dos sentidos da Fera, você se beneficia de quaisquer sentidos especiais que ela tenha.",
     "classes": [
       "Druida",
       "Guardião"
@@ -497,7 +497,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Pela duração da magia, nenhum som pode ser criado dentro ou passar através de uma esfera com raio de 6 metros centrada em um ponto à sua escolha no alcance da magia. Qualquer criatura ou objeto totalmente dentro da esfera é imune a dano Trovejante, e as criaturas têm a condição Surdo enquanto estiverem totalmente dentro dela. É impossível conjurar uma magia que incluia um componente Verbal neste local.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -513,7 +513,7 @@
     "range": "Toque",
     "components": "V, S, M (uma cenoura seca)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, uma criatura voluntária que você tocar tem Visão no Escuro com um alcance de 45 metros.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -559,7 +559,7 @@
     "level": "3º Círculo",
     "school": "Invocação",
     "especial": "C, M",
-    "castingTime": "ama Ação",
+    "castingTime": "Ação",
     "range": "27 metros",
     "components": "V, S, M (uma flor dourada no valor de 300 ou mais PO)",
     "duration": "Concentração, até 1 hora",
@@ -647,7 +647,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pitada de poeira de diamante no valor de 25 ou mais PO, que a magia consome)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, você protege um alvo que tocar contra magias de Adivinhação. O alvo pode ser uma criatura voluntária, um local ou um objeto que não exceda 3 metros em qualquer dimensão. O alvo não pode ser afetado por nenhuma magia de Adivinhação nem percebido através de sensores mágicos de vidência.",
     "classes": [
       "Bardo",
       "Guardião",
@@ -741,7 +741,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Pela duração da magia, a criatura voluntária que você tocar tem Resistência a um tipo de dano à sua escolha: Ácido, Elétrico, Gélido, Ígneo ou Trovejante.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -759,7 +759,7 @@
     "range": "9 metros",
     "components": "V, S, M (um pedaço de junco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Esta magia concede a até dez criaturas voluntárias à sua escolha no alcance da magia a capacidade de respirar debaixo d'água até que a magia termine. As criaturas afetadas também mantêm seu modo normal de respiração.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -776,7 +776,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 300 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura que morreu no último minuto. Essa criatura revive com 1 Ponto de Vida. Esta magia não pode reviver uma criatura que morreu de velhice, nem restaura partes do corpo ausentes.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -876,7 +876,7 @@
     "range": "Toque",
     "components": "V, S, M (poeira de diamante no valor de 100 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você toque tem Resistência a dano Contundente, Cortante e Perfurante.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -908,7 +908,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma Aljava no valor de 1 ou mais PO)",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Ao conjurar a magia e como uma Ação Bônus até que ela termine, você pode realizar dois ataques com uma arma que dispara Flechas ou Virotes, como um Arco Longo ou uma Besta Leve. A magia gera magicamente a munição necessária para cada ataque. Cada Flecha ou Virote criado pela magia causa dano equivalente ao de munição não mágica do seu tipo e se desintegra imediatamente após atingir ou errar o alvo.",
     "classes": [
       "Guardião"
     ]

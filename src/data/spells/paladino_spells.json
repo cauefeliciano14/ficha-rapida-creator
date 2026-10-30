@@ -55,7 +55,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus, que você realiza imediatamente após acertar um alvo com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "1 minuto",
     "description": "Ao acertar o alvo, o ataque causa 1d6 pontos de dano Ígneo adicional. No início de cada turno do alvo, até que a magia termine, ele sofre 1d6 pontos de dano Ígneo e, então, realiza uma salvaguarda de Constituição. Se falhar, a magia continua; se for bem-sucedido, a magia se encerra.",
     "classes": [
@@ -97,7 +97,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus, que você realiza imediatamente após acertar um alvo com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "Seu ataque soa como um trovão audível a até 90 metros de você, e o alvo sofre 2d6 pontos de dano Trovejante adicionais do ataque. Além disso, se o alvo for uma criatura, ele deve ser bem-sucedido em uma salvaguarda de Força ou é empurrado 3 metros para longe de você e tem a condição Caído.",
     "classes": [
@@ -180,7 +180,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pergaminho de oração)",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Um campo cintilante envolve uma criatura à sua escolha no alcance da magia, concedendo um bônus de +2 na CA pela duração da magia.",
     "classes": [
       "Clérigo",
       "Paladino"
@@ -224,7 +224,7 @@
     "range": "Toque",
     "components": "V, S, M (um pote de Água Benta no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você tocar está protegida contra criaturas que são Aberrações, Celestiais, Elementais, Feéricos, Ínferos ou Mortos-Vivos. A proteção concede vários benefícios. Criaturas desses tipos têm Desvantagem em jogadas de ataque contra o alvo. O alvo também não pode ser possuído por essas criaturas nem adquirir as condições de Amedrontado ou Enfeitiçado por elas. Se o alvo já estiver possuído, Amedrontado ou Enfeitiçado por uma dessas criaturas, ele tem Vantagem em qualquer nova salvaguarda contra o efeito relevante.",
     "classes": [
       "Clérigo",
       "Bruxo",
@@ -305,7 +305,7 @@
     "especial": "C",
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Concentração, até 1 minuto",
     "description": "O alvo atingido pelo ataque sofre um adicional de 2d6 pontos de dano Radiante. Até que a magia termine, o alvo emite Luz Plena em um raio de 1,5 metro, e jogadas de ataque contra ele têm Vantagem e ele não pode se beneficiar da condição Invisível.",
     "classes": [
@@ -355,7 +355,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura e encerra nela a condição Envenenado. Pela duração da magia, o alvo tem Vantagem nas salvaguardas para evitar ou encerrar a condição Envenenado e tem Resiste a dano Venenoso.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -388,7 +388,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura e remove uma condição: Cego, Envenenado, Paralisado ou Surdo.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -453,7 +453,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Quando você cria a aura e no início de cada um dos seus turnos enquanto ela persiste, você pode restaurar 2d6 Pontos de Vida em uma criatura dentro dela.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -469,7 +469,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você cria 20 quilos de comida e 120 litros de água potável no chão ou em recipientes no alcance da magia — ambos úteis para afastar os perigos da desnutrição e desidratação. A comida não é temperada, mas nutritiva e se parece com um alimento à sua escolha, e a água é limpa. A comida estraga após 24 horas se não for consumida.",
     "classes": [
       "Clérigo",
       "Paladino"
@@ -499,7 +499,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "1 minuto",
     "description": "O alvo atingido pelo ataque sofre 3d8 pontos de dano Radiante adicionais e tem a condição Cego até que a magia termine. No final de cada um dos turnos dele, o alvo Cego realiza uma salvaguarda de Constituição, encerrando a magia em caso de sucesso.",
     "classes": [
@@ -568,7 +568,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Ao seu toque, todas as maldições que afetam uma criatura ou objeto se encerram. Se o objeto for um item mágico amaldiçoado, a maldição permanece, mas a magia quebra a Sintonização do dono com o objeto, permitindo que ele seja removido ou descartado.",
     "classes": [
       "Clérigo",
       "Bruxo",
@@ -585,7 +585,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 300 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura que morreu no último minuto. Essa criatura revive com 1 Ponto de Vida. Esta magia não pode reviver uma criatura que morreu de velhice, nem restaura partes do corpo ausentes.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -602,7 +602,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Resistência a dano Venenoso e Vantagem nas salvaguardas para evitar ou encerrar efeitos que incluem a condição Amedrontado, Atordoado, Cego, Enfeitiçado, Envenenado, Paralisado ou Surdo.",
     "classes": [
       "Clérigo",
       "Paladino"
@@ -617,7 +617,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Resistência a Dano Necrótico, e seus Pontos de Vida máximos não podem ser reduzidos. Se um aliado com 0 Pontos de Vida começar o turno na aura, esse aliado recupera 1 Ponto de Vida.",
     "classes": [
       "Clérigo",
       "Paladino"
@@ -648,7 +648,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "O alvo sofre 4d6 pontos de dano Psíquico adicionais do ataque e deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Atordoado até o final do seu próximo turno.",
     "classes": [
@@ -713,7 +713,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Vantagem em salvaguardas contra magias e outros efeitos mágicos. Quando uma criatura afetada realiza uma salvaguarda contra uma magia ou efeito mágico que permite que sofra apenas metade do dano, ela não sofre dano em caso de sucesso.",
     "classes": [
       "Clérigo",
       "Mago",
@@ -727,9 +727,9 @@
     "especial": "C",
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "O alvo atingido pela jogada de ataque sofre um adicional de 5d10 pontos de dano Energético do ataque. Se o ataque reduzir o alvo a 50 Pontos de Vida ou menos, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é transportado para um semiplano inofensivo pela duração da magia. Enquanto estiver lá, o alvo tem a condição Incapacitado. Quando a magia termina, o alvo reaparece no espaço que deixou ou no espaço desocupado mais próximo se esse espaço estiver ocupado.",
     "classes": [
       "Paladino"
     ]
@@ -776,7 +776,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Uma energia destrutiva ondula a partir de você em uma Emanação de 9 metros. Cada criatura à sua escolha na Emanação realiza uma salvaguarda de Constituição. Se falhar, um alvo sofre 5d6 pontos de dano Trovejante e 5d6 pontos de dano Necrótico ou Radiante (à sua escolha) e tem a condição Caído. Em caso de sucesso, um alvo recebe apenas metade do dano.",
     "classes": [
       "Paladino"
     ]

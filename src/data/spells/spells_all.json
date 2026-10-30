@@ -65,7 +65,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma Aljava no valor de 1 ou mais PO)",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Ao conjurar a magia e como uma Ação Bônus até que ela termine, você pode realizar dois ataques com uma arma que dispara Flechas ou Virotes, como um Arco Longo ou uma Besta Leve. A magia gera magicamente a munição necessária para cada ataque. Cada Flecha ou Virote criado pela magia causa dano equivalente ao de munição não mágica do seu tipo e se desintegra imediatamente após atingir ou errar o alvo."
   },
   {
     "name": "Alterar-se",
@@ -127,10 +127,24 @@
     "range": "18 metros",
     "components": "V, S, M (uma joia no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "24 horas",
-    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias).\nAnimar Mortos"
+    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias)."
   },
   {
-    "name": "Um Braseiro Afetado pela Magia Animar Objetos",
+    "name": "Animar Mortos",
+    "level": "3º Círculo",
+    "school": "Necromancia",
+    "classes": [
+      "Clérigo",
+      "Mago"
+    ],
+    "castingTime": "1 minuto",
+    "range": "3 metros",
+    "components": "V, S, M (uma gota de sangue, um pedaço de carne e uma pitada de pó de osso)",
+    "duration": "Instantânea",
+    "description": "Escolha uma pilha de ossos ou um cadáver de um Humanoide Médio ou Pequeno no alcance da magia. O alvo se torna um Morto-vivo: um Esqueleto se tiver escolhido ossos ou um Zumbi se tiver escolhido um cadáver (veja o apêndice B para os blocos de estatística).\nEm cada um dos seus turnos, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 18 metros de você (se você controlar várias criaturas, pode comandar qualquer uma delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Você decide qual ação a criatura realiza e para onde ela se move no próximo turno dela, ou pode emitir um comando geral, como proteger uma câmara ou um corredor. Se você não der nenhum comando, a criatura executa a ação Esquivar e move-se apenas para evitar dano. Uma vez dada uma ordem, a criatura continua a segui-la até que a tarefa seja concluída.\nA criatura fica sob seu controle por 24 horas, após as quais ela deixa de obedecer a qualquer comando que você tenha dado a ela. Para manter o controle da criatura por mais 24 horas, é necessário conjurar essa magia na criatura novamente antes que o período atual de 24 horas termine. Esse uso da magia reafirma seu controle sobre até quatro criaturas que você animou com essa magia em vez de animar uma nova criatura.\nUsando um Espaço de Magia de Círculo Superior. Você anima ou reafirma o controle sobre duas criaturas Mortas-vivas adicionais para cada círculo de espaço de magia acima de 3. Cada uma das criaturas deve vir de um cadáver ou pilha de ossos diferente."
+  },
+  {
+    "name": "Animar Objetos",
     "level": "5º Círculo",
     "school": "Transmutação",
     "classes": [
@@ -360,7 +374,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Resistência a dano Venenoso e Vantagem nas salvaguardas para evitar ou encerrar efeitos que incluem a condição Amedrontado, Atordoado, Cego, Enfeitiçado, Envenenado, Paralisado ou Surdo."
   },
   {
     "name": "Aura de Vida",
@@ -374,7 +388,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Resistência a Dano Necrótico, e seus Pontos de Vida máximos não podem ser reduzidos. Se um aliado com 0 Pontos de Vida começar o turno na aura, esse aliado recupera 1 Ponto de Vida."
   },
   {
     "name": "Aura de Vitalidade",
@@ -389,7 +403,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Quando você cria a aura e no início de cada um dos seus turnos enquanto ela persiste, você pode restaurar 2d6 Pontos de Vida em uma criatura dentro dela."
   },
   {
     "name": "Aura Mágica de Nystul",
@@ -415,7 +429,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um relicário no valor de 1.000 ou mais PO)",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Pela duração, você emite uma aura em uma Emanação de 9 metros. Enquanto estão dentro da aura, criaturas à sua escolha têm Vantagem em todas as salvaguardas, enquanto as outras têm Desvantagem nas jogadas de ataque contra elas. Além disso, se um Ínfero ou um Morto-Vivo atinge uma criatura afetada em uma jogada de ataque corpo a corpo, o atacante deve ser bem-sucedido em uma salvaguarda de Constituição ou fica Cego até o final do próximo turno dele."
   },
   {
     "name": "Auxílio",
@@ -576,7 +590,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um ramo de visco)",
     "duration": "24 horas",
-    "description": ""
+    "description": "Dez frutos aparecem em sua mão e são infundidos magicamente pela duração da magia. Uma criatura pode executar uma Ação Bônus para comer um fruto. Comer um fruto restaura 1 Ponto de Vida e fornece alimento suficiente para sustentar uma criatura por um dia. Frutos não comidos desaparecem quando a magia termina."
   },
   {
     "name": "Bordão Místico",
@@ -701,7 +715,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Você tece uma sequência de palavras perturbadoras, fazendo com que criaturas à sua escolha à sua vista e no alcance da magia realizem uma salvaguarda de Sabedoria. Qualquer criatura contra a qual você ou seus companheiros estejam lutando é automaticamente bem-sucedida nesta salvaguarda. Se falhar, um alvo tem uma penalidade de −10 nos testes de Sabedoria (Percepção) e Percepção Passiva até que a magia termine."
   },
   {
     "name": "Cegueira/Surdez",
@@ -746,7 +760,7 @@
     "range": "Toque",
     "components": "V, S, M (rubi em pó no valor de 50 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada",
-    "description": ""
+    "description": "Uma chama brota de um objeto que você toca. O efeito conjura Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros. Ela se parece uma chama comum, mas não cria calor e não consome combustível. A chama pode ser coberta ou escondida, mas não abafada ou extinta."
   },
   {
     "name": "Chama Sagrada",
@@ -816,7 +830,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e seus aliados têm Vantagem em salvaguardas contra magias e outros efeitos mágicos. Quando uma criatura afetada realiza uma salvaguarda contra uma magia ou efeito mágico que permite que sofra apenas metade do dano, ela não sofre dano em caso de sucesso."
   },
   {
     "name": "Círculo de Teleporte",
@@ -921,7 +935,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de fuligem e sal)",
     "duration": "1 hora",
-    "description": ""
+    "description": "Pela duração da magia, você entende o significado literal de qualquer idioma que ouça ou veja escrito. Você também entende qualquer escrita que veja, mas deve estar tocando a superfície na qual as palavras estão escritas. Leva cerca de 1 minuto para ler uma página de texto. Esta magia não decodifica símbolos ou mensagens secretas."
   },
   {
     "name": "Compulsão",
@@ -1017,7 +1031,7 @@
     ],
     "castingTime": "Ação",
     "range": "Toque",
-    "components": "",
+    "components": "V, S",
     "duration": "7 dias",
     "description": "Seu toque inflige um contágio mágico. O alvo deve ser bem-sucedido em uma salvaguarda de Constituição ou sofre 11d8 pontos de dano necrótico e tem a condição Envenenado. Além disso, escolha um atributo ao conjurar a magia. Enquanto estiver envenenado, o alvo tem Desvantagem em salvaguardas realizadas com o atributo escolhido.\nO alvo deve repetir a salvaguarda no final de cada um dos turnos até obter três sucessos ou fracassos. Se o alvo obtiver três sucessos, a magia encerra para o alvo. Se obter três fracassos, a magia permanece 7 dias sobre ele."
   },
@@ -1061,7 +1075,7 @@
     "range": "18 metros",
     "components": "S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você tenta interromper uma criatura no processo de conjurar uma magia. A criatura realiza uma salvaguarda de Constituição. Se falhar, a magia se dissipa sem efeito, e a ação, Ação Bônus ou Reação usada para conjurá-la é desperdiçada. Se a magia do alvo foi conjurada com um espaço de magia, o espaço de magia da criatura não é gasto."
   },
   {
     "name": "Controlar Água",
@@ -1145,7 +1159,7 @@
       "Guardião",
       "Mago"
     ],
-    "castingTime": "ama Ação",
+    "castingTime": "Ação",
     "range": "27 metros",
     "components": "V, S, M (uma flor dourada no valor de 300 ou mais PO)",
     "duration": "Concentração, até 1 hora",
@@ -1301,7 +1315,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você cria 20 quilos de comida e 120 litros de água potável no chão ou em recipientes no alcance da magia — ambos úteis para afastar os perigos da desnutrição e desidratação. A comida não é temperada, mas nutritiva e se parece com um alimento à sua escolha, e a água é limpa. A comida estraga após 24 horas se não for consumida."
   },
   {
     "name": "Criar Mortos-Vivos",
@@ -1383,7 +1397,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Uma onda de energia curativa flui de você para as criaturas ao seu redor. Você restaura até 700 Pontos de Vida, divididos à sua escolha entre qualquer número de criaturas à sua vista e no alcance da magia. Criaturas curadas por esta magia também têm as condições Cego, Envenenado e Surdo removidas."
   },
   {
     "name": "Curar Ferimentos",
@@ -1568,7 +1582,7 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "O alvo sofre 4d6 pontos de dano Psíquico adicionais do ataque e deve ser bem-sucedido em uma salvaguarda de Sabedoria ou tem a condição Atordoado até o final do seu próximo turno."
   },
@@ -1581,9 +1595,9 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "O alvo atingido pela jogada de ataque sofre um adicional de 5d10 pontos de dano Energético do ataque. Se o ataque reduzir o alvo a 50 Pontos de Vida ou menos, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é transportado para um semiplano inofensivo pela duração da magia. Enquanto estiver lá, o alvo tem a condição Incapacitado. Quando a magia termina, o alvo reaparece no espaço que deixou ou no espaço desocupado mais próximo se esse espaço estiver ocupado."
   },
   {
     "name": "Destruição Cauterizante",
@@ -1594,7 +1608,7 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após acertar um alvo com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "1 minuto",
     "description": "Ao acertar o alvo, o ataque causa 1d6 pontos de dano Ígneo adicional. No início de cada turno do alvo, até que a magia termine, ele sofre 1d6 pontos de dano Ígneo e, então, realiza uma salvaguarda de Constituição. Se falhar, a magia continua; se for bem-sucedido, a magia se encerra."
   },
@@ -1607,7 +1621,7 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "1 minuto",
     "description": "O alvo atingido pelo ataque sofre 3d8 pontos de dano Radiante adicionais e tem a condição Cego até que a magia termine. No final de cada um dos turnos dele, o alvo Cego realiza uma salvaguarda de Constituição, encerrando a magia em caso de sucesso."
   },
@@ -1646,7 +1660,7 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após acertar um alvo com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "Seu ataque soa como um trovão audível a até 90 metros de você, e o alvo sofre 2d6 pontos de dano Trovejante adicionais do ataque. Além disso, se o alvo for uma criatura, ele deve ser bem-sucedido em uma salvaguarda de Força ou é empurrado 3 metros para longe de você e tem a condição Caído."
   },
@@ -1659,7 +1673,7 @@
     ],
     "castingTime": "Ação Bônus, que você realiza imediatamente após atingir uma criatura com uma arma Corpo a Corpo ou um Ataque Desarmado",
     "range": "Pessoal",
-    "components": "",
+    "components": "V",
     "duration": "Concentração, até 1 minuto",
     "description": "O alvo atingido pelo ataque sofre um adicional de 2d6 pontos de dano Radiante. Até que a magia termine, o alvo emite Luz Plena em um raio de 1,5 metro, e jogadas de ataque contra ele têm Vantagem e ele não pode se beneficiar da condição Invisível."
   },
@@ -1998,7 +2012,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "1 rodada",
-    "description": ""
+    "description": "Uma barreira imperceptível de energia mágica o protege. Até o início do seu próximo turno, você recebe um bônus de +5 na CA, incluindo contra o ataque que ativou a magia, e não sofre dano de Mísseis Mágicos."
   },
   {
     "name": "Escudo Ardente",
@@ -2027,7 +2041,7 @@
     "range": "18 metros",
     "components": "V, S, M (um pergaminho de oração)",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Um campo cintilante envolve uma criatura à sua escolha no alcance da magia, concedendo um bônus de +2 na CA pela duração da magia."
   },
   {
     "name": "Escuridão",
@@ -2168,7 +2182,7 @@
     ],
     "castingTime": "Ação",
     "range": "36 metros",
-    "components": "",
+    "components": "V, S",
     "duration": "Instantânea",
     "description": "Você dispara energia arcana contra uma criatura ou objeto no alcance da magia. Realize uma jogada de ataque à distância contra o alvo. Em caso de acerto, o alvo sofre 1d8 pontos de dano de um tipo à sua escolha: Ácido, Elétrico, Gélido, Ígneo, Psíquico, Trovejante ou Venenoso.\nSe você tirar um 8 no d8 para esta magia, pode jogar outro d8 e adicionar ao dano. Ao conjurar essa magia, o número máximo de d8 adicionais que você pode somar ao dano da magia é igual ao seu modificador de atributo de conjuração."
   },
@@ -2472,7 +2486,7 @@
     ],
     "castingTime": "Ação",
     "range": "Pessoal",
-    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PP)",
+    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PC)",
     "duration": "Instantânea",
     "description": "Guiado pelo lampejo de uma intuição mágica, você realiza um ataque com a arma usada na conjuração da magia. O ataque usa seu atributo de conjuração para as jogadas de ataque e dano em vez de usar Força ou Destreza. Se o ataque causar dano, ele pode ser Radiante ou do tipo de dano normal da arma (à sua escolha)."
   },
@@ -2632,7 +2646,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pitada de poeira de diamante no valor de 25 ou mais PO, que a magia consome)",
     "duration": "8 horas",
-    "description": ""
+    "description": "Pela duração da magia, você protege um alvo que tocar contra magias de Adivinhação. O alvo pode ser uma criatura voluntária, um local ou um objeto que não exceda 3 metros em qualquer dimensão. O alvo não pode ser afetado por nenhuma magia de Adivinhação nem percebido através de sensores mágicos de vidência."
   },
   {
     "name": "Infligir Ferimentos",
@@ -2704,7 +2718,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Uma criatura que você toca tem a condição Invisível até que a magia termine."
   },
   {
     "name": "Invocação Instantânea de Drawmij",
@@ -2720,7 +2734,7 @@
     "description": "Você toca a safira usada na conjuração e um objeto pesando 3 quilos ou menos, cuja dimensão mais longa é de 2 metros ou menos. A magia deixa uma marca invisível nesse objeto e inscreve invisivelmente o nome do objeto na safira. Cada vez que você conjura essa magia, deve usar uma safira diferente.\nDepois disso, você pode executar uma ação Usar Magia para proferir o nome do objeto e esmagar a safira. O objeto aparece instantaneamente em sua mão, independentemente das distâncias físicas ou planares, e a magia termina.\nSe outra criatura estiver segurando ou carregando o objeto, esmagar a safira não a transporta, mas, em vez disso, você descobre quem é essa criatura e onde ela está localizada no momento."
   },
   {
-    "name": "Espírito Aberrante (Pseudo-observador)",
+    "name": "Invocar Aberração",
     "level": "4º Círculo",
     "school": "Invocação",
     "classes": [
@@ -2979,7 +2993,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de areia colorida)",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você lança uma série deslumbrante de luzes ofuscantes e coloridas. Cada criatura em um Cone de 4,5 metros originado em você deve ser bem-sucedida em uma salvaguarda de Constituição ou tem a condição Cego até o final do seu próximo turno."
   },
   {
     "name": "Levitação",
@@ -3021,7 +3035,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "24 horas",
-    "description": ""
+    "description": "Até que a magia termine, uma criatura voluntária que você toca adquire Imunidade a dano Psíquico e à condição Enfeitiçado. O alvo também fica imune a qualquer coisa que possa detectar suas emoções ou alinhamento, ler seus pensamentos, detectar magicamente sua localização, e nenhuma magia — nem mesmo Desejo — pode obter informações sobre o alvo, observá-lo remotamente ou controlar sua mente."
   },
   {
     "name": "Línguas",
@@ -3038,7 +3052,7 @@
     "range": "Toque",
     "components": "V, M (um zigurate em miniatura)",
     "duration": "1 hora",
-    "description": ""
+    "description": "Esta magia concede à criatura que você toca a capacidade de entender qualquer idioma falado ou com língua de sinais que ela ouça ou veja. Além disso, quando o alvo se comunica falando ou usando sinais, qualquer criatura que conheça pelo menos um idioma pode entendê-lo se essa criatura puder ouvir as palavras ou ver os sinais."
   },
   {
     "name": "Localizar Animais ou Plantas",
@@ -3053,7 +3067,7 @@
     "range": "Pessoal",
     "components": "V, S, M (pelo de um cão de caça)",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Descreva ou nomeie uma criatura do tipo Fera, Planta ou planta não mágica. Você descobre a direção e a distância até a criatura ou planta mais próxima desse tipo a até 8 quilômetros, se houver alguma presente."
   },
   {
     "name": "Localizar Criatura",
@@ -3103,7 +3117,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "1 hora",
-    "description": ""
+    "description": "Até que a magia termine, ao realizar um teste de Carisma, você pode substituir o número que você tirou por um 15. Além disso, não importa o que você diga, a magia que determinaria se você está dizendo a verdade indica que você está sendo verdadeiro."
   },
   {
     "name": "Lufada de Vento",
@@ -3434,7 +3448,7 @@
     "range": "Toque",
     "components": "V, S, M (argila mole)",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você toca um objeto de pedra de tamanho Médio ou menor, ou uma seção de pedra com no máximo 1,5 metro em qualquer dimensão e o molda na forma que desejar. Por exemplo, você pode moldar uma rocha grande em uma arma, estátua ou baú, ou criar uma pequena passagem por uma parede com até 1,5 metro de espessura. Também é possível moldar uma porta de pedra ou seu batente para selar a porta. O objeto criado pode ter até duas dobradiças e uma fechadura, mas detalhes mecânicos mais finos não são possíveis."
   },
   {
     "name": "Moléstia",
@@ -3447,7 +3461,7 @@
     "range": "18 metros",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você libera magia virulenta em uma criatura à sua vista e no alcance da magia. O alvo deve realizar uma salvaguarda de Constituição. Se falhar, sofre 14d6 de dano Necrótico e seus Pontos de Vida máximos são reduzidos em um valor igual ao dano sofrido. Em caso de sucesso, sofre apenas metade do dano. Esta magia não pode reduzir os Pontos de Vida máximos de um alvo abaixo de 1."
   },
   {
     "name": "Montaria Fantasmagórica",
@@ -3705,7 +3719,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Uma energia destrutiva ondula a partir de você em uma Emanação de 9 metros. Cada criatura à sua escolha na Emanação realiza uma salvaguarda de Constituição. Se falhar, um alvo sofre 5d6 pontos de dano Trovejante e 5d6 pontos de dano Necrótico ou Radiante (à sua escolha) e tem a condição Caído. Em caso de sucesso, um alvo recebe apenas metade do dano."
   },
   {
     "name": "Onda Trovejante",
@@ -3822,7 +3836,7 @@
     ],
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "Você domina a mente de uma criatura à sua vista e no alcance da magia. Se o alvo tiver 150 Pontos de Vida ou menos, ele tem a condição Atordoado. Caso contrário, o Deslocamento dele é 0 até o início do seu próximo turno."
   },
@@ -3836,9 +3850,9 @@
     ],
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você fortalece até seis criaturas à sua vista e no alcance da magia. A magia concede 120 Pontos de Vida Temporários, que você divide entre os alvos da magia."
   },
   {
     "name": "Palavra de Poder: Matar",
@@ -3852,9 +3866,9 @@
     ],
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você obriga uma criatura à sua vista e no alcance da magia a morrer. Se o alvo tiver 100 Pontos de Vida ou menos, ele morre. Caso contrário, sofre 12d12 pontos de dano Psíquico."
   },
   {
     "name": "Palavra de Poder: Salvar",
@@ -3866,9 +3880,9 @@
     ],
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Uma onda de energia curativa percorre uma criatura à sua vista e no alcance da magia. O alvo recupera todos os Pontos de Vida. Se a criatura tem a condição Amedrontado, Atordoado, Enfeitiçado, Envenenado ou Paralisado, a condição encerra. Se a criatura tem a condição Caído, ela pode usar sua Reação para se levantar."
   },
   {
     "name": "Palavra de Radiância",
@@ -3984,7 +3998,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Brevemente cercado por uma névoa prateada, você se teleporta até 9 metros para um espaço desocupado à sua vista."
   },
   {
     "name": "Passo Sem Rastro",
@@ -3998,7 +4012,7 @@
     "range": "Pessoal",
     "components": "V, S, M (cinzas de ramo de visco queimado)",
     "duration": "Concentração, até 1 hora",
-    "description": ""
+    "description": "Você irradia uma aura de ocultação em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e cada criatura escolhida têm um bônus de +10 em testes de Destreza (Furtividade) e não deixam rastros."
   },
   {
     "name": "Passos Largos",
@@ -4026,9 +4040,9 @@
     ],
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (um punhado de casca de árvore)",
     "duration": "1 hora",
-    "description": ""
+    "description": "Você toca uma criatura voluntária. Até que a magia termine, a pele do alvo assume uma aparência de casca de árvore, e o alvo tem uma Classe de Armadura de 17 se sua CA for menor que isso."
   },
   {
     "name": "Pele-Rocha",
@@ -4044,7 +4058,7 @@
     "range": "Toque",
     "components": "V, S, M (poeira de diamante no valor de 100 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": ""
+    "description": "Até que a magia termine, uma criatura voluntária que você toque tem Resistência a dano Contundente, Cortante e Perfurante."
   },
   {
     "name": "Pequeno Refúgio de Leomund",
@@ -4116,7 +4130,7 @@
     ],
     "castingTime": "Ação",
     "range": "9 metros",
-    "components": "V, S, M (uma gota de mercúrio, uma porção de goma arábica e um fiapo de fumaça)",
+    "components": "V, S, M (uma porção de mercúrio, uma dose de goma arábica e um fiapo de fumaça)",
     "duration": "Concentração, até 1 hora",
     "description": "Escolha uma criatura ou objeto não mágico à sua vista e no alcance da magia. A criatura se multimorfa para uma criatura diferente, um objeto não mágico, ou o objeto se multimorfa para uma criatura (o objeto não pode estar sendo usado nem carregado). A transformação permanece pela duração da magia ou até que o alvo morra ou seja destruído, mas se você mantiver a Concentração nesta magia pela duração completa, a magia permanece até ser dissipada.\nUma criatura involuntária pode realizar uma salvaguarda de Sabedoria e, se for bem-sucedida, não é afetada por esta magia.\nCriatura em Criatura. Se você transformar uma criatura em outro tipo de criatura, a nova forma pode ser qualquer tipo que você escolher que tenha um Nível de Desafio igual ou menor do que o Nível de Desafio ou nível do alvo. As estatísticas de jogo do alvo são substituídas pelo bloco de estatísticas da nova forma, mas ele mantém seus Pontos de Vida, Dados de Pontos de Vida e alinhamento.\nO alvo recebe um número de Pontos de Vida Temporários igual aos Pontos de Vida da nova forma. A magia se encerra no alvo se ele não tiver Pontos de Vida Temporários restantes.\nO alvo é limitado às ações que pode realizar pela anatomia de sua nova forma, e não pode falar ou conjurar magias.\nO equipamento do alvo se funde com a nova forma. A criatura não pode usar ou se beneficiar de nenhum desses equipamentos.\nObjeto em Criatura. Você pode transformar um objeto em qualquer tipo de criatura, desde que o tamanho da criatura não seja maior que o tamanho do objeto e a criatura tenha um Nível de Desafio de 9 ou menor. A criatura é Amigável a você e seus aliados. Em combate, ela age imediatamente após o seu turno e obedece aos seus comandos.\nSe a magia durar mais de uma hora, você não controla mais a criatura. Ela pode permanecer Amigável a você, dependendo de como você a tratou."
   },
@@ -4194,7 +4208,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma tiara em miniatura)",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Você se envolve com uma majestade sobrenatural em uma Emanação de 3 metros. Sempre que a Emanação entra no espaço de uma criatura à sua vista, ou quando uma criatura à sua vista entra na Emanação ou termina seu turno nela, você pode forçar essa criatura a realizar uma salvaguarda de Sabedoria. Se falhar, o alvo sofre 4d6 pontos de dano Psíquico e tem a condição Caído, e você pode empurrá-lo até 3 metros para longe de você. Em caso de sucesso, o alvo sofre apenas metade do dano. Uma criatura realiza essa salvaguarda apenas uma vez por turno."
   },
   {
     "name": "Presságio",
@@ -4298,7 +4312,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": ""
+    "description": "Pela duração da magia, a criatura voluntária que você tocar tem Resistência a um tipo de dano à sua escolha: Ácido, Elétrico, Gélido, Ígneo ou Trovejante."
   },
   {
     "name": "Proteção Contra Lâminas",
@@ -4314,7 +4328,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Sempre que uma criatura realizar uma jogada de ataque contra você antes que a magia termine, o atacante subtrai 1d4 da jogada de ataque."
   },
   {
     "name": "Proteção Contra o Bem e o Mal",
@@ -4331,7 +4345,7 @@
     "range": "Toque",
     "components": "V, S, M (um pote de Água Benta no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Até que a magia termine, uma criatura voluntária que você tocar está protegida contra criaturas que são Aberrações, Celestiais, Elementais, Feéricos, Ínferos ou Mortos-Vivos. A proteção concede vários benefícios. Criaturas desses tipos têm Desvantagem em jogadas de ataque contra o alvo. O alvo também não pode ser possuído por essas criaturas nem adquirir as condições de Amedrontado ou Enfeitiçado por elas. Se o alvo já estiver possuído, Amedrontado ou Enfeitiçado por uma dessas criaturas, ele tem Vantagem em qualquer nova salvaguarda contra o efeito relevante."
   },
   {
     "name": "Proteção Contra Veneno",
@@ -4347,7 +4361,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "1 hora",
-    "description": ""
+    "description": "Você toca uma criatura e encerra nela a condição Envenenado. Pela duração da magia, o alvo tem Vantagem nas salvaguardas para evitar ou encerrar a condição Envenenado e tem Resiste a dano Venenoso."
   },
   {
     "name": "Proteger Fortaleza",
@@ -4632,7 +4646,7 @@
     "range": "Toque",
     "components": "V, S, M (uma conta de oração)",
     "duration": "1 hora",
-    "description": ""
+    "description": "Uma criatura que você toca recupera 4d8 + 15 Pontos de Vida. Pela duração da magia, o alvo recupera 1 Ponto de Vida no início de cada um dos turnos dele, e quaisquer partes do corpo cortadas voltam a crescer após 2 minutos."
   },
   {
     "name": "Relâmpago",
@@ -4677,7 +4691,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Ao seu toque, todas as maldições que afetam uma criatura ou objeto se encerram. Se o objeto for um item mágico amaldiçoado, a maldição permanece, mas a magia quebra a Sintonização do dono com o objeto, permitindo que ele seja removido ou descartado."
   },
   {
     "name": "Reparar",
@@ -4734,7 +4748,7 @@
     ],
     "castingTime": "Ação",
     "range": "Toque",
-    "components": "",
+    "components": "V, S",
     "duration": "Concentração, até 1 minuto",
     "description": "Você toca uma criatura voluntária e escolhe um tipo de dano: Ácido, Contundente, Cortante, Elétrico, Gélido, Ígneo, Necrótico, Perfurante, Radiante, Trovejante ou Venenoso. Quando a criatura sofre dano do tipo escolhido antes que a magia termine, a criatura reduz o dano total sofrido em 1d4 pontos. Uma criatura pode se beneficiar desta magia apenas uma vez por turno."
   },
@@ -4752,7 +4766,7 @@
     "range": "9 metros",
     "components": "V, S, M (um pedaço de junco)",
     "duration": "24 horas",
-    "description": ""
+    "description": "Esta magia concede a até dez criaturas voluntárias à sua escolha no alcance da magia a capacidade de respirar debaixo d'água até que a magia termine. As criaturas afetadas também mantêm seu modo normal de respiração."
   },
   {
     "name": "Ressurreição",
@@ -4814,7 +4828,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você toca uma criatura e remove uma condição: Cego, Envenenado, Paralisado ou Surdo."
   },
   {
     "name": "Retirada Acelerada",
@@ -4860,7 +4874,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 300 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": ""
+    "description": "Você toca uma criatura que morreu no último minuto. Essa criatura revive com 1 Ponto de Vida. Esta magia não pode reviver uma criatura que morreu de velhice, nem restaura partes do corpo ausentes."
   },
   {
     "name": "Rogar Maldição",
@@ -4889,7 +4903,7 @@
     ],
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (perna traseira de um gafanhoto)",
     "duration": "1 minuto",
     "description": "Você toca uma criatura voluntária. Uma vez em cada um dos turnos dela até que a magia encerre, essa criatura pode saltar até 9 metros gastando 3 metros de movimento."
   },
@@ -4904,7 +4918,7 @@
     "range": "9 metros",
     "components": "V, S, M (o caco de um espelho)",
     "duration": "1 minuto",
-    "description": ""
+    "description": "Você protege uma criatura no alcance da magia. Até que a magia termine, qualquer criatura que tenha como alvo a criatura protegida com uma jogada de ataque ou uma magia que cause dano deve ser bem-sucedida em uma salvaguarda de Sabedoria, ou deve escolher um novo alvo ou perder o ataque ou a magia. Esta magia não protege contra áreas de efeito. A magia se encerra se a criatura protegida realizar uma jogada de ataque, conjurar uma magia ou causar dano."
   },
   {
     "name": "Santuário Particular de Mordenkainen",
@@ -4959,7 +4973,7 @@
     "range": "Toque",
     "components": "S",
     "duration": "Concentração, até 1 hora",
-    "description": ""
+    "description": "Você toca uma Fera voluntária. Pela duração da magia, você pode perceber através dos sentidos da Fera, bem como dos seus próprios. Ao perceber através dos sentidos da Fera, você se beneficia de quaisquer sentidos especiais que ela tenha."
   },
   {
     "name": "Servo Invisível",
@@ -4990,7 +5004,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pena de beija-flor)",
     "duration": "8 horas",
-    "description": ""
+    "description": "Você toca uma criatura voluntária e concede a ela a capacidade de ver o futuro imediato. Pela duração da magia, o alvo tem Vantagem em Testes de D20, enquanto outras criaturas têm Desvantagem em jogadas de ataque contra ele. A magia se encerra se você a conjurar novamente."
   },
   {
     "name": "Silêncio",
@@ -5005,7 +5019,7 @@
     "range": "36 metros",
     "components": "V, S",
     "duration": "Concentração, até 10 minutos",
-    "description": ""
+    "description": "Pela duração da magia, nenhum som pode ser criado dentro ou passar através de uma esfera com raio de 6 metros centrada em um ponto à sua escolha no alcance da magia. Qualquer criatura ou objeto totalmente dentro da esfera é imune a dano Trovejante, e as criaturas têm a condição Surdo enquanto estiverem totalmente dentro dela. É impossível conjurar uma magia que incluia um componente Verbal neste local."
   },
   {
     "name": "Símbolo",
@@ -5078,7 +5092,7 @@
     "range": "9 metros",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": ""
+    "description": "Escolha qualquer número de criaturas no alcance da magia. Pela duração da magia, cada alvo tem Vantagem em salvaguardas de Sabedoria e Salvaguarda contra Morte e recupera o número de Pontos de Vida máximos possíveis de qualquer cura."
   },
   {
     "name": "Sonho",
@@ -5321,7 +5335,7 @@
     ],
     "castingTime": "Ação",
     "range": "36 metros",
-    "components": "",
+    "components": "V, S, M (uma pitada de fósforo)",
     "duration": "Concentração, até 1 minuto",
     "description": "Você desencadeia uma tempestade de luz intermitente e trovões furiosos em um Cilindro de 3 metros de raio e 12 metros de altura centrado em um ponto à sua vista e no alcance da magia. Enquanto estiverem nesta área, criaturas têm as condições Cego e Surdo, e não podem conjurar magias com um componente Verbal.\nQuando a tempestade aparece, cada criatura dentro dela realiza uma salvaguarda de Constituição, sofrendo 2d10 pontos de dano Radiante e 2d10 pontos de dano Trovejante se falhar, ou metade desse dano em caso de sucesso. Uma criatura também realiza essa salvaguarda quando entra na área da magia pela primeira vez em um turno ou termina o turno dela nela. Uma criatura realiza essa salvaguarda apenas uma vez por turno.\nUsando um Espaço de Magia de Círculo Superior. O dano Radiante e Trovejante aumentam em 1d10 para cada círculo de espaço de magia acima de 5."
   },
@@ -5424,7 +5438,7 @@
     "range": "Toque",
     "components": "V, S, M (pó de ouro no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada",
-    "description": ""
+    "description": "Você toca uma porta, janela, portão, contêiner ou escotilha fechada e a tranca magicamente pela duração da magia. Esta fechadura não pode ser destrancada por nenhum meio não mágico. Você e quaisquer criaturas que você designar ao conjurar a magia podem abrir e fechar o objeto apesar da tranca. Você também pode definir uma senha que, quando proferida a até 1,5 metro do objeto, o destranca por 1 minuto."
   },
   {
     "name": "Transição Planar",
@@ -5454,7 +5468,7 @@
     "range": "3 metros",
     "components": "V, S",
     "duration": "1 minuto",
-    "description": ""
+    "description": "Esta magia cria um elo mágico entre uma planta inanimada Grande ou maior no alcance da magia e outra planta, a qualquer distância, no mesmo plano de existência. Você deve ter visto ou tocado na planta-alvo pelo menos uma vez antes. Pela duração da magia, qualquer criatura pode entrar na planta-alvo e sair da planta-destino usando 1,5 metro de movimento."
   },
   {
     "name": "Trovão",
@@ -5542,7 +5556,7 @@
     ],
     "castingTime": "Ação Bônus",
     "range": "Pessoal",
-    "components": "",
+    "components": "V, S",
     "duration": "Instantânea",
     "description": "Você usa sua energia vital para se curar. Jogue um ou dois de seus Dados de Pontos de Vida não gastos e recupera um número de Pontos de Vida igual ao total do teste mais seu modificador de atributo de conjuração. Esses dados são, então, gastos."
   },
@@ -5585,11 +5599,11 @@
       "Feiticeiro",
       "Mago"
     ],
-    "castingTime": "1 ação",
+    "castingTime": "Ação",
     "range": "Toque",
     "components": "V, S, M (cogumelo em pó no valor de 25 ou mais PO, que a magia consome)",
     "duration": "1 hora",
-    "description": ""
+    "description": "Você toca uma criatura voluntária que recebe Visão Verdadeira com um alcance de 36 metros pela duração da magia."
   },
   {
     "name": "Visão no Escuro",
@@ -5605,7 +5619,7 @@
     "range": "Toque",
     "components": "V, S, M (uma cenoura seca)",
     "duration": "8 horas",
-    "description": ""
+    "description": "Pela duração da magia, uma criatura voluntária que você tocar tem Visão no Escuro com um alcance de 45 metros."
   },
   {
     "name": "Vitalidade Vazia",

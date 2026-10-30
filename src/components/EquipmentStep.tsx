@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { classStartingSpells } from '../data/spellsData';
 import { isCaster as engineIsCaster } from '../rules/calculators/spells';
+import { getMaxSpellCircle } from '../rules/utils/spellSelection';
 import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
@@ -369,6 +370,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
                 allSpells={classSpells}
                 maxCantrips={derivedSheet.cantripsKnown ?? 0}
                 maxPrepared={derivedSheet.preparedSpellCount ?? 0}
+                maxSpellLevel={Math.max(1, getMaxSpellCircle(classId, derivedSheet.level ?? 1))}
               />
             )}
           </Accordion>

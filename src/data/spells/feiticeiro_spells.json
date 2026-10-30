@@ -54,7 +54,7 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "36 metros",
-    "components": "",
+    "components": "V, S",
     "duration": "Instantânea",
     "description": "Você dispara energia arcana contra uma criatura ou objeto no alcance da magia. Realize uma jogada de ataque à distância contra o alvo. Em caso de acerto, o alvo sofre 1d8 pontos de dano de um tipo à sua escolha: Ácido, Elétrico, Gélido, Ígneo, Psíquico, Trovejante ou Venenoso.\nSe você tirar um 8 no d8 para esta magia, pode jogar outro d8 e adicionar ao dano. Ao conjurar essa magia, o número máximo de d8 adicionais que você pode somar ao dano da magia é igual ao seu modificador de atributo de conjuração.",
     "classes": [
@@ -68,7 +68,7 @@
     "especial": "M",
     "castingTime": "Ação",
     "range": "Pessoal",
-    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PP)",
+    "components": "S, M (uma arma com a qual você tem proficiência e que vale 1 ou mais PC)",
     "duration": "Instantânea",
     "description": "Guiado pelo lampejo de uma intuição mágica, você realiza um ataque com a arma usada na conjuração da magia. O ataque usa seu atributo de conjuração para as jogadas de ataque e dano em vez de usar Força ou Destreza. Se o ataque causar dano, ele pode ser Radiante ou do tipo de dano normal da arma (à sua escolha).",
     "classes": [
@@ -188,7 +188,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Sempre que uma criatura realizar uma jogada de ataque contra você antes que a magia termine, o atacante subtrai 1d4 da jogada de ataque.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -350,7 +350,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de fuligem e sal)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Pela duração da magia, você entende o significado literal de qualquer idioma que ouça ou veja escrito. Você também entende qualquer escrita que veja, mas deve estar tocando a superfície na qual as palavras estão escritas. Leva cerca de 1 minuto para ler uma página de texto. Esta magia não decodifica símbolos ou mensagens secretas.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -422,7 +422,7 @@
     "range": "Pessoal",
     "components": "V, S",
     "duration": "1 rodada",
-    "description": "",
+    "description": "Uma barreira imperceptível de energia mágica o protege. Até o início do seu próximo turno, você recebe um bônus de +5 na CA, incluindo contra o ataque que ativou a magia, e não sofre dano de Mísseis Mágicos.",
     "classes": [
       "Feiticeiro",
       "Mago"
@@ -484,7 +484,7 @@
     "range": "Pessoal",
     "components": "V, S, M (uma pitada de areia colorida)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você lança uma série deslumbrante de luzes ofuscantes e coloridas. Cada criatura em um Cone de 4,5 metros originado em você deve ser bem-sucedida em uma salvaguarda de Constituição ou tem a condição Cego até o final do seu próximo turno.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -637,10 +637,10 @@
     "name": "Salto",
     "level": "1º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (perna traseira de um gafanhoto)",
     "duration": "1 minuto",
     "description": "Você toca uma criatura voluntária. Uma vez em cada um dos turnos dela até que a magia encerre, essa criatura pode saltar até 9 metros gastando 3 metros de movimento.",
     "classes": [
@@ -1020,7 +1020,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Brevemente cercado por uma névoa prateada, você se teleporta até 9 metros para um espaço desocupado à sua vista.",
     "classes": [
       "Bruxo",
       "Feiticeiro",
@@ -1144,7 +1144,7 @@
     "especial": "—",
     "castingTime": "Ação Bônus",
     "range": "Pessoal",
-    "components": "",
+    "components": "V, S",
     "duration": "Instantânea",
     "description": "Você usa sua energia vital para se curar. Jogue um ou dois de seus Dados de Pontos de Vida não gastos e recupera um número de Pontos de Vida igual ao total do teste mais seu modificador de atributo de conjuração. Esses dados são, então, gastos.",
     "classes": [
@@ -1161,7 +1161,7 @@
     "range": "Toque",
     "components": "V, S, M (uma cenoura seca)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, uma criatura voluntária que você tocar tem Visão no Escuro com um alcance de 45 metros.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -1242,7 +1242,7 @@
     "range": "18 metros",
     "components": "S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você tenta interromper uma criatura no processo de conjurar uma magia. A criatura realiza uma salvaguarda de Constituição. Se falhar, a magia se dissipa sem efeito, e a ação, Ação Bônus ou Reação usada para conjurá-la é desperdiçada. Se a magia do alvo foi conjurada com um espaço de magia, o espaço de magia da criatura não é gasto.",
     "classes": [
       "Bruxo",
       "Feiticeiro",
@@ -1346,7 +1346,7 @@
     "range": "Toque",
     "components": "V, M (um zigurate em miniatura)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Esta magia concede à criatura que você toca a capacidade de entender qualquer idioma falado ou com língua de sinais que ela ouça ou veja. Além disso, quando o alvo se comunica falando ou usando sinais, qualquer criatura que conheça pelo menos um idioma pode entendê-lo se essa criatura puder ouvir as palavras ou ver os sinais.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1445,7 +1445,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Pela duração da magia, a criatura voluntária que você tocar tem Resistência a um tipo de dano à sua escolha: Ácido, Elétrico, Gélido, Ígneo ou Trovejante.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1478,7 +1478,7 @@
     "range": "9 metros",
     "components": "V, S, M (um pedaço de junco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Esta magia concede a até dez criaturas voluntárias à sua escolha no alcance da magia a capacidade de respirar debaixo d'água até que a magia termine. As criaturas afetadas também mantêm seu modo normal de respiração.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -1627,7 +1627,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Uma criatura que você toca tem a condição Invisível até que a magia termine.",
     "classes": [
       "Bardo",
       "Feiticeiro",
@@ -1676,7 +1676,7 @@
     "range": "Toque",
     "components": "V, S, M (poeira de diamante no valor de 100 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você toque tem Resistência a dano Contundente, Cortante e Perfurante.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -1730,6 +1730,22 @@
     "description": "Granizo cai em um Cilindro de 6 metros de raio e 12 metros de altura, centrado em um ponto no alcance da magia. Cada criatura no Cilindro realiza uma salvaguarda de Destreza. Se falhar, uma criatura sofre 2d10 pontos de dano Contundente e 4d6 pontos de dano Gélido, ou metade desse dano em caso de sucesso.\nPedras de granizo transformam o solo no Cilindro em Terreno Difícil até o final do seu próximo turno.\nUsando um Espaço de Magia de Círculo Superior. O dano Contundente aumenta em 1d10 para cada círculo de espaço de magia acima de 4.",
     "classes": [
       "Druida",
+      "Feiticeiro",
+      "Mago"
+    ]
+  },
+  {
+    "name": "Animar Objetos",
+    "level": "5º Círculo",
+    "school": "Transmutação",
+    "especial": "C",
+    "castingTime": "Ação",
+    "range": "36 metros",
+    "components": "V, S",
+    "duration": "Concentração, até 1 minuto",
+    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ele compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.\nObjetos Animados\nConstruto Grande ou Menor, Sem Alinhamento\nCA 15\nPV 10 (Médio ou menor), 20 (Grande), 40 (Enorme)\nDeslocamento 9 m\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n10\n+0\n+0\nInt\n3\n-4\n-4\nSab\n3\n-4\n-4\nCar\n1\n-5\n-5\nImunidades Psíquico, Venenoso; Amedrontado, Enfeitiçado, Envenenado, Exaustão, Paralisado\nSentidos Visão às Cegas 9 m, Percepção Passiva 6\nIdiomas Compreende os idiomas que você conhece\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nAções",
+    "classes": [
+      "Bardo",
       "Feiticeiro",
       "Mago"
     ]
@@ -1926,22 +1942,6 @@
     ]
   },
   {
-    "name": "Um Braseiro Afetado pela Magia Animar Objetos",
-    "level": "5º Círculo",
-    "school": "Transmutação",
-    "especial": "C",
-    "castingTime": "Ação",
-    "range": "36 metros",
-    "components": "V, S",
-    "duration": "Concentração, até 1 minuto",
-    "description": "Objetos são animados ao seu comando. Escolha uma série de objetos não mágicos no alcance da magia que não estejam sendo usados ou carregados, não estejam fixados a uma superfície e não sejam Colossais. O número máximo de objetos é igual ao seu modificador de atributo de conjuração. Para este número, um tamanho Médio ou menor conta como um objeto, um alvo Grande conta como dois e um alvo Enorme conta como três.\nCada alvo se anima, faz brotar pernas e se torna um Constructo que usa o bloco de estatísticas do Objeto Animado; esta criatura está sob seu controle até que a magia termine ou até que ela seja reduzida a 0 Pontos de Vida. Cada criatura que você anima com esta magia é uma aliada sua e de seus aliados. Em combate, ele compartilha a contagem de Iniciativa com você e tem o turno dela imediatamente após o seu.\nAté que a magia encerre, você pode executar uma Ação Bônus para comandar mentalmente qualquer criatura que tenha animado com essa magia se a criatura estiver a até 150 metros de você (se você controlar várias criaturas, pode comandar quaisquer delas ao mesmo tempo, emitindo o mesmo comando para cada uma). Se você não der nenhum comando, a criatura executa a ação Esquivar e se move apenas para evitar danos. Quando a criatura é reduzida a 0 Pontos de Vida, ela reverte para sua forma de objeto, e qualquer dano restante é transferido para essa forma.\nUsando um Espaço de Magia de Círculo Superior. O dano de Pancada da criatura aumenta em 1d4 (Médio ou menor), 1d6 (Grande) ou 1d12 (Enorme) para cada círculo de espaço de magia acima de 5.\nObjetos Animados\nConstruto Grande ou Menor, Sem Alinhamento\nCA 15\nPV 10 (Médio ou menor), 20 (Grande), 40 (Enorme)\nDeslocamento 9 m\nMod\nSG\nMod\nSG\nMod\nSG\nFor\n16\n+3\n+3\nDes\n10\n+0\n+0\nCon\n10\n+0\n+0\nInt\n3\n-4\n-4\nSab\n3\n-4\n-4\nCar\n1\n-5\n-5\nImunidades Psíquico, Venenoso; Amedrontado, Enfeitiçado, Envenenado, Exaustão, Paralisado\nSentidos Visão às Cegas 9 m, Percepção Passiva 6\nIdiomas Compreende os idiomas que você conhece\nND Nenhum (XP 0; BP é igual ao seu Bônus de Proficiência)\nAções",
-    "classes": [
-      "Bardo",
-      "Feiticeiro",
-      "Mago"
-    ]
-  },
-  {
     "name": "Corrente de Relâmpagos",
     "level": "6º Círculo",
     "school": "Evocação",
@@ -2120,11 +2120,11 @@
     "level": "6º Círculo",
     "school": "Adivinhação",
     "especial": "M",
-    "castingTime": "1 ação",
+    "castingTime": "Ação",
     "range": "Toque",
     "components": "V, S, M (cogumelo em pó no valor de 25 ou mais PO, que a magia consome)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura voluntária que recebe Visão Verdadeira com um alcance de 36 metros pela duração da magia.",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -2321,7 +2321,7 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
     "description": "Você domina a mente de uma criatura à sua vista e no alcance da magia. Se o alvo tiver 150 Pontos de Vida ou menos, ele tem a condição Atordoado. Caso contrário, o Deslocamento dele é 0 até o início do seu próximo turno.",
     "classes": [
@@ -2400,9 +2400,9 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "18 metros",
-    "components": "",
+    "components": "V",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você obriga uma criatura à sua vista e no alcance da magia a morrer. Se o alvo tiver 100 Pontos de Vida ou menos, ele morre. Caso contrário, sofre 12d12 pontos de dano Psíquico.",
     "classes": [
       "Bardo",
       "Bruxo",

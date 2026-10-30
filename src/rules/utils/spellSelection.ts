@@ -1,6 +1,6 @@
 import type { CharacterChoices } from '../types/CharacterChoices';
 import { getFinalAttributes, calculateAllModifiers } from '../calculators/attributes';
-import { getCantripsKnown, getPreparedSpellCount, getSpellcastingAbility, isCaster } from '../calculators/spells';
+import { getCantripsKnown, getPreparedSpellCount, getSpellcastingAbility, getSpellSlots, isCaster } from '../calculators/spells';
 import allSpellsData from '../../data/spells/spells_all.json';
 
 export interface SpellSelectionRequirement {
@@ -57,18 +57,33 @@ export function getSpellSelectionRequirement(choices: Pick<CharacterChoices, 'cl
   return { isCaster: true, requiredCantrips, requiredPreparedSpells, mode };
 }
 
-export function getValidSpellNames(classId: string, level: 'cantrip' | 1): Set<string> {
+function spellCircle(spell: SpellReference): number {
+  if (spell.level === 'Truque' || spell.level === 0) return 0;
+  const match = String(spell.level).match(/\d+/);
+  return match ? Number(match[0]) : -1;
+}
+
+/**
+ * Maior círculo de magia que o personagem consegue conjurar (0 se não houver espaços).
+ * Para o Bruxo é o círculo do espaço de Pacto.
+ */
+export function getMaxSpellCircle(classId: string, level: number): number {
+  const slots = getSpellSlots(classId, level);
+  if (!slots) return 0;
+  const circles = Object.keys(slots).map(Number).filter((c) => (slots as Record<number, number>)[c] > 0);
+  return circles.length > 0 ? Math.max(...circles) : 0;
+}
+
+/** Nomes de magias da classe de um círculo exato ('cantrip' = truques). */
+export function getValidSpellNames(classId: string, level: 'cantrip' | number): Set<string> {
   const spells = CLASS_SPELLS_BY_ID[classId] ?? [];
+  const target = level === 'cantrip' ? 0 : level;
+  return new Set(spells.filter((spell) => spellCircle(spell) === target).map((spell) => spell.name));
+}
 
-  return new Set(
-    spells
-      .filter((spell) => {
-        if (level === 'cantrip') {
-          return spell.level === 'Truque' || spell.level === 0;
-        }
-
-        return spell.level === 1 || spell.level === '1' || spell.level === '1º Círculo';
-      })
-      .map((spell) => spell.name),
-  );
+/** Magias (não truques) da classe cujo círculo o personagem já consegue conjurar no nível dado. */
+export function getValidPreparedSpellNames(classId: string, characterLevel: number): Set<string> {
+  const max = getMaxSpellCircle(classId, characterLevel);
+  const spells = CLASS_SPELLS_BY_ID[classId] ?? [];
+  return new Set(spells.filter((spell) => { const c = spellCircle(spell); return c >= 1 && c <= max; }).map((spell) => spell.name));
 }

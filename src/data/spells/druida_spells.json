@@ -175,7 +175,7 @@
     "especial": "C",
     "castingTime": "Ação",
     "range": "Toque",
-    "components": "",
+    "components": "V, S",
     "duration": "Concentração, até 1 minuto",
     "description": "Você toca uma criatura voluntária e escolhe um tipo de dano: Ácido, Contundente, Cortante, Elétrico, Gélido, Ígneo, Necrótico, Perfurante, Radiante, Trovejante ou Venenoso. Quando a criatura sofre dano do tipo escolhido antes que a magia termine, a criatura reduz o dano total sofrido em 1d4 pontos. Uma criatura pode se beneficiar desta magia apenas uma vez por turno.",
     "classes": [
@@ -226,7 +226,7 @@
     "range": "Pessoal",
     "components": "V, S, M (um ramo de visco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Dez frutos aparecem em sua mão e são infundidos magicamente pela duração da magia. Uma criatura pode executar uma Ação Bônus para comer um fruto. Comer um fruto restaura 1 Ponto de Vida e fornece alimento suficiente para sustentar uma criatura por um dia. Frutos não comidos desaparecem quando a magia termina.",
     "classes": [
       "Druida",
       "Guardião"
@@ -460,7 +460,7 @@
     "range": "Toque",
     "components": "V, S, M (um pote de Água Benta no valor de 25 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 10 minutos",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você tocar está protegida contra criaturas que são Aberrações, Celestiais, Elementais, Feéricos, Ínferos ou Mortos-Vivos. A proteção concede vários benefícios. Criaturas desses tipos têm Desvantagem em jogadas de ataque contra o alvo. O alvo também não pode ser possuído por essas criaturas nem adquirir as condições de Amedrontado ou Enfeitiçado por elas. Se o alvo já estiver possuído, Amedrontado ou Enfeitiçado por uma dessas criaturas, ele tem Vantagem em qualquer nova salvaguarda contra o efeito relevante.",
     "classes": [
       "Clérigo",
       "Bruxo",
@@ -489,10 +489,10 @@
     "name": "Salto",
     "level": "1º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (perna traseira de um gafanhoto)",
     "duration": "1 minuto",
     "description": "Você toca uma criatura voluntária. Uma vez em cada um dos turnos dela até que a magia encerre, essa criatura pode saltar até 9 metros gastando 3 metros de movimento.",
     "classes": [
@@ -581,7 +581,7 @@
     "range": "Toque",
     "components": "V, S, M (rubi em pó no valor de 50 ou mais PO, que a magia consome)",
     "duration": "Até ser dissipada",
-    "description": "",
+    "description": "Uma chama brota de um objeto que você toca. O efeito conjura Luz Plena em um raio de 6 metros e Meia-luz por mais 6 metros. Ela se parece uma chama comum, mas não cria calor e não consome combustível. A chama pode ser coberta ou escondida, mas não abafada ou extinta.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -674,7 +674,7 @@
     "range": "Pessoal",
     "components": "V, S, M (pelo de um cão de caça)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Descreva ou nomeie uma criatura do tipo Fera, Planta ou planta não mágica. Você descobre a direção e a distância até a criatura ou planta mais próxima desse tipo a até 8 quilômetros, se houver alguma presente.",
     "classes": [
       "Bardo",
       "Druida",
@@ -776,7 +776,7 @@
     "range": "Pessoal",
     "components": "V, S, M (cinzas de ramo de visco queimado)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Você irradia uma aura de ocultação em uma Emanação de 9 metros pela duração da magia. Enquanto estiver na aura, você e cada criatura escolhida têm um bônus de +10 em testes de Destreza (Furtividade) e não deixam rastros.",
     "classes": [
       "Druida",
       "Guardião"
@@ -786,12 +786,12 @@
     "name": "Pele-Casca",
     "level": "2º Círculo",
     "school": "Transmutação",
-    "especial": "—",
+    "especial": "M",
     "castingTime": "Ação Bônus",
     "range": "Toque",
-    "components": "",
+    "components": "V, S, M (um punhado de casca de árvore)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura voluntária. Até que a magia termine, a pele do alvo assume uma aparência de casca de árvore, e o alvo tem uma Classe de Armadura de 17 se sua CA for menor que isso.",
     "classes": [
       "Druida",
       "Guardião"
@@ -806,7 +806,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "1 hora",
-    "description": "",
+    "description": "Você toca uma criatura e encerra nela a condição Envenenado. Pela duração da magia, o alvo tem Vantagem nas salvaguardas para evitar ou encerrar a condição Envenenado e tem Resiste a dano Venenoso.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -837,7 +837,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura e remove uma condição: Cego, Envenenado, Paralisado ou Surdo.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -855,7 +855,7 @@
     "range": "Toque",
     "components": "S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Você toca uma Fera voluntária. Pela duração da magia, você pode perceber através dos sentidos da Fera, bem como dos seus próprios. Ao perceber através dos sentidos da Fera, você se beneficia de quaisquer sentidos especiais que ela tenha.",
     "classes": [
       "Druida",
       "Guardião"
@@ -870,7 +870,7 @@
     "range": "Toque",
     "components": "V, S, M (uma cenoura seca)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Pela duração da magia, uma criatura voluntária que você tocar tem Visão no Escuro com um alcance de 45 metros.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -903,7 +903,7 @@
     "range": "Pessoal",
     "components": "V",
     "duration": "Concentração, até 1 minuto",
-    "description": "",
+    "description": "Uma aura irradia de você em uma Emanação de 9 metros pela duração da magia. Quando você cria a aura e no início de cada um dos seus turnos enquanto ela persiste, você pode restaurar 2d6 Pontos de Vida em uma criatura dentro dela.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -932,7 +932,7 @@
     "level": "3º Círculo",
     "school": "Invocação",
     "especial": "C, M",
-    "castingTime": "ama Ação",
+    "castingTime": "Ação",
     "range": "27 metros",
     "components": "V, S, M (uma flor dourada no valor de 300 ou mais PO)",
     "duration": "Concentração, até 1 hora",
@@ -1100,7 +1100,7 @@
     "range": "Toque",
     "components": "V, S",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Pela duração da magia, a criatura voluntária que você tocar tem Resistência a um tipo de dano à sua escolha: Ácido, Elétrico, Gélido, Ígneo ou Trovejante.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1118,7 +1118,7 @@
     "range": "9 metros",
     "components": "V, S, M (um pedaço de junco)",
     "duration": "24 horas",
-    "description": "",
+    "description": "Esta magia concede a até dez criaturas voluntárias à sua escolha no alcance da magia a capacidade de respirar debaixo d'água até que a magia termine. As criaturas afetadas também mantêm seu modo normal de respiração.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -1135,7 +1135,7 @@
     "range": "Toque",
     "components": "V, S, M (um diamante no valor de 300 ou mais PO, que a magia consome)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca uma criatura que morreu no último minuto. Essa criatura revive com 1 Ponto de Vida. Esta magia não pode reviver uma criatura que morreu de velhice, nem restaura partes do corpo ausentes.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1363,7 +1363,7 @@
     "range": "Toque",
     "components": "V, S, M (argila mole)",
     "duration": "Instantânea",
-    "description": "",
+    "description": "Você toca um objeto de pedra de tamanho Médio ou menor, ou uma seção de pedra com no máximo 1,5 metro em qualquer dimensão e o molda na forma que desejar. Por exemplo, você pode moldar uma rocha grande em uma arma, estátua ou baú, ou criar uma pequena passagem por uma parede com até 1,5 metro de espessura. Também é possível moldar uma porta de pedra ou seu batente para selar a porta. O objeto criado pode ter até duas dobradiças e uma fechadura, mas detalhes mecânicos mais finos não são possíveis.",
     "classes": [
       "Clérigo",
       "Druida",
@@ -1412,7 +1412,7 @@
     "range": "Toque",
     "components": "V, S, M (poeira de diamante no valor de 100 ou mais PO, que a magia consome)",
     "duration": "Concentração, até 1 hora",
-    "description": "",
+    "description": "Até que a magia termine, uma criatura voluntária que você toque tem Resistência a dano Contundente, Cortante e Perfurante.",
     "classes": [
       "Druida",
       "Feiticeiro",
@@ -1539,7 +1539,7 @@
     "especial": "—",
     "castingTime": "Ação",
     "range": "Toque",
-    "components": "",
+    "components": "V, S",
     "duration": "7 dias",
     "description": "Seu toque inflige um contágio mágico. O alvo deve ser bem-sucedido em uma salvaguarda de Constituição ou sofre 11d8 pontos de dano necrótico e tem a condição Envenenado. Além disso, escolha um atributo ao conjurar a magia. Enquanto estiver envenenado, o alvo tem Desvantagem em salvaguardas realizadas com o atributo escolhido.\nO alvo deve repetir a salvaguarda no final de cada um dos turnos até obter três sucessos ou fracassos. Se o alvo obtiver três sucessos, a magia encerra para o alvo. Se obter três fracassos, a magia permanece 7 dias sobre ele.",
     "classes": [
@@ -1731,7 +1731,7 @@
     "range": "18 metros",
     "components": "V, S, M (uma joia no valor de 1.000 ou mais PO, que a magia consome)",
     "duration": "24 horas",
-    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias).\nAnimar Mortos",
+    "description": "Você tenta vincular um Celestial, um Elemental, um Feérico ou um Ínfero ao seu serviço. A criatura deve estar no alcance da magia durante todo o período de conjuração. Normalmente, a criatura é primeiro invocada para o centro da versão invertida da magia Círculo Mágico para prendê-la enquanto esta magia é conjurada. Ao concluir a conjuração, o alvo deve ser bem-sucedido em uma salvaguarda de Carisma ou é obrigado a atendê-lo pela duração da magia. Se a criatura foi invocada ou criada por outra magia, a duração daquela magia é estendida para corresponder à duração desta magia.\nUma criatura vinculada deve obedecer aos seus comandos da melhor forma possível. Você pode ordenar que a criatura o acompanhe em uma aventura, proteja um local ou entregue uma mensagem. Se a criatura for Hostil, ela se esforça para distorcer seus comandos para atingir seus próprios objetivos. Se a criatura realizar completamente seus comandos antes que a magia termine, ela viaja até você para relatar esse fato se você estiver no mesmo plano de existência. Se você estiver em um plano diferente, ele retorna ao lugar onde você a vinculou e permanece lá até que a magia termine.\nUsando um Espaço de Magia de Círculo Superior. A duração aumenta com um espaço de magia 6º círculo (10 dias), 7º círculo (30 dias), 8º círculo (180 dias) e 9º círculo (366 dias).",
     "classes": [
       "Bardo",
       "Bruxo",
@@ -1887,7 +1887,7 @@
     "range": "3 metros",
     "components": "V, S",
     "duration": "1 minuto",
-    "description": "",
+    "description": "Esta magia cria um elo mágico entre uma planta inanimada Grande ou maior no alcance da magia e outra planta, a qualquer distância, no mesmo plano de existência. Você deve ter visto ou tocado na planta-alvo pelo menos uma vez antes. Pela duração da magia, qualquer criatura pode entrar na planta-alvo e sair da planta-destino usando 1,5 metro de movimento.",
     "classes": [
       "Druida"
     ]
@@ -1933,7 +1933,7 @@
     "range": "Toque",
     "components": "V, S, M (uma conta de oração)",
     "duration": "1 hora",
-    "description": "",
+    "description": "Uma criatura que você toca recupera 4d8 + 15 Pontos de Vida. Pela duração da magia, o alvo recupera 1 Ponto de Vida no início de cada um dos turnos dele, e quaisquer partes do corpo cortadas voltam a crescer após 2 minutos.",
     "classes": [
       "Bardo",
       "Clérigo",
@@ -2156,7 +2156,7 @@
     "range": "Toque",
     "components": "V, S, M (uma pena de beija-flor)",
     "duration": "8 horas",
-    "description": "",
+    "description": "Você toca uma criatura voluntária e concede a ela a capacidade de ver o futuro imediato. Pela duração da magia, o alvo tem Vantagem em Testes de D20, enquanto outras criaturas têm Desvantagem em jogadas de ataque contra ele. A magia se encerra se você a conjurar novamente.",
     "classes": [
       "Bardo",
       "Bruxo",

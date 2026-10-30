@@ -12,6 +12,8 @@ interface SpellCatalogProps {
   allSpells: any[];
   maxCantrips: number;
   maxPrepared: number;
+  /** Maior círculo de magia disponível (padrão 1). */
+  maxSpellLevel?: number;
 }
 
 const separator: React.CSSProperties = {
@@ -43,24 +45,31 @@ const normalizeLevel = (level: string | number) => {
 export const SpellCatalog: React.FC<SpellCatalogProps> = ({
   classId: _classId, learnedCantrips, preparedSpells,
   onLearnCantrip, onPrepareSpell, onRemoveCantrip, onRemoveSpell,
-  allSpells, maxCantrips, maxPrepared,
+  allSpells, maxCantrips, maxPrepared, maxSpellLevel = 1,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [levelFilter, setLevelFilter] = useState<string>('all');
   const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
 
   const cantrips = useMemo(() => allSpells.filter((s) => normalizeLevel(s.level) === '0'), [allSpells]);
-  const level1Spells = useMemo(() => allSpells.filter((s) => normalizeLevel(s.level) === '1'), [allSpells]);
+  const circleSpells = useMemo(() => allSpells.filter((s) => {
+    const n = Number(normalizeLevel(s.level));
+    return n >= 1 && n <= maxSpellLevel;
+  }), [allSpells, maxSpellLevel]);
 
   const totalKnown = learnedCantrips.length + preparedSpells.length;
 
   const filtered = useMemo(() => {
-    let list = levelFilter === '0' ? cantrips : levelFilter === '1' ? level1Spells : [...cantrips, ...level1Spells];
+    let list = levelFilter === 'all'
+      ? [...cantrips, ...circleSpells]
+      : levelFilter === '0'
+        ? cantrips
+        : circleSpells.filter((s) => normalizeLevel(s.level) === levelFilter);
     if (searchQuery) {
       list = list.filter((s) => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }
     return list;
-  }, [cantrips, level1Spells, levelFilter, searchQuery]);
+  }, [cantrips, circleSpells, levelFilter, searchQuery]);
 
   const schoolColor = (school: string) => {
     const map: Record<string, string> = {
@@ -121,7 +130,7 @@ export const SpellCatalog: React.FC<SpellCatalogProps> = ({
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
         {levelPill('all', 'Todos')}
         {levelPill('0', '0')}
-        {levelPill('1', '1')}
+        {Array.from({ length: maxSpellLevel }, (_, i) => <React.Fragment key={i}>{levelPill(String(i + 1), String(i + 1))}</React.Fragment>)}
       </div>
 
       <div style={{ color: 'var(--text-faint)', fontSize: '0.8rem' }}>{filtered.length} magias disponíveis</div>
@@ -178,7 +187,7 @@ export const SpellCatalog: React.FC<SpellCatalogProps> = ({
                 <div style={{ padding: '4px 12px 12px 12px', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ color: 'var(--text-dim)', fontSize: '0.82rem' }}>
                     {spell.school && <span style={{ color: schoolColor(spell.school) }}>{spell.school}</span>}
-                    {isCantrip ? ' · Truque' : ' · Magia de 1º Nível'}
+                    {isCantrip ? ' · Truque' : ` · Magia de ${normalizeLevel(spell.level)}º Círculo`}
                   </div>
                   <div style={separator} />
 
