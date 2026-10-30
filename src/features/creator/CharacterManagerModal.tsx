@@ -1,5 +1,12 @@
-import React, { useMemo } from 'react';
-import { listSavedCharacters, deleteCharacter, loadSavedCharacter } from '../../utils/persistence';
+import React, { useMemo, useRef, useState } from 'react';
+import {
+  listSavedCharacters,
+  deleteCharacter,
+  loadSavedCharacter,
+  saveCharacter,
+  downloadCharacterFile,
+  parseCharacterFile,
+} from '../../utils/persistence';
 import type { SavedCharacterMeta } from '../../utils/persistence';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
@@ -10,7 +17,11 @@ interface CharacterManagerModalProps {
 }
 
 export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
-  const characters = listSavedCharacters();
+  const [listVersion, setListVersion] = useState(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const characters = useMemo(() => listSavedCharacters(), [listVersion]);
+  const [importMessage, setImportMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { activeCharacterId, handleLoadCharacter, handleResetCharacter } = useCharacter();
   const { setCurrentStep } = useWizard();
 
@@ -33,6 +44,7 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
     e.stopPropagation();
     if (window.confirm(`Tem certeza que deseja apagar ${meta.name || 'este personagem'}? Isso não pode ser desfeito.`)) {
       deleteCharacter(meta.id);
+      setListVersion(v => v + 1);
       if (activeCharacterId === meta.id) {
         handleResetCharacter();
         setCurrentStep(0);
@@ -40,10 +52,27 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
     }
   };
 
+  const handleExport = (e: React.MouseEvent, meta: SavedCharacterMeta) => {
+    e.stopPropagation();
+    const fullChar = loadSavedCharacter(meta.id);
+    if (fullChar) downloadCharacterFile(fullChar);
+  };
+
+  const handleImport = async (file: File) => {
+    try {
+      const saved = parseCharacterFile(await file.text());
+      saveCharacter(saved);
+      setListVersion(v => v + 1);
+      setImportMessage({ ok: true, text: `${saved.name || 'Personagem'} importado. Clique no card para abrir a ficha.` });
+    } catch (err) {
+      setImportMessage({ ok: false, text: err instanceof Error ? err.message : 'Não foi possível ler o arquivo.' });
+    }
+  };
+
   // Sort by savedAt descending
   const sorted = useMemo(() => {
     return [...characters].sort((a, b) => b.savedAt - a.savedAt);
-  }, [characters, handleDelete]);
+  }, [characters]);
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -57,7 +86,27 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
           <button className={styles.newCharBtn} onClick={handleCreateNew}>
             ✦ Criar Novo Personagem
           </button>
+          <button className={styles.importBtn} onClick={() => fileInputRef.current?.click()}>
+            ⬆ Importar ficha
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) void handleImport(file);
+              e.target.value = '';
+            }}
+          />
         </div>
+        <p className={styles.shareHint}>
+          Para mandar a ficha ao mestre: clique em <b>Exportar</b> no card e envie o arquivo (pelo Discord, por exemplo). O mestre usa <b>Importar ficha</b>.
+        </p>
+        {importMessage && (
+          <div className={importMessage.ok ? styles.importOk : styles.importError} role="status">{importMessage.text}</div>
+        )}
 
         {sorted.length === 0 ? (
           <div className={styles.emptyState}>
@@ -95,6 +144,9 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
 
                     <div className={styles.cardFooter}>
                       <span className={styles.cardDate}>Salvo em {dateCreated} às {timeCreated}</span>
+                      <button className={styles.exportBtn} onClick={(e) => handleExport(e, c)} title="Baixar arquivo da ficha para enviar ao mestre">
+                        Exportar
+                      </button>
                       <button className={styles.deleteBtn} onClick={(e) => handleDelete(e, c)} title="Apagar personagem">
                         🗑️
                       </button>
