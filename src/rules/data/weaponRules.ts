@@ -7,6 +7,8 @@ export interface WeaponEntry {
   category: WeaponCategory;
   damageDice: string;
   damageType: string;
+  /** Dado de dano ao usar com as duas mãos (propriedade Versátil), se houver */
+  versatileDice: string | null;
   isFinesse: boolean;
   isRanged: boolean;
   isThrown: boolean;
@@ -28,7 +30,8 @@ function parseRange(raw: RawWeapon, category: WeaponCategory): string {
   const isRanged = category === 'simpleRanged' || category === 'martialRanged';
   const isThrown = raw.properties.toLowerCase().includes('arremesso');
   // Munição (Alcance 24/96) or Arremesso (Alcance 6/18)
-  const m = raw.properties.match(/Alcance\s+(\d+)\/(\d+)/i);
+  // Aceita decimais com vírgula (Zarabatana: "Alcance 7,5/30")
+  const m = raw.properties.match(/Alcance\s+(\d+(?:,\d+)?)\/(\d+(?:,\d+)?)/i);
   if (m) {
     const range = `${m[1]}/${m[2]} m`;
     if (isThrown && !isRanged) return `C.C. ou ${range}`;
@@ -41,7 +44,10 @@ function parseRange(raw: RawWeapon, category: WeaponCategory): string {
 function parseWeapon(raw: RawWeapon, category: WeaponCategory): WeaponEntry {
   const props = raw.properties.toLowerCase();
   // Dano: "1d6 Perfurante" → dice="1d6", type="Perfurante"
-  const dmgMatch = raw.damage.match(/^(\d+d\d+)\s+(.+)$/i);
+  // Dano fixo: "1 Perfurante" (Zarabatana) → dice="1", type="Perfurante"
+  const dmgMatch = raw.damage.match(/^(\d+(?:d\d+)?)\s+(.+)$/i);
+  // Versátil (1d8) → dano com as duas mãos
+  const versatileMatch = raw.properties.match(/Versátil\s*\((\d+d\d+)\)/i);
   const damageDice = dmgMatch ? dmgMatch[1] : raw.damage;
   const damageType = dmgMatch ? dmgMatch[2] : '';
 
@@ -50,6 +56,7 @@ function parseWeapon(raw: RawWeapon, category: WeaponCategory): WeaponEntry {
     category,
     damageDice,
     damageType,
+    versatileDice: versatileMatch ? versatileMatch[1] : null,
     isFinesse: props.includes('acuidade'),
     isRanged: category === 'simpleRanged' || category === 'martialRanged',
     isThrown: props.includes('arremesso'),

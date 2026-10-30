@@ -26,10 +26,12 @@ export function resolveEquippedArmor(equippedArmorId?: string): ArmorEntry | nul
 }
 
 export function hasArmorInInventory(inventory: ValidationInventoryItem[], equippedArmorId?: string): boolean {
-  if (!equippedArmorId) return false;
+  // Compara pelo ID canônico: fichas antigas podem guardar um ID alias (ex.: 'cota_de_placas').
+  const equipped = resolveEquippedArmor(equippedArmorId);
+  if (!equipped) return false;
   return inventory.some((item) => {
     const armor = getArmorByName(item.name);
-    return Boolean(armor && armor.type !== 'shield' && armor.id === equippedArmorId);
+    return Boolean(armor && armor.type !== 'shield' && armor.id === equipped.id);
   });
 }
 
@@ -44,7 +46,7 @@ export function sanitizeEquipmentState<T extends {
 }>(equipment: T): T {
   const normalizedInventory = equipment.inventory.filter((item) => (item.quantity ?? 1) > 0);
   const nextEquippedArmorId = equipment.equippedArmorId && hasArmorInInventory(normalizedInventory, equipment.equippedArmorId)
-    ? equipment.equippedArmorId
+    ? (resolveEquippedArmor(equipment.equippedArmorId)?.id ?? equipment.equippedArmorId)
     : null;
   const nextHasShieldEquipped = equipment.hasShieldEquipped && hasShieldInInventory(normalizedInventory);
   const inventoryUnchanged = normalizedInventory.length === equipment.inventory.length

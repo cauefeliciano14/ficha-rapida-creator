@@ -16,6 +16,8 @@ export interface WeaponAttack {
   damageBonus: number;
   damageDice: string;
   damageType: string;
+  /** Dado de dano com as duas mãos (propriedade Versátil). Ausente se a arma não for Versátil. */
+  versatileDice?: string;
   isFinesse: boolean;
   range: string;
   properties: string[];

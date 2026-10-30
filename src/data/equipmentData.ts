@@ -40,23 +40,25 @@ export const classEquipment: Record<string, EquipmentPackage> = {
     optionB: { gold: 150, description: "150 PO" }
   },
   guerreiro: { 
-    optionA: { items: ["Cota de Malha", "Espada Longa", "Espada Curta", "Besta Leve", "Kit de Aventureiro", "Girote"], gold: 15, description: "Cota de Malha, Espada Longa, Espada Curta, Besta Leve, 20 Virotes e Kit de Aventureiro e 15 PO (aproximado)" }, 
-    optionB: { gold: 150, description: "150 PO" }
+    // Livro: (A) / (B) Couro Batido, Cimitarra, Espada Curta, Arco Longo, 20 Flechas, Aljava, KEM e 11 PO / (C) 155 PO.
+    // O modelo de pacote só tem A (itens) e B (só ouro): a opção B aqui é a (C) do livro.
+    optionA: { items: ["Cota de Malha", "Espada Grande", "Mangual", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Kit de Explorador de Masmorras"], gold: 4, description: "Cota de Malha, Espada Grande, Mangual, 8 Azagaias, Kit de Explorador de Masmorras e 4 PO" }, 
+    optionB: { gold: 155, description: "155 PO" }
   },
   ladino: { 
-    optionA: { items: ["Armadura de Couro", "Rapieira", "Arco Curto", "Aljava", "Flecha", "Ferramentas de Ladrão", "Kit de Ladrão"], gold: 18, description: "Armadura de Couro, Rapieira, Arco Curto, 20 Flechas, Aljava, Ferramentas de Ladrão, Kit de Ladrão e 18 PO" }, 
-    optionB: { gold: 110, description: "110 PO" }
+    optionA: { items: ["Armadura de Couro", "Adaga", "Adaga", "Espada Curta", "Arco Curto", "Aljava", "Flecha", "Ferramentas de Ladrão", "Kit de Assaltante"], gold: 8, description: "Armadura de Couro, 2 Adagas, Espada Curta, Arco Curto, 20 Flechas, Aljava, Ferramentas de Ladrão, Kit de Assaltante e 8 PO" }, 
+    optionB: { gold: 100, description: "100 PO" }
   },
   mago: { 
-    optionA: { items: ["Bordão", "Livro de Magias", "Foco Arcano", "Kit de Erudito"], gold: 15, description: "Bordão, Livro de Magias, Foco Arcano, Kit de Erudito e 15 PO" }, 
-    optionB: { gold: 75, description: "75 PO" }
+    optionA: { items: ["Adaga", "Adaga", "Cajado", "Kit de Erudito", "Livro de Magias", "Túnica"], gold: 5, description: "2 Adagas, Foco Arcano (Cajado), Kit de Erudito, Livro de Magias, Túnica e 5 PO" }, 
+    optionB: { gold: 55, description: "55 PO" }
   },
   monge: { 
-    optionA: { items: ["Espada Curta", "Adaga", "Adaga", "Bolsa de Componentes", "Kit de Explorador de Masmorras"], gold: 10, description: "Espada Curta, 2 Adagas, Bolsa de Componentes, Kit de Explorador de Masmorras e 10 PO" }, 
-    optionB: { gold: 60, description: "60 PO" }
+    optionA: { items: ["Lança", "Adaga", "Adaga", "Adaga", "Adaga", "Adaga", "Ferramentas de Artesão ou Instrumento Musical", "Kit de Aventureiro"], gold: 11, description: "Lança, 5 Adagas, Ferramentas de Artesão ou Instrumento Musical (o escolhido para a proficiência), Kit de Aventureiro e 11 PO" }, 
+    optionB: { gold: 50, description: "50 PO" }
   },
   paladino: { 
-    optionA: { items: ["Espada Longa", "Escudo", "Cota de Malha", "Símbolo Sagrado", "Kit de Sacerdote"], gold: 40, description: "Espada Longa, Escudo, Cota de Malha, Símbolo Sagrado, Kit de Sacerdote e 40 PO" }, 
+    optionA: { items: ["Cota de Malha", "Escudo", "Espada Longa", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Azagaia", "Símbolo Sagrado", "Kit de Sacerdote"], gold: 9, description: "Cota de Malha, Escudo, Espada Longa, 6 Azagaias, Símbolo Sagrado, Kit de Sacerdote e 9 PO" }, 
     optionB: { gold: 150, description: "150 PO" }
   }
 };
@@ -144,15 +146,21 @@ export const getEquipmentForBackground = (bgId: string) => {
   };
 };
 
+// Conteúdo dos kits conforme o Livro do Jogador 2024 (cap. 6, Equipamento de Aventura).
 export const kitContents: Record<string, string> = {
-  "Kit de Aventureiro": "Mochila, Saco de Dormir, 2 frascos de Óleo, 10 dias de Rações, Corda (15m), Caixa para Fogo, 10 Tochas e Cantil",
-  "Kit de Explorador": "Mochila, Saco de Dormir, 2 frascos de Óleo, 10 dias de Rações, Corda (15m), Caixa para Fogo, 10 Tochas e Cantil",
-  "Kit de Explorador de Masmorras": "Mochila, Pé de Cabra, Martelo, 10 Pítons, 10 Tochas, Caixa para Fogo, 10 dias de Rações, Cantil e Corda (15m)",
-  "Kit de Sacerdote": "Mochila, Cobertor, 10 Velas, Caixa para Fogo, Caixa de Esmolas, 2 Incensos, Turíbulo, Vestimentas e Cantil",
-  "Kit de Artista": "Mochila, Saco de Dormir, 2 Fantasias, 5 Velas, 5 dias de Rações, Cantil e Kit de Disfarce",
-  "Kit de Erudito": "Mochila, Livro de Conhecimento, Tinta e Caneta Tinteiro, 10 Folhas de Pergaminho, Saquinho de Areia e Faca Pequena",
-  "Kit de Ladrão": "Mochila, Saco de 1.000 Esferas de Metal, 3m de Linha, Sino, 5 Velas, Pé de Cabra, Martelo, 10 Pítons, Lanterna Coberta, 2 Frascos de Óleo, 5 Dias de Rações, Caixa para Fogo e Cantil",
-  "Kit de Curandeiro": "Caixa com Bandagens, Pomadas e Talas (10 usos)",
+  "Kit de Artista": "Caixa para Fogo, Cantil, Espelho, 3 Fantasias, Lanterna Foca-facho, Mochila, 8 potes de Óleo, 9 dias de Rações, Saco de Dormir e Sino",
+  "Kit de Assaltante": "Caixa para Fogo, Cantil, Corda, Esferas de Metal, Lanterna Coberta, Mochila, 7 potes de Óleo, Pé de Cabra, 5 dias de Rações, Sino e 10 Velas",
+  "Kit de Aventureiro": "Caixa para Fogo, Cantil, Corda, Mochila, 2 potes de Óleo, 10 dias de Rações, Saco de Dormir e 10 Tochas",
+  "Kit de Diplomata": "Baú, Caixa para Fogo, 5 Canetas Tinteiro, 2 Estojos de Mapa ou Pergaminho, Lâmpada, 4 potes de Óleo, Perfume, 5 folhas de Papel, 5 folhas de Pergaminho, Roupas Finas e Tinta",
+  "Kit de Erudito": "Caixa para Fogo, Caneta Tinteiro, Lâmpada, Livro, Mochila, 10 potes de Óleo, 10 folhas de Pergaminho e Tinta",
+  "Kit de Escalada": "Arnês, luvas, pítons e ponteiras de bota (ancora você: não cai mais de 7,5 m do ponto de ancoragem)",
+  "Kit de Explorador de Masmorras": "Caixa para Fogo, Cantil, Corda, Estrepes, Mochila, 2 potes de Óleo, Pé de Cabra, 10 dias de Rações e 10 Tochas",
+  // O equipamento inicial do Druida diz "Kit de Explorador", que não existe na lista de kits
+  // do livro. Tratamos como o Kit de Aventureiro: é o kit de 10 PO que fecha a conta do
+  // pacote A do Druida com a opção B (50 PO); o de Masmorras (12 PO) passaria disso.
+  "Kit de Explorador": "Caixa para Fogo, Cantil, Corda, Mochila, 2 potes de Óleo, 10 dias de Rações, Saco de Dormir e 10 Tochas",
+  "Kit de Sacerdote": "Água Benta, Caixa para Fogo, Cobertor, Lâmpada, Mochila, 7 dias de Rações e Túnica",
+  "Kit de Curandeiro": "Dez usos: como ação Usar Objeto, estabiliza uma criatura Inconsciente com 0 PV sem teste de Sabedoria (Medicina)",
   "Kit de Herbalismo": "Bolsa com Tesoura, Almofariz e Pilão, Frascos e Ervas para preparar remédios e antídotos",
   "Kit de Falsificação": "Tintas, Papéis, Pergaminhos, Canetas, Selos e Lacre para criar documentos falsos",
   "Kit de Disfarce": "Cosméticos, Tintura de Cabelo, Roupas Pequenas e Adereços para alterar aparência",
@@ -171,7 +179,14 @@ export const itemSubChoices: Record<string, string[]> = {
     "Suprimentos de Alquimista", "Suprimentos de Calígrafo", "Suprimentos de Cervejeiro",
     "Suprimentos de Pintor", "Utensílios de Cozinheiro"
   ],
-  "Foco Arcano": ["Bastão", "Cajado", "Cristal", "Orbe", "Varinha"],
-  "Foco Druídico": ["Cajado", "Ramo de Visco", "Totem", "Varinha de Teixo"],
+  // Formas da tabela Focos Arcanos / Focos Druídicos do livro.
+  "Foco Arcano": ["Cajado", "Cetro", "Cristal", "Orbe", "Varinha"],
+  "Foco Druídico": ["Cajado", "Ramo de Visco", "Varinha de Teixo"],
   "Símbolo Sagrado": ["Amuleto", "Emblema", "Relicário"],
 };
+
+// Monge: "Ferramentas de Artesão ou Instrumento Musical escolhido para a proficiência com ferramenta".
+itemSubChoices["Ferramentas de Artesão ou Instrumento Musical"] = [
+  ...itemSubChoices["Ferramentas de Artesão"],
+  ...itemSubChoices["Instrumento Musical"],
+];

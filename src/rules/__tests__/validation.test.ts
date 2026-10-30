@@ -54,12 +54,12 @@ function makeCompleteWarrior(): CharacterChoices {
     languageSelections: ['elvish', 'dwarvish'],
     equipmentChoices: { classOption: 'A', backgroundOption: 'A' },
     inventory: [
+      // Pacote A do Guerreiro (Livro do Jogador 2024)
       { name: 'Cota de Malha' },
-      { name: 'Espada Longa' },
-      { name: 'Espada Curta' },
-      { name: 'Besta Leve' },
-      { name: 'Kit de Aventureiro' },
-      { name: 'Girote' },
+      { name: 'Espada Grande' },
+      { name: 'Mangual' },
+      ...Array.from({ length: 8 }, () => ({ name: 'Azagaia' })),
+      { name: 'Kit de Explorador de Masmorras' },
       { name: 'Lança' },
       { name: 'Arco Curto' },
       { name: 'Flecha' },

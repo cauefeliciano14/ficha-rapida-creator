@@ -71,15 +71,17 @@ describe('calculateAC', () => {
     expect(calculateAC({ dexModifier: 3, classId: 'monge', wisModifier: 2 })).toBe(15);
   });
 
-  it('cota_malha_parcial (armadura média), DEX+3 → CA 14+2=16', () => {
-    expect(calculateAC({ dexModifier: 3, equippedArmorId: 'cota_malha_parcial', armorProficiencies: ['Armadura Média'] })).toBe(16);
+  // Livro do Jogador 2024, tabela Armaduras: Cota de Malha Parcial = 13 + Des (máx. 2)
+  it('cota_malha_parcial (armadura média), DEX+3 → CA 13+2=15', () => {
+    expect(calculateAC({ dexModifier: 3, equippedArmorId: 'cota_malha_parcial', armorProficiencies: ['Armadura Média'] })).toBe(15);
   });
 
   it('armadura_de_placas (pesada), DEX+3 → CA 18 (sem DEX)', () => {
     expect(calculateAC({ dexModifier: 3, equippedArmorId: 'armadura_de_placas', armorProficiencies: ['Armadura Pesada'] })).toBe(18);
   });
 
-  it('cota_de_placas (pesada) + escudo → CA 16+2=18', () => {
+  // ID antigo 'cota_de_placas' (pesada 16, For 13) resolve para a Cota de Malha do livro
+  it('cota_de_placas (ID antigo → Cota de Malha, pesada) + escudo → CA 16+2=18', () => {
     expect(calculateAC({ dexModifier: 0, equippedArmorId: 'cota_de_placas', hasShield: true, armorProficiencies: ['Armadura Pesada', 'Escudo'] })).toBe(18);
   });
 
@@ -148,12 +150,14 @@ describe('buildWeaponAttack', () => {
 });
 
 describe('novas regras de treinamento e proficiência', () => {
-  it('ignora armadura e escudo sem treinamento apropriado', () => {
-    expect(calculateAC({ dexModifier: 2, equippedArmorId: 'couro', hasShield: true, armorProficiencies: [] })).toBe(12);
+  // Livro: armadura sem treinamento dá Desvantagem em For/Des e impede magia, mas a CA vale.
+  // Escudo sem treinamento não dá CA.
+  it('armadura sem treinamento ainda dá CA; escudo sem treinamento não', () => {
+    expect(calculateAC({ dexModifier: 2, equippedArmorId: 'couro', hasShield: true, armorProficiencies: [] })).toBe(13);
   });
 
-  it('mantém defesa sem armadura de monge mesmo com armadura inválida equipada', () => {
-    expect(calculateAC({ dexModifier: 3, wisModifier: 2, classId: 'monge', equippedArmorId: 'couro', armorProficiencies: [] })).toBe(15);
+  it('monge vestindo armadura perde a Defesa sem Armadura', () => {
+    expect(calculateAC({ dexModifier: 3, wisModifier: 2, classId: 'monge', equippedArmorId: 'couro', armorProficiencies: [] })).toBe(14);
   });
 
   it('arma sem proficiência não soma bônus de proficiência no ataque', () => {
