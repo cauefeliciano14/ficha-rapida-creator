@@ -1398,16 +1398,19 @@ export function CharacterSheetPage({
             </div>
           </CollapsibleSection>
 
-          <CollapsibleSection title="Recursos de Classe" defaultOpen forceOpen={!isMobile}>
+          <CollapsibleSection title="Usos Limitados" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
-              <div className={styles.sectionHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <span>RECURSOS DE CLASSE ⚙</span>
+              <div className={styles.sectionHeader}>USOS LIMITADOS</div>
+              <p className={styles.usesIntro}>Habilidades que só podem ser usadas algumas vezes. Clique numa bolinha ao usar; elas voltam no descanso indicado.</p>
+              {(playState.unlockHistory?.length ?? 0) > 0 && (
                 <button
                   type="button"
                   onClick={() => setShowUnlockHistory(true)}
                   title="Ver histórico de desbloqueios por nível"
                   aria-label="Histórico de desbloqueios"
                   style={{
+                    display: 'block',
+                    margin: '8px 0 0 auto',
                     background: 'transparent',
                     border: '1px solid var(--border-subtle)',
                     color: 'var(--text-dim)',
@@ -1420,9 +1423,9 @@ export function CharacterSheetPage({
                     cursor: 'pointer',
                   }}
                 >
-                  📜 Histórico {(playState.unlockHistory?.length ?? 0) > 0 && `(${playState.unlockHistory!.length})`}
+                  📜 O que liberou por nível ({playState.unlockHistory!.length})
                 </button>
-              </div>
+              )}
               <ClassResourcesCard
                 playState={playState}
                 onUpdatePlayState={onUpdatePlayState}

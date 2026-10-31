@@ -284,3 +284,34 @@
   line-height: 1.45;
   color: var(--text-secondary);
 }
+
+/* Nome em cima, quando o uso volta embaixo: sem nada espremido. */
+.nameBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nameBlock .name {
+  flex: none;
+}
+
+.nameBlock .reset {
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.intro {
+  margin: 0 0 8px;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: var(--text-dim);
+}

@@ -21,9 +21,9 @@ interface ClassResourcesCardProps {
 }
 
 const RESET_LABELS: Record<CustomCounter['resetOn'], string> = {
-  short: 'D. Curto',
-  long: 'D. Longo',
-  manual: 'Manual',
+  short: 'Volta no Descanso Curto',
+  long: 'Volta no Descanso Longo',
+  manual: 'Não volta sozinho',
 };
 
 function normalizeSubclass(name?: string): string {
@@ -169,7 +169,7 @@ export function ClassResourcesCard({
   };
 
   if (!classId || (defaultCounters.length === 0 && classCounters.length === 0)) {
-    return null;
+    return <p className={styles.intro}>Nenhum por enquanto. Sua classe libera usos limitados em níveis mais altos.</p>;
   }
 
   return (
@@ -210,16 +210,21 @@ export function ClassResourcesCard({
                   )}
                 </span>
               )}
-              <span className={styles.name}>{ctr.name}</span>
-              <span className={styles.reset}>{RESET_LABELS[ctr.resetOn]}</span>
-              <span className={styles.value}>
+              <span className={styles.nameBlock}>
+                <span className={styles.name}>{ctr.name}</span>
+                <span className={styles.reset}>{RESET_LABELS[ctr.resetOn]}</span>
+              </span>
+              <span className={styles.value} title={`${ctr.current} de ${ctr.max} disponíveis`}>
                 {ctr.current}<span className={styles.max}>/{ctr.max}</span>
               </span>
-              <button
-                onClick={() => resetCounter(ctr.id)}
-                className={styles.resetBtn}
-                title="Restaurar"
-              >↺</button>
+              {used > 0 && (
+                <button
+                  onClick={() => resetCounter(ctr.id)}
+                  className={styles.resetBtn}
+                  title="Recuperar todos os usos"
+                  aria-label={`Recuperar ${ctr.name}`}
+                >↺</button>
+              )}
             </div>
             <div className={styles.boxes} role="group" aria-label={ctr.name}>
               {Array.from({ length: ctr.max }, (_, i) => {
@@ -241,11 +246,7 @@ export function ClassResourcesCard({
                 );
               })}
             </div>
-            {used > 0 && (
-              <div className={styles.footer}>
-                <span className={styles.usedLabel}>{used} usado{used > 1 ? 's' : ''}</span>
-              </div>
-            )}
+
           </div>
         );
       })}

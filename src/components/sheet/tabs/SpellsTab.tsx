@@ -339,6 +339,17 @@ const SAVE_ABBR: Record<string, string> = {
   'inteligência': 'INT', 'sabedoria': 'SAB', 'carisma': 'CAR',
 };
 
+/** Tempo curto e padronizado: "Reação, que você executa quando…" vira "Reação". */
+function shortTime(time: string | undefined): string {
+  if (!time) return '—';
+  const t = time.toLowerCase();
+  if (t.startsWith('reação')) return 'Reação';
+  if (t.startsWith('ação bônus')) return 'Ação Bônus';
+  if (t.startsWith('ação')) return 'Ação';
+  return time.split(/[,(]| ou /)[0].trim()
+    .replace(/minutos?/i, 'min').replace(/horas?/i, 'h');
+}
+
 /** Alcance curto para a tabela: "9 metros (6 qd)" vira "9 m (6 qd)". */
 function shortRange(range: string | undefined): string {
   if (!range) return '—';
@@ -461,7 +472,7 @@ function SpellList({
                   {isRitual && <span className={styles.tagRitualSmall} title="Ritual">R</span>}
                   <div className={ddb.sub}>{info?.school ?? ''}</div>
                 </div>
-                <div className={`${ddb.center} ${ddb.notes}`}>{info?.castingTime ?? '—'}</div>
+                <div className={`${ddb.center} ${ddb.notes}`} title={info?.castingTime}>{shortTime(info?.castingTime)}</div>
                 <div className={`${ddb.center} ${ddb.notes}`} title={info ? withSquares(info.range) : undefined}>{info ? shortRange(info.range) : '—'}</div>
                 <div className={ddb.center} onClick={e => e.stopPropagation()}>
                   {hit && isAttack && onRoll ? (

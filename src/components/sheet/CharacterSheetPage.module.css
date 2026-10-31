@@ -2183,3 +2183,10 @@
 .addProfRemove:hover {
   color: #f87171;
 }
+
+.usesIntro {
+  margin: 0 0 8px;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: var(--text-dim);
+}
