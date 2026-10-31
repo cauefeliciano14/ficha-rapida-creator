@@ -1,3 +1,4 @@
+import { toggleEquippedKey } from '../../rules/utils/equipment';
 import React from "react";
 import { EquipmentStep } from "../EquipmentStep";
 import { StepLayout } from "./StepLayout";
@@ -73,11 +74,9 @@ export const EquipmentStepWrapper: React.FC = () => {
 
         <EquipmentStep
           equippedWeaponNames={playState.equippedItemIds ?? []}
-          onToggleWeapon={(name) => setPlayState(prev => ({
+          onToggleWeapon={(item, isOn) => setPlayState(prev => ({
             ...prev,
-            equippedItemIds: (prev.equippedItemIds ?? []).includes(name)
-              ? prev.equippedItemIds.filter(n => n !== name)
-              : [...(prev.equippedItemIds ?? []), name],
+            equippedItemIds: toggleEquippedKey(prev.equippedItemIds ?? [], item, isOn),
           }))}
           character={character}
           selectedBackground={selectedBackground}

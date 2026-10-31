@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import css from './equipment.module.css';
 import { getArmorByName } from '../../rules/data/armorRules';
-import { getEquipKind } from '../../rules/utils/equipment';
+import { getEquipKind, isInventoryItemEquipped } from '../../rules/utils/equipment';
 import type { InventoryItem } from '../../types/character';
 
 interface InventorySectionProps {
@@ -92,7 +92,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
         const isEquippedArmor = isArmorItem && equippedArmorId === armorEntry.id;
         const isEquippedShield = isShieldItem && hasShieldEquipped;
         const equipKind = getEquipKind(item.name);
-        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && (item.equipped || equippedWeaponNames.includes(item.name))));
+        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && isInventoryItemEquipped(equippedWeaponNames, item, inventory.indexOf(item), inventory)));
         const canToggle = equipKind !== null && (onToggleEquip || (equipKind !== 'weapon' && onEquipArmor && onEquipShield));
         return (
           <div key={item.id} style={{
@@ -119,9 +119,9 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
-                <button onClick={() => onChangeQuantity(item.id, -1)} style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid var(--border-input)', background: 'var(--surface-ghost)', color: 'var(--text-body)', cursor: 'pointer', fontSize: '0.8rem' }}>-</button>
+                <button onClick={() => onChangeQuantity(item.id, -1)} className={css.qtyBtn} aria-label={`Diminuir ${item.name}`}>−</button>
                 <span style={{ color: 'var(--text-bright)', fontWeight: 600, fontSize: '0.85rem', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                <button onClick={() => onChangeQuantity(item.id, 1)} style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid var(--border-input)', background: 'var(--surface-ghost)', color: 'var(--text-body)', cursor: 'pointer', fontSize: '0.8rem' }}>+</button>
+                <button onClick={() => onChangeQuantity(item.id, 1)} className={css.qtyBtn} aria-label={`Aumentar ${item.name}`}>+</button>
                 {canToggle && (
                   <button
                     type="button"

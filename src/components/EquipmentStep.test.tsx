@@ -206,7 +206,7 @@ describe('EquipmentStep equipped state sanitization', { timeout: 20000 }, () => 
     });
 
     clickText(view.container, 'Inventário');
-    clickButton(view.container, '-');
+    clickButton(view.container, '−');
 
     expect(view.container.querySelector('[data-testid="equipped-armor"]')?.textContent).toBe('none');
     expect(view.container.querySelector('[data-testid="armor-class"]')?.textContent).toBe('12');

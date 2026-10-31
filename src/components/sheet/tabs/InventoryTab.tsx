@@ -3,7 +3,7 @@ import type { CharacterPlayState, Container } from '../../../types/playState';
 import { getArmorByName } from '../../../rules/data/armorRules';
 import { Modal } from '../../ui/Modal';
 import { ItemCardTooltip } from '../ItemCardTooltip';
-import { getEquipKind } from '../../../rules/utils/equipment';
+import { getEquipKind, isInventoryItemEquipped, toggleEquippedKey } from '../../../rules/utils/equipment';
 import styles from './InventoryTab.module.css';
 import ddb from './ddbTab.module.css';
 
@@ -19,6 +19,7 @@ const CONTAINER_PRESETS = [
 ];
 
 interface InventoryItem {
+  id?: string;
   name: string;
   quantity?: number;
   notes?: string;
@@ -87,7 +88,8 @@ export function InventoryTab({
 
   const sheetItems: SheetItem[] = playState.sheetItems ?? [];
 
-  const toggleEquipped = (itemName: string) => {
+  const toggleEquipped = (item: InventoryItem, index: number) => {
+    const itemName = item.name;
     const kind = getEquipKind(itemName);
     if (kind === 'shield') { onEquipShield?.(!hasShieldEquipped); return; }
     if (kind === 'armor') {
@@ -95,10 +97,8 @@ export function InventoryTab({
       onEquipArmor?.(equippedArmorId === armorId ? null : armorId); return;
     }
     onUpdatePlayState(prev => {
-      const equipped = prev.equippedItemIds.includes(itemName)
-        ? prev.equippedItemIds.filter(id => id !== itemName)
-        : [...prev.equippedItemIds, itemName];
-      return { ...prev, equippedItemIds: equipped };
+      const isOn = isInventoryItemEquipped(prev.equippedItemIds, item, index, inventory);
+      return { ...prev, equippedItemIds: toggleEquippedKey(prev.equippedItemIds, item, isOn) };
     });
   };
 
@@ -207,7 +207,7 @@ export function InventoryTab({
     if (filterCategory === 'backpack') return false;
     if (filterCategory === 'equipment') {
       const isArmor = getArmorByName(i.name);
-      return !!isArmor || playState.equippedItemIds.includes(i.name);
+      return !!isArmor || playState.equippedItemIds.includes(i.name) || playState.equippedItemIds.includes(i.id);
     }
     return true;
   });
@@ -345,7 +345,7 @@ export function InventoryTab({
                 ? hasShieldEquipped
                 : kind === 'armor'
                   ? getArmorByName(item.name)!.id === equippedArmorId
-                  : playState.equippedItemIds.includes(item.name);
+                  : isInventoryItemEquipped(playState.equippedItemIds, item, inventory.indexOf(item), inventory);
               const isAttuned = playState.attunedItemIds.includes(item.name);
               const attuneBlocked = !isAttuned && attunedCount >= MAX_ATTUNEMENT;
               const qty = item.quantity ?? 1;
@@ -358,7 +358,7 @@ export function InventoryTab({
                       aria-checked={isEquipped}
                       aria-label={isEquipped ? 'EQUIPADO' : 'EQUIPAR'}
                       title={isEquipped ? 'Equipado — clique para desequipar' : 'Clique para equipar'}
-                      onClick={() => toggleEquipped(item.name)}
+                      onClick={() => toggleEquipped(item, inventory.indexOf(item))}
                       className={isEquipped ? ddb.checkOn : ddb.check}
                     >
                       {isEquipped ? '✓' : ''}

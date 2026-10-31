@@ -126,3 +126,31 @@ export function toggleItemEquipped<T extends {
   }
   return equipment;
 }
+
+/**
+ * Equipar vale para UM item do inventário, não para todos com o mesmo nome.
+ * `equippedKeys` guarda o id de cada item; fichas antigas guardavam o nome —
+ * nesse caso só o primeiro item com aquele nome conta como equipado.
+ */
+export function isInventoryItemEquipped(
+  equippedKeys: readonly string[],
+  item: { id?: string; name: string; equipped?: boolean },
+  index: number,
+  items: ReadonlyArray<{ name: string }>,
+): boolean {
+  if (item.equipped) return true;
+  if (item.id && equippedKeys.includes(item.id)) return true;
+  if (!equippedKeys.includes(item.name)) return false;
+  return items.findIndex(other => other.name === item.name) === index;
+}
+
+/** Liga/desliga o item (pelo id); também limpa o nome antigo, se houver. */
+export function toggleEquippedKey(
+  equippedKeys: readonly string[],
+  item: { id?: string; name: string },
+  currentlyEquipped: boolean,
+): string[] {
+  const key = item.id ?? item.name;
+  if (currentlyEquipped) return equippedKeys.filter(k => k !== key && k !== item.name);
+  return [...equippedKeys, key];
+}

@@ -5,7 +5,7 @@ import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
 import { getArmorByName } from '../rules/data/armorRules';
-import { sanitizeEquipmentState, toggleItemEquipped, getEquipKind } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, toggleItemEquipped, getEquipKind, isInventoryItemEquipped } from '../rules/utils/equipment';
 import { Accordion } from './equipment/Accordion';
 import { TabBar } from './equipment/TabBar';
 import { StartingEquipment } from './equipment/StartingEquipment';
@@ -24,7 +24,8 @@ interface EquipmentStepProps {
   derivedSheet: DerivedSheet;
   /** Armas equipadas (mesmo estado da caixinha "Ativo" da ficha). */
   equippedWeaponNames?: string[];
-  onToggleWeapon?: (name: string) => void;
+  /** Liga/desliga UMA arma do inventário (não todas com o mesmo nome). */
+  onToggleWeapon?: (item: { id: string; name: string }, currentlyEquipped: boolean) => void;
 }
 
 export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selectedBackground, updateEquipment, updateSpells, derivedSheet, equippedWeaponNames, onToggleWeapon }) => {
@@ -300,7 +301,11 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
               equippedWeaponNames={equippedWeaponNames}
               onToggleEquip={(id) => {
                 const item = equipmentState.inventory.find((i: any) => i.id === id);
-                if (item && onToggleWeapon && getEquipKind(item.name) === 'weapon') { onToggleWeapon(item.name); return; }
+                if (item && onToggleWeapon && getEquipKind(item.name) === 'weapon') {
+                  const index = equipmentState.inventory.indexOf(item);
+                  onToggleWeapon(item, isInventoryItemEquipped(equippedWeaponNames ?? [], item, index, equipmentState.inventory));
+                  return;
+                }
                 updateEquipment((prev: any) => toggleItemEquipped(prev, id));
               }}
             />
