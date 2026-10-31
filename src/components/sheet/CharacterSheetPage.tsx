@@ -230,7 +230,14 @@ export function CharacterSheetPage({
   const [diceToastExiting, setDiceToastExiting] = useState(false);
   const diceToastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /* Avisos no canto de cima, como no D&D Beyond ("Fulano rolou …"), além do card central. */
+  const [rollLog, setRollLog] = useState<{ id: number; label: string; total: number; crit?: boolean; fumble?: boolean }[]>([]);
+  const rollLogId = useRef(0);
+
   const showDiceToast = useCallback((result: DiceRollResult, label: string, onReroll?: () => void) => {
+    const id = ++rollLogId.current;
+    setRollLog(log => [{ id, label, total: result.total, crit: result.isCritical, fumble: result.isFumble }, ...log].slice(0, 4));
+    setTimeout(() => setRollLog(log => log.filter(item => item.id !== id)), 6000);
     if (diceToastTimer.current) clearTimeout(diceToastTimer.current);
     setDiceToastExiting(false);
     setDiceToast({ result, label, onReroll });
@@ -1466,6 +1473,21 @@ export function CharacterSheetPage({
             {renderSidebarContent()}
           </SheetSidebar>
         )
+      )}
+
+      {rollLog.length > 0 && createPortal(
+        <div className={styles.rollLog} aria-live="polite">
+          {rollLog.map(item => (
+            <div key={item.id} className={styles.rollLogItem}>
+              <span className={styles.rollLogIcon}>🎲</span>
+              <span className={styles.rollLogText}>
+                {characterName || 'Sem Nome'} rolou <strong>{item.label}</strong>
+              </span>
+              <span className={`${styles.rollLogTotal} ${item.crit ? styles.rollLogCrit : ''} ${item.fumble ? styles.rollLogFumble : ''}`}>{item.total}</span>
+            </div>
+          ))}
+        </div>,
+        document.body,
       )}
 
       {/* ===== DICE RESULT (centered overlay card) ===== */}

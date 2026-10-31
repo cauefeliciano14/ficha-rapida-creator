@@ -1878,3 +1878,70 @@
 .sectionHeaderBtn:hover {
   color: #fff;
 }
+
+/* ── Avisos de rolagem no canto (D&D Beyond) ── */
+.rollLog {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.rollLogItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  max-width: 340px;
+  padding: 6px 6px 6px 10px;
+  background: #0d1215;
+  border: 1px solid #c53131;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  color: #dfe5ea;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  animation: rollLogIn 0.2s ease-out;
+}
+
+.rollLogIcon {
+  font-size: 1rem;
+}
+
+.rollLogText {
+  flex: 1;
+  min-width: 0;
+}
+
+.rollLogText strong {
+  color: #e04848;
+}
+
+.rollLogTotal {
+  min-width: 38px;
+  padding: 4px 8px;
+  border-left: 1px solid #2a333a;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.rollLogCrit {
+  color: #4ade80;
+}
+
+.rollLogFumble {
+  color: #f87171;
+}
+
+@keyframes rollLogIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
