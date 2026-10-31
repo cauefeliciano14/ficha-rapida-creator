@@ -22,6 +22,7 @@ import { SheetTabs } from './SheetTabs';
 import { SheetSidebar } from './SheetSidebar';
 import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
+import { CONDITIONS_2024, findCondition } from '../../data/conditions2024';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { RestModal, type RestRestoredResource } from './RestModal';
@@ -46,11 +47,27 @@ import styles from './CharacterSheetPage.module.css';
 /** Largura em que a ficha foi desenhada; abaixo disso ela encolhe por inteiro. */
 const SHEET_DESIGN_WIDTH = 1320;
 
+const DEFENSES_TEXT = [
+  '**Resistência**: o dano daquele tipo cai pela metade.',
+  '**Vulnerabilidade**: o dano daquele tipo dobra.',
+  '**Imunidade**: você não sofre dano daquele tipo (ou não é afetado pela condição).',
+  'Resistência e Vulnerabilidade não acumulam: duas resistências ao mesmo tipo contam como uma.',
+].join('\n');
+
+/** Mostra **trecho** em negrito nos textos de regras do painel (antes os asteriscos apareciam crus). */
+function richText(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith('**') && part.endsWith('**') ? <strong key={i}>{part.slice(2, -2)}</strong> : part,
+  );
+}
+
 /* ── Sidebar state ── */
 type SidebarState =
   | { type: 'skill'; skill: DerivedSkill; result?: DiceRollResult }
   | { type: 'save'; save: DerivedSavingThrow; result?: DiceRollResult }
   | { type: 'saves' }
+  | { type: 'defenses' }
+  | { type: 'conditions' }
   | { type: 'proficiencies' }
   | { type: 'ability'; key: string; label: string; score: number; modifier: number }
   | { type: 'attack'; attack: WeaponAttack; hitResult: DiceRollResult; damageResult: DiceRollResult }
@@ -302,7 +319,11 @@ export function CharacterSheetPage({
     onUpdatePlayState(prev => ({
       ...prev,
       diceHistory: [
-        { label: result.label, total: result.total, type: result.type, timestamp: Date.now() },
+        {
+          label: result.label, total: result.total, type: result.type, timestamp: Date.now(),
+          formula: result.formula, rolls: result.rolls, modifier: result.modifier,
+          discardedRoll: result.discardedRoll, isCritical: result.isCritical, isFumble: result.isFumble,
+        },
         ...(prev.diceHistory ?? []),
       ].slice(0, MAX_DICE_HISTORY),
     }));
@@ -480,9 +501,13 @@ export function CharacterSheetPage({
     showDiceToast(result, 'Iniciativa');
   }, [derivedSheet.initiative, advantageMode, addToHistory, showDiceToast]);
 
+  /* Como no D&D Beyond: clicar no atributo rola o teste dele e abre os detalhes. */
   const handleAbilityClick = useCallback((key: string, label: string, score: number, modifier: number) => {
     setSidebar({ type: 'ability', key, label, score, modifier });
-  }, [setSidebar]);
+    const result = rollD20Check(modifier, `Teste de ${label}`, 'check', advantageMode);
+    addToHistory(result);
+    showDiceToast(result, `Teste de ${label}`);
+  }, [setSidebar, advantageMode, addToHistory, showDiceToast]);
 
   const handleAttackClick = useCallback((attack: WeaponAttack) => {
     const dmgFormula = `${attack.damageDice}${attack.damageBonus !== 0 ? (attack.damageBonus > 0 ? '+' : '') + attack.damageBonus : ''}`;
@@ -652,6 +677,64 @@ export function CharacterSheetPage({
           </div>
         );
 
+      case 'defenses': {
+        const all = [...derivedSheet.derivedDefenses, ...playState.activeDefenses];
+        return (
+          <div>
+            <div className={styles.sidebarDescription} style={{ marginBottom: 8 }}>
+              {all.length > 0 ? all.join(', ') : 'Nenhuma Resistência, Imunidade ou Vulnerabilidade.'}
+            </div>
+            <DefensesCard
+              derivedDefenses={derivedSheet.derivedDefenses}
+              activeDefenses={playState.activeDefenses}
+              onAdd={handleAddDefense}
+              onRemove={handleRemoveDefense}
+            />
+            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>
+              {richText(DEFENSES_TEXT)}
+            </div>
+          </div>
+        );
+      }
+
+      case 'conditions': {
+        const active = new Set(playState.activeConditions.map(c => findCondition(c)?.name ?? c));
+        return (
+          <div>
+            {CONDITIONS_2024.filter(c => c.name !== 'Exaustão').map(c => {
+              const on = active.has(c.name);
+              const stored = playState.activeConditions.find(x => (findCondition(x)?.name ?? x) === c.name);
+              return (
+                <div key={c.name} className={styles.conditionToggleRow}>
+                  <div className={styles.conditionToggleHead}>
+                    <span className={on ? styles.conditionToggleNameOn : undefined}>{c.name}</span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={on}
+                      aria-label={`${on ? 'Remover' : 'Aplicar'} ${c.name}`}
+                      className={`${styles.conditionSwitch} ${on ? styles.conditionSwitchOn : ''}`}
+                      onClick={() => (on ? handleRemoveCondition(stored ?? c.name) : handleAddCondition(c.name))}
+                    />
+                  </div>
+                  {on && (
+                    <ul className={styles.conditionToggleEffects}>
+                      {c.effects.map(e => <li key={e}>{e}</li>)}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+            <hr className={styles.sidebarDivider} />
+            <ExhaustionTracker
+              level={playState.exhaustionLevel ?? 0}
+              onChange={(level) => onUpdatePlayState(prev => ({ ...prev, exhaustionLevel: level }))}
+            />
+          </div>
+        );
+      }
+
       case 'proficiencies': {
         const groups: [string, string[]][] = [
           ['Perícias', derivedSheet.skillProficiencies],
@@ -786,7 +869,7 @@ export function CharacterSheetPage({
               </>
             )}
             <hr className={styles.sidebarDivider} />
-            <div className={styles.sidebarDescription}>{SENSES_DESCRIPTION}</div>
+            <div className={styles.sidebarDescription}>{richText(SENSES_DESCRIPTION)}</div>
           </div>
         );
 
@@ -808,26 +891,55 @@ export function CharacterSheetPage({
               </div>
             )}
             <hr className={styles.sidebarDivider} />
-            <div className={styles.sidebarDescription}>{HP_DESCRIPTION}</div>
+            <div className={styles.sidebarDescription}>{richText(HP_DESCRIPTION)}</div>
           </div>
         );
 
-      case 'history':
+      case 'history': {
+        // Game Log no estilo do D&D Beyond: um cartão por rolagem, a mais nova embaixo.
+        const entries = [...(playState.diceHistory ?? [])].reverse();
+        const typeLabel: Record<string, string> = { check: 'Teste', save: 'Resistência', attack: 'Ataque', damage: 'Dano' };
+        const timeAgo = (ts: number) => {
+          const min = Math.floor((Date.now() - ts) / 60000);
+          if (min < 1) return 'agora';
+          if (min < 60) return `há ${min} min`;
+          const h = Math.floor(min / 60);
+          return h < 24 ? `há ${h} h` : `há ${Math.floor(h / 24)} d`;
+        };
         return (
-          <div className={styles.historyList}>
-            {(playState.diceHistory ?? []).length === 0 ? (
+          <div className={styles.gameLog}>
+            {entries.length === 0 ? (
               <div className={styles.historyEmpty}>Nenhuma rolagem registrada.</div>
-            ) : (
-              (playState.diceHistory ?? []).map((entry, i) => (
-                <div key={`${entry.timestamp}-${i}`} className={styles.historyEntry}>
-                  <div className={styles.historyLabel}>{entry.label}</div>
-                  <div className={styles.historyTotal}>{entry.total}</div>
-                  <div className={styles.historyType}>{entry.type}</div>
+            ) : entries.map((entry, i) => {
+              const latest = i === entries.length - 1;
+              const dice = entry.rolls && entry.rolls.length > 0
+                ? entry.rolls.join(' + ') + (entry.modifier ? ` ${entry.modifier > 0 ? '+' : '−'} ${Math.abs(entry.modifier)}` : '')
+                : null;
+              return (
+                <div key={`${entry.timestamp}-${i}`} className={styles.gameLogItem}>
+                  <div className={styles.gameLogWho}>{characterName || 'Sem Nome'}</div>
+                  <div className={`${styles.gameLogCard} ${latest ? styles.gameLogCardLatest : ''}`}>
+                    <div className={styles.gameLogMain}>
+                      <span className={styles.gameLogLabel}>
+                        {entry.label}: <span className={styles[`gameLogType_${entry.type}`]}>{typeLabel[entry.type] ?? entry.type}</span>
+                      </span>
+                      <span className={`${styles.gameLogTotal} ${entry.isCritical ? styles.gameLogCrit : ''} ${entry.isFumble ? styles.gameLogFumble : ''}`}>{entry.total}</span>
+                    </div>
+                    {latest && dice && (
+                      <div className={styles.gameLogDetail}>
+                        <span className={styles.gameLogDice}>{dice}</span>
+                        {entry.discardedRoll !== undefined && <span className={styles.gameLogDiscard}> (descartado {entry.discardedRoll})</span>}
+                        {entry.formula && <div className={styles.gameLogFormula}>{entry.formula}</div>}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.gameLogTime}>{timeAgo(entry.timestamp)}</div>
                 </div>
-              ))
-            )}
+              );
+            })}
           </div>
         );
+      }
 
       default:
         return null;
@@ -838,6 +950,8 @@ export function CharacterSheetPage({
     ? sidebar.type === 'skill' ? 'Perícias'
       : sidebar.type === 'save' || sidebar.type === 'saves' ? 'Testes de Resistência'
         : sidebar.type === 'proficiencies' ? 'Proficiências e Treinamento'
+        : sidebar.type === 'defenses' ? 'Defesas'
+        : sidebar.type === 'conditions' ? 'Condições'
         : sidebar.type === 'ability' ? sidebar.label
           : sidebar.type === 'attack' ? sidebar.attack.weaponName
             : sidebar.type === 'proficiency' ? 'Bônus de Proficiência'
@@ -846,7 +960,7 @@ export function CharacterSheetPage({
                   : sidebar.type === 'ac' ? 'Classe de Armadura'
                     : sidebar.type === 'senses' ? 'Sentidos'
                       : sidebar.type === 'hp' ? 'Pontos de Vida'
-                        : sidebar.type === 'history' ? 'Histórico de Rolagens'
+                        : sidebar.type === 'history' ? 'Game Log'
                           : ''
     : '';
 
@@ -956,9 +1070,9 @@ export function CharacterSheetPage({
             <button
               onClick={() => setSidebar({ type: 'history' })}
               className={styles.restBtn}
-              title="Histórico de Rolagens"
+              title="Game Log: todas as rolagens"
             >
-              🎲 HISTÓRICO
+              📜 GAME LOG
             </button>
             <button
               onClick={() => setShortRestOpen(prev => !prev)}
@@ -1372,7 +1486,7 @@ export function CharacterSheetPage({
               </div>
 
               <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
-                <div className={styles.sectionHeader}>DEFESAS</div>
+                <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'defenses' })}>DEFESAS ⚙</button>
                 <DefensesCard
                   derivedDefenses={derivedSheet.derivedDefenses}
                   activeDefenses={playState.activeDefenses}
@@ -1382,7 +1496,7 @@ export function CharacterSheetPage({
               </div>
 
               <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
-                <div className={styles.sectionHeader}>CONDIÇÕES</div>
+                <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'conditions' })}>CONDIÇÕES ⚙</button>
                 <ConditionsCard
                   activeConditions={playState.activeConditions}
                   concentratingOn={playState.concentratingOn}

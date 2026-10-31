@@ -48,6 +48,13 @@ export interface CharacterPlayState {
     total: number;
     type: 'check' | 'save' | 'attack' | 'damage';
     timestamp: number;
+    /** Detalhe para o Game Log (opcional: entradas antigas não têm). */
+    formula?: string;
+    rolls?: number[];
+    modifier?: number;
+    discardedRoll?: number;
+    isCritical?: boolean;
+    isFumble?: boolean;
   }>;
   /** XP acumulado */
   xp: number;

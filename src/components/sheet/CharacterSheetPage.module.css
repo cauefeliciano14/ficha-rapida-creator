@@ -341,7 +341,8 @@
   flex-direction: column;
   gap: 10px;
   position: fixed;
-  top: 0;
+  /* Abaixo da barra de etapas do app (52px), como no DDB o painel não cobre o topo. */
+  top: 52px;
   right: 0;
   bottom: 0;
   width: clamp(300px, 26vw, 380px);
@@ -576,7 +577,8 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(5, 8, 10, 0.45);
+  /* Sem escurecer a ficha, como no D&D Beyond: só o card aparece. */
+  background: transparent;
   animation: diceOverlayIn 0.18s ease-out;
   cursor: pointer;
 }
@@ -1944,4 +1946,152 @@
 @keyframes rollLogIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Painel de Condições (lista com chaves, como no D&D Beyond) ── */
+.conditionToggleRow {
+  padding: 6px 0;
+  border-bottom: 1px solid #222a30;
+}
+
+.conditionToggleHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #dfe5ea;
+}
+
+.conditionToggleNameOn {
+  color: #fff;
+  font-weight: 700;
+}
+
+.conditionSwitch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid #3a444c;
+  border-radius: 999px;
+  background: #1a2228;
+  cursor: pointer;
+}
+
+.conditionSwitch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #8a949c;
+  transition: transform 0.15s ease;
+}
+
+.conditionSwitchOn {
+  background: #c53131;
+  border-color: #c53131;
+}
+
+.conditionSwitchOn::after {
+  background: #fff;
+  transform: translateX(16px);
+}
+
+.conditionToggleEffects {
+  margin: 6px 0 2px;
+  padding-left: 18px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #b0b7bd;
+}
+
+/* ── Game Log (como no D&D Beyond) ── */
+.gameLog {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gameLogWho {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #b0b7bd;
+  margin-bottom: 3px;
+}
+
+.gameLogCard {
+  padding: 8px 10px;
+  background: #0d1215;
+  border: 1px solid #2a333a;
+  border-radius: 8px;
+}
+
+.gameLogCardLatest {
+  border-color: #c53131;
+}
+
+.gameLogMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gameLogLabel {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #dfe5ea;
+}
+
+.gameLogType_check { color: #7cb7ff; }
+.gameLogType_save { color: #c9a54a; }
+.gameLogType_attack { color: #e04848; }
+.gameLogType_damage { color: #f0883e; }
+
+.gameLogTotal {
+  min-width: 40px;
+  padding-left: 10px;
+  border-left: 1px solid #3a444c;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.gameLogCrit { color: #4ade80; }
+.gameLogFumble { color: #f87171; }
+
+.gameLogDetail {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #222a30;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.gameLogDiscard {
+  font-size: 0.7rem;
+  color: #8a949c;
+}
+
+.gameLogFormula {
+  font-size: 0.7rem;
+  color: #8a949c;
+}
+
+.gameLogTime {
+  margin-top: 2px;
+  text-align: right;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  color: #6b757d;
 }
