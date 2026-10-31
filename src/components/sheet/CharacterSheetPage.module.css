@@ -1870,11 +1870,13 @@
 
 /* Cabeçalho de seção clicável (abre o painel da seção, como no D&D Beyond). */
 .sectionHeaderBtn {
+  /* Mantém a fonte do .sectionHeader (antes "font: inherit" deixava o texto gigante). */
   border: none;
   background: transparent;
   cursor: pointer;
-  width: 100%;
-  font: inherit;
+  width: auto;
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .sectionHeaderBtn:hover {
@@ -2094,4 +2096,90 @@
   font-size: 0.62rem;
   text-transform: uppercase;
   color: #6b757d;
+}
+
+/* ── Tabelas de composição (CA, atributo) e proficiências extras ── */
+.breakdownTable {
+  margin-bottom: 10px;
+}
+
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid #222a30;
+  font-size: 0.8rem;
+  color: #dfe5ea;
+}
+
+.breakdownValue {
+  min-width: 32px;
+  font-weight: 700;
+  color: #fff;
+  text-align: right;
+}
+
+.addProfForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #222a30;
+}
+
+.addProfTitle {
+  grid-column: 1 / -1;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.addProfSelect,
+.addProfInput {
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid #3a444c;
+  border-radius: 4px;
+  background: #0d1215;
+  color: #dfe5ea;
+  font-size: 0.8rem;
+}
+
+.addProfBtn {
+  grid-column: 1 / -1;
+  padding: 5px;
+  border: 1px solid #c53131;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.addProfBtn:hover {
+  background: #c53131;
+}
+
+.addProfType {
+  color: #8a949c;
+  font-size: 0.7rem;
+}
+
+.addProfRemove {
+  border: none;
+  background: transparent;
+  color: #8a949c;
+  cursor: pointer;
+}
+
+.addProfRemove:hover {
+  color: #f87171;
 }

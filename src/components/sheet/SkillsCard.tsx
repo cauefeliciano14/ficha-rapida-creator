@@ -86,14 +86,14 @@ export const SkillsCard = memo(function SkillsCard({
             ) : skill.proficient ? (
               <div
                 className={`${styles.profDot} ${styles.profDotFilled}`}
-                title={canGrantExpertise && remainingExpertise > 0 ? 'Clique para adicionar Expertise' : undefined}
+                title={canGrantExpertise && remainingExpertise > 0 ? 'Proficiente (clique para adicionar Expertise)' : 'Proficiente'}
                 onClick={canGrantExpertise && remainingExpertise > 0 ? (e) => { e.stopPropagation(); onToggleExpertise?.(skill.label); } : undefined}
                 role={canGrantExpertise && remainingExpertise > 0 ? 'button' : undefined}
               />
             ) : skill.halfProficient ? (
-              <div className={`${styles.profDot} ${styles.profDotHalf}`} title="Jack of All Trades (½ proficiência)" />
+              <div className={`${styles.profDot} ${styles.profDotHalf}`} title="Metade da proficiência (Versatilidade)" />
             ) : (
-              <div className={`${styles.profDot} ${styles.profDotEmpty}`} />
+              <div className={`${styles.profDot} ${styles.profDotEmpty}`} title="Não proficiente" />
             )}
           </div>
           <span className={styles.attrLabel}>

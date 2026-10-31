@@ -1,3 +1,4 @@
+import type { SpellRoll } from './tabs/SpellsTab';
 import { useState } from 'react';
 import type { DerivedSheet } from '../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../types/playState';
@@ -52,6 +53,7 @@ interface SheetTabsProps {
   backgroundEquipment?: string;
   onAttackClick?: (attack: WeaponAttack) => void;
   onDamageClick?: (attack: WeaponAttack) => void;
+  onSpellRoll?: (roll: SpellRoll) => void;
   currency?: { cp: number; sp: number; ep: number; gp: number; pp: number };
   onUpdateCurrency?: (currency: { cp: number; sp: number; ep: number; gp: number; pp: number }) => void;
   /** Campos de identidade para NotesTab */
@@ -91,6 +93,7 @@ export function SheetTabs({
   onEquipShield,
   onAttackClick,
   onDamageClick,
+  onSpellRoll,
   currency,
   onUpdateCurrency,
   backstory,
@@ -143,6 +146,7 @@ export function SheetTabs({
           learnedCantrips={learnedCantrips}
           preparedSpells={preparedSpells}
           onUpdatePreparedSpells={onUpdatePreparedSpells}
+          onSpellRoll={onSpellRoll}
         />
       )}
       {activeTab === 'inventory' && (

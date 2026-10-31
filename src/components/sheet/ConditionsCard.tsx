@@ -54,6 +54,8 @@ interface ConditionsCardProps {
   onAdd: (condition: string) => void;
   onRemove: (condition: string) => void;
   onStopConcentrating?: () => void;
+  /** Como no D&D Beyond: em vez do seletor, abre o painel com todas as condições. */
+  onOpenPanel?: () => void;
 }
 
 export function ConditionsCard({
@@ -62,6 +64,7 @@ export function ConditionsCard({
   onAdd,
   onRemove,
   onStopConcentrating,
+  onOpenPanel,
 }: ConditionsCardProps) {
   const [selected, setSelected] = useState('');
 
@@ -80,7 +83,7 @@ export function ConditionsCard({
     <div className={styles.container}>
       <div className={styles.pillList}>
         {activeConditions.length === 0 && !concentratingOn && (
-          <div className={styles.emptyText}>Adicionar ativas...</div>
+          <div className={styles.emptyText}>Nenhuma condição ativa</div>
         )}
         {concentratingOn && (
           <div className={`${styles.pill} ${styles.concentrationPill}`} title="Concentração Ativa">
@@ -95,29 +98,37 @@ export function ConditionsCard({
         ))}
       </div>
 
-      <div className={styles.addRow}>
-        <select
-          value={selected}
-          onChange={e => setSelected(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Adicionar condição…</option>
-          {available.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        <button
-          onClick={handleAdd}
-          disabled={!selected}
-          className={styles.addBtn}
-        >
-          +
+      {onOpenPanel ? (
+        <button type="button" className={styles.manageBtn} onClick={onOpenPanel}>
+          + Gerenciar condições
         </button>
-      </div>
-      {selectedInfo && (
-        <ul className={styles.previewEffects}>
-          {selectedInfo.effects.map(e => <li key={e}>{e}</li>)}
-        </ul>
+      ) : (
+        <>
+          <div className={styles.addRow}>
+            <select
+              value={selected}
+              onChange={e => setSelected(e.target.value)}
+              className={styles.select}
+            >
+              <option value="">Adicionar condição…</option>
+              {available.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <button
+              onClick={handleAdd}
+              disabled={!selected}
+              className={styles.addBtn}
+            >
+              +
+            </button>
+          </div>
+          {selectedInfo && (
+            <ul className={styles.previewEffects}>
+              {selectedInfo.effects.map(e => <li key={e}>{e}</li>)}
+            </ul>
+          )}
+        </>
       )}
     </div>
   );

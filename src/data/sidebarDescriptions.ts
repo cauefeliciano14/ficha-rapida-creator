@@ -45,11 +45,27 @@ export const SKILL_DESCRIPTIONS: Record<string, string> = {
 export const SAVING_THROW_DESCRIPTION =
   'Um teste de resistência — também chamado de save — representa uma tentativa de resistir a uma magia, uma armadilha, um veneno, uma doença ou uma ameaça similar. Você normalmente não decide fazer um teste de resistência; é forçado a fazê-lo porque seu personagem ou monstro está em risco.\n\nPara fazer um teste de resistência, role um d20 e adicione o modificador de habilidade apropriado. Por exemplo, você usa seu modificador de Destreza para um teste de resistência de Destreza.\n\nUm teste de resistência pode ser modificado por um bônus situacional ou penalidade e pode ser afetado por vantagem e desvantagem, conforme determinado pelo Mestre.\n\nCada classe concede proficiência em pelo menos dois testes de resistência. Assim como com proficiências em perícias, proficiência em um teste de resistência permite que um personagem adicione seu bônus de proficiência a testes de resistência feitos usando aquele atributo.';
 
-export const PROFICIENCY_BONUS_DESCRIPTION =
-  'Personagens possuem um bônus de proficiência determinado pelo nível, conforme detalhado no capítulo 1. Monstros também possuem este bônus, que está incorporado em seus blocos de estatísticas. O bônus é usado nas regras de testes de habilidade, testes de resistência e jogadas de ataque.\n\nSeu bônus de proficiência não pode ser adicionado a uma única jogada de dado ou outro número mais de uma vez. Por exemplo, se duas regras diferentes dizem que você pode adicionar seu bônus de proficiência a um teste de resistência de Sabedoria, você adiciona o bônus apenas uma vez quando faz o teste.\n\nOcasionalmente, seu bônus de proficiência pode ser multiplicado ou dividido (dobrado ou reduzido pela metade, por exemplo) antes de aplicá-lo. Por exemplo, o recurso Expertise do ladino dobra o bônus de proficiência para certos testes de habilidade. Se uma circunstância sugere que seu bônus de proficiência se aplica mais de uma vez à mesma rolagem, você ainda o adiciona apenas uma vez e o multiplica ou divide apenas uma vez.';
+export const PROFICIENCY_BONUS_DESCRIPTION = [
+  'O Bônus de Proficiência mostra o quanto seu personagem é treinado. Ele cresce com o nível do personagem (soma de todas as classes):',
+  'Níveis 1–4: +2 · 5–8: +3 · 9–12: +4 · 13–16: +5 · 17–20: +6.',
+  '',
+  'Você soma o bônus em ataques com armas e magias em que é proficiente, em perícias e ferramentas em que é proficiente, em testes de resistência proficientes e na CD das suas magias.',
+  '',
+  '**Nunca soma duas vezes**: mesmo que duas regras deem proficiência na mesma jogada, o bônus entra uma vez só.',
+  '**Especialista**: dobra o bônus em perícias escolhidas. O bônus só pode ser multiplicado uma vez e dividido uma vez.',
+].join('\n');
 
-export const SPEED_DESCRIPTION =
-  'Deslocamento determina a distância que você pode percorrer ao se mover durante o combate ou viagem. Seu deslocamento base é determinado pela sua espécie. Algumas magias e habilidades podem aumentar ou reduzir temporariamente seu deslocamento.';
+export const SPEED_DESCRIPTION = [
+  'Deslocamento é quanto você anda no seu turno. Você pode dividir o movimento antes e depois da ação.',
+  '',
+  '**Terreno Difícil**: cada 1,5 m custa 3 m de movimento.',
+  '**Levantar-se**: sair de Caído gasta metade do seu Deslocamento.',
+  '**Rastejar**: cada metro custa o dobro (o triplo em Terreno Difícil).',
+  '**Escalar e Nadar**: cada metro custa o dobro (o triplo em Terreno Difícil), a menos que você tenha deslocamento de escalada ou natação. Superfície lisa ou água agitada podem pedir um teste de Força (Atletismo).',
+  '**Salto em Distância**: até 30 cm por ponto de Força, com corrida de 3 m; parado, metade. Cada metro saltado gasta movimento.',
+  '**Salto em Altura**: 1 m + 30 cm por modificador de Força (mínimo 0), com corrida de 3 m; parado, metade.',
+  '**Correr (ação)**: ganha movimento extra igual ao seu Deslocamento neste turno.',
+].join('\n');
 
 export const INITIATIVE_DESCRIPTION =
   'Iniciativa determina a ordem dos turnos durante o combate. Quando o combate começa, cada participante faz um teste de Destreza para determinar seu lugar na ordem de iniciativa. O Mestre faz uma rolagem para cada grupo de criaturas idênticas, de modo que cada membro do grupo age ao mesmo tempo.';

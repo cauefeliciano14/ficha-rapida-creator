@@ -1,3 +1,4 @@
+import type { SpellRoll } from './tabs/SpellsTab';
 import { createPortal } from 'react-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DerivedSheet, DerivedSkill, DerivedSavingThrow, WeaponAttack } from '../../rules/types/DerivedSheet';
@@ -556,6 +557,19 @@ export function CharacterSheetPage({
     showDiceToast(damageResult, `${atk.weaponName} (Dano)`);
   }, [addToHistory, showDiceToast]);
 
+  const handleSpellRoll = useCallback((roll: SpellRoll) => {
+    if (roll.kind === 'attack') {
+      const result = rollD20Check(roll.bonus, roll.spell, 'attack', advantageMode);
+      addToHistory(result);
+      showDiceToast(result, `${roll.spell} (Ataque)`);
+    } else {
+      const kind = roll.damageType === 'Cura' ? 'Cura' : 'Dano';
+      const result = rollDamage(roll.formula, roll.spell);
+      addToHistory(result);
+      showDiceToast(result, `${roll.spell} (${kind} ${roll.damageType === 'Cura' ? '' : roll.damageType})`.replace(' )', ')'));
+    }
+  }, [advantageMode, addToHistory, showDiceToast]);
+
   const rerollAttackDamage = () => {
     if (sidebar?.type === 'attack') {
       const atk = sidebar.attack;
@@ -726,7 +740,7 @@ export function CharacterSheetPage({
                 </div>
               );
             })}
-            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>A Exaustão fica no quadro de Condições da ficha.</div>
             <ExhaustionTracker
               level={playState.exhaustionLevel ?? 0}
               onChange={(level) => onUpdatePlayState(prev => ({ ...prev, exhaustionLevel: level }))}
@@ -736,15 +750,58 @@ export function CharacterSheetPage({
       }
 
       case 'proficiencies': {
+        const custom = playState.customProficiencies ?? [];
+        const withCustom = (type: string, base: string[]) => [...base, ...custom.filter(c => c.type === type).map(c => c.name)];
         const groups: [string, string[]][] = [
-          ['Perícias', derivedSheet.skillProficiencies],
-          ['Armaduras', derivedSheet.armorProficiencies],
-          ['Armas', derivedSheet.weaponProficiencies],
-          ['Ferramentas', derivedSheet.toolProficiencies],
-          ['Idiomas', derivedSheet.languages],
+          ['Perícias', withCustom('Perícias', derivedSheet.skillProficiencies)],
+          ['Armaduras', withCustom('Armaduras', derivedSheet.armorProficiencies)],
+          ['Armas', withCustom('Armas', derivedSheet.weaponProficiencies)],
+          ['Ferramentas', withCustom('Ferramentas', derivedSheet.toolProficiencies)],
+          ['Idiomas', withCustom('Idiomas', derivedSheet.languages)],
         ];
         return (
           <div>
+            <form
+              className={styles.addProfForm}
+              onSubmit={e => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const type = (form.elements.namedItem('type') as HTMLSelectElement).value as NonNullable<CharacterPlayState['customProficiencies']>[number]['type'];
+                const input = form.elements.namedItem('name') as HTMLInputElement;
+                const name = input.value.trim();
+                if (!type || !name) return;
+                onUpdatePlayState(prev => ({ ...prev, customProficiencies: [...(prev.customProficiencies ?? []), { type, name }] }));
+                input.value = '';
+              }}
+            >
+              <div className={styles.addProfTitle}>Adicionar proficiência</div>
+              <select name="type" defaultValue="" className={styles.addProfSelect} aria-label="Tipo de proficiência">
+                <option value="" disabled>Tipo…</option>
+                <option>Idiomas</option>
+                <option>Ferramentas</option>
+                <option>Armas</option>
+                <option>Armaduras</option>
+                <option>Perícias</option>
+              </select>
+              <input name="name" placeholder="Nome (ex.: Élfico)" className={styles.addProfInput} aria-label="Nome da proficiência" />
+              <button type="submit" className={styles.addProfBtn}>Adicionar</button>
+            </form>
+            {custom.length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                <div className={styles.sidebarInfoItem}><span>Adicionadas por você</span></div>
+                {custom.map((c, i) => (
+                  <div key={`${c.type}-${c.name}-${i}`} className={styles.breakdownRow}>
+                    <span>{c.name} <span className={styles.addProfType}>({c.type})</span></span>
+                    <button
+                      type="button"
+                      className={styles.addProfRemove}
+                      aria-label={`Remover ${c.name}`}
+                      onClick={() => onUpdatePlayState(prev => ({ ...prev, customProficiencies: (prev.customProficiencies ?? []).filter((_, j) => j !== i) }))}
+                    >✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
             {groups.map(([label, items]) => (
               <div key={label} style={{ marginBottom: 10 }}>
                 <div className={styles.sidebarInfoItem}><span>{label}</span></div>
@@ -756,7 +813,7 @@ export function CharacterSheetPage({
               Proficiência é o que seu personagem treinou. Em perícias, armas e ferramentas em que é proficiente,
               você soma o Bônus de Proficiência ({signedMod(derivedSheet.proficiencyBonus)}) à jogada. Armadura sem
               treinamento dá Desvantagem em testes de FOR e DES e impede conjurar magias. Para mudar proficiências,
-              volte às etapas de criação do personagem.
+              volte às etapas de criação do personagem ou adicione acima as que o Mestre liberar.
             </div>
           </div>
         );
@@ -770,6 +827,16 @@ export function CharacterSheetPage({
         const abilityDescription = ABILITY_SCORE_DESCRIPTIONS[sidebar.key];
         return (
           <>
+            <div className={styles.breakdownTable}>
+              <div className={styles.breakdownRow}><span>Pontuação total</span><span className={styles.breakdownValue}>{sidebar.score}</span></div>
+              <div className={styles.breakdownRow}><span>Modificador</span><span className={styles.breakdownValue}>{signedMod(sidebar.modifier)}</span></div>
+              {(derivedSheet.attributeBreakdowns?.[sidebar.key] ?? []).map(row => (
+                <div key={row.label} className={styles.breakdownRow}>
+                  <span>{row.label}</span>
+                  <span className={styles.breakdownValue}>{row.label.toLowerCase().startsWith('base') ? row.value : signedMod(row.value)}</span>
+                </div>
+              ))}
+            </div>
             <AbilityDetailPanel
               abilityName={sidebar.label}
               score={sidebar.score}
@@ -809,7 +876,7 @@ export function CharacterSheetPage({
             <div className={styles.sidebarInfoItem}>
               <span>{signedMod(derivedSheet.proficiencyBonus)}</span>
             </div>
-            <div className={styles.sidebarDescription}>{PROFICIENCY_BONUS_DESCRIPTION}</div>
+            <div className={styles.sidebarDescription}>{richText(PROFICIENCY_BONUS_DESCRIPTION)}</div>
           </div>
         );
 
@@ -819,7 +886,7 @@ export function CharacterSheetPage({
             <div className={styles.sidebarInfoItem}>
               <span>{withSquares(derivedSheet.speed)}</span>
             </div>
-            <div className={styles.sidebarDescription}>{SPEED_DESCRIPTION}</div>
+            <div className={styles.sidebarDescription}>{richText(SPEED_DESCRIPTION)}</div>
           </div>
         );
 
@@ -837,8 +904,16 @@ export function CharacterSheetPage({
         return (
           <div>
             <div className={styles.sidebarInfoItem}>
-              <span>{derivedSheet.armorClass}</span>
+              <span>Classe de Armadura</span>
+              <span className={styles.sidebarInfoMod}>{derivedSheet.armorClass}</span>
             </div>
+            {(derivedSheet.acBreakdown ?? []).map(row => (
+              <div key={row.label} className={styles.breakdownRow}>
+                <span className={styles.breakdownValue}>{row.label === 'Sem armadura' || row.label.startsWith('Armadura (') ? row.value : signedMod(row.value)}</span>
+                <span>{row.label}</span>
+              </div>
+            ))}
+            <hr className={styles.sidebarDivider} />
             <div className={styles.sidebarDescription}>{AC_DESCRIPTION}</div>
           </div>
         );
@@ -1314,11 +1389,11 @@ export function CharacterSheetPage({
             <div className={styles.redBox}>
               <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'proficiencies' })}>PROFICIÊNCIAS E TREINAMENTO ⚙</button>
               <ProficienciesCard
-                skillProficiencies={derivedSheet.skillProficiencies}
-                armorProficiencies={derivedSheet.armorProficiencies}
-                weaponProficiencies={derivedSheet.weaponProficiencies}
-                toolProficiencies={derivedSheet.toolProficiencies}
-                languages={derivedSheet.languages}
+                skillProficiencies={[...derivedSheet.skillProficiencies, ...(playState.customProficiencies ?? []).filter(c => c.type === 'Perícias').map(c => c.name)]}
+                armorProficiencies={[...derivedSheet.armorProficiencies, ...(playState.customProficiencies ?? []).filter(c => c.type === 'Armaduras').map(c => c.name)]}
+                weaponProficiencies={[...derivedSheet.weaponProficiencies, ...(playState.customProficiencies ?? []).filter(c => c.type === 'Armas').map(c => c.name)]}
+                toolProficiencies={[...derivedSheet.toolProficiencies, ...(playState.customProficiencies ?? []).filter(c => c.type === 'Ferramentas').map(c => c.name)]}
+                languages={[...derivedSheet.languages, ...(playState.customProficiencies ?? []).filter(c => c.type === 'Idiomas').map(c => c.name)]}
               />
             </div>
           </CollapsibleSection>
@@ -1477,7 +1552,7 @@ export function CharacterSheetPage({
             </div>
 
             <div className={styles.combatRowPanels}>
-              <div className={styles.redBox} style={{ flex: 0.8, padding: '16px 12px' }}>
+              <div className={styles.redBox} style={{ flex: 0.8, padding: '16px 12px 30px' }}>
                 <div className={styles.sectionHeader}>TESTES CONTRA A MORTE</div>
                 <DeathSavesCard
                   deathSaves={playState.deathSaves}
@@ -1485,7 +1560,7 @@ export function CharacterSheetPage({
                 />
               </div>
 
-              <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
+              <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px 30px' }}>
                 <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'defenses' })}>DEFESAS ⚙</button>
                 <DefensesCard
                   derivedDefenses={derivedSheet.derivedDefenses}
@@ -1495,7 +1570,7 @@ export function CharacterSheetPage({
                 />
               </div>
 
-              <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px' }}>
+              <div className={styles.redBox} style={{ flex: 1, padding: '16px 12px 30px' }}>
                 <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'conditions' })}>CONDIÇÕES ⚙</button>
                 <ConditionsCard
                   activeConditions={playState.activeConditions}
@@ -1503,6 +1578,7 @@ export function CharacterSheetPage({
                   onAdd={handleAddCondition}
                   onRemove={handleRemoveCondition}
                   onStopConcentrating={() => onUpdatePlayState(prev => ({ ...prev, concentratingOn: null }))}
+                  onOpenPanel={() => setSidebar({ type: 'conditions' })}
                 />
                 <ExhaustionTracker
                   level={playState.exhaustionLevel ?? 0}
@@ -1536,6 +1612,7 @@ export function CharacterSheetPage({
               onEquipShield={onEquipShield}
               onAttackClick={handleAttackClick}
               onDamageClick={handleDamageClick}
+              onSpellRoll={handleSpellRoll}
               currency={currency}
               onUpdateCurrency={onUpdateCurrency}
               backstory={backstory}

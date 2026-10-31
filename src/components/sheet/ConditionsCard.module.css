@@ -143,3 +143,23 @@
   font-size: 0.68rem;
   color: #b0b7bd;
 }
+
+.manageBtn {
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 1px solid #3a444c;
+  border-radius: 4px;
+  background: transparent;
+  color: #b0b7bd;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.manageBtn:hover {
+  border-color: #c53131;
+  color: #fff;
+}

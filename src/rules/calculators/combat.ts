@@ -55,6 +55,28 @@ export function calculateAC(params: {
   return ac;
 }
 
+/** Linhas que somam a CA, para o painel da ficha ("11 Armadura (Couro) · +1 Destreza · +2 Escudo"). */
+export function calculateACBreakdown(params: Parameters<typeof calculateAC>[0]): { label: string; value: number }[] {
+  const { dexModifier, equippedArmorId, hasShield, classId, conModifier, wisModifier, armorProficiencies = [] } = params;
+  const equippedArmor = resolveEquippedArmor(equippedArmorId);
+  const wearsArmor = Boolean(equippedArmor && equippedArmor.type !== 'shield');
+  const rows: { label: string; value: number }[] = [];
+  if (equippedArmor && wearsArmor) {
+    rows.push({ label: `Armadura (${equippedArmor.name})`, value: equippedArmor.baseAC });
+    const dex = equippedArmor.maxDexBonus === null ? dexModifier : Math.min(dexModifier, equippedArmor.maxDexBonus);
+    if (equippedArmor.maxDexBonus !== 0) {
+      rows.push({ label: equippedArmor.maxDexBonus === null ? 'Destreza' : `Destreza (máx. +${equippedArmor.maxDexBonus})`, value: dex });
+    }
+  } else {
+    rows.push({ label: 'Sem armadura', value: 10 });
+    rows.push({ label: 'Destreza', value: dexModifier });
+    if (classId === 'barbaro' && conModifier !== undefined) rows.push({ label: 'Constituição (Defesa sem Armadura)', value: conModifier });
+    else if (classId === 'monge' && wisModifier !== undefined && !hasShield) rows.push({ label: 'Sabedoria (Defesa sem Armadura)', value: wisModifier });
+  }
+  if (hasShield && armorProficiencies.includes('Escudo')) rows.push({ label: 'Escudo', value: 2 });
+  return rows;
+}
+
 /** Só é chamada quando não há armadura vestida. */
 function unarmoredAC(
   classId: string | undefined,

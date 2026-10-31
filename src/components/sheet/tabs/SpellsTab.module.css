@@ -628,3 +628,16 @@
   font-style: italic;
   color: #8a9299;
 }
+
+/* Acerto e dano da magia viram botão de rolar, como no D&D Beyond. */
+.rollBtn {
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.rollBtn:hover {
+  background: #c53131;
+  border-color: #c53131;
+  color: #fff;
+}

@@ -78,6 +78,8 @@ export interface DerivedSheet {
   hitDie: string;
   initiative: number;
   armorClass: number;
+  /** O que compõe a CA, linha a linha (painel de CA). */
+  acBreakdown?: AttributeBreakdownRow[];
   proficiencyBonus: number;
 
   // Velocidade, tamanho e sentidos

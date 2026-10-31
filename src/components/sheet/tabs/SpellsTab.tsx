@@ -19,7 +19,13 @@ interface SpellsTabProps {
   learnedCantrips: string[];
   preparedSpells: string[];
   onUpdatePreparedSpells?: (spells: string[]) => void;
+  /** Rola o acerto (d20 + bônus) ou os dados de dano/cura da magia, como no D&D Beyond. */
+  onSpellRoll?: (roll: SpellRoll) => void;
 }
+
+export type SpellRoll =
+  | { kind: 'attack'; spell: string; bonus: number }
+  | { kind: 'damage'; spell: string; formula: string; damageType: string };
 
 const SPELL_LEVEL_MAP = new Map<string, string>();
 for (const sp of spellsAll as Array<{ name: string; level: string }>) {
@@ -40,6 +46,7 @@ export function SpellsTab({
   learnedCantrips,
   preparedSpells,
   onUpdatePreparedSpells,
+  onSpellRoll,
 }: SpellsTabProps) {
   const [circleFilter, setCircleFilter] = useState<string>('all');
   const [searchText, setSearchText] = useState('');
@@ -261,16 +268,16 @@ export function SpellsTab({
 
       {/* Spell lists */}
       {learnedCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(learnedCantrips).length > 0 && (
-        <SpellList title="TRUQUES" spells={filterSpells(learnedCantrips)} accent="#fbbf24" stats={spellStats} atWill />
+        <SpellList title="TRUQUES" spells={filterSpells(learnedCantrips)} accent="#fbbf24" stats={spellStats} onRoll={onSpellRoll} atWill />
       )}
       {racialCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(racialCantrips).length > 0 && (
-        <SpellList title="TRUQUES RACIAIS" spells={filterSpells(racialCantrips)} accent="#22c55e" badge="Racial" stats={spellStats} atWill />
+        <SpellList title="TRUQUES RACIAIS" spells={filterSpells(racialCantrips)} accent="#22c55e" badge="Racial" stats={spellStats} onRoll={onSpellRoll} atWill />
       )}
       {bonusCantrips.filter(s => s.source === 'talent').length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && (
         <SpellList
           title="TRUQUES DE TALENTO"
           spells={filterSpells(bonusCantrips.filter(s => s.source === 'talent').map(s => `${s.name} — ${s.origin}`))}
-          accent="#38bdf8" badge="Talento" stats={spellStats} atWill
+          accent="#38bdf8" badge="Talento" stats={spellStats} onRoll={onSpellRoll} atWill
           concentratingOn={playState.concentratingOn}
           onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
         />
@@ -286,7 +293,7 @@ export function SpellsTab({
             title={circle.toUpperCase()}
             spells={filtered}
             accent="#e06060"
-            stats={spellStats}
+            stats={spellStats} onRoll={onSpellRoll}
             {...castProps(circle)}
             canRemove={canEditSpells}
             onRemove={handleUnprepare}
@@ -301,7 +308,7 @@ export function SpellsTab({
           title="MAGIAS PREPARADAS"
           spells={filterSpells(groupedPrepared['?'])}
           accent="#e06060"
-          stats={spellStats}
+          stats={spellStats} onRoll={onSpellRoll}
           canRemove={canEditSpells}
           onRemove={handleUnprepare}
           concentratingOn={playState.concentratingOn}
@@ -314,7 +321,7 @@ export function SpellsTab({
           title="MAGIAS EXTRA"
           subtitle="Preparadas por traços raciais ou talentos."
           spells={filterSpells(bonusPreparedSpells.map(s => `${s.name} — ${s.origin}`))}
-          accent="#34d399" badge="Extra" stats={spellStats}
+          accent="#34d399" badge="Extra" stats={spellStats} onRoll={onSpellRoll}
           concentratingOn={playState.concentratingOn}
           onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
         />
@@ -345,24 +352,35 @@ function spellHitAndEffect(info: any, stats: { attack: number; dc: number }) {
   if (save) hit = `${SAVE_ABBR[save[1]]} ${stats.dc}`;
   else if (/ataque (mágico|com magia)/.test(lower)) hit = signedMod(stats.attack);
   let effect: string | null = null;
+  let formula: string | null = null;
+  let effectType = '';
   const dmg = desc.match(/(\d+d\d+(?:\s*\+\s*\d+)?)[^.]*?dano (\p{L}+)/u);
-  if (dmg) effect = `${dmg[1].replace(/\s/g, '')} ${dmg[2]}`;
-  else {
+  if (dmg) {
+    formula = dmg[1].replace(/\s/g, '');
+    effectType = dmg[2];
+    effect = `${formula} ${effectType}`;
+  } else {
     const heal = /recupera|pontos de vida/.test(lower) ? desc.match(/\d+d\d+/) : null;
-    if (heal) effect = `${heal[0]} Cura`;
+    if (heal) {
+      formula = heal[0];
+      effectType = 'Cura';
+      effect = `${formula} Cura`;
+    }
   }
-  return { hit, effect };
+  const isAttack = !save && /ataque (mágico|com magia)/.test(lower);
+  return { hit, effect, formula, effectType, isAttack };
 }
 
 function SpellList({
   title, subtitle, spells, accent, badge, canRemove, onRemove,
-  concentratingOn, onSetConcentration, stats, atWill, onCast, canCast,
+  concentratingOn, onSetConcentration, stats, atWill, onCast, canCast, onRoll,
 }: {
   title: string; subtitle?: string; spells: string[]; accent: string;
   badge?: string; canRemove?: boolean; onRemove?: (name: string) => void;
   concentratingOn?: string | null; onSetConcentration?: (name: string | null) => void;
   stats: { attack: number; dc: number }; atWill?: boolean;
   onCast?: () => void; canCast?: boolean;
+  onRoll?: (roll: SpellRoll) => void;
 }) {
   const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
 
@@ -389,7 +407,7 @@ function SpellList({
           const info = getSpellInfo(rawName);
           const isRitual = typeof info?.castingTime === 'string' && info.castingTime.toLowerCase().includes('ritual');
           const isConc = typeof info?.duration === 'string' && info.duration.toLowerCase().includes('concentra');
-          const { hit, effect } = spellHitAndEffect(info, stats);
+          const { hit, effect, formula, effectType, isAttack } = spellHitAndEffect(info, stats);
           const isExpanded = expandedSpell === s;
           const notes = [typeof info?.components === 'string' ? info.components.split('(')[0].trim() : null, info?.duration]
             .filter(Boolean).join(' · ');
@@ -426,8 +444,16 @@ function SpellList({
                 </div>
                 <div className={`${ddb.center} ${ddb.notes}`}>{info?.castingTime ?? '—'}</div>
                 <div className={`${ddb.center} ${ddb.notes}`}>{info ? withSquares(info.range) : '—'}</div>
-                <div className={ddb.center}>{hit ? <span className={ddb.box}>{hit}</span> : '—'}</div>
-                <div className={`${ddb.center} ${ddb.notes}`}>{effect ?? '—'}</div>
+                <div className={ddb.center} onClick={e => e.stopPropagation()}>
+                  {hit && isAttack && onRoll ? (
+                    <button type="button" className={`${ddb.box} ${styles.rollBtn}`} title="Rolar ataque" onClick={() => onRoll({ kind: 'attack', spell: rawName, bonus: stats.attack })}>{hit}</button>
+                  ) : hit ? <span className={ddb.box}>{hit}</span> : '—'}
+                </div>
+                <div className={`${ddb.center} ${ddb.notes}`} onClick={e => e.stopPropagation()}>
+                  {formula && onRoll ? (
+                    <button type="button" className={`${ddb.box} ${styles.rollBtn}`} title={`Rolar ${effectType === 'Cura' ? 'cura' : 'dano'} (${effectType})`} onClick={() => onRoll({ kind: 'damage', spell: rawName, formula, damageType: effectType })}>{effect}</button>
+                  ) : (effect ?? '—')}
+                </div>
                 <div className={ddb.notes}>{notes || '—'}</div>
               </div>
 

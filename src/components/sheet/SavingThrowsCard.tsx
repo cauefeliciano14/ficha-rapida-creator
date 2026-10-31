@@ -23,7 +23,7 @@ export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingTh
             tabIndex={onSaveClick ? 0 : undefined}
             onKeyDown={onSaveClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onSaveClick(st); } : undefined}
           >
-            <span className={`${styles.profDot} ${st.proficient ? styles.profDotFilled : ''}`} />
+            <span className={`${styles.profDot} ${st.proficient ? styles.profDotFilled : ''}`} title={st.proficient ? 'Proficiente' : 'Não proficiente'} />
             <span className={`${styles.label} ${st.proficient ? styles.labelProficient : ''}`}>
               {st.label}
             </span>

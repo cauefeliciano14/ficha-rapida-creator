@@ -23,6 +23,7 @@ import {
   calculateMaxHP,
   calculateInitiative,
   calculateAC,
+  calculateACBreakdown,
   buildWeaponAttack,
   getArmorPenalties,
   applySpeedPenalty,
@@ -243,7 +244,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
 
   const magicEffects = aggregateMagicItemEffects(attunedItemIds);
 
-  const baseAC = calculateAC({
+  const acParams = {
     dexModifier: dexMod,
     equippedArmorId: choices.equippedArmorId,
     hasShield: choices.hasShield,
@@ -251,13 +252,18 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     conModifier: conMod,
     wisModifier: wisMod,
     armorProficiencies: merged.armorCategories,
-  });
+  };
+  const baseAC = calculateAC(acParams);
   const isUnarmored = !choices.equippedArmorId;
   // Defensivo (Estilo de Luta): +1 só vestindo armadura Leve, Média ou Pesada.
   const armorClass = baseAC
     + (hasDefensivo && !isUnarmored ? 1 : 0)
     + magicEffects.acBonus
     + (isUnarmored ? magicEffects.acBonusUnarmored : 0);
+  const acBreakdown = calculateACBreakdown(acParams);
+  if (hasDefensivo && !isUnarmored) acBreakdown.push({ label: 'Estilo de Luta Defensivo', value: 1 });
+  const magicAC = magicEffects.acBonus + (isUnarmored ? magicEffects.acBonusUnarmored : 0);
+  if (magicAC) acBreakdown.push({ label: 'Itens mágicos', value: magicAC });
 
   const speciesData = speciesId ? getSpeciesData(speciesId) : null;
   const creatureSize = speciesData?.vitalInfo?.size ?? 'Médio';
@@ -423,6 +429,7 @@ export function deriveSheet(choices: CharacterChoices, expertiseSkills: string[]
     hitDie,
     initiative,
     armorClass,
+    acBreakdown,
     proficiencyBonus: profBonus,
     speed,
     creatureSize,
