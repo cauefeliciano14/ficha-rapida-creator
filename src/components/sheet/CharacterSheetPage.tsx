@@ -66,6 +66,7 @@ interface InventoryItem { name: string; quantity?: number; notes?: string; cost?
 interface CharacterSheetPageProps {
   characterName: string;
   portrait: string | null;
+  onPortraitClick?: () => void;
   speciesName: string;
   className: string;
   characterLevel: number;
@@ -121,6 +122,7 @@ function getLevelFromXP(xp: number): number {
 export function CharacterSheetPage({
   characterName,
   portrait,
+  onPortraitClick,
   speciesName,
   className,
   characterLevel,
@@ -809,6 +811,7 @@ export function CharacterSheetPage({
         {/* ROW 1: Header + Rest Actions */}
         <div className={styles.topBarRow1}>
           <SheetHeader
+            onPortraitClick={onPortraitClick}
             name={characterName}
             portrait={portrait}
             speciesName={speciesName}

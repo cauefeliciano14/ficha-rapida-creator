@@ -1,4 +1,12 @@
 .bar {
+  /* D&D Beyond: barra preta de ponta a ponta da tela, colada no topo. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: max(16px, calc(50vw - 734px)) !important;
+  padding-right: max(16px, calc(50vw - 734px)) !important;
+  border-radius: 0;
+  margin-top: -18px; /* cobre o recuo do contêiner da página */
+  margin-bottom: 16px;
   position: sticky;
   top: 0;
   z-index: 40;
@@ -7,7 +15,7 @@
   gap: 14px;
   padding: 0 16px;
   min-height: 52px;
-  background: rgba(13, 17, 21, 0.96);
+  background: #0b0e11;
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   font-family: 'Roboto', sans-serif;

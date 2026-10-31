@@ -1058,3 +1058,8 @@ details[open] > summary .summary-chevron {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+
+/* A barra superior usa 100vw; evita rolagem lateral de 1px causada pela barra de rolagem. */
+body {
+  overflow-x: clip;
+}

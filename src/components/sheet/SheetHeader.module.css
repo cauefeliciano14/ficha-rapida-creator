@@ -170,3 +170,18 @@ input.name:focus {
   border-color: rgba(255, 255, 255, 0.2);
   outline: none;
 }
+
+button.portrait {
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+button.portrait:hover:not(:disabled) {
+  border-color: #c53131;
+  filter: none;
+}
+
+button.portrait:disabled {
+  cursor: default;
+}

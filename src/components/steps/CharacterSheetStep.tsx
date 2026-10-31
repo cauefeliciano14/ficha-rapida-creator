@@ -149,6 +149,7 @@ export const CharacterSheetStep: React.FC = () => {
       <CharacterSheetPage
         characterName={character.name}
         portrait={character.portrait}
+        onPortraitClick={() => setIsPortraitModalOpen(true)}
         speciesName={speciesName}
         className={character.characterClass?.name ?? ''}
         characterLevel={characterLevel}

@@ -14,10 +14,12 @@ interface SheetHeaderProps {
   classLevels?: ClassLevel[];
   backgroundName?: string;
   onUpdateIdentity?: (update: CharacterIdentityUpdate) => void;
+  /** Abre o seletor de retrato. */
+  onPortraitClick?: () => void;
 }
 
 export function SheetHeader({
-  name, portrait, speciesName, className, level: _level, creatureSize: _size, alignment, subclassName, classLevels, backgroundName, onUpdateIdentity,
+  name, portrait, speciesName, className, level: _level, creatureSize: _size, alignment, subclassName, classLevels, backgroundName, onUpdateIdentity, onPortraitClick,
 }: SheetHeaderProps) {
   void _size;
 
@@ -31,7 +33,14 @@ export function SheetHeader({
     <>
       <div className={styles.container}>
         {/* Portrait */}
-        <div className={styles.portrait}>
+        <button
+          type="button"
+          className={styles.portrait}
+          onClick={onPortraitClick}
+          disabled={!onPortraitClick}
+          title="Trocar retrato"
+          aria-label="Trocar retrato do personagem"
+        >
           {portrait ? (
             <img
               src={`/imgs/portrait_caracter/${portrait}`}
@@ -41,7 +50,7 @@ export function SheetHeader({
           ) : (
             <span className={styles.portraitPlaceholder}>🧙</span>
           )}
-        </div>
+        </button>
 
         {/* Info block */}
         <div className={styles.infoBlock}>
