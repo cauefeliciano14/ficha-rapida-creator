@@ -458,3 +458,41 @@
   color: #fff;
   filter: none;
 }
+
+/* Ações em combate: nomes em linha, sem textos amontoados. */
+.combatChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 4px;
+}
+
+.combatChip {
+  padding: 3px 9px;
+  border: 1px solid #2a333a;
+  border-radius: 999px;
+  background: transparent;
+  color: #dfe5ea;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.combatChip:hover,
+.combatChipOpen {
+  border-color: #c53131;
+  color: #fff;
+}
+
+.combatChipOpen {
+  background: rgba(197, 49, 49, 0.15);
+}
+
+.combatDetail {
+  margin: 4px 0 8px;
+  padding: 8px 10px;
+  border-left: 2px solid #c53131;
+  background: #0d1215;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #b0b7bd;
+}

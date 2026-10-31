@@ -339,6 +339,26 @@ const SAVE_ABBR: Record<string, string> = {
   'inteligência': 'INT', 'sabedoria': 'SAB', 'carisma': 'CAR',
 };
 
+/** Alcance curto para a tabela: "9 metros (6 qd)" vira "9 m (6 qd)". */
+function shortRange(range: string | undefined): string {
+  if (!range) return '—';
+  return withSquares(range).replace(/\s*metros?\b/gi, ' m').replace(/\s+/g, ' ').trim();
+}
+
+/** Notas curtas, no estilo do DDB: "D: 1 min · V, S". */
+function shortNotes(components: string | undefined, duration: string | undefined): string {
+  const comp = typeof components === 'string' ? components.split('(')[0].trim().replace(/\s*,\s*/g, '/') : '';
+  let dur = typeof duration === 'string' ? duration : '';
+  dur = dur
+    .replace(/^Concentração,\s*até\s*/i, 'C, ')
+    .replace(/Instantânea/i, 'Inst.')
+    .replace(/\bminutos?\b/gi, 'min')
+    .replace(/\bhoras?\b/gi, 'h')
+    .replace(/\brodadas?\b/gi, 'rod.')
+    .replace(/\bdias?\b/gi, 'd');
+  return [dur && `D: ${dur}`, comp].filter(Boolean).join(' · ');
+}
+
 function getSpellInfo(name: string): any | undefined {
   return (spellsAll as any[]).find(sp => sp.name === name);
 }
@@ -409,8 +429,7 @@ function SpellList({
           const isConc = typeof info?.duration === 'string' && info.duration.toLowerCase().includes('concentra');
           const { hit, effect, formula, effectType, isAttack } = spellHitAndEffect(info, stats);
           const isExpanded = expandedSpell === s;
-          const notes = [typeof info?.components === 'string' ? info.components.split('(')[0].trim() : null, info?.duration]
-            .filter(Boolean).join(' · ');
+          const notes = shortNotes(info?.components, info?.duration);
 
           return (
             <div key={s}>
@@ -443,7 +462,7 @@ function SpellList({
                   <div className={ddb.sub}>{info?.school ?? ''}</div>
                 </div>
                 <div className={`${ddb.center} ${ddb.notes}`}>{info?.castingTime ?? '—'}</div>
-                <div className={`${ddb.center} ${ddb.notes}`}>{info ? withSquares(info.range) : '—'}</div>
+                <div className={`${ddb.center} ${ddb.notes}`} title={info ? withSquares(info.range) : undefined}>{info ? shortRange(info.range) : '—'}</div>
                 <div className={ddb.center} onClick={e => e.stopPropagation()}>
                   {hit && isAttack && onRoll ? (
                     <button type="button" className={`${ddb.box} ${styles.rollBtn}`} title="Rolar ataque" onClick={() => onRoll({ kind: 'attack', spell: rawName, bonus: stats.attack })}>{hit}</button>

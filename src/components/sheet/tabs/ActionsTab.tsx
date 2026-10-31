@@ -64,6 +64,7 @@ interface ActionsTabProps {
 export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onUpdatePlayState, onAttackClick, onDamageClick }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
+  const [openAction, setOpenAction] = useState<string | null>(null);
   const [formName, setFormName] = useState('');
   const [formType, setFormType] = useState<CustomAction['type']>('action');
   const [formDesc, setFormDesc] = useState('');
@@ -165,7 +166,7 @@ export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onU
                   </div>
                   <div className={ddb.sub}>{attackSubtitle(atk)}</div>
                 </div>
-                <div className={ddb.center}>{withSquares(atk.range)}</div>
+                <div className={ddb.center}>{atk.range === 'Corpo a Corpo' ? <>1,5 m<div className={ddb.sub}>Alcance</div></> : withSquares(atk.range)}</div>
                 <div className={ddb.center}>
                   <span className={ddb.box}>{signedMod(atk.attackBonus)}</span>
                 </div>
@@ -255,14 +256,27 @@ export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onU
       {(filter === 'all' || filter === 'action') && (
         <section>
           <div className={ddb.sectionHeader}>AÇÕES EM COMBATE</div>
-          <div className={styles.combatList}>
+          {/* Como no D&D Beyond: só os nomes, em linha; clicar mostra o que a ação faz. */}
+          <div className={styles.combatChips}>
             {COMBAT_ACTIONS.map(a => (
-              <div key={a.name} className={styles.combatItem} title={a.desc}>
-                <span className={ddb.name}>{a.name}</span>
-                <span className={ddb.sub}>{a.desc}</span>
-              </div>
+              <button
+                key={a.name}
+                type="button"
+                title={a.desc}
+                aria-expanded={openAction === a.name}
+                className={`${styles.combatChip} ${openAction === a.name ? styles.combatChipOpen : ''}`}
+                onClick={() => setOpenAction(openAction === a.name ? null : a.name)}
+              >
+                {a.name}
+              </button>
             ))}
           </div>
+          {openAction && (
+            <div className={styles.combatDetail}>
+              <span className={ddb.name}>{openAction}.</span>{' '}
+              {COMBAT_ACTIONS.find(a => a.name === openAction)?.desc}
+            </div>
+          )}
         </section>
       )}
 

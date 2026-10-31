@@ -20,7 +20,7 @@ const TABS: Array<{ id: TabId; label: string }> = [
   { id: 'actions',    label: 'Ações' },
   { id: 'spells',     label: 'Magias' },
   { id: 'inventory',  label: 'Inventário' },
-  { id: 'features',   label: 'Características e Traços' },
+  { id: 'features',   label: 'Características' },
   { id: 'background', label: 'Antecedente' },
   { id: 'notes',      label: 'Notas' },
   { id: 'extras',     label: 'Extras' },

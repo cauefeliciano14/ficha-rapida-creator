@@ -457,6 +457,8 @@
 .searchInput::placeholder { color: var(--text-faint); }
 
 .addSpellBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
   padding: 6px 12px;
   background: var(--color-magic-bg);
   border: 1px solid var(--color-magic-border);
