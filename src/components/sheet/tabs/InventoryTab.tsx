@@ -3,7 +3,7 @@ import type { CharacterPlayState, Container } from '../../../types/playState';
 import { getArmorByName } from '../../../rules/data/armorRules';
 import { Modal } from '../../ui/Modal';
 import { ItemCardTooltip } from '../ItemCardTooltip';
-import { getEquipKind, isInventoryItemEquipped, toggleEquippedKey, isConsumable } from '../../../rules/utils/equipment';
+import { getEquipKind, isInventoryItemEquipped, toggleEquippedKey, isConsumable, equipBlockReason } from '../../../rules/utils/equipment';
 import styles from './InventoryTab.module.css';
 import ddb from './ddbTab.module.css';
 
@@ -88,9 +88,30 @@ export function InventoryTab({
 
   const sheetItems: SheetItem[] = playState.sheetItems ?? [];
 
+  const [equipNotice, setEquipNotice] = useState<string | null>(null);
+
+  /** Armadura e Escudo: só a primeira linha igual aparece equipada (um de cada vez). */
+  const isRowEquipped = (item: InventoryItem, index: number): boolean => {
+    const kind = getEquipKind(item.name);
+    if (kind === 'shield') {
+      return hasShieldEquipped && inventory.findIndex(i => getEquipKind(i.name) === 'shield') === index;
+    }
+    if (kind === 'armor') {
+      const armor = getArmorByName(item.name);
+      return !!armor && armor.id === equippedArmorId && inventory.findIndex(i => i.name === item.name) === index;
+    }
+    return isInventoryItemEquipped(playState.equippedItemIds, item, index, inventory);
+  };
+
   const toggleEquipped = (item: InventoryItem, index: number) => {
     const itemName = item.name;
     const kind = getEquipKind(itemName);
+    const isOnNow = isRowEquipped(item, index);
+    if (!isOnNow) {
+      const reason = equipBlockReason({ units: inventory, equippedKeys: playState.equippedItemIds, shieldEquipped: hasShieldEquipped, target: item });
+      if (reason) { setEquipNotice(reason); return; }
+    }
+    setEquipNotice(null);
     if (kind === 'shield') { onEquipShield?.(!hasShieldEquipped); return; }
     if (kind === 'armor') {
       const armorId = getArmorByName(itemName)!.id;
@@ -327,6 +348,13 @@ export function InventoryTab({
       </div>
 
       {/* Starting inventory */}
+      {equipNotice && (
+        <div className={styles.equipNotice} role="alert">
+          <span>{equipNotice}</span>
+          <button type="button" onClick={() => setEquipNotice(null)} aria-label="Fechar aviso">✕</button>
+        </div>
+      )}
+
       {filteredInitial.length > 0 && (
         <section>
           <div className={ddb.sectionHeader}>EQUIPAMENTO</div>
@@ -342,9 +370,9 @@ export function InventoryTab({
             {filteredInitial.map((item, i) => {
               const kind = getEquipKind(item.name);
               const isEquipped = kind === 'shield'
-                ? hasShieldEquipped
+                ? isRowEquipped(item, inventory.indexOf(item))
                 : kind === 'armor'
-                  ? getArmorByName(item.name)!.id === equippedArmorId
+                  ? isRowEquipped(item, inventory.indexOf(item))
                   : isInventoryItemEquipped(playState.equippedItemIds, item, inventory.indexOf(item), inventory);
               const isAttuned = playState.attunedItemIds.includes(item.name);
               const attuneBlocked = !isAttuned && attunedCount >= MAX_ATTUNEMENT;

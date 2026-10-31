@@ -18,7 +18,7 @@ import {
   getActiveCharacterId,
   setActiveCharacterId
 } from '../utils/persistence';
-import { sanitizeEquipmentState, getEquipKind, isInventoryItemEquipped } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, getEquipKind, isInventoryItemEquipped, expandEquippableUnits } from '../rules/utils/equipment';
 
 import { ATTR_META } from '../utils/attributeConstants';
 import { queueWrite } from '../utils/idleStorage';
@@ -215,7 +215,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         classOption: character.equipment.classOption,
         backgroundOption: character.equipment.backgroundOption,
       },
-      inventory: character.equipment.inventory.map(item => ({
+      inventory: expandEquippableUnits(character.equipment.inventory).map(item => ({
         id: item.id,
         name: item.name,
         quantity: item.quantity,
@@ -223,7 +223,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         isStartingGear: item.isStartingGear,
       })),
       // Só armas equipadas (no criador ou na aba Inventário da ficha) viram ataques.
-      inventoryWeapons: character.equipment.inventory
+      inventoryWeapons: expandEquippableUnits(character.equipment.inventory)
         .filter((item, index, all) => getEquipKind(item.name) !== 'weapon'
           || isInventoryItemEquipped(playState.equippedItemIds ?? [], item, index, all))
         .map(item => item.name),

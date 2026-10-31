@@ -726,3 +726,25 @@
 .restoreBtn:hover {
   color: #fff;
 }
+
+/* Aviso quando o equipamento passa do limite (mãos, um Escudo). */
+.equipNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #c53131;
+  border-radius: 6px;
+  background: rgba(197, 49, 49, 0.12);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.equipNotice button {
+  border: none;
+  background: transparent;
+  color: #b0b7bd;
+  cursor: pointer;
+}

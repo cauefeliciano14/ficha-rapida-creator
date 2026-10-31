@@ -5,7 +5,7 @@ import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
 import { getArmorByName } from '../rules/data/armorRules';
-import { sanitizeEquipmentState, toggleItemEquipped, getEquipKind, isInventoryItemEquipped } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, toggleItemEquipped, getEquipKind, isInventoryItemEquipped, expandEquippableUnits } from '../rules/utils/equipment';
 import { Accordion } from './equipment/Accordion';
 import { TabBar } from './equipment/TabBar';
 import { StartingEquipment } from './equipment/StartingEquipment';
@@ -300,10 +300,11 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
               onEquipShield={(equipped) => updateEquipment((prev: any) => ({ ...prev, hasShieldEquipped: equipped }))}
               equippedWeaponNames={equippedWeaponNames}
               onToggleEquip={(id) => {
-                const item = equipmentState.inventory.find((i: any) => i.id === id);
-                if (item && onToggleWeapon && getEquipKind(item.name) === 'weapon') {
-                  const index = equipmentState.inventory.indexOf(item);
-                  onToggleWeapon(item, isInventoryItemEquipped(equippedWeaponNames ?? [], item, index, equipmentState.inventory));
+                const units = expandEquippableUnits(equipmentState.inventory);
+                const unit = units.find((u: any) => u.id === id);
+                if (unit && onToggleWeapon && getEquipKind(unit.name) === 'weapon') {
+                  const index = units.indexOf(unit);
+                  onToggleWeapon(unit, isInventoryItemEquipped(equippedWeaponNames ?? [], unit, index, units));
                   return;
                 }
                 updateEquipment((prev: any) => toggleItemEquipped(prev, id));

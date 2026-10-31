@@ -178,9 +178,10 @@ describe('CharacterSheetPage racial/species derived display', () => {
     clickTab(view.container, 'Magias');
 
     expect(view.container.textContent).toContain('TRUQUES DE TALENTO');
-    expect(view.container.textContent).toContain('Luz — Iniciado em Magia (Clérigo)');
+    expect(view.container.textContent).toContain('LuzEvocação · Iniciado em Magia (Clérigo)');
     expect(view.container.textContent).toContain('MAGIAS EXTRA');
-    expect(view.container.textContent).toContain('Bênção — Iniciado em Magia (Clérigo)');
+    expect(view.container.textContent).toContain('Encantamento · Iniciado em Magia (Clérigo)');
+    expect(view.container.textContent).toContain('Grátis');
 
     view.cleanup();
   }, 20000);

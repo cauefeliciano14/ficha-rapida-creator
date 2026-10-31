@@ -64,3 +64,47 @@ describe('SpellsTab — rolar como no D&D Beyond', () => {
     expect(onSpellRoll).toHaveBeenLastCalledWith(expect.objectContaining({ kind: 'damage', spell: 'Raio de Fogo', formula: '1d10' }));
   });
 });
+
+describe('SpellsTab — magias extra de talento/espécie', () => {
+  const extraSheet = {
+    ...sheet,
+    bonusPreparedSpells: [{ name: 'Mísseis Mágicos', source: 'talent', origin: 'Iniciado em Magia (Mago)' }],
+  } as unknown as DerivedSheet;
+
+  it('mostra a origem na linha de baixo e tem botão Grátis que gasta o uso do Descanso Longo', () => {
+    let state = { ...DEFAULT_PLAY_STATE };
+    const update = vi.fn((fn: (p: typeof state) => typeof state) => { state = fn(state); });
+    const container = render(
+      <SpellsTab
+        derivedSheet={extraSheet}
+        playState={state}
+        onUpdatePlayState={update as never}
+        learnedCantrips={[]}
+        preparedSpells={[]}
+        onSpellRoll={() => {}}
+      />,
+    );
+    expect(container.textContent).not.toContain('Mísseis Mágicos — ');
+    expect(container.textContent).toContain('Iniciado em Magia (Mago)');
+    const free = Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(b => b.textContent === 'Grátis');
+    expect(free).toBeTruthy();
+    act(() => free!.click());
+    expect(state.freeSpellUses).toEqual({ 'Iniciado em Magia (Mago)::Mísseis Mágicos': 1 });
+    expect(Array.from(container.querySelectorAll('button')).some(b => b.textContent === 'Conjurar')).toBe(true);
+  });
+
+  it('com o uso gasto, o botão fica desabilitado até o Descanso Longo', () => {
+    const container = render(
+      <SpellsTab
+        derivedSheet={extraSheet}
+        playState={{ ...DEFAULT_PLAY_STATE, freeSpellUses: { 'Iniciado em Magia (Mago)::Mísseis Mágicos': 1 } }}
+        onUpdatePlayState={() => {}}
+        learnedCantrips={[]}
+        preparedSpells={[]}
+      />,
+    );
+    const used = Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(b => b.textContent === 'Usado');
+    expect(used?.disabled).toBe(true);
+    expect(used?.title).toBe('Usado — volta no Descanso Longo');
+  });
+});

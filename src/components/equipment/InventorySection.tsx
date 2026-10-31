@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import css from './equipment.module.css';
 import { getArmorByName } from '../../rules/data/armorRules';
-import { getEquipKind, isInventoryItemEquipped } from '../../rules/utils/equipment';
+import { getEquipKind, isInventoryItemEquipped, expandEquippableUnits, equipBlockReason } from '../../rules/utils/equipment';
 import type { InventoryItem } from '../../types/character';
 
 interface InventorySectionProps {
@@ -71,6 +71,18 @@ const tagColor = (tag: string): { bg: string; color: string } => {
 
 export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, onRemoveItem, onChangeQuantity, equippedArmorId, hasShieldEquipped, onEquipArmor, onEquipShield, onToggleEquip, equippedWeaponNames = [] }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [equipNotice, setEquipNotice] = useState<string | null>(null);
+
+  // Na escolha de equipamento, itens iguais ficam numa linha só (×N).
+  // Na ficha, cada arma/armadura/escudo aparece numa linha própria.
+  const groups: Array<{ first: (typeof inventory)[number]; entries: typeof inventory; total: number }> = [];
+  for (const entry of inventory) {
+    const g = groups.find(x => x.first.name === entry.name);
+    if (g) { g.entries.push(entry); g.total += entry.quantity; }
+    else groups.push({ first: entry, entries: [entry], total: entry.quantity });
+  }
+  const units = expandEquippableUnits(inventory);
+  const unitEquipped = (unitIndex: number) => isInventoryItemEquipped(equippedWeaponNames, units[unitIndex], unitIndex, units);
 
   if (inventory.length === 0) {
     return (
@@ -82,7 +94,16 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      {inventory.map((item, i) => {
+      {equipNotice && (
+        <div role="alert" style={{ display: 'flex', justifyContent: 'space-between', gap: 10, padding: '8px 10px', border: '1px solid #c53131', borderRadius: 6, background: 'rgba(197,49,49,0.12)', color: '#fff', fontSize: '0.8rem' }}>
+          <span>{equipNotice}</span>
+          <button type="button" onClick={() => setEquipNotice(null)} aria-label="Fechar aviso" style={{ border: 'none', background: 'transparent', color: '#b0b7bd', cursor: 'pointer' }}>✕</button>
+        </div>
+      )}
+      {groups.map(({ first: item, entries, total }, i) => {
+        const last = entries[entries.length - 1];
+        const groupUnitIdx = units.map((u, idx) => (u.name === item.name ? idx : -1)).filter(idx => idx >= 0);
+        const equippedUnitIdx = groupUnitIdx.find(unitEquipped);
         const isOpen = expandedId === item.id;
         const base = item.itemBase;
         const tags = inferTags(item);
@@ -92,7 +113,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
         const isEquippedArmor = isArmorItem && equippedArmorId === armorEntry.id;
         const isEquippedShield = isShieldItem && hasShieldEquipped;
         const equipKind = getEquipKind(item.name);
-        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && isInventoryItemEquipped(equippedWeaponNames, item, inventory.indexOf(item), inventory)));
+        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && equippedUnitIdx !== undefined));
         const canToggle = equipKind !== null && (onToggleEquip || (equipKind !== 'weapon' && onEquipArmor && onEquipShield));
         return (
           <div key={item.id} style={{
@@ -119,16 +140,26 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
-                <button onClick={() => onChangeQuantity(item.id, -1)} className={css.qtyBtn} aria-label={`Diminuir ${item.name}`}>−</button>
-                <span style={{ color: 'var(--text-bright)', fontWeight: 600, fontSize: '0.85rem', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                <button onClick={() => onChangeQuantity(item.id, 1)} className={css.qtyBtn} aria-label={`Aumentar ${item.name}`}>+</button>
+                <button onClick={() => onChangeQuantity(last.id, -1)} className={css.qtyBtn} aria-label={`Diminuir ${item.name}`}>−</button>
+                <span style={{ color: 'var(--text-bright)', fontWeight: 600, fontSize: '0.85rem', minWidth: '20px', textAlign: 'center' }}>{total}</span>
+                <button onClick={() => onChangeQuantity(last.id, 1)} className={css.qtyBtn} aria-label={`Aumentar ${item.name}`}>+</button>
                 {canToggle && (
                   <button
                     type="button"
                     aria-pressed={isEquipped}
                     title={isEquipped ? 'Clique para desequipar' : 'Equipar este item'}
                     onClick={() => {
-                      if (onToggleEquip) {
+                      if (!isEquipped) {
+                        const target = units[groupUnitIdx[0]] ?? item;
+                        const reason = equipBlockReason({ units, equippedKeys: equippedWeaponNames, shieldEquipped: Boolean(hasShieldEquipped), target });
+                        if (reason) { setEquipNotice(reason); return; }
+                      }
+                      setEquipNotice(null);
+                      if (onToggleEquip && equipKind === 'weapon') {
+                        // Liga a primeira unidade livre; desliga a que está equipada.
+                        const unit = units[equippedUnitIdx ?? groupUnitIdx[0]];
+                        onToggleEquip(unit?.id ?? item.id);
+                      } else if (onToggleEquip) {
                         onToggleEquip(item.id);
                       } else if (isArmorItem) {
                         onEquipArmor?.(isEquippedArmor ? null : armorEntry.id);

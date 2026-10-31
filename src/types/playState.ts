@@ -60,6 +60,8 @@ export interface CharacterPlayState {
   customProficiencies?: Array<{ type: 'Armaduras' | 'Armas' | 'Ferramentas' | 'Idiomas' | 'Perícias'; name: string }>;
   /** Quantos de cada item inicial já foram gastos com "Usar" (chave = id do item). */
   usedConsumables?: Record<string, number>;
+  /** Conjurações grátis já usadas de magias de talento/espécie (chave = "origem::magia"). Zera no Descanso Longo. */
+  freeSpellUses?: Record<string, number>;
   /** XP acumulado */
   xp: number;
   /** Habilidades com Expertise (proficiência dupla) */

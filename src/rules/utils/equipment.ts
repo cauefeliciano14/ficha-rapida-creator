@@ -165,3 +165,67 @@ const CONSUMABLE_RE = /(^|[^\p{L}])(po[cç](ã|õ)o|po[cç]ões|flechas?|virotes
 export function isConsumable(name: string): boolean {
   return CONSUMABLE_RE.test(name);
 }
+
+/**
+ * Na ficha, cada arma, armadura e escudo aparece um por linha (3 Machadinhas =
+ * 3 linhas), para dar para equipar só uma. Itens com quantidade > 1 viram
+ * unidades com id `<id>#<n>`; o resto (flechas, rações…) fica como está.
+ */
+export function expandEquippableUnits<T extends { id?: string; name: string; quantity?: number }>(items: readonly T[]): T[] {
+  const out: T[] = [];
+  for (const item of items) {
+    const qty = item.quantity ?? 1;
+    if (getEquipKind(item.name) === null || qty <= 1) {
+      out.push(item);
+      continue;
+    }
+    for (let n = 0; n < qty; n++) {
+      out.push({ ...item, id: item.id ? `${item.id}#${n}` : undefined, quantity: 1 });
+    }
+  }
+  return out;
+}
+
+/** Quantas mãos o item ocupa quando equipado (Livro do Jogador 2024, cap. 6). */
+export function handsNeeded(name: string): number {
+  const kind = getEquipKind(name);
+  if (kind === 'shield') return 1;
+  if (kind !== 'weapon') return 0;
+  const weapon = getWeaponByName(name);
+  return weapon && /Duas Mãos/i.test(weapon.properties) ? 2 : 1;
+}
+
+/**
+ * Se der para equipar `target`, devolve null; senão, o motivo (em português).
+ * Regras: uma armadura e um Escudo por vez; armas e Escudo dividem duas mãos;
+ * arma de Duas Mãos ocupa as duas.
+ */
+export function equipBlockReason(params: {
+  units: ReadonlyArray<{ id?: string; name: string; equipped?: boolean }>;
+  equippedKeys: readonly string[];
+  shieldEquipped: boolean;
+  target: { id?: string; name: string };
+}): string | null {
+  const { units, equippedKeys, shieldEquipped, target } = params;
+  const kind = getEquipKind(target.name);
+  if (kind === 'armor' || kind === null) return null; // trocar de armadura substitui a atual
+  const need = handsNeeded(target.name);
+  const holding: string[] = [];
+  let used = 0;
+  units.forEach((unit, index) => {
+    if (getEquipKind(unit.name) !== 'weapon') return;
+    if (unit === target || (unit.id && unit.id === target.id)) return;
+    if (isInventoryItemEquipped(equippedKeys, unit, index, units)) {
+      used += handsNeeded(unit.name);
+      holding.push(unit.name);
+    }
+  });
+  if (shieldEquipped && kind === 'weapon') {
+    used += 1;
+    holding.push('Escudo');
+  }
+  if (kind === 'shield' && shieldEquipped) return 'Só dá para empunhar um Escudo por vez.';
+  if (used + need <= 2) return null;
+  const what = need === 2 ? `${target.name} usa as duas mãos` : 'suas duas mãos já estão ocupadas';
+  return `Não dá para equipar: ${what} (${holding.join(', ')}). Desequipe algo antes.`;
+}

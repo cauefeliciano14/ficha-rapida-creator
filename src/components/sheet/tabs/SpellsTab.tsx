@@ -71,7 +71,7 @@ export function SpellsTab({
     const circles = new Set<string>();
     if (learnedCantrips.length > 0 || bonusCantrips.length > 0) circles.add('Truque');
     for (const c of Object.keys(groupedPrepared)) circles.add(c);
-    if (bonusPreparedSpells.length > 0) circles.add('1º Círculo');
+    for (const sp of bonusPreparedSpells) circles.add(SPELL_LEVEL_MAP.get(sp.name) ?? '1º Círculo');
     return CIRCLE_ORDER.filter(c => circles.has(c));
   }, [groupedPrepared, learnedCantrips, bonusCantrips, bonusPreparedSpells]);
 
@@ -131,6 +131,14 @@ export function SpellsTab({
       onCast: () => { if (castLevel) handleSpendSlot(castLevel); },
       canCast: castLevel !== undefined,
     };
+  };
+  // Magia extra (talento/espécie): 1 conjuração grátis por Descanso Longo (LdJ 2024).
+  const freeKey = (name: string, origin: string) => `${origin}::${name}`;
+  const handleFreeCast = (key: string) => {
+    onUpdatePlayState(prev => ({
+      ...prev,
+      freeSpellUses: { ...(prev.freeSpellUses ?? {}), [key]: (prev.freeSpellUses?.[key] ?? 0) + 1 },
+    }));
   };
   const q = searchText.toLowerCase();
 
@@ -277,6 +285,7 @@ export function SpellsTab({
         <SpellList
           title="TRUQUES DE TALENTO"
           spells={filterSpells(bonusCantrips.filter(s => s.source === 'talent').map(s => `${s.name} — ${s.origin}`))}
+          originsAsSubline
           accent="#38bdf8" badge="Talento" stats={spellStats} onRoll={onSpellRoll} atWill
           concentratingOn={playState.concentratingOn}
           onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
@@ -316,16 +325,28 @@ export function SpellsTab({
         />
       )}
 
-      {bonusPreparedSpells.length > 0 && (circleFilter === 'all' || circleFilter === '1º Círculo') && (
-        <SpellList
-          title="MAGIAS EXTRA"
-          subtitle="Preparadas por traços raciais ou talentos."
-          spells={filterSpells(bonusPreparedSpells.map(s => `${s.name} — ${s.origin}`))}
-          accent="#34d399" badge="Extra" stats={spellStats} onRoll={onSpellRoll}
-          concentratingOn={playState.concentratingOn}
-          onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
-        />
-      )}
+      {bonusPreparedSpells.length > 0 && (() => {
+        const visible = bonusPreparedSpells.filter(sp =>
+          q || circleFilter === 'all' || circleFilter === (SPELL_LEVEL_MAP.get(sp.name) ?? '1º Círculo'));
+        const filtered = filterSpells(visible.map(sp => `${sp.name} — ${sp.origin}`));
+        if (filtered.length === 0) return null;
+        return (
+          <SpellList
+            title="MAGIAS EXTRA"
+            subtitle="Sempre preparadas. 1 conjuração grátis (sem espaço) por Descanso Longo; também podem usar seus espaços de magia."
+            spells={filtered}
+            originsAsSubline
+            accent="#34d399" badge="Extra" stats={spellStats} onRoll={onSpellRoll}
+            castFor={rawName => castProps(SPELL_LEVEL_MAP.get(rawName) ?? '1º Círculo')}
+            freeUseFor={(rawName, origin) => {
+              const key = freeKey(rawName, origin ?? '');
+              return { used: (playState.freeSpellUses?.[key] ?? 0) > 0, onUse: () => handleFreeCast(key) };
+            }}
+            concentratingOn={playState.concentratingOn}
+            onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
+          />
+        );
+      })()}
 
       {learnedCantrips.length === 0 && bonusCantrips.length === 0 && preparedSpells.length === 0 && bonusPreparedSpells.length === 0 && !showAddSpell && (
         <div className={styles.emptySpells}>Nenhuma magia selecionada.</div>
@@ -405,6 +426,7 @@ function spellHitAndEffect(info: any, stats: { attack: number; dc: number }) {
 function SpellList({
   title, subtitle, spells, accent, badge, canRemove, onRemove,
   concentratingOn, onSetConcentration, stats, atWill, onCast, canCast, onRoll,
+  castFor, freeUseFor, originsAsSubline,
 }: {
   title: string; subtitle?: string; spells: string[]; accent: string;
   badge?: string; canRemove?: boolean; onRemove?: (name: string) => void;
@@ -412,6 +434,12 @@ function SpellList({
   stats: { attack: number; dc: number }; atWill?: boolean;
   onCast?: () => void; canCast?: boolean;
   onRoll?: (roll: SpellRoll) => void;
+  /** Conjurar com espaço, calculado por magia (círculos diferentes na mesma lista). */
+  castFor?: (rawName: string) => { onCast?: () => void; canCast?: boolean };
+  /** Uso grátis por Descanso Longo (magias de talento/espécie). */
+  freeUseFor?: (rawName: string, origin: string | null) => { used: boolean; onUse: () => void };
+  /** Mostra a origem ("Iniciado em Magia (Mago)") na linha de baixo, junto da escola. */
+  originsAsSubline?: boolean;
 }) {
   const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
 
@@ -441,6 +469,9 @@ function SpellList({
           const { hit, effect, formula, effectType, isAttack } = spellHitAndEffect(info, stats);
           const isExpanded = expandedSpell === s;
           const notes = shortNotes(info?.components, info?.duration);
+          const cast = castFor ? castFor(rawName) : { onCast, canCast };
+          const free = freeUseFor?.(rawName, origin);
+          const sub = [info?.school, origin].filter(Boolean).join(' · ');
 
           return (
             <div key={s}>
@@ -452,25 +483,41 @@ function SpellList({
                 <div onClick={e => e.stopPropagation()}>
                   {atWill ? (
                     <span className={styles.atWill}>à vontade</span>
-                  ) : onCast ? (
-                    <button
-                      className={ddb.redBtn}
-                      disabled={!canCast}
-                      onClick={onCast}
-                      title={canCast ? 'Gastar um espaço de magia' : 'Sem espaços de magia disponíveis'}
-                    >
-                      Conjurar
-                    </button>
-                  ) : null}
+                  ) : (
+                    <div className={styles.castStack}>
+                      {free && (
+                        <button
+                          type="button"
+                          className={ddb.redBtn}
+                          disabled={free.used}
+                          onClick={free.onUse}
+                          title={free.used ? 'Usado — volta no Descanso Longo' : 'Conjurar sem gastar espaço de magia (1 vez por Descanso Longo)'}
+                        >
+                          {free.used ? 'Usado' : 'Grátis'}
+                        </button>
+                      )}
+                      {cast.onCast && (
+                        <button
+                          type="button"
+                          className={ddb.redBtn}
+                          disabled={!cast.canCast}
+                          onClick={cast.onCast}
+                          title={cast.canCast ? 'Gastar um espaço de magia' : 'Sem espaços de magia disponíveis'}
+                        >
+                          Conjurar
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <SpellCardTooltip spellName={rawName}>
                     <span className={ddb.name}>{rawName}</span>
                   </SpellCardTooltip>
-                  {origin && <span className={ddb.featureSource}>{' — '}{origin}</span>}
+                  {origin && !originsAsSubline && <span className={ddb.featureSource}>{' — '}{origin}</span>}
                   {isConc && <span className={styles.tagConcentrationSmall} title="Concentração">C</span>}
                   {isRitual && <span className={styles.tagRitualSmall} title="Ritual">R</span>}
-                  <div className={ddb.sub}>{info?.school ?? ''}</div>
+                  <div className={originsAsSubline ? `${ddb.sub} ${styles.subOneLine}` : ddb.sub} title={originsAsSubline ? sub : undefined}>{originsAsSubline ? sub : (info?.school ?? '')}</div>
                 </div>
                 <div className={`${ddb.center} ${ddb.notes}`} title={info?.castingTime}>{shortTime(info?.castingTime)}</div>
                 <div className={`${ddb.center} ${ddb.notes}`} title={info ? withSquares(info.range) : undefined}>{info ? shortRange(info.range) : '—'}</div>
@@ -491,7 +538,7 @@ function SpellList({
                 <div className={styles.spellExpanded} style={{ border: `1px solid ${accent}40` }}>
                   <div className={styles.spellExpandedHeader}>
                     <div>
-                      <div className={styles.spellExpandedName} style={{ color: accent }}>{s}</div>
+                      <div className={styles.spellExpandedName} style={{ color: accent }}>{rawName}</div>
                       {info && (
                         <div className={styles.spellExpandedMeta}>
                           {info.level === 'Truque' ? `Truque de ${info.school}` : `${info.level}, ${info.school}`}

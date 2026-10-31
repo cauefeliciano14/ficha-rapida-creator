@@ -376,6 +376,7 @@ export function CharacterSheetPage({
       currentHp: effectiveMaxHP,
       tempHp: 0,
       spentSpellSlots: {},
+      freeSpellUses: {},
       activeConditions: [],
       heroicInspiration: true,
       deathSaves: { successes: 0, failures: 0 },

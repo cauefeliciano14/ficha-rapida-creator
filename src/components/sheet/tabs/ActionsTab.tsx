@@ -168,7 +168,7 @@ export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onU
                 </div>
                 <div className={ddb.center}>{atk.range === 'Corpo a Corpo' ? <>1,5 m<div className={ddb.sub}>Alcance</div></> : withSquares(atk.range)}</div>
                 <div className={ddb.center}>
-                  <span className={ddb.box}>{signedMod(atk.attackBonus)}</span>
+                  <span className={`${ddb.box} ${onAttackClick ? styles.damageRoll : ""}`} title={onAttackClick ? "Rolar ataque" : undefined}>{signedMod(atk.attackBonus)}</span>
                 </div>
                 <div className={ddb.center}>
                   {onDamageClick ? (

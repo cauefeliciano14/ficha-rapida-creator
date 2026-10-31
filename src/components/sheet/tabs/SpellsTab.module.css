@@ -643,3 +643,17 @@
   border-color: #c53131;
   color: #fff;
 }
+
+/* Magias extra: "Grátis" (1x por Descanso Longo) em cima de "Conjurar" (espaço). */
+.castStack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.subOneLine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
