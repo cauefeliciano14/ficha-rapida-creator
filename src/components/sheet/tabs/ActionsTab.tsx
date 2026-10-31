@@ -57,9 +57,11 @@ interface ActionsTabProps {
   playState: CharacterPlayState;
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
   onAttackClick?: (attack: WeaponAttack) => void;
+  /** Rola só o dano (clique na caixa de dano). */
+  onDamageClick?: (attack: WeaponAttack) => void;
 }
 
-export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onUpdatePlayState, onAttackClick }: ActionsTabProps) {
+export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onUpdatePlayState, onAttackClick, onDamageClick }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
@@ -168,10 +170,24 @@ export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onU
                   <span className={ddb.box}>{signedMod(atk.attackBonus)}</span>
                 </div>
                 <div className={ddb.center}>
-                  <span className={ddb.box} title={atk.damageType}>
-                    {atk.damageDice}{atk.damageBonus !== 0 ? signedMod(atk.damageBonus) : ''}
-                    <span className={styles.damageType}>{atk.damageType.substring(0, 3)}</span>
-                  </span>
+                  {onDamageClick ? (
+                    <button
+                      type="button"
+                      className={`${ddb.box} ${styles.damageRoll}`}
+                      title={`Rolar dano (${atk.damageType})`}
+                      aria-label={`Rolar dano de ${atk.weaponName}`}
+                      onClick={(e) => { e.stopPropagation(); onDamageClick(atk); }}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
+                      {atk.damageDice}{atk.damageBonus !== 0 ? signedMod(atk.damageBonus) : ''}
+                      <span className={styles.damageType}>{atk.damageType.substring(0, 3)}</span>
+                    </button>
+                  ) : (
+                    <span className={ddb.box} title={atk.damageType}>
+                      {atk.damageDice}{atk.damageBonus !== 0 ? signedMod(atk.damageBonus) : ''}
+                      <span className={styles.damageType}>{atk.damageType.substring(0, 3)}</span>
+                    </span>
+                  )}
                 </div>
                 <div className={ddb.notes}>{atk.properties.join(', ') || '—'}</div>
               </div>

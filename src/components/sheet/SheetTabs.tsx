@@ -49,6 +49,7 @@ interface SheetTabsProps {
   backgroundTool?: string;
   backgroundEquipment?: string;
   onAttackClick?: (attack: WeaponAttack) => void;
+  onDamageClick?: (attack: WeaponAttack) => void;
   currency?: { cp: number; sp: number; ep: number; gp: number; pp: number };
   onUpdateCurrency?: (currency: { cp: number; sp: number; ep: number; gp: number; pp: number }) => void;
   /** Campos de identidade para NotesTab */
@@ -87,6 +88,7 @@ export function SheetTabs({
   onEquipArmor,
   onEquipShield,
   onAttackClick,
+  onDamageClick,
   currency,
   onUpdateCurrency,
   backstory,
@@ -128,6 +130,7 @@ export function SheetTabs({
           playState={playState}
           onUpdatePlayState={onUpdatePlayState}
           onAttackClick={onAttackClick}
+          onDamageClick={onDamageClick}
         />
       )}
       {activeTab === 'spells' && (

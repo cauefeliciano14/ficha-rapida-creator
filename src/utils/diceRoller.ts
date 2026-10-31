@@ -72,8 +72,10 @@ export function rollDamage(
 ): DiceRollResult {
   const match = diceFormula.match(/(\d+)d(\d+)([+-]\d+)?/);
   if (!match) {
+    // Dano fixo, sem dado (ex.: Ataque Desarmado "1+1"): soma os números.
+    const flat = (diceFormula.replace(/\s/g, '').match(/[+-]?\d+/g) ?? []).reduce((sum, n) => sum + parseInt(n), 0);
     return {
-      formula: diceFormula, rolls: [0], modifier: 0, total: 0,
+      formula: diceFormula, rolls: [], modifier: flat, total: Math.max(0, flat),
       isCritical: false, isFumble: false, label, type: 'damage',
     };
   }

@@ -467,6 +467,14 @@ export function CharacterSheetPage({
     }
   };
 
+  /* Clique na caixa de dano: rola só o dano, sem abrir o painel. */
+  const handleDamageClick = useCallback((atk: WeaponAttack) => {
+    const dmgFormula = `${atk.damageDice}${atk.damageBonus !== 0 ? (atk.damageBonus > 0 ? '+' : '') + atk.damageBonus : ''}`;
+    const damageResult = rollDamage(dmgFormula, atk.weaponName);
+    addToHistory(damageResult);
+    showDiceToast(damageResult, `${atk.weaponName} (Dano)`);
+  }, [addToHistory, showDiceToast]);
+
   const rerollAttackDamage = () => {
     if (sidebar?.type === 'attack') {
       const atk = sidebar.attack;
@@ -1305,6 +1313,7 @@ export function CharacterSheetPage({
               onEquipArmor={onEquipArmor}
               onEquipShield={onEquipShield}
               onAttackClick={handleAttackClick}
+              onDamageClick={handleDamageClick}
               currency={currency}
               onUpdateCurrency={onUpdateCurrency}
               backstory={backstory}

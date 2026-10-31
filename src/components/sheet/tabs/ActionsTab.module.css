@@ -445,3 +445,16 @@
   padding: 5px 0;
   border-bottom: 1px solid #222a30;
 }
+
+/* Caixa de dano clicável: rola os dados de dano. */
+.damageRoll {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.damageRoll:hover {
+  border-color: #c53131;
+  color: #fff;
+  filter: none;
+}
