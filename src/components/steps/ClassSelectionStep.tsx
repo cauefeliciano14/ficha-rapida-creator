@@ -8,7 +8,7 @@ import layoutStyles from './StepLayout.module.css';
 import { useCharacter } from '../../context/CharacterContext';
 import { useWizard } from '../../context/WizardContext';
 import { isClassSynergyForBg } from '../../data/classSynergies';
-import { CLASS_ROLE_META, ROLE_COLORS } from '../../data/classRoles';
+import { CLASS_ROLE_META } from '../../data/classRoles';
 import { ComparisonModal } from '../ComparisonModal';
 import { ClassHeroPreview } from '../ui/ClassHeroPreview';
 import { SmartHints } from '../ui/SmartHints';
@@ -83,79 +83,40 @@ const ClassCard = memo(function ClassCard({
       } as React.CSSProperties}
       aria-label={`Selecionar classe ${cls.name}`}
     >
-      {/* Background art ocupando todo o card */}
+      {/* D&D Beyond: retrato redondo, nome, uma linha de resumo e seta */}
       <img
         src={getClassHeroArtSrc(cls.id)}
         alt=""
         aria-hidden="true"
         loading="lazy"
         decoding="async"
-        className={cardStyles.art}
+        className={cardStyles.thumb}
       />
-      <div className={cardStyles.scrim} />
-
-      {/* Banner / flâmula com ícone da classe */}
-      <div className={cardStyles.banner}>
-        <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" className={cardStyles.bannerIcon} />
-      </div>
-
-      {/* Recomendado para iniciantes ou pelo background */}
-      {(roleMeta?.difficulty === 'Iniciante' || showSynergy) && !isSelected && (
-        <span className={cardStyles.recommendedRibbon}>
-          {showSynergy ? '★ Combina' : '🌱 Iniciante'}
+      <span className={cardStyles.content}>
+        <span className={cardStyles.titleRow}>
+          <span className={cardStyles.title}>{cls.name}</span>
+          {(roleMeta?.difficulty === 'Iniciante' || showSynergy) && !isSelected && (
+            <span className={cardStyles.recommendedRibbon}>
+              {showSynergy ? 'Combina' : 'Iniciante'}
+            </span>
+          )}
         </span>
-      )}
-
-      {/* Conteúdo (nome + tags + descrição + ações) */}
-      <div className={cardStyles.content}>
-        <h3 className={cardStyles.title}>{cls.name}</h3>
-        <div className={cardStyles.tagsRow}>
-          <span className={cardStyles.tag}>{theme.archetypeLabel}</span>
-          {meta.primaryAttribute ? (
-            <span
-              className={cardStyles.tag}
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                borderColor: 'rgba(255,255,255,0.22)',
-                color: '#f1f5f9',
-              }}
-            >
-              {meta.primaryAttribute}
-            </span>
-          ) : null}
-          {roleMeta?.roles.slice(0, 1).map((role) => (
-            <span
-              key={role}
-              className={cardStyles.tag}
-              style={{
-                background: `${ROLE_COLORS[role]}1f`,
-                borderColor: `${ROLE_COLORS[role]}80`,
-                color: ROLE_COLORS[role],
-              }}
-            >
-              {role}
-            </span>
-          ))}
-        </div>
-        {cls.description ? <p className={cardStyles.description}>{cls.description}</p> : null}
-        <div className={cardStyles.actions}>
-          <button
-            type="button"
-            className={cardStyles.actionBtn}
-            onClick={handleLearnMore}
-            aria-label={`Saber mais sobre ${cls.name}`}
-          >
-            Saber mais
-          </button>
-          <button
-            type="button"
-            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ''}`}
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
-          >
-            {isSelected ? '✓ Selecionada' : 'Selecionar'}
-          </button>
-        </div>
-      </div>
+        <span className={cardStyles.subtitle}>
+          {[theme.archetypeLabel, meta.primaryAttribute, roleMeta?.roles[0]].filter(Boolean).join(' · ')}
+        </span>
+      </span>
+      <span
+        role="button"
+        tabIndex={0}
+        className={cardStyles.infoBtn}
+        onClick={handleLearnMore}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLearnMore(e as unknown as React.MouseEvent); }}
+        aria-label={`Saber mais sobre ${cls.name}`}
+        title="Saber mais"
+      >
+        i
+      </span>
+      <span className={cardStyles.chevron} aria-hidden="true">{isSelected ? '✓' : '›'}</span>
     </button>
   );
 });
@@ -390,7 +351,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             <span>Escolha sua Classe</span>
           </div>
           <p className={layoutStyles.sectionDescription}>
-            Menus menores e alinhados horizontalmente para facilitar a comparação. A arte da classe só aparece depois da seleção, sem espaços vazios na etapa.
+            A classe define o que seu herói sabe fazer. Clique numa delas para ver os detalhes.
           </p>
         </div>
 
