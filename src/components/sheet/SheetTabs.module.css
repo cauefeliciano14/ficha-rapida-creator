@@ -12,6 +12,7 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
+  border-radius: 0;
   color: var(--text-dim);
   padding: 8px 10px;
   font-family: var(--font-label);
@@ -28,9 +29,14 @@
   color: var(--text-primary);
 }
 
+.tab:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .tabActive {
   color: var(--text-bright);
-  font-weight: 400;
+  font-weight: 700;
+  border-radius: 0;
   border-bottom-color: var(--color-primary);
 }
 

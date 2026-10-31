@@ -1019,11 +1019,13 @@ export function CharacterSheetPage({
           <div className={styles.hpPanel}>
             <div
               className={`${styles.redBox} ${hpPulse === 'damage' ? styles.hpPulseDamage : hpPulse === 'heal' ? styles.hpPulseHeal : ''}`}
-              style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
             >
-              <div className={styles.hpHeader}>
-                <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
-                <div className={styles.hpHeaderBtns}>
+              <div className={styles.sectionHeader}>PONTOS DE VIDA</div>
+              <div className={styles.hpLayout}>
+                {/* D&D Beyond: Curar / valor / Dano empilhados à esquerda */}
+                <div className={styles.hpControls}>
+                  <button onClick={handleHeal} className={styles.healBtn} title="Curar">CURAR</button>
                   <input
                     type="number"
                     min="0"
@@ -1031,19 +1033,25 @@ export function CharacterSheetPage({
                     onChange={e => setHpInput(e.target.value)}
                     className={styles.hpInput}
                     placeholder="0"
+                    aria-label="Valor de cura ou dano"
                   />
-                  <button onClick={handleHeal} className={styles.healBtn} title="Curar">+</button>
-                  <button onClick={handleDamage} className={styles.damageBtn} title="Dano">−</button>
-                  <button onClick={handleTempHp} className={styles.tempBtn} title="HP Temporário">♡</button>
+                  <button onClick={handleDamage} className={styles.damageBtn} title="Dano">DANO</button>
                 </div>
-              </div>
-              <div className={styles.hpValues}>
-                <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
-                <span className={styles.hpSeparator}>/</span>
-                <span className={styles.hpMax}>{effectiveMaxHP}</span>
-                {playState.tempHp > 0 && (
-                  <span className={styles.hpTemp}>+{playState.tempHp}</span>
-                )}
+                <div className={styles.hpColumns}>
+                  <div className={styles.hpCol}>
+                    <span className={styles.hpLabel}>Atual</span>
+                    <span className={styles.hpCurrent} style={{ color: hpColor }}>{playState.currentHp}</span>
+                  </div>
+                  <span className={styles.hpSeparator}>/</span>
+                  <div className={styles.hpCol}>
+                    <span className={styles.hpLabel}>Máx.</span>
+                    <span className={styles.hpMax}>{effectiveMaxHP}</span>
+                  </div>
+                  <button type="button" onClick={handleTempHp} className={styles.hpCol + ' ' + styles.hpTempCol} title="Adicionar PV temporário com o valor digitado">
+                    <span className={styles.hpLabel}>Temp.</span>
+                    <span className={styles.hpTemp}>{playState.tempHp > 0 ? playState.tempHp : '—'}</span>
+                  </button>
+                </div>
               </div>
               <div className={styles.hpBar} style={{ width: '100%' }}>
                 <div className={styles.hpBarFill} style={{ width: `${Math.min(hpPercent, 100)}%`, background: hpColor }} />

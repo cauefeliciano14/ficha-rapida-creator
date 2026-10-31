@@ -81,6 +81,9 @@
   --text-secondary: #c8d0d6;
   --text-dim: #8a9aa6;
   --text-faint: #5f6d77;
+  --color-magic: #e06060;
+  --color-magic-bg: rgba(197, 49, 49, 0.12);
+  --color-magic-border: rgba(197, 49, 49, 0.45);
   --font-label: 'Roboto Condensed', 'Roboto', 'Arial Narrow', sans-serif;
   background: radial-gradient(ellipse at top, #1c252c 0%, #0b0f12 70%);
 }
@@ -954,8 +957,8 @@
 
 /* ── HP Panel (D&D Beyond style — vertical layout) ── */
 .hpPanel {
-  flex: 1 1 0;
-  min-width: 160px;
+  flex: 0 0 280px;
+  min-width: 260px;
   min-height: 110px;
   display: flex;
   align-self: stretch;
@@ -989,10 +992,10 @@
 
 .hpLabel {
   font-family: var(--font-label);
-  font-size: 0.55rem;
-  font-weight: 800;
+  font-size: 0.625rem;
+  font-weight: 700;
   color: var(--text-dim);
-  letter-spacing: var(--label-spacing);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: center;
 }
@@ -1044,24 +1047,66 @@
 }
 
 .hpMax {
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-bright);
 }
 
 .hpTemp {
-  font-size: 0.9rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-primary-light);
-  margin-left: 8px;
-  padding: 1px 6px;
-  background: rgba(197, 49, 49, 0.1);
-  border-radius: 3px;
-  border: 1px solid rgba(197, 49, 49, 0.2);
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* ── HP no estilo D&D Beyond: controles à esquerda, Atual/Máx/Temp à direita ── */
+.hpLayout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.hpControls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.hpColumns {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 4px;
+}
+
+.hpCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hpTempCol {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.hpTempCol:hover .hpTemp {
+  color: var(--text-bright);
 }
 
 .hpBar {
-  height: 8px;
+  height: 3px;
+  margin-top: 6px;
   background: var(--border-subtle);
   border-radius: 4px;
   margin-bottom: 6px;
@@ -1078,7 +1123,8 @@
 }
 
 .hpInput {
-  width: 44px;
+  width: 100%;
+  height: 24px;
   background: var(--surface-input);
   border: 1px solid var(--border-default);
   border-radius: 3px;
@@ -1094,10 +1140,12 @@
   border: none;
   border-radius: 4px;
   color: var(--surface-dark);
-  width: 26px;
-  height: 26px;
-  font-size: 0.9rem;
-  font-weight: 900;
+  width: 100%;
+  height: 20px;
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1113,10 +1161,12 @@
   border: none;
   border-radius: 4px;
   color: var(--text-bright);
-  width: 26px;
-  height: 26px;
-  font-size: 0.9rem;
-  font-weight: 900;
+  width: 100%;
+  height: 20px;
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -256,7 +256,7 @@ export function SpellsTab({
             key={circle}
             title={circle.toUpperCase()}
             spells={filtered}
-            accent="#a78bfa"
+            accent="#e06060"
             canRemove={canEditSpells}
             onRemove={handleUnprepare}
             concentratingOn={playState.concentratingOn}
@@ -269,7 +269,7 @@ export function SpellsTab({
         <SpellList
           title="MAGIAS PREPARADAS"
           spells={filterSpells(groupedPrepared['?'])}
-          accent="#a78bfa"
+          accent="#e06060"
           canRemove={canEditSpells}
           onRemove={handleUnprepare}
           concentratingOn={playState.concentratingOn}
