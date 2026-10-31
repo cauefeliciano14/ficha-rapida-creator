@@ -13,6 +13,7 @@ interface InventorySectionProps {
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
   onToggleEquip?: (id: string) => void;
+  equippedWeaponNames?: string[];
 }
 
 const separator: React.CSSProperties = {
@@ -68,7 +69,7 @@ const tagColor = (tag: string): { bg: string; color: string } => {
   return map[tag] || { bg: 'rgba(255,255,255,0.08)', color: '#94a3b8' };
 };
 
-export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, onRemoveItem, onChangeQuantity, equippedArmorId, hasShieldEquipped, onEquipArmor, onEquipShield, onToggleEquip }) => {
+export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, onRemoveItem, onChangeQuantity, equippedArmorId, hasShieldEquipped, onEquipArmor, onEquipShield, onToggleEquip, equippedWeaponNames = [] }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (inventory.length === 0) {
@@ -91,7 +92,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
         const isEquippedArmor = isArmorItem && equippedArmorId === armorEntry.id;
         const isEquippedShield = isShieldItem && hasShieldEquipped;
         const equipKind = getEquipKind(item.name);
-        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && item.equipped));
+        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && (item.equipped || equippedWeaponNames.includes(item.name))));
         const canToggle = equipKind !== null && (onToggleEquip || (equipKind !== 'weapon' && onEquipArmor && onEquipShield));
         return (
           <div key={item.id} style={{

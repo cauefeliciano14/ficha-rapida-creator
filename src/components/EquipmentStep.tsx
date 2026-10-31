@@ -5,7 +5,7 @@ import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
 import { getArmorByName } from '../rules/data/armorRules';
-import { sanitizeEquipmentState, toggleItemEquipped } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, toggleItemEquipped, getEquipKind } from '../rules/utils/equipment';
 import { Accordion } from './equipment/Accordion';
 import { TabBar } from './equipment/TabBar';
 import { StartingEquipment } from './equipment/StartingEquipment';
@@ -22,9 +22,12 @@ interface EquipmentStepProps {
   updateEquipment: (updater: (prev: Character['equipment']) => Character['equipment']) => void;
   updateSpells: (updater: (prev: Character['spells']) => Character['spells']) => void;
   derivedSheet: DerivedSheet;
+  /** Armas equipadas (mesmo estado da caixinha "Ativo" da ficha). */
+  equippedWeaponNames?: string[];
+  onToggleWeapon?: (name: string) => void;
 }
 
-export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selectedBackground, updateEquipment, updateSpells, derivedSheet }) => {
+export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selectedBackground, updateEquipment, updateSpells, derivedSheet, equippedWeaponNames, onToggleWeapon }) => {
   const classId = character.characterClass?.id || '';
   const bgId = selectedBackground?.id || '';
   const isCaster = engineIsCaster(classId);
@@ -294,7 +297,12 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
               hasShieldEquipped={equipmentState.hasShieldEquipped}
               onEquipArmor={(armorId) => updateEquipment((prev: any) => ({ ...prev, equippedArmorId: armorId }))}
               onEquipShield={(equipped) => updateEquipment((prev: any) => ({ ...prev, hasShieldEquipped: equipped }))}
-              onToggleEquip={(id) => updateEquipment((prev: any) => toggleItemEquipped(prev, id))}
+              equippedWeaponNames={equippedWeaponNames}
+              onToggleEquip={(id) => {
+                const item = equipmentState.inventory.find((i: any) => i.id === id);
+                if (item && onToggleWeapon && getEquipKind(item.name) === 'weapon') { onToggleWeapon(item.name); return; }
+                updateEquipment((prev: any) => toggleItemEquipped(prev, id));
+              }}
             />
           </Accordion>
 

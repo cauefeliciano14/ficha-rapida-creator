@@ -18,7 +18,7 @@ import {
   getActiveCharacterId,
   setActiveCharacterId
 } from '../utils/persistence';
-import { sanitizeEquipmentState } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, getEquipKind } from '../rules/utils/equipment';
 
 import { ATTR_META } from '../utils/attributeConstants';
 import { queueWrite } from '../utils/idleStorage';
@@ -221,7 +221,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         source: item.source,
         isStartingGear: item.isStartingGear,
       })),
-      inventoryWeapons: character.equipment.inventory.map(item => item.name),
+      // Só armas equipadas (no criador ou na aba Inventário da ficha) viram ataques.
+      inventoryWeapons: character.equipment.inventory
+        .filter(item => getEquipKind(item.name) !== 'weapon'
+          || item.equipped === true
+          || (playState.equippedItemIds ?? []).includes(item.name))
+        .map(item => item.name),
       spellSelections: {
         cantrips: character.spells.learnedCantrips,
         prepared: character.spells.preparedSpells,
@@ -252,6 +257,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     attrPlus1,
     attrPlus2,
     characterLevel,
+    playState.equippedItemIds,
   ]);
 
   const derivedSheet = React.useMemo(

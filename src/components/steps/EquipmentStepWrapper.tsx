@@ -14,6 +14,8 @@ export const EquipmentStepWrapper: React.FC = () => {
     selectedBackground,
     derivedSheet,
     validationResult,
+    playState,
+    setPlayState,
   } = useCharacter();
 
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
@@ -70,6 +72,13 @@ export const EquipmentStepWrapper: React.FC = () => {
         )}
 
         <EquipmentStep
+          equippedWeaponNames={playState.equippedItemIds ?? []}
+          onToggleWeapon={(name) => setPlayState(prev => ({
+            ...prev,
+            equippedItemIds: (prev.equippedItemIds ?? []).includes(name)
+              ? prev.equippedItemIds.filter(n => n !== name)
+              : [...(prev.equippedItemIds ?? []), name],
+          }))}
           character={character}
           selectedBackground={selectedBackground}
           updateEquipment={(updater) =>
