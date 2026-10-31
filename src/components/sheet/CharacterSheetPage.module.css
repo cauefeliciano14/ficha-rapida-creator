@@ -1865,3 +1865,16 @@
     flex: 1 1 280px;
   }
 }
+
+/* Cabeçalho de seção clicável (abre o painel da seção, como no D&D Beyond). */
+.sectionHeaderBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  font: inherit;
+}
+
+.sectionHeaderBtn:hover {
+  color: #fff;
+}

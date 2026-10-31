@@ -6,9 +6,11 @@ import styles from './SavingThrowsCard.module.css';
 interface SavingThrowsCardProps {
   derivedSavingThrows: DerivedSavingThrow[];
   onSaveClick?: (save: DerivedSavingThrow) => void;
+  /** Clique no número: só rola (o clique na linha abre as informações). */
+  onSaveRoll?: (save: DerivedSavingThrow) => void;
 }
 
-export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingThrows, onSaveClick }: SavingThrowsCardProps) {
+export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingThrows, onSaveClick, onSaveRoll }: SavingThrowsCardProps) {
   return (
     <div className={styles.container}>
       <div className={styles.list}>
@@ -25,7 +27,12 @@ export const SavingThrowsCard = memo(function SavingThrowsCard({ derivedSavingTh
             <span className={`${styles.label} ${st.proficient ? styles.labelProficient : ''}`}>
               {st.label}
             </span>
-            <span className={`${styles.value} ${st.proficient ? styles.valueProficient : ''}`}>
+            <span
+              className={`${styles.value} ${st.proficient ? styles.valueProficient : ''} ${onSaveRoll ? styles.valueRoll : ''}`}
+              onClick={onSaveRoll ? (e) => { e.stopPropagation(); onSaveRoll(st); } : undefined}
+              role={onSaveRoll ? 'button' : undefined}
+              aria-label={onSaveRoll ? `Rolar ${st.label}` : undefined}
+            >
               {signedMod(st.modifier)}
             </span>
           </div>

@@ -48,8 +48,10 @@ const SHEET_DESIGN_WIDTH = 1320;
 
 /* ── Sidebar state ── */
 type SidebarState =
-  | { type: 'skill'; skill: DerivedSkill; result: DiceRollResult }
-  | { type: 'save'; save: DerivedSavingThrow; result: DiceRollResult }
+  | { type: 'skill'; skill: DerivedSkill; result?: DiceRollResult }
+  | { type: 'save'; save: DerivedSavingThrow; result?: DiceRollResult }
+  | { type: 'saves' }
+  | { type: 'proficiencies' }
   | { type: 'ability'; key: string; label: string; score: number; modifier: number }
   | { type: 'attack'; attack: WeaponAttack; hitResult: DiceRollResult; damageResult: DiceRollResult }
   | { type: 'proficiency' }
@@ -426,30 +428,50 @@ export function CharacterSheetPage({
   /* ── Sidebar handlers ── */
   const closeSidebar = useCallback(() => setSidebar(null), [setSidebar]);
 
+  /* Como no D&D Beyond: clicar no nome abre as informações; clicar no número rola.
+     A rolagem não troca o painel aberto — só atualiza o resultado se for o mesmo item. */
   const handleSkillClick = useCallback((skill: DerivedSkill) => {
+    setSidebar({ type: 'skill', skill });
+  }, [setSidebar]);
+
+  const handleSkillRoll = useCallback((skill: DerivedSkill) => {
     const abbr = ATTR_ABBR[skill.attribute] ?? skill.attribute;
-    const result = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
-    setSidebar({ type: 'skill', skill, result });
-    addToHistory(result);
+    const roll = () => {
+      const result = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
+      setSidebarStack(stack => stack.map(entry => (entry.type === 'skill' && entry.skill.label === skill.label ? { ...entry, result } : entry)));
+      addToHistory(result);
+      return result;
+    };
+    const result = roll();
     showDiceToast(result, `${skill.label} (${abbr})`, () => {
-      const reroll = rollD20Check(skill.modifier, `${skill.label} (${abbr})`, 'check', advantageMode);
-      setSidebar({ type: 'skill', skill, result: reroll });
-      addToHistory(reroll);
+      const reroll = roll();
       showDiceToast(reroll, `${skill.label} (${abbr})`);
     });
-  }, [advantageMode, addToHistory, setSidebar, showDiceToast]);
+  }, [advantageMode, addToHistory, showDiceToast]);
 
   const handleSaveClick = useCallback((save: DerivedSavingThrow) => {
-    const result = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
-    setSidebar({ type: 'save', save, result });
-    addToHistory(result);
+    setSidebar({ type: 'save', save });
+  }, [setSidebar]);
+
+  const handleSaveRoll = useCallback((save: DerivedSavingThrow) => {
+    const roll = () => {
+      const result = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
+      setSidebarStack(stack => stack.map(entry => (entry.type === 'save' && entry.save.attribute === save.attribute ? { ...entry, result } : entry)));
+      addToHistory(result);
+      return result;
+    };
+    const result = roll();
     showDiceToast(result, `Resistência (${save.label})`, () => {
-      const reroll = rollD20Check(save.modifier, `Teste de Resistência (${save.label})`, 'save', advantageMode);
-      setSidebar({ type: 'save', save, result: reroll });
-      addToHistory(reroll);
+      const reroll = roll();
       showDiceToast(reroll, `Resistência (${save.label})`);
     });
-  }, [advantageMode, addToHistory, setSidebar, showDiceToast]);
+  }, [advantageMode, addToHistory, showDiceToast]);
+
+  const handleInitiativeRoll = useCallback(() => {
+    const result = rollD20Check(derivedSheet.initiative, 'Iniciativa', 'check', advantageMode);
+    addToHistory(result);
+    showDiceToast(result, 'Iniciativa');
+  }, [derivedSheet.initiative, advantageMode, addToHistory, showDiceToast]);
 
   const handleAbilityClick = useCallback((key: string, label: string, score: number, modifier: number) => {
     setSidebar({ type: 'ability', key, label, score, modifier });
@@ -579,7 +601,9 @@ export function CharacterSheetPage({
               <span>{sidebar.skill.label}</span>
               <span className={styles.sidebarInfoMod}>{signedMod(sidebar.skill.modifier)}</span>
             </div>
-            {renderRollResult(sidebar.result, rerollSkill)}
+            {sidebar.result
+              ? renderRollResult(sidebar.result, rerollSkill)
+              : <button onClick={() => handleSkillRoll(sidebar.skill)} className={styles.sidebarRerollBtn}>🎲 Rolar {signedMod(sidebar.skill.modifier)}</button>}
             {description && (
               <>
                 <hr className={styles.sidebarDivider} />
@@ -595,12 +619,55 @@ export function CharacterSheetPage({
           <div>
             <div className={styles.sidebarInfoItem}>
               <span>🛡️</span>
-              <span>{sidebar.save.label} Saving Throw</span>
+              <span>Teste de Resistência de {sidebar.save.label}</span>
               <span className={styles.sidebarInfoMod}>{signedMod(sidebar.save.modifier)}</span>
             </div>
-            {renderRollResult(sidebar.result, rerollSave)}
+            {sidebar.result
+              ? renderRollResult(sidebar.result, rerollSave)
+              : <button onClick={() => handleSaveRoll(sidebar.save)} className={styles.sidebarRerollBtn}>🎲 Rolar {signedMod(sidebar.save.modifier)}</button>}
             <hr className={styles.sidebarDivider} />
             <div className={styles.sidebarDescription}>{SAVING_THROW_DESCRIPTION}</div>
+          </div>
+        );
+      }
+
+      case 'saves':
+        return (
+          <div>
+            <div className={styles.sidebarDescription} style={{ marginBottom: 8 }}>Clique no nome para ver os detalhes ou no número para rolar.</div>
+            <SavingThrowsCard
+              derivedSavingThrows={derivedSheet.derivedSavingThrows}
+              onSaveClick={save => pushSidebar({ type: 'save', save })}
+              onSaveRoll={handleSaveRoll}
+            />
+            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>{SAVING_THROW_DESCRIPTION}</div>
+          </div>
+        );
+
+      case 'proficiencies': {
+        const groups: [string, string[]][] = [
+          ['Perícias', derivedSheet.skillProficiencies],
+          ['Armaduras', derivedSheet.armorProficiencies],
+          ['Armas', derivedSheet.weaponProficiencies],
+          ['Ferramentas', derivedSheet.toolProficiencies],
+          ['Idiomas', derivedSheet.languages],
+        ];
+        return (
+          <div>
+            {groups.map(([label, items]) => (
+              <div key={label} style={{ marginBottom: 10 }}>
+                <div className={styles.sidebarInfoItem}><span>{label}</span></div>
+                <div className={styles.sidebarDescription}>{items.length > 0 ? items.join(', ') : 'Nenhuma'}</div>
+              </div>
+            ))}
+            <hr className={styles.sidebarDivider} />
+            <div className={styles.sidebarDescription}>
+              Proficiência é o que seu personagem treinou. Em perícias, armas e ferramentas em que é proficiente,
+              você soma o Bônus de Proficiência ({signedMod(derivedSheet.proficiencyBonus)}) à jogada. Armadura sem
+              treinamento dá Desvantagem em testes de FOR e DES e impede conjurar magias. Para mudar proficiências,
+              volte às etapas de criação do personagem.
+            </div>
           </div>
         );
       }
@@ -762,7 +829,8 @@ export function CharacterSheetPage({
 
   const sidebarTitle = sidebar
     ? sidebar.type === 'skill' ? 'Perícias'
-      : sidebar.type === 'save' ? 'Testes de Resistência'
+      : sidebar.type === 'save' || sidebar.type === 'saves' ? 'Testes de Resistência'
+        : sidebar.type === 'proficiencies' ? 'Proficiências e Treinamento'
         : sidebar.type === 'ability' ? sidebar.label
           : sidebar.type === 'attack' ? sidebar.attack.weaponName
             : sidebar.type === 'proficiency' ? 'Bônus de Proficiência'
@@ -1093,10 +1161,11 @@ export function CharacterSheetPage({
         <div className={styles.colLeft}>
           <CollapsibleSection title="Testes de Resistência" defaultOpen forceOpen={!isMobile}>
             <div className={styles.redBox}>
-              <div className={styles.sectionHeader}>TESTES DE RESISTÊNCIA ⚙</div>
+              <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'saves' })}>TESTES DE RESISTÊNCIA ⚙</button>
               <SavingThrowsCard
                 derivedSavingThrows={derivedSheet.derivedSavingThrows}
                 onSaveClick={handleSaveClick}
+                onSaveRoll={handleSaveRoll}
               />
               <div className={styles.savingThrowLabel}>Modificadores de Resistência</div>
             </div>
@@ -1122,7 +1191,7 @@ export function CharacterSheetPage({
 
           <CollapsibleSection title="Proficiências" forceOpen={!isMobile}>
             <div className={styles.redBox}>
-              <div className={styles.sectionHeader}>PROFICIÊNCIAS E TREINAMENTO ⚙</div>
+              <button type="button" className={`${styles.sectionHeader} ${styles.sectionHeaderBtn}`} onClick={() => setSidebar({ type: 'proficiencies' })}>PROFICIÊNCIAS E TREINAMENTO ⚙</button>
               <ProficienciesCard
                 skillProficiencies={derivedSheet.skillProficiencies}
                 armorProficiencies={derivedSheet.armorProficiencies}
@@ -1177,6 +1246,7 @@ export function CharacterSheetPage({
             <SkillsCard
               skills={derivedSheet.skills}
               onSkillClick={handleSkillClick}
+              onSkillRoll={handleSkillRoll}
               expertiseSkills={playState.expertiseSkills ?? []}
               canGrantExpertise={derivedSheet.classGrantsExpertise}
               expertiseCount={derivedSheet.expertiseCount}
@@ -1266,7 +1336,7 @@ export function CharacterSheetPage({
             <div className={styles.combatRowStats}>
               <div
                 className={`${styles.statBox} ${styles.statBoxHex} ${styles.statBoxClickable}`}
-                onClick={() => setSidebar({ type: 'initiative' })}
+                onClick={() => { setSidebar({ type: 'initiative' }); handleInitiativeRoll(); }}
                 role="button"
                 tabIndex={0}
               >

@@ -149,3 +149,14 @@
 @media (prefers-reduced-motion: reduce) {
   .skillRow { transition: none; }
 }
+
+/* O bônus é o botão de rolar, como no D&D Beyond. */
+.bonusBoxRoll {
+  cursor: pointer;
+}
+
+.bonusBoxRoll:hover {
+  background: #c53131;
+  border-color: #c53131;
+  color: #fff;
+}

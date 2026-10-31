@@ -71,3 +71,17 @@
 @media (prefers-reduced-motion: reduce) {
   .row { transition: none; }
 }
+
+/* O número é o botão de rolar, como no D&D Beyond. */
+.valueRoll {
+  cursor: pointer;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.valueRoll:hover {
+  background: #c53131;
+  border-color: #c53131;
+  color: #fff;
+}

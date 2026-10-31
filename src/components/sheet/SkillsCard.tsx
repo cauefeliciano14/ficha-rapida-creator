@@ -28,6 +28,8 @@ function buildSkillBreakdown(skill: DerivedSkill) {
 interface SkillsCardProps {
   skills: DerivedSkill[];
   onSkillClick?: (skill: DerivedSkill) => void;
+  /** Clique no bônus: só rola (o clique na linha abre as informações). */
+  onSkillRoll?: (skill: DerivedSkill) => void;
   expertiseSkills?: string[];
   onToggleExpertise?: (skillLabel: string) => void;
   canGrantExpertise?: boolean;
@@ -37,6 +39,7 @@ interface SkillsCardProps {
 export const SkillsCard = memo(function SkillsCard({
   skills,
   onSkillClick,
+  onSkillRoll,
   expertiseSkills = [],
   onToggleExpertise,
   canGrantExpertise = false,
@@ -104,7 +107,12 @@ export const SkillsCard = memo(function SkillsCard({
             breakdown={buildSkillBreakdown(skill)}
             total={skill.modifier}
           >
-            <div className={`${styles.bonusBox} ${skill.expertise ? styles.bonusBoxExpertise : ''}`}>
+            <div
+              className={`${styles.bonusBox} ${skill.expertise ? styles.bonusBoxExpertise : ''} ${onSkillRoll ? styles.bonusBoxRoll : ''}`}
+              onClick={onSkillRoll ? (e) => { e.stopPropagation(); onSkillRoll(skill); } : undefined}
+              role={onSkillRoll ? 'button' : undefined}
+              aria-label={onSkillRoll ? `Rolar ${skill.label}` : undefined}
+            >
               {signedMod(skill.modifier)}
             </div>
           </CalculationTooltip>
