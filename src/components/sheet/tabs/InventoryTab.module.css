@@ -689,3 +689,40 @@
     transition: none;
   }
 }
+
+/* Botão "Usar" dos consumíveis (gasta 1) e o desfazer. */
+.useBtn {
+  margin-right: 6px;
+  padding: 2px 8px;
+  border: 1px solid #c53131;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.useBtn:hover:not(:disabled) {
+  background: #c53131;
+}
+
+.useBtn:disabled {
+  border-color: #3a444c;
+  color: #6b757d;
+  cursor: not-allowed;
+}
+
+.restoreBtn {
+  margin-right: 6px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: #8a949c;
+  cursor: pointer;
+}
+
+.restoreBtn:hover {
+  color: #fff;
+}

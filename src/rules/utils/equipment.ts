@@ -154,3 +154,14 @@ export function toggleEquippedKey(
   if (currentlyEquipped) return equippedKeys.filter(k => k !== key && k !== item.name);
   return [...equippedKeys, key];
 }
+
+/**
+ * Itens que acabam ao usar (poções, munição, rações, frascos…). Ganham o botão
+ * "Usar" na ficha, que gasta 1. Armas de arremesso não entram: elas não se
+ * destroem, só saem da mão.
+ */
+const CONSUMABLE_RE = /(^|[^\p{L}])(po[cç](ã|õ)o|po[cç]ões|flechas?|virotes?|balas?|agulhas?|muni[cç][aã]o|ra[cç](ã|õ)es|ra[cç][aã]o|óleo|ácido|fogo de alquimista|antitoxina|pergaminho|água benta|veneno|tochas?|velas?)(?![\p{L}])/iu;
+
+export function isConsumable(name: string): boolean {
+  return CONSUMABLE_RE.test(name);
+}

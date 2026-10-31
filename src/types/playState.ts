@@ -58,6 +58,8 @@ export interface CharacterPlayState {
   }>;
   /** Proficiências extras que o jogador adicionou na ficha (painel de Proficiências). */
   customProficiencies?: Array<{ type: 'Armaduras' | 'Armas' | 'Ferramentas' | 'Idiomas' | 'Perícias'; name: string }>;
+  /** Quantos de cada item inicial já foram gastos com "Usar" (chave = id do item). */
+  usedConsumables?: Record<string, number>;
   /** XP acumulado */
   xp: number;
   /** Habilidades com Expertise (proficiência dupla) */

@@ -3,7 +3,7 @@ import type { CharacterPlayState, Container } from '../../../types/playState';
 import { getArmorByName } from '../../../rules/data/armorRules';
 import { Modal } from '../../ui/Modal';
 import { ItemCardTooltip } from '../ItemCardTooltip';
-import { getEquipKind, isInventoryItemEquipped, toggleEquippedKey } from '../../../rules/utils/equipment';
+import { getEquipKind, isInventoryItemEquipped, toggleEquippedKey, isConsumable } from '../../../rules/utils/equipment';
 import styles from './InventoryTab.module.css';
 import ddb from './ddbTab.module.css';
 
@@ -348,7 +348,10 @@ export function InventoryTab({
                   : isInventoryItemEquipped(playState.equippedItemIds, item, inventory.indexOf(item), inventory);
               const isAttuned = playState.attunedItemIds.includes(item.name);
               const attuneBlocked = !isAttuned && attunedCount >= MAX_ATTUNEMENT;
-              const qty = item.quantity ?? 1;
+              const usedKey = item.id ?? item.name;
+              const used = playState.usedConsumables?.[usedKey] ?? 0;
+              const qty = Math.max(0, (item.quantity ?? 1) - used);
+              const consumable = isConsumable(item.name);
               return (
                 <div key={i} className={ddb.trow} style={{ gridTemplateColumns: INV_COLS }}>
                   <div className={ddb.center}>
@@ -377,6 +380,36 @@ export function InventoryTab({
                   <div className={`${ddb.center} ${ddb.notes}`}>{item.cost ?? '—'}</div>
                   <div className={ddb.notes}>
                     {item.notes && <span>{item.notes} </span>}
+                    {consumable && (
+                      <>
+                        <button
+                          type="button"
+                          className={styles.useBtn}
+                          disabled={qty === 0}
+                          title={qty === 0 ? 'Acabou' : 'Gastar 1'}
+                          onClick={() => onUpdatePlayState(prev => ({
+                            ...prev,
+                            usedConsumables: { ...(prev.usedConsumables ?? {}), [usedKey]: (prev.usedConsumables?.[usedKey] ?? 0) + 1 },
+                          }))}
+                        >
+                          USAR
+                        </button>
+                        {used > 0 && (
+                          <button
+                            type="button"
+                            className={styles.restoreBtn}
+                            title="Desfazer: devolver 1"
+                            aria-label={`Devolver 1 ${item.name}`}
+                            onClick={() => onUpdatePlayState(prev => ({
+                              ...prev,
+                              usedConsumables: { ...(prev.usedConsumables ?? {}), [usedKey]: Math.max(0, (prev.usedConsumables?.[usedKey] ?? 0) - 1) },
+                            }))}
+                          >
+                            ↺
+                          </button>
+                        )}
+                      </>
+                    )}
                     <button
                       onClick={() => toggleAttuned(item.name)}
                       className={isAttuned ? styles.attuneBtnActive : attuneBlocked ? styles.attuneBtnDisabled : styles.attuneBtn}
@@ -435,6 +468,9 @@ export function InventoryTab({
                       <span className={styles.sheetItemQty}>{item.quantity}</span>
                       <button onClick={() => handleUpdateQty(item.id, 1)} className={styles.qtyBtn}>+</button>
                     </div>
+                    {isConsumable(item.name) && (
+                      <button type="button" className={styles.useBtn} title="Gastar 1" onClick={() => handleUpdateQty(item.id, -1)}>USAR</button>
+                    )}
                     <button onClick={() => handleRemoveSheetItem(item.id)} className={styles.removeBtn}>✕</button>
                   </div>
                 ))}
@@ -477,7 +513,10 @@ export function InventoryTab({
                   <span className={styles.sheetItemQty}>{item.quantity}</span>
                   <button onClick={() => handleUpdateQty(item.id, 1)} className={styles.qtyBtn}>+</button>
                 </div>
-                <button onClick={() => handleRemoveSheetItem(item.id)} className={styles.removeBtn}>✕</button>
+                {isConsumable(item.name) && (
+                      <button type="button" className={styles.useBtn} title="Gastar 1" onClick={() => handleUpdateQty(item.id, -1)}>USAR</button>
+                    )}
+                    <button onClick={() => handleRemoveSheetItem(item.id)} className={styles.removeBtn}>✕</button>
               </div>
             ))}
           </div>
