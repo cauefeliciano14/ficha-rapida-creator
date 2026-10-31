@@ -18,7 +18,7 @@ import { ComparisonModal } from "../ComparisonModal";
 import { getBackgroundTheme } from "../../data/backgroundThemeColors";
 import cardStyles from "./BackgroundCardTrading.module.css";
 
-// ── Memoized background card (mesmo padrão do SpeciesCard) ─────────────
+// ── Card de antecedente no padrão "Choose a Background" do D&D Beyond ──
 interface BackgroundCardProps {
   bg: { id: string; name: string; description?: string; talent?: string };
   isSelected: boolean;
@@ -31,19 +31,16 @@ const BackgroundCard = memo(function BackgroundCard({
 }: BackgroundCardProps) {
   const theme = getBackgroundTheme(bg.id);
   const [artFailed, setArtFailed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const handleClick = useCallback(() => onActivate(bg.id), [bg.id, onActivate]);
   const showArt = !!theme.art && !artFailed;
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
-        ['--archetype-text' as string]: theme.archetypeText,
       } as React.CSSProperties}
-      aria-label={`Selecionar origem ${bg.name}`}
     >
       {showArt ? (
         <img
@@ -59,36 +56,45 @@ const BackgroundCard = memo(function BackgroundCard({
         <div className={cardStyles.artFallback} aria-hidden="true" />
       )}
       <div className={cardStyles.scrim} />
-      <div className={cardStyles.banner}>{bg.name.charAt(0)}</div>
-
+      <div className={cardStyles.banner} aria-hidden="true">
+        <span className={cardStyles.bannerLetter}>{bg.name.charAt(0)}</span>
+      </div>
       {isRecommended && !isSelected && (
-        <span className={cardStyles.recommendedRibbon}>★ Recomendado</span>
+        <span className={cardStyles.recommendedRibbon}>Combina</span>
       )}
-
       <div className={cardStyles.content}>
         <h3 className={cardStyles.title}>{bg.name}</h3>
-        {bg.description ? <p className={cardStyles.description}>{bg.description}</p> : null}
+        {bg.description ? (
+          <p className={`${cardStyles.description} ${expanded ? cardStyles.descriptionExpanded : ""}`}>{bg.description}</p>
+        ) : null}
         {bg.talent ? (
           <span className={cardStyles.featLine}>
             <span className={cardStyles.featLabel}>Talento:</span>
             <span className={cardStyles.featName}>{bg.talent}</span>
           </span>
         ) : null}
-      </div>
-
-      <div className={cardStyles.footerRow}>
-        <span className={cardStyles.sourceLabel}>Player&apos;s Handbook</span>
-        <div className={cardStyles.actions}>
+        <div className={cardStyles.footer}>
+          <span className={cardStyles.source}>Livro do Jogador</span>
           <button
             type="button"
-            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ""}`}
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+            className={cardStyles.actionBtn}
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+            aria-label={`Saber mais sobre ${bg.name}`}
+          >
+            {expanded ? "Menos" : "Saber mais"}
+          </button>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
+            onClick={handleClick}
+            aria-label={`Selecionar origem ${bg.name}`}
           >
             {isSelected ? "✓ Selecionada" : "Selecionar"}
           </button>
         </div>
       </div>
-    </button>
+    </div>
   );
 });
 
@@ -113,6 +119,7 @@ export const BackgroundStep: React.FC = () => {
   } = useCharacter();
 
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
+  const [browsing, setBrowsing] = useState(!selectedBackground);
 
   const validationErrors = validationResult.byStep.background;
   const canAdvance = validationErrors.length === 0;
@@ -167,28 +174,13 @@ export const BackgroundStep: React.FC = () => {
       impactSection="background"
     >
       <div className={styles.stepContent}>
-        <div className={styles.sectionIntro}>
-          <div className={styles.sectionTitleRow}>
-            <span className={styles.sectionIcon}>✦</span>
-            <span>Escolha sua Origem: Antecedente</span>
-          </div>
-          <p className={styles.sectionDescription}>
-            O antecedente do seu personagem reúne vivências, ofício e repertório social. Escolha um pacote para definir o passado e visualizar os benefícios essenciais sem depender de um layout excessivamente vertical.
-          </p>
+        {browsing || !selectedBackground ? (
+        <>
+        <div className={cardStyles.pageIntro}>
+          <span className={cardStyles.eyebrow}>Escolha um antecedente</span>
+          <h2 className={cardStyles.pageTitle}>Onde tudo começou?</h2>
+          <span className={cardStyles.srOnly}>Escolha sua Origem: Antecedente</span>
         </div>
-
-        <button
-          onClick={() => { setCompareMode(m => !m); setCompareIds([null, null]); }}
-          style={{
-            padding: '6px 14px', fontSize: '0.78rem', fontWeight: 600, borderRadius: '8px', cursor: 'pointer',
-            border: compareMode ? '1px solid rgba(212,160,23,0.4)' : '1px solid rgba(255,255,255,0.1)',
-            background: compareMode ? 'rgba(212,160,23,0.12)' : 'transparent',
-            color: compareMode ? '#d4a017' : '#94a3b8',
-            alignSelf: 'flex-start', marginBottom: '4px',
-          }}
-        >
-          {compareMode ? '✕ Sair da comparação' : '⚖ Comparar origens'}
-        </button>
 
         <div className={cardStyles.cardGrid}>
           {(backgroundsData.backgrounds as any[]).map((bg: any) => {
@@ -202,12 +194,11 @@ export const BackgroundStep: React.FC = () => {
                 isSelected={isSelected}
                 isCompareTarget={isComparing}
                 isRecommended={recommended}
-                onActivate={(id) => {
-                  if (compareMode) { handleCompareClick(id); return; }
+                onActivate={() => {
+                  if (compareMode) { handleCompareClick(bg.id); return; }
+                  setBrowsing(false);
+                  if (selectedBackground?.id === bg.id) return;
                   setSelectedBackground(bg);
-                  requestAnimationFrame(() => {
-                    detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                  });
                   setAttrChoiceMode("");
                   setAttrPlus1("");
                   setAttrPlus2("");
@@ -215,26 +206,65 @@ export const BackgroundStep: React.FC = () => {
                     ...prev,
                     choices: { ...prev.choices, toolProficiency: "" },
                   }));
-                  // suprime warning de variável não usada
-                  void id;
+                  requestAnimationFrame(() => {
+                    detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  });
                 }}
               />
             );
           })}
         </div>
 
+        <div className={cardStyles.toolbar}>
+          <button
+            type="button"
+            onClick={() => { setCompareMode(m => !m); setCompareIds([null, null]); }}
+            className={`${cardStyles.compareBtn} ${compareMode ? cardStyles.compareBtnActive : ""}`}
+          >
+            {compareMode ? '✕ Sair da comparação' : '⚖ Comparar origens'}
+          </button>
+        </div>
+
+        {!selectedBackground && (
+          <p className={cardStyles.srOnly}>
+            Escolha um antecedente ao lado para ver bônus de atributo, talentos e proficiências de ferramentas.
+          </p>
+        )}
+        </>
+        ) : (
         <div className={styles.selectionLayout}>
           <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }} ref={detailsRef}>
             {selectedBackground ? (
               <div id="background-details" className={styles.selectionDetails}>
                 <div className={`${styles.summaryCardBase} ${styles.selectionPanel} ${bgStyles.detailsCard}`}>
-                  <div className={bgStyles.detailsHeading}>
-                    <h3 className={bgStyles.detailsTitle}>
-                      {selectedBackground.name}
-                    </h3>
-                    <p className={bgStyles.detailsDescription}>
-                      {selectedBackground.description}
-                    </p>
+                  <div className={cardStyles.hero}>
+                    {getBackgroundTheme(selectedBackground.id).art ? (
+                      <img
+                        src={getBackgroundTheme(selectedBackground.id).art}
+                        alt={`Arte de ${selectedBackground.name}`}
+                        className={cardStyles.heroArt}
+                      />
+                    ) : null}
+                    <div className={cardStyles.heroScrim} />
+                    <button type="button" className={cardStyles.heroChange} onClick={() => setBrowsing(true)}>
+                      Trocar antecedente
+                    </button>
+                    <div className={cardStyles.heroContent}>
+                      <span className={cardStyles.eyebrow}>Livro do Jogador</span>
+                      <h2 className={cardStyles.heroTitle}>{selectedBackground.name}</h2>
+                      <div className={cardStyles.tagsRow}>
+                        {(selectedBackground.attributeValues ?? []).map((a: string) => (
+                          <span key={a} className={cardStyles.tag}>{ATTR_METADATA[a]?.full || a}</span>
+                        ))}
+                      </div>
+                      <p className={cardStyles.heroDescription}>{selectedBackground.description}</p>
+                      {selectedBackground.talent ? (
+                        <span className={cardStyles.featLine}>
+                          <span className={cardStyles.featLabel}>Talento:</span>
+                          <span className={cardStyles.featName}>{selectedBackground.talent}</span>
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                   <hr className={bgStyles.detailsDivider} />
                   <div className={bgStyles.detailsGrid}>
@@ -558,17 +588,10 @@ export const BackgroundStep: React.FC = () => {
 
                 </div>
               </div>
-            ) : (
-              <div className={`${styles.selectionPlaceholder} ${styles.placeholderPanel}`}>
-                <span className={bgStyles.placeholderIcon}>📖</span>
-                <p className={bgStyles.placeholderTitle}>Nenhuma origem selecionada</p>
-                <p className={bgStyles.placeholderText}>
-                  Escolha um antecedente ao lado para ver bônus de atributo, talentos e proficiências de ferramentas.
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
+        )}
       </div>
 
       <ComparisonModal

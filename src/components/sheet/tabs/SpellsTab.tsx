@@ -5,6 +5,7 @@ import { signedMod, withSquares } from '../../../utils/format';
 import { SpellCardTooltip } from '../SpellCardTooltip';
 import spellsAll from '../../../data/spells/spells_all.json';
 import styles from './SpellsTab.module.css';
+import ddb from './ddbTab.module.css';
 
 const ABILITY_LABELS: Record<string, string> = {
   inteligencia: 'Inteligência', sabedoria: 'Sabedoria', carisma: 'Carisma',
@@ -24,6 +25,8 @@ const SPELL_LEVEL_MAP = new Map<string, string>();
 for (const sp of spellsAll as Array<{ name: string; level: string }>) {
   SPELL_LEVEL_MAP.set(sp.name, sp.level);
 }
+
+const SPELL_COLS = '78px minmax(130px, 1.4fr) 70px 80px 72px 84px minmax(90px, 1fr)';
 
 const CIRCLE_ORDER = [
   'Truque', '1º Círculo', '2º Círculo', '3º Círculo', '4º Círculo',
@@ -107,20 +110,46 @@ export function SpellsTab({
   };
 
   const canEditSpells = !!onUpdatePreparedSpells;
+  const castingScore = derivedSheet.finalAttributes?.[derivedSheet.spellcastingAbility ?? ''] ?? 10;
+  const castingMod = Math.floor((castingScore - 10) / 2);
+  const spellStats = { attack: derivedSheet.spellAttackBonus ?? 0, dc: derivedSheet.spellSaveDC ?? 0 };
+  const remainingSlots = (level: number) =>
+    ((slots as Record<number, number>)[level] ?? 0) - (playState.spentSpellSlots[level] ?? 0);
+  const castProps = (circle: string) => {
+    const lvl = parseInt(circle, 10);
+    if (!lvl || slotLevels.length === 0) return {};
+    // Pode conjurar com qualquer espaço de nível >= ao círculo
+    const castLevel = slotLevels.find(l => l >= lvl && remainingSlots(l) > 0);
+    return {
+      onCast: () => { if (castLevel) handleSpendSlot(castLevel); },
+      canCast: castLevel !== undefined,
+    };
+  };
   const q = searchText.toLowerCase();
 
   const filterSpells = (spells: string[]) =>
     q ? spells.filter(s => s.toLowerCase().includes(q)) : spells;
 
   return (
-    <div className={styles.container}>
-      {/* Spell stats */}
-      <div className={styles.statsRow}>
-        <StatPill label="ATRIBUTO DE CONJURAÇÃO" value={ABILITY_LABELS[derivedSheet.spellcastingAbility ?? ''] ?? '—'} />
-        <StatPill label="CD DE MAGIA" value={String(derivedSheet.spellSaveDC ?? 0)} />
-        <StatPill label="BÔNUS DE ATAQUE MÁGICO" value={signedMod(derivedSheet.spellAttackBonus ?? 0)} />
-        <StatPill label="MAGIAS PREPARADAS" value={String(derivedSheet.preparedSpellCount ?? 0)} />
-        <StatPill label="TRUQUES CONHECIDOS" value={String(derivedSheet.cantripsKnown ?? 0)} />
+    <div className={ddb.tab}>
+      {/* Cabeçalho: modificador / ataque mágico / CD */}
+      <div className={ddb.headerStats}>
+        <div className={ddb.stat}>
+          <span className={ddb.statValue}>{signedMod(castingMod)}</span>
+          <span className={ddb.statLabel}>Modificador</span>
+        </div>
+        <div className={ddb.stat}>
+          <span className={ddb.statValue}>{signedMod(derivedSheet.spellAttackBonus ?? 0)}</span>
+          <span className={ddb.statLabel}>Ataque mágico</span>
+        </div>
+        <div className={ddb.stat}>
+          <span className={ddb.statValue}>{derivedSheet.spellSaveDC ?? 0}</span>
+          <span className={ddb.statLabel}>CD de resistência</span>
+        </div>
+        <div className={styles.statsMeta}>
+          <span><b>{ABILITY_LABELS[derivedSheet.spellcastingAbility ?? ''] ?? '—'}</b> · atributo de conjuração</span>
+          <span>MAGIAS PREPARADAS: <b>{derivedSheet.preparedSpellCount ?? 0}</b> · TRUQUES CONHECIDOS: <b>{derivedSheet.cantripsKnown ?? 0}</b></span>
+        </div>
       </div>
 
       {/* Spell slots — D&D Beyond style: grid of level cards with circular checkboxes */}
@@ -184,7 +213,7 @@ export function SpellsTab({
           value={searchText}
           onChange={e => setSearchText(e.target.value)}
           placeholder="Buscar magia…"
-          className={styles.searchInput}
+          className={ddb.search}
         />
         {canEditSpells && (
           <button onClick={() => setShowAddSpell(v => !v)} className={styles.addSpellBtn}>
@@ -222,26 +251,26 @@ export function SpellsTab({
 
       {/* Circle filter */}
       {availableCircles.length > 1 && !q && (
-        <div className={styles.filterBar}>
-          <button onClick={() => setCircleFilter('all')} className={circleFilter === 'all' ? styles.filterBtnActive : styles.filterBtn}>Todos</button>
+        <div className={ddb.pills}>
+          <button onClick={() => setCircleFilter('all')} className={circleFilter === 'all' ? ddb.pillActive : ddb.pill}>Todos</button>
           {availableCircles.map(c => (
-            <button key={c} onClick={() => setCircleFilter(c)} className={circleFilter === c ? styles.filterBtnActive : styles.filterBtn}>{c}</button>
+            <button key={c} onClick={() => setCircleFilter(c)} className={circleFilter === c ? ddb.pillActive : ddb.pill}>{c}</button>
           ))}
         </div>
       )}
 
       {/* Spell lists */}
       {learnedCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(learnedCantrips).length > 0 && (
-        <SpellList title="TRUQUES" spells={filterSpells(learnedCantrips)} accent="#fbbf24" />
+        <SpellList title="TRUQUES" spells={filterSpells(learnedCantrips)} accent="#fbbf24" stats={spellStats} atWill />
       )}
       {racialCantrips.length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && filterSpells(racialCantrips).length > 0 && (
-        <SpellList title="TRUQUES RACIAIS" spells={filterSpells(racialCantrips)} accent="#22c55e" badge="Racial" />
+        <SpellList title="TRUQUES RACIAIS" spells={filterSpells(racialCantrips)} accent="#22c55e" badge="Racial" stats={spellStats} atWill />
       )}
       {bonusCantrips.filter(s => s.source === 'talent').length > 0 && (circleFilter === 'all' || circleFilter === 'Truque') && (
         <SpellList
           title="TRUQUES DE TALENTO"
           spells={filterSpells(bonusCantrips.filter(s => s.source === 'talent').map(s => `${s.name} — ${s.origin}`))}
-          accent="#38bdf8" badge="Talento"
+          accent="#38bdf8" badge="Talento" stats={spellStats} atWill
           concentratingOn={playState.concentratingOn}
           onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
         />
@@ -257,6 +286,8 @@ export function SpellsTab({
             title={circle.toUpperCase()}
             spells={filtered}
             accent="#e06060"
+            stats={spellStats}
+            {...castProps(circle)}
             canRemove={canEditSpells}
             onRemove={handleUnprepare}
             concentratingOn={playState.concentratingOn}
@@ -270,6 +301,7 @@ export function SpellsTab({
           title="MAGIAS PREPARADAS"
           spells={filterSpells(groupedPrepared['?'])}
           accent="#e06060"
+          stats={spellStats}
           canRemove={canEditSpells}
           onRemove={handleUnprepare}
           concentratingOn={playState.concentratingOn}
@@ -282,7 +314,7 @@ export function SpellsTab({
           title="MAGIAS EXTRA"
           subtitle="Preparadas por traços raciais ou talentos."
           spells={filterSpells(bonusPreparedSpells.map(s => `${s.name} — ${s.origin}`))}
-          accent="#34d399" badge="Extra"
+          accent="#34d399" badge="Extra" stats={spellStats}
           concentratingOn={playState.concentratingOn}
           onSetConcentration={name => onUpdatePlayState(prev => ({ ...prev, concentratingOn: name }))}
         />
@@ -295,139 +327,170 @@ export function SpellsTab({
   );
 }
 
-function StatPill({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={styles.statPill}>
-      <div className={styles.statPillLabel}>{label}</div>
-      <div className={styles.statPillValue}>{value}</div>
-    </div>
-  );
+const SAVE_ABBR: Record<string, string> = {
+  'força': 'FOR', 'destreza': 'DES', 'constituição': 'CON',
+  'inteligência': 'INT', 'sabedoria': 'SAB', 'carisma': 'CAR',
+};
+
+function getSpellInfo(name: string): any | undefined {
+  return (spellsAll as any[]).find(sp => sp.name === name);
+}
+
+/** Deriva ACERTO/CD e EFEITO a partir do texto da magia (heurística). */
+function spellHitAndEffect(info: any, stats: { attack: number; dc: number }) {
+  const desc: string = typeof info?.description === 'string' ? info.description : '';
+  const lower = desc.toLowerCase();
+  let hit: string | null = null;
+  const save = lower.match(/salvaguarda de (força|destreza|constituição|inteligência|sabedoria|carisma)/);
+  if (save) hit = `${SAVE_ABBR[save[1]]} ${stats.dc}`;
+  else if (/ataque (mágico|com magia)/.test(lower)) hit = signedMod(stats.attack);
+  let effect: string | null = null;
+  const dmg = desc.match(/(\d+d\d+(?:\s*\+\s*\d+)?)[^.]*?dano (\p{L}+)/u);
+  if (dmg) effect = `${dmg[1].replace(/\s/g, '')} ${dmg[2]}`;
+  else {
+    const heal = /recupera|pontos de vida/.test(lower) ? desc.match(/\d+d\d+/) : null;
+    if (heal) effect = `${heal[0]} Cura`;
+  }
+  return { hit, effect };
 }
 
 function SpellList({
   title, subtitle, spells, accent, badge, canRemove, onRemove,
-  concentratingOn, onSetConcentration,
+  concentratingOn, onSetConcentration, stats, atWill, onCast, canCast,
 }: {
   title: string; subtitle?: string; spells: string[]; accent: string;
   badge?: string; canRemove?: boolean; onRemove?: (name: string) => void;
   concentratingOn?: string | null; onSetConcentration?: (name: string | null) => void;
+  stats: { attack: number; dc: number }; atWill?: boolean;
+  onCast?: () => void; canCast?: boolean;
 }) {
   const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
 
-  const getSpellTags = (spellName: string) => {
-    const info = (spellsAll as any[]).find(sp => sp.name === spellName);
-    if (!info) return { isRitual: false, isConcentration: false };
-    return {
-      isRitual: typeof info.castingTime === 'string' && info.castingTime.toLowerCase().includes('ritual'),
-      isConcentration: typeof info.duration === 'string' && info.duration.toLowerCase().includes('concentra'),
-    };
-  };
-
   return (
-    <div className={styles.spellSection} style={{ '--accent': accent } as React.CSSProperties}>
-      <div className={styles.spellSectionHeader} style={{ marginBottom: subtitle ? '4px' : '8px' }}>
-        <div className={styles.spellSectionTitle}>{title}</div>
-        {badge && (
-          <span className={styles.spellBadge} style={{ background: `${accent}1a`, border: `1px solid ${accent}33`, color: accent }}>
-            {badge}
-          </span>
-        )}
+    <section style={{ '--accent': accent } as React.CSSProperties}>
+      <div className={ddb.sectionHeader}>
+        {title}
+        {badge && <span className={ddb.sectionMeta}>· {badge}</span>}
       </div>
       {subtitle && <div className={styles.spellSectionSubtitle}>{subtitle}</div>}
-      <div className={styles.spellGrid}>
+      <div className={ddb.table}>
+        <div className={ddb.thead} style={{ gridTemplateColumns: SPELL_COLS }}>
+          <div />
+          <div>NOME</div>
+          <div className={ddb.center}>TEMPO</div>
+          <div className={ddb.center}>ALCANCE</div>
+          <div className={ddb.center}>ACERTO/CD</div>
+          <div className={ddb.center}>EFEITO</div>
+          <div>NOTAS</div>
+        </div>
         {spells.map(s => {
           const rawName = s.split(' — ')[0].trim();
+          const origin = s.includes(' — ') ? s.split(' — ').slice(1).join(' — ') : null;
+          const info = getSpellInfo(rawName);
+          const isRitual = typeof info?.castingTime === 'string' && info.castingTime.toLowerCase().includes('ritual');
+          const isConc = typeof info?.duration === 'string' && info.duration.toLowerCase().includes('concentra');
+          const { hit, effect } = spellHitAndEffect(info, stats);
           const isExpanded = expandedSpell === s;
-
-          if (isExpanded) {
-            const spellInfo = (spellsAll as any[]).find(sp => sp.name === rawName);
-            return (
-              <div key={`exp-${s}`} className={styles.spellExpanded} style={{ border: `1px solid ${accent}40` }}>
-                <div className={styles.spellExpandedHeader}>
-                  <div>
-                    <div className={styles.spellExpandedName} style={{ color: accent }}>{s}</div>
-                    {spellInfo && (
-                      <div className={styles.spellExpandedMeta}>
-                        {spellInfo.level === 'Truque' ? `Truque de ${spellInfo.school}` : `${spellInfo.level}, ${spellInfo.school}`}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-                    {(() => {
-                      const spellInfoHere = (spellsAll as any[]).find(sp => sp.name === rawName);
-                      const isConc = typeof spellInfoHere?.duration === 'string' && spellInfoHere.duration.toLowerCase().includes('concentra');
-                      if (!isConc || !onSetConcentration) return null;
-                      const isActive = concentratingOn === rawName;
-                      return (
-                        <button
-                          onClick={e => { e.stopPropagation(); onSetConcentration(isActive ? null : rawName); }}
-                          className={isActive ? styles.concentratingActiveBtn : styles.concentratingBtn}
-                          title={isActive ? 'Encerrar concentração' : 'Iniciar concentração nesta magia'}
-                        >
-                          {isActive ? '◉ Concentrando' : '◎ Concentrar'}
-                        </button>
-                      );
-                    })()}
-                    {canRemove && onRemove && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onRemove(rawName); }}
-                        className={styles.unprepareBtn}
-                        title="Remover da lista de preparadas"
-                      >
-                        Remover
-                      </button>
-                    )}
-                    <button onClick={() => setExpandedSpell(null)} className={styles.collapseBtn}>Recolher ▲</button>
-                  </div>
-                </div>
-                {spellInfo ? (
-                  <>
-                    <div className={styles.spellTags}>
-                      {typeof spellInfo.castingTime === 'string' && spellInfo.castingTime.toLowerCase().includes('ritual') && (
-                        <span className={styles.tagRitual}>Ritual</span>
-                      )}
-                      {typeof spellInfo.duration === 'string' && spellInfo.duration.toLowerCase().includes('concentra') && (
-                        <span className={styles.tagConcentration}>Concentração</span>
-                      )}
-                    </div>
-                    <div className={styles.spellDetails}>
-                      <span className={styles.spellDetailLabel}>Conjuração:</span>
-                      <span className={styles.spellDetailValue}>{spellInfo.castingTime}</span>
-                      <span className={styles.spellDetailLabel}>Alcance:</span>
-                      <span className={styles.spellDetailValue}>{withSquares(spellInfo.range)}</span>
-                      <span className={styles.spellDetailLabel}>Componentes:</span>
-                      <span className={styles.spellDetailValue}>{spellInfo.components}</span>
-                      <span className={styles.spellDetailLabel}>Duração:</span>
-                      <span className={styles.spellDetailValue}>{spellInfo.duration}</span>
-                    </div>
-                    <div className={styles.spellDescription}>{spellInfo.description}</div>
-                  </>
-                ) : (
-                  <div className={styles.spellNotFound}>Detalhes não encontrados.</div>
-                )}
-              </div>
-            );
-          }
+          const notes = [typeof info?.components === 'string' ? info.components.split('(')[0].trim() : null, info?.duration]
+            .filter(Boolean).join(' · ');
 
           return (
-            <SpellCardTooltip key={s} spellName={rawName}>
-              <span onClick={() => setExpandedSpell(s)} className={styles.spellPill}
-                style={{ background: `${accent}1a`, border: `1px solid ${accent}33`, color: accent }}>
-                {s}
-                {(() => {
-                  const tags = getSpellTags(rawName);
-                  return (
+            <div key={s}>
+              <div
+                className={ddb.trowClickable}
+                style={{ gridTemplateColumns: SPELL_COLS }}
+                onClick={() => setExpandedSpell(isExpanded ? null : s)}
+              >
+                <div onClick={e => e.stopPropagation()}>
+                  {atWill ? (
+                    <span className={styles.atWill}>à vontade</span>
+                  ) : onCast ? (
+                    <button
+                      className={ddb.redBtn}
+                      disabled={!canCast}
+                      onClick={onCast}
+                      title={canCast ? 'Gastar um espaço de magia' : 'Sem espaços de magia disponíveis'}
+                    >
+                      Conjurar
+                    </button>
+                  ) : null}
+                </div>
+                <div>
+                  <SpellCardTooltip spellName={rawName}>
+                    <span className={ddb.name}>{rawName}</span>
+                  </SpellCardTooltip>
+                  {origin && <span className={ddb.featureSource}>{' — '}{origin}</span>}
+                  {isConc && <span className={styles.tagConcentrationSmall} title="Concentração">C</span>}
+                  {isRitual && <span className={styles.tagRitualSmall} title="Ritual">R</span>}
+                  <div className={ddb.sub}>{info?.school ?? ''}</div>
+                </div>
+                <div className={`${ddb.center} ${ddb.notes}`}>{info?.castingTime ?? '—'}</div>
+                <div className={`${ddb.center} ${ddb.notes}`}>{info ? withSquares(info.range) : '—'}</div>
+                <div className={ddb.center}>{hit ? <span className={ddb.box}>{hit}</span> : '—'}</div>
+                <div className={`${ddb.center} ${ddb.notes}`}>{effect ?? '—'}</div>
+                <div className={ddb.notes}>{notes || '—'}</div>
+              </div>
+
+              {isExpanded && (
+                <div className={styles.spellExpanded} style={{ border: `1px solid ${accent}40` }}>
+                  <div className={styles.spellExpandedHeader}>
+                    <div>
+                      <div className={styles.spellExpandedName} style={{ color: accent }}>{s}</div>
+                      {info && (
+                        <div className={styles.spellExpandedMeta}>
+                          {info.level === 'Truque' ? `Truque de ${info.school}` : `${info.level}, ${info.school}`}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                      {isConc && onSetConcentration && (
+                        <button
+                          onClick={e => { e.stopPropagation(); onSetConcentration(concentratingOn === rawName ? null : rawName); }}
+                          className={concentratingOn === rawName ? styles.concentratingActiveBtn : styles.concentratingBtn}
+                          title={concentratingOn === rawName ? 'Encerrar concentração' : 'Iniciar concentração nesta magia'}
+                        >
+                          {concentratingOn === rawName ? '◉ Concentrando' : '◎ Concentrar'}
+                        </button>
+                      )}
+                      {canRemove && onRemove && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onRemove(rawName); }}
+                          className={styles.unprepareBtn}
+                          title="Remover da lista de preparadas"
+                        >
+                          Remover
+                        </button>
+                      )}
+                      <button onClick={() => setExpandedSpell(null)} className={styles.collapseBtn}>Recolher ▲</button>
+                    </div>
+                  </div>
+                  {info ? (
                     <>
-                      {tags.isRitual && <span className={styles.tagRitualSmall} title="Ritual">R</span>}
-                      {tags.isConcentration && <span className={styles.tagConcentrationSmall} title="Concentração">C</span>}
+                      <div className={styles.spellTags}>
+                        {isRitual && <span className={styles.tagRitual}>Ritual</span>}
+                        {isConc && <span className={styles.tagConcentration}>Concentração</span>}
+                      </div>
+                      <div className={styles.spellDetails}>
+                        <span className={styles.spellDetailLabel}>Conjuração:</span>
+                        <span className={styles.spellDetailValue}>{info.castingTime}</span>
+                        <span className={styles.spellDetailLabel}>Alcance:</span>
+                        <span className={styles.spellDetailValue}>{withSquares(info.range)}</span>
+                        <span className={styles.spellDetailLabel}>Componentes:</span>
+                        <span className={styles.spellDetailValue}>{info.components}</span>
+                        <span className={styles.spellDetailLabel}>Duração:</span>
+                        <span className={styles.spellDetailValue}>{info.duration}</span>
+                      </div>
+                      <div className={styles.spellDescription}>{info.description}</div>
                     </>
-                  );
-                })()}
-              </span>
-            </SpellCardTooltip>
+                  ) : (
+                    <div className={styles.spellNotFound}>Detalhes não encontrados.</div>
+                  )}
+                </div>
+              )}
+            </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

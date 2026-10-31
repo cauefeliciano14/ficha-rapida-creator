@@ -10,7 +10,7 @@ import { SmartHints } from "../ui/SmartHints";
 import { computeSpeciesHints } from "../../utils/smartHints";
 import type languagesDataType from "../../data/languages.json";
 import { getSpeciesTheme } from "../../data/speciesThemeColors";
-import cardStyles from "./SpeciesCardTrading.module.css";
+import cardStyles from "./ClassCardTrading.module.css";
 
 export interface SpeciesStepProps {
   languagesData: typeof languagesDataType;
@@ -34,50 +34,36 @@ const SpeciesCard = memo(function SpeciesCard({
     [sp.id, onDetails],
   );
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
       } as React.CSSProperties}
-      aria-label={`Selecionar espécie ${sp.name}`}
     >
       {theme.art ? (
-        <img
-          src={theme.art}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          decoding="async"
-          className={cardStyles.art}
-        />
+        <img src={theme.art} alt="" aria-hidden="true" loading="lazy" decoding="async" className={cardStyles.art} />
       ) : null}
       <div className={cardStyles.scrim} />
-      <div className={cardStyles.banner}>{sp.name.charAt(0)}</div>
-
       <div className={cardStyles.content}>
         <h3 className={cardStyles.title}>{sp.name}</h3>
         {sp.description ? <p className={cardStyles.description}>{sp.description}</p> : null}
-      </div>
-
-      <div className={cardStyles.footerRow}>
-        <span className={cardStyles.sourceLabel}>Player&apos;s Handbook</span>
-        <div className={cardStyles.actions}>
-          <button type="button" className={cardStyles.detailsLink} onClick={handleDetails}>
-            Detalhes ↗
+        <div className={cardStyles.footer}>
+          <span className={cardStyles.source}>Livro do Jogador</span>
+          <button type="button" className={cardStyles.actionBtn} onClick={handleDetails} aria-label={`Saber mais sobre ${sp.name}`}>
+            Saber mais
           </button>
           <button
             type="button"
-            className={`${cardStyles.actionBtn} ${isSelected ? cardStyles.actionBtnPrimary : ""}`}
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
+            onClick={handleClick}
+            aria-label={`Selecionar espécie ${sp.name}`}
           >
             {isSelected ? "✓ Selecionada" : "Selecionar"}
           </button>
         </div>
       </div>
-    </button>
+    </div>
   );
 });
 
@@ -95,6 +81,9 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
   const canAdvance = validationErrors.length === 0;
 
   const speciesHints = computeSpeciesHints(character);
+  // D&D Beyond: lista de espécies e, depois de escolher, uma página dedicada.
+  const [browsing, setBrowsing] = useState(!character.species);
+  const pick = (sp: any) => { handleSelectSpecies(sp); setBrowsing(false); window.scrollTo({ top: 0 }); };
 
   // ── Comparison mode ──
   const [compareMode, setCompareMode] = useState(false);
@@ -146,14 +135,12 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
       impactSection="species"
     >
       <div className={styles.stepContent}>
-        <div className={styles.sectionIntro}>
-          <div className={styles.sectionTitleRow}>
-            <span className={styles.sectionIcon}>✦</span>
-            <span>Escolha sua Espécie: Raça</span>
-          </div>
-          <p className={styles.sectionDescription}>
-            A espécie define traços inatos e escolhas raciais. Selecione uma opção para abrir uma visão mais fluida, com as informações principais e os detalhes específicos lado a lado.
-          </p>
+        {browsing || !character.species ? (
+        <>
+        <div className={cardStyles.pageIntro}>
+          <span className={cardStyles.eyebrow}>Escolha uma espécie</span>
+          <h2 className={cardStyles.pageTitle}>Qual é a sua linhagem?</h2>
+          <span className={cardStyles.srOnly}>Escolha sua Espécie: Raça</span>
         </div>
 
         <button
@@ -183,18 +170,19 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
                 isCompareTarget={isComparing}
                 onActivate={(id) => {
                   if (compareMode) { handleCompareClick(id); return; }
-                  handleSelectSpecies(sp);
+                  pick(sp);
                 }}
                 onDetails={(id) => {
-                  // Selecionar abre o painel de detalhes embaixo
                   if (compareMode) { handleCompareClick(id); return; }
-                  handleSelectSpecies(sp);
+                  pick(sp);
                 }}
               />
             );
           })}
         </div>
-
+        <p className={cardStyles.srOnly}>Escolha uma espécie acima para ver traços raciais, linhagens e idiomas disponíveis.</p>
+        </>
+        ) : (
         <div className={styles.selectionLayout}>
           <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }}>
             {character.species ? (
@@ -203,29 +191,12 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
                 setCharacter={setCharacter}
                 species={character.species}
                 languagesData={languagesData}
+                onChangeSpecies={() => setBrowsing(true)}
               />
-            ) : (
-              <div className={`${styles.selectionPlaceholder} ${styles.placeholderPanel}`}>
-                <span
-                  style={{
-                    fontSize: "2.5rem",
-                    marginBottom: "8px",
-                    opacity: 0.5,
-                    filter: "grayscale(0.3)",
-                  }}
-                >
-                  👤
-                </span>
-                <p style={{ margin: "0 0 4px", color: "var(--text-secondary)", fontSize: "0.95rem", fontWeight: 600 }}>
-                  Nenhuma espécie selecionada
-                </p>
-                <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.82rem", lineHeight: 1.5, maxWidth: "28rem" }}>
-                  Escolha uma espécie acima para ver traços raciais, linhagens e idiomas disponíveis.
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
+        )}
       </div>
 
       <ComparisonModal

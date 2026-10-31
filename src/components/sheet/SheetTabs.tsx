@@ -61,6 +61,9 @@ interface SheetTabsProps {
   alignment?: string | null;
   onUpdateIdentity?: (update: CharacterIdentityUpdate) => void;
   classId?: string;
+  className?: string;
+  speciesName?: string;
+  attacksPerAction?: number;
 }
 
 export function SheetTabs({
@@ -95,6 +98,9 @@ export function SheetTabs({
   alignment,
   onUpdateIdentity,
   classId,
+  className,
+  speciesName,
+  attacksPerAction,
 }: SheetTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('actions');
 
@@ -118,6 +124,7 @@ export function SheetTabs({
       {activeTab === 'actions' && (
         <ActionsTab
           weaponAttacks={derivedSheet.weaponAttacks}
+          attacksPerAction={attacksPerAction ?? (classFeatures.some(f => f.level <= characterLevel && /ataque extra/i.test(f.name)) ? 2 : 1)}
           playState={playState}
           onUpdatePlayState={onUpdatePlayState}
           onAttackClick={onAttackClick}
@@ -158,6 +165,8 @@ export function SheetTabs({
           backgroundSkills={backgroundSkills}
           backgroundTool={backgroundTool}
           characterLevel={characterLevel}
+          className={className}
+          speciesName={speciesName}
         />
       )}
       {activeTab === 'background' && (
@@ -168,12 +177,23 @@ export function SheetTabs({
           backgroundTool={backgroundTool}
           backgroundEquipment={backgroundEquipment}
           originTalent={derivedSheet.originTalent}
+          alignment={alignment}
+          faith={faith}
+          lifestyle={lifestyle}
+          appearance={appearance}
+          personalityTraits={personalityTraits}
+          speciesName={speciesName}
+          onUpdateIdentity={onUpdateIdentity}
         />
       )}
       {activeTab === 'notes' && (
         <NotesTab
           notes={playState.notes}
           onUpdateNotes={notes => onUpdatePlayState(prev => ({ ...prev, notes }))}
+          allies={playState.allies}
+          enemies={playState.enemies}
+          onUpdateAllies={allies => onUpdatePlayState(prev => ({ ...prev, allies }))}
+          onUpdateEnemies={enemies => onUpdatePlayState(prev => ({ ...prev, enemies }))}
           backstory={backstory}
           appearance={appearance}
           personalityTraits={personalityTraits}

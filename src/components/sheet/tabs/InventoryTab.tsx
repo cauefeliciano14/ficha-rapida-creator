@@ -3,7 +3,9 @@ import type { CharacterPlayState, Container } from '../../../types/playState';
 import { getArmorByName } from '../../../rules/data/armorRules';
 import { Modal } from '../../ui/Modal';
 import { ItemCardTooltip } from '../ItemCardTooltip';
+import { getEquipKind } from '../../../rules/utils/equipment';
 import styles from './InventoryTab.module.css';
+import ddb from './ddbTab.module.css';
 
 const ItemCatalog = lazy(() => import('../../equipment/ItemCatalog').then(m => ({ default: m.ItemCatalog })));
 
@@ -55,6 +57,10 @@ const COIN_CONFIG = [
 ];
 
 
+const INV_COLS = '48px minmax(130px, 1.5fr) 64px 44px 64px minmax(110px, 1fr)';
+
+const KIND_LABELS = { armor: 'Armadura', shield: 'Escudo', weapon: 'Arma' } as const;
+
 export function InventoryTab({
   inventory,
   playState,
@@ -82,10 +88,11 @@ export function InventoryTab({
   const sheetItems: SheetItem[] = playState.sheetItems ?? [];
 
   const toggleEquipped = (itemName: string) => {
-    const armorEntry = getArmorByName(itemName);
-    if (armorEntry?.type === 'shield') { onEquipShield?.(!hasShieldEquipped); return; }
-    if (armorEntry) {
-      onEquipArmor?.(equippedArmorId === armorEntry.id ? null : armorEntry.id); return;
+    const kind = getEquipKind(itemName);
+    if (kind === 'shield') { onEquipShield?.(!hasShieldEquipped); return; }
+    if (kind === 'armor') {
+      const armorId = getArmorByName(itemName)!.id;
+      onEquipArmor?.(equippedArmorId === armorId ? null : armorId); return;
     }
     onUpdatePlayState(prev => {
       const equipped = prev.equippedItemIds.includes(itemName)
@@ -211,12 +218,12 @@ export function InventoryTab({
   })).filter(() => filterCategory === 'all' || filterCategory === 'backpack');
 
   return (
-    <div className={styles.container}>
+    <div className={ddb.tab}>
 
       {/* Moedas */}
       {currency && onUpdateCurrency && (
         <div className={styles.currencySection}>
-          <div className={styles.currencyTitle}>MOEDAS</div>
+          <div className={ddb.sectionHeader}>MOEDAS</div>
           <div className={styles.currencyGrid}>
             {COIN_CONFIG.map(coin => (
               <div key={coin.key} className={styles.coinCard} title={coin.title}>
@@ -270,7 +277,7 @@ export function InventoryTab({
         return (
           <div className={styles.weightSection}>
             <div className={styles.weightHeader}>
-              <span className={styles.weightLabel}>CAPACIDADE DE CARGA</span>
+              <span className={styles.weightLabel}>PESO CARREGADO</span>
               <span className={styles.weightValue} style={{ color: textColor }}>
                 {totalWeight.toFixed(1)} / {carryingCapacity.toFixed(1)} kg
               </span>
@@ -308,59 +315,82 @@ export function InventoryTab({
             placeholder="Buscar no inventário..." 
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className={styles.searchInput}
+            className={ddb.search}
           />
         </div>
-        <div className={styles.filterBar}>
-          <button onClick={() => setFilterCategory('all')} className={filterCategory === 'all' ? styles.filterBtnActive : styles.filterBtn}>Todos</button>
-          <button onClick={() => setFilterCategory('equipment')} className={filterCategory === 'equipment' ? styles.filterBtnActive : styles.filterBtn}>Equipamento</button>
-          <button onClick={() => setFilterCategory('backpack')} className={filterCategory === 'backpack' ? styles.filterBtnActive : styles.filterBtn}>Mochila</button>
-          <button onClick={() => setFilterCategory('other')} className={filterCategory === 'other' ? styles.filterBtnActive : styles.filterBtn}>Outros</button>
+        <div className={ddb.pills}>
+          <button onClick={() => setFilterCategory('all')} className={filterCategory === 'all' ? ddb.pillActive : ddb.pill}>Todos</button>
+          <button onClick={() => setFilterCategory('equipment')} className={filterCategory === 'equipment' ? ddb.pillActive : ddb.pill}>Equipamento</button>
+          <button onClick={() => setFilterCategory('backpack')} className={filterCategory === 'backpack' ? ddb.pillActive : ddb.pill}>Mochila</button>
+          <button onClick={() => setFilterCategory('other')} className={filterCategory === 'other' ? ddb.pillActive : ddb.pill}>Outros</button>
         </div>
       </div>
 
       {/* Starting inventory */}
       {filteredInitial.length > 0 && (
-        <div>
-          <div className={styles.tableTitle}>EQUIPAMENTO INICIAL</div>
-          <div className={styles.table}>
-            <div className={styles.tableHeader}>
-              {['ITEM', 'QTD', 'CUSTO', 'EQUIP.', 'SINTONIZ.'].map(h => (
-                <div key={h} className={styles.tableHeaderCell}>{h}</div>
-              ))}
+        <section>
+          <div className={ddb.sectionHeader}>EQUIPAMENTO</div>
+          <div className={ddb.table}>
+            <div className={ddb.thead} style={{ gridTemplateColumns: INV_COLS }}>
+              <div className={ddb.center}>ATIVO</div>
+              <div>NOME</div>
+              <div className={ddb.center}>PESO</div>
+              <div className={ddb.center}>QTD</div>
+              <div className={ddb.center}>CUSTO</div>
+              <div>NOTAS</div>
             </div>
             {filteredInitial.map((item, i) => {
-              const armorEntry = getArmorByName(item.name);
-              const isEquipped = armorEntry
-                ? armorEntry.type === 'shield' ? hasShieldEquipped : armorEntry.id === equippedArmorId
-                : playState.equippedItemIds.includes(item.name);
+              const kind = getEquipKind(item.name);
+              const isEquipped = kind === 'shield'
+                ? hasShieldEquipped
+                : kind === 'armor'
+                  ? getArmorByName(item.name)!.id === equippedArmorId
+                  : playState.equippedItemIds.includes(item.name);
               const isAttuned = playState.attunedItemIds.includes(item.name);
+              const attuneBlocked = !isAttuned && attunedCount >= MAX_ATTUNEMENT;
+              const qty = item.quantity ?? 1;
               return (
-                <div key={i} className={styles.tableRow}>
+                <div key={i} className={ddb.trow} style={{ gridTemplateColumns: INV_COLS }}>
+                  <div className={ddb.center}>
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={isEquipped}
+                      aria-label={isEquipped ? 'EQUIPADO' : 'EQUIPAR'}
+                      title={isEquipped ? 'Equipado — clique para desequipar' : 'Clique para equipar'}
+                      onClick={() => toggleEquipped(item.name)}
+                      className={isEquipped ? ddb.checkOn : ddb.check}
+                    >
+                      {isEquipped ? '✓' : ''}
+                    </button>
+                  </div>
                   <div>
                     <ItemCardTooltip itemName={item.name}>
-                      <div className={styles.itemName}>{item.name}</div>
+                      <div className={ddb.name}>{item.name}</div>
                     </ItemCardTooltip>
-                    {item.notes && <div className={styles.itemNotes}>{item.notes}</div>}
+                    {kind && <div className={ddb.sub}>{KIND_LABELS[kind]}</div>}
                   </div>
-                  <div className={styles.itemQty}>{item.quantity ?? 1}</div>
-                  <div className={styles.itemCost}>{item.cost ?? '—'}</div>
-                  <button onClick={() => toggleEquipped(item.name)} className={isEquipped ? styles.equipBtnActive : styles.equipBtn}>
-                    {isEquipped ? 'EQUIPADO' : 'EQUIPAR'}
-                  </button>
-                  <button
-                    onClick={() => toggleAttuned(item.name)}
-                    className={isAttuned ? styles.attuneBtnActive : (!isAttuned && attunedCount >= MAX_ATTUNEMENT) ? styles.attuneBtnDisabled : styles.attuneBtn}
-                    disabled={!isAttuned && attunedCount >= MAX_ATTUNEMENT}
-                    title={!isAttuned && attunedCount >= MAX_ATTUNEMENT ? 'Limite de 3 itens sintonizados' : undefined}
-                  >
-                    {isAttuned ? 'SINTONIZ.' : 'SINTONIZAR'}
-                  </button>
+                  <div className={`${ddb.center} ${ddb.notes}`}>
+                    {item.weight != null ? `${(item.weight * qty).toFixed(1)} kg` : '—'}
+                  </div>
+                  <div className={ddb.center}>{qty}</div>
+                  <div className={`${ddb.center} ${ddb.notes}`}>{item.cost ?? '—'}</div>
+                  <div className={ddb.notes}>
+                    {item.notes && <span>{item.notes} </span>}
+                    <button
+                      onClick={() => toggleAttuned(item.name)}
+                      className={isAttuned ? styles.attuneBtnActive : attuneBlocked ? styles.attuneBtnDisabled : styles.attuneBtn}
+                      disabled={attuneBlocked}
+                      title={attuneBlocked ? 'Limite de 3 itens sintonizados' : undefined}
+                    >
+                      {isAttuned ? 'SINTONIZ.' : 'SINTONIZAR'}
+                    </button>
+                  </div>
                 </div>
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Containers */}
@@ -419,7 +449,7 @@ export function InventoryTab({
       {/* Sheet items not in any container */}
       {filteredLoose.length > 0 && (
         <div>
-          <div className={styles.tableTitle}>ITENS ADICIONADOS</div>
+          <div className={ddb.sectionHeader}>ITENS ADICIONADOS</div>
           <div className={styles.sheetItemList}>
             {filteredLoose.map(item => (
               <div key={item.id} className={styles.sheetItemRow}>

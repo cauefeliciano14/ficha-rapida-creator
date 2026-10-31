@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DerivedSheet, DerivedSkill, DerivedSavingThrow, WeaponAttack } from '../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../types/playState';
@@ -1336,6 +1337,8 @@ export function CharacterSheetPage({
               alignment={alignment}
               onUpdateIdentity={onUpdateIdentity}
               classId={classId}
+              className={className}
+              speciesName={speciesName}
             />
           </div>
         </div>
@@ -1375,7 +1378,8 @@ export function CharacterSheetPage({
       )}
 
       {/* ===== DICE RESULT (centered overlay card) ===== */}
-      {diceToast && (
+      {/* Portal no body: a animação da página cria um bloco de contenção e tiraria o card do centro. */}
+      {diceToast && createPortal(
         <div
           className={`${styles.diceOverlay} ${diceToastExiting ? styles.diceOverlayExiting : ''}`}
           onClick={dismissDiceToast}
@@ -1411,7 +1415,7 @@ export function CharacterSheetPage({
             )}
           </div>
         </div>
-      )}
+        , document.body)}
 
       {/* ===== MODALS ===== */}
       <RestModal

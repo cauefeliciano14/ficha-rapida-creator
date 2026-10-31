@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import type { ActiveTalentSummary } from '../../../rules/types/DerivedSheet';
 import styles from './FeaturesTraitsTab.module.css';
+import ddb from './ddbTab.module.css';
+
+type FilterId = 'all' | 'class' | 'species' | 'feats';
+
+const FILTERS: Array<{ id: FilterId; label: string }> = [
+  { id: 'all', label: 'Todas' },
+  { id: 'class', label: 'Classe' },
+  { id: 'species', label: 'Espécie' },
+  { id: 'feats', label: 'Talentos' },
+];
 
 interface Feature {
   level: number;
@@ -23,6 +33,8 @@ interface FeaturesTraitsTabProps {
   backgroundSkills?: string[];
   backgroundTool?: string;
   characterLevel: number;
+  className?: string;
+  speciesName?: string;
 }
 
 export function FeaturesTraitsTab({
@@ -35,8 +47,12 @@ export function FeaturesTraitsTab({
   backgroundSkills,
   backgroundTool,
   characterLevel,
+  className,
+  speciesName,
 }: FeaturesTraitsTabProps) {
   const [searchText, setSearchText] = useState('');
+  const [filter, setFilter] = useState<FilterId>('all');
+  const show = (id: FilterId) => filter === 'all' || filter === id;
   const activeFeatures = classFeatures.filter(f => f.level <= characterLevel);
   const q = searchText.toLowerCase();
 
@@ -45,24 +61,34 @@ export function FeaturesTraitsTab({
   const filterTraits = (traits: Trait[]) =>
     q ? traits.filter(t => t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q)) : traits;
 
-  const filteredFeatures = filterFeatures(activeFeatures);
-  const filteredTraits = filterTraits(speciesTraits);
+  const filteredFeatures = show('class') ? filterFeatures(activeFeatures) : [];
+  const filteredTraits = show('species') ? filterTraits(speciesTraits) : [];
+  const talentsVisible = show('feats') ? activeTalents : [];
+  const originVisible = show('feats') ? originTalent : undefined;
 
   return (
-    <div className={styles.container}>
+    <div className={ddb.tab}>
+      <div className={ddb.pills}>
+        {FILTERS.map(f => (
+          <button key={f.id} onClick={() => setFilter(f.id)} className={filter === f.id ? ddb.pillActive : ddb.pill}>
+            {f.label}
+          </button>
+        ))}
+      </div>
       <input
         type="text"
         value={searchText}
         onChange={e => setSearchText(e.target.value)}
         placeholder="Buscar características…"
-        className={styles.searchInput}
+        className={ddb.search}
       />
 
       {filteredFeatures.length > 0 && (
         <Section title="CARACTERÍSTICAS DE CLASSE">
-          <div className={styles.featureList}>
+          {className && <div className={ddb.subHeader}>{className}</div>}
+          <div>
             {filteredFeatures.map((f, i) => (
-              <FeatureEntry key={i} title={f.name} badge={`Nível ${f.level}`} description={f.description} />
+              <FeatureEntry key={i} title={f.name} badge={`${className ? `${className} ` : ''}${f.level}`} description={f.description} />
             ))}
           </div>
         </Section>
@@ -70,48 +96,51 @@ export function FeaturesTraitsTab({
 
       {filteredTraits.length > 0 && (
         <Section title="TRAÇOS DE ESPÉCIE">
-          <div className={styles.featureList}>
+          {speciesName && <div className={ddb.subHeader}>{speciesName}</div>}
+          <div>
             {filteredTraits.map((t, i) => (
-              <FeatureEntry key={i} title={t.title} description={t.description} />
+              <FeatureEntry key={i} title={t.title} badge={speciesName} description={t.description} />
             ))}
           </div>
         </Section>
       )}
 
-      {(activeTalents.length > 0 || originTalent) && (
-        <Section title="FEITAS/TALENTOS APLICADOS">
-          {activeTalents.map((talent) => (
-            <div key={`${talent.source}-${talent.name}`} className={styles.talentEntry}>
-              <div className={styles.talentName}>
+      {(talentsVisible.length > 0 || originVisible) && (
+        <Section title="TALENTOS APLICADOS">
+          {talentsVisible.map((talent) => (
+            <div key={`${talent.source}-${talent.name}`} className={ddb.feature}>
+              <div className={ddb.featureName}>
                 {talent.name}
-                <span className={styles.talentSource}>
-                  {talent.source === 'background' ? 'ANTECEDENTE' : 'ESPÉCIE'}
+                <span className={ddb.featureSource}>
+                  {talent.source === 'background' ? 'Antecedente' : 'Espécie'}
                 </span>
               </div>
               {talent.notes.length > 0 && (
-                <ul className={styles.talentNotes}>
-                  {talent.notes.map((note) => <li key={note}>{note}</li>)}
-                </ul>
+                <div className={ddb.nested}>
+                  {talent.notes.map((note) => <div key={note}>{note}</div>)}
+                </div>
               )}
             </div>
           ))}
-          {activeTalents.length === 0 && originTalent && (
-            <div className={styles.originTalent}>{originTalent}</div>
+          {talentsVisible.length === 0 && originVisible && (
+            <div className={ddb.feature}>
+              <div className={ddb.featureName}>{originVisible}<span className={ddb.featureSource}>Talento de origem</span></div>
+            </div>
           )}
         </Section>
       )}
 
-      {derivedTraits.length > 0 && (
+      {filter === 'all' && derivedTraits.length > 0 && (
         <Section title="EFEITOS DERIVADOS">
-          <ul className={styles.derivedList}>
-            {derivedTraits.map((trait) => <li key={trait}>{trait}</li>)}
-          </ul>
+          <div className={ddb.nested}>
+            {derivedTraits.map((trait) => <div key={trait}>{trait}</div>)}
+          </div>
         </Section>
       )}
 
-      {backgroundName && (
+      {filter === 'all' && backgroundName && (
         <Section title="ANTECEDENTE">
-          <div className={styles.bgName}>{backgroundName}</div>
+          <div className={ddb.featureName}>{backgroundName}</div>
           {backgroundSkills && backgroundSkills.length > 0 && (
             <div className={styles.bgDetail}>
               <span className={styles.bgDetailLabel}>Perícias: </span>
@@ -127,7 +156,7 @@ export function FeaturesTraitsTab({
         </Section>
       )}
 
-      {filteredFeatures.length === 0 && filteredTraits.length === 0 && !originTalent && activeTalents.length === 0 && derivedTraits.length === 0 && (
+      {filteredFeatures.length === 0 && filteredTraits.length === 0 && !originVisible && talentsVisible.length === 0 && (filter !== 'all' || derivedTraits.length === 0) && (
         <div className={styles.emptyText}>Nenhuma característica disponível.</div>
       )}
     </div>
@@ -136,10 +165,10 @@ export function FeaturesTraitsTab({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionTitle}>{title}</div>
+    <section>
+      <div className={ddb.sectionHeader}>{title}</div>
       {children}
-    </div>
+    </section>
   );
 }
 
@@ -149,12 +178,12 @@ function FeatureEntry({ title, badge, description }: { title: string; badge?: st
   const shown = expanded || !long ? description : description.slice(0, 120) + '…';
 
   return (
-    <div className={styles.featureEntry}>
-      <div className={styles.featureHeader}>
-        <span className={styles.featureTitle}>{title}</span>
-        {badge && <span className={styles.featureBadge}>{badge}</span>}
+    <div className={ddb.feature}>
+      <div className={ddb.featureName}>
+        {title}
+        {badge && <span className={ddb.featureSource}>{badge}</span>}
       </div>
-      <div className={styles.featureDesc}>
+      <div className={ddb.featureDesc}>
         {shown}
         {long && (
           <button onClick={() => setExpanded(prev => !prev)} className={styles.moreBtn}>

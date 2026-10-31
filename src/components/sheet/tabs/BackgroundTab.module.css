@@ -1,63 +1,64 @@
-/* BackgroundTab — D&D Beyond Underdark */
-.container {
+/* BackgroundTab — estilo D&D Beyond (escuro). Base comum em ddbTab.module.css */
+
+.block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.emptyText {
-  color: var(--text-faint);
-  font-size: 0.85rem;
-  text-align: center;
-  padding: 24px;
-}
-
-.section {
-  background: rgba(17, 18, 24, 0.6);
-  border: none;
-  border-left: 2px solid var(--border-theme);
-  border-radius: 4px;
-  padding: 12px 14px;
-}
-
-.title {
-  font-family: var(--font-label);
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--text-bright);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.description {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 16px;
+  gap: 6px;
 }
 
 .infoRow {
   display: flex;
-  gap: 8px;
-  margin-bottom: 6px;
-  align-items: flex-start;
+  gap: 10px;
+  align-items: baseline;
 }
 
-.infoLabel {
-  font-family: var(--font-label);
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  min-width: 110px;
+.infoRow > :first-child {
+  min-width: 96px;
   flex-shrink: 0;
+}
+
+.accent {
+  color: #fff;
   font-weight: 700;
+  font-size: 0.8125rem;
 }
 
-.infoValue {
-  font-size: 0.85rem;
-  color: var(--text-body);
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #2a3138;
+  color: #e6e8ea;
+  padding: 2px 0;
+  font-size: 0.8125rem;
+  font-family: inherit;
 }
 
-.infoValueAccent {
-  font-size: 0.85rem;
-  color: var(--color-magic);
+.input:focus {
+  outline: none;
+  border-bottom-color: #c53131;
+}
+
+.input option {
+  background: #13191e;
+}
+
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0f1418;
+  border: 1px solid #2a3138;
+  border-radius: 3px;
+  color: #e6e8ea;
+  padding: 6px 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #c53131;
 }

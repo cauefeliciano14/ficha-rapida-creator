@@ -610,3 +610,21 @@
 }
 
 .concentratingActiveBtn:hover { background: var(--color-magic-bg-subtle); }
+
+.statsMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: #8a9299;
+}
+
+.statsMeta b {
+  color: #e6e8ea;
+}
+
+.atWill {
+  font-size: 0.6875rem;
+  font-style: italic;
+  color: #8a9299;
+}

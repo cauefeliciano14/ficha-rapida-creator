@@ -431,3 +431,17 @@
     transition: none;
   }
 }
+
+/* Lista "Ações em combate" */
+.combatList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px 16px;
+}
+
+.combatItem {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+  border-bottom: 1px solid #222a30;
+}

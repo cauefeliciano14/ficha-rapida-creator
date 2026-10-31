@@ -263,3 +263,24 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Aba Notas — seções estilo D&D Beyond */
+.textarea {
+  width: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  background: #0f1418;
+  border: 1px solid #2a3138;
+  border-radius: 3px;
+  color: #e6e8ea;
+  padding: 6px 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #c53131;
+}

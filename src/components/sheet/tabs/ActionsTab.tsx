@@ -4,6 +4,7 @@ import type { CharacterPlayState, CustomAction } from '../../../types/playState'
 import { signedMod, withSquares } from '../../../utils/format';
 import { ActionTypeBadge } from '../../ui/ActionTypeBadge';
 import styles from './ActionsTab.module.css';
+import ddb from './ddbTab.module.css';
 
 type FilterId = 'all' | 'attack' | 'action' | 'bonus' | 'reaction' | 'other' | 'limited';
 
@@ -22,14 +23,43 @@ const RESET_LABELS: Record<string, string> = {
   short: 'Descanso Curto', long: 'Descanso Longo',
 };
 
+const ATTACK_COLS = 'minmax(130px, 1.4fr) 70px 72px 92px minmax(90px, 1fr)';
+
+const COMBAT_ACTIONS: Array<{ name: string; desc: string }> = [
+  { name: 'Atacar', desc: 'Faça um ataque com arma ou desarmado.' },
+  { name: 'Disparada', desc: 'Ganhe deslocamento extra igual ao seu Deslocamento neste turno.' },
+  { name: 'Desengajar', desc: 'Seu movimento não provoca Ataques de Oportunidade neste turno.' },
+  { name: 'Esquivar', desc: 'Ataques contra você têm Desvantagem e você tem Vantagem em salvaguardas de Destreza.' },
+  { name: 'Agarrar', desc: 'Ataque desarmado para impor a condição Agarrado.' },
+  { name: 'Ajudar', desc: 'Conceda Vantagem ao próximo teste ou ataque de um aliado.' },
+  { name: 'Esconder', desc: 'Faça um teste de Destreza (Furtividade) para ficar Invisível.' },
+  { name: 'Improvisar', desc: 'Faça algo que nenhuma outra ação cobre.' },
+  { name: 'Influenciar', desc: 'Teste de Carisma ou Sabedoria para alterar a atitude de uma criatura.' },
+  { name: 'Magia', desc: 'Conjure uma magia com tempo de conjuração de uma ação.' },
+  { name: 'Preparar', desc: 'Prepare uma ação para disparar com um gatilho, usando sua Reação.' },
+  { name: 'Procurar', desc: 'Teste de Sabedoria para encontrar algo.' },
+  { name: 'Empurrar', desc: 'Ataque desarmado para empurrar 1,5 m ou derrubar o alvo.' },
+  { name: 'Estudar', desc: 'Teste de Inteligência para lembrar ou analisar algo.' },
+  { name: 'Usar', desc: 'Use um objeto que exija uma ação.' },
+];
+
+function attackSubtitle(atk: WeaponAttack): string {
+  const props = atk.properties.join(' ').toLowerCase();
+  if (atk.weaponName.toLowerCase().includes('desarmado')) return 'Ataque desarmado';
+  if (props.includes('munição') || props.includes('municao')) return 'Arma à distância';
+  if (props.includes('arremesso')) return 'Arma corpo a corpo ou à distância';
+  return 'Arma corpo a corpo';
+}
+
 interface ActionsTabProps {
+  attacksPerAction?: number;
   weaponAttacks: WeaponAttack[];
   playState: CharacterPlayState;
   onUpdatePlayState: (updater: (prev: CharacterPlayState) => CharacterPlayState) => void;
   onAttackClick?: (attack: WeaponAttack) => void;
 }
 
-export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAttackClick }: ActionsTabProps) {
+export function ActionsTab({ attacksPerAction = 1, weaponAttacks, playState, onUpdatePlayState, onAttackClick }: ActionsTabProps) {
   const [filter, setFilter] = useState<FilterId>('all');
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState('');
@@ -88,14 +118,14 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAtta
   };
 
   return (
-    <div className={styles.container}>
-      {/* Filter bar */}
-      <div className={styles.filterBar}>
+    <div className={ddb.tab}>
+      {/* Filter pills */}
+      <div className={ddb.pills}>
         {FILTERS.map(f => (
           <button
             key={f.id}
             onClick={() => setFilter(f.id)}
-            className={filter === f.id ? styles.filterBtnActive : styles.filterBtn}
+            className={filter === f.id ? ddb.pillActive : ddb.pill}
           >
             {f.label}
           </button>
@@ -104,43 +134,50 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAtta
 
       {/* Weapon attacks table */}
       {filteredAttacks.length > 0 && (
-        <div className={styles.attackTable}>
-          <div className={styles.attackHeader}>
-            <div className={styles.attackHeaderCell}>ATAQUE</div>
-            <div className={styles.attackHeaderCellCenter}>ALCANCE</div>
-            <div className={styles.attackHeaderCellCenter}>ACERTO/CD</div>
-            <div className={styles.attackHeaderCellCenter}>DANO</div>
+        <section>
+          <div className={ddb.sectionHeader}>
+            AÇÕES <span className={ddb.sectionMeta}>· Ataques por ação: {attacksPerAction}</span>
           </div>
-          {filteredAttacks.map((atk, i) => (
-            <div
-              key={i}
-              className={styles.attackRow}
-              onClick={() => onAttackClick?.(atk)}
-              role={onAttackClick ? 'button' : undefined}
-              tabIndex={onAttackClick ? 0 : undefined}
-              onKeyDown={onAttackClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onAttackClick(atk); } : undefined}
-              style={onAttackClick ? { cursor: 'pointer' } : undefined}
-            >
-              <div>
-                <div className={styles.weaponName}>
-                  {atk.weaponName}
-                  {' '}<ActionTypeBadge type={atk.actionType} />
-                </div>
-                {atk.properties.length > 0 && (
-                  <div className={styles.weaponProps}>{atk.properties.join(', ')}</div>
-                )}
-              </div>
-              <div className={styles.attackRange}>{withSquares(atk.range)}</div>
-              <div style={{ textAlign: 'center' }}>
-                <span className={styles.attackBonus}>{signedMod(atk.attackBonus)}</span>
-              </div>
-              <div className={styles.damageDice}>
-                {atk.damageDice !== '1' ? atk.damageDice : '1'}{atk.damageBonus !== 0 ? ` ${signedMod(atk.damageBonus)}` : ''}
-                <span className={styles.damageType}>{atk.damageType.substring(0, 3)}</span>
-              </div>
+          <div className={ddb.table}>
+            <div className={ddb.thead} style={{ gridTemplateColumns: ATTACK_COLS }}>
+              <div>ATAQUE</div>
+              <div className={ddb.center}>ALCANCE</div>
+              <div className={ddb.center}>ACERTO/CD</div>
+              <div className={ddb.center}>DANO</div>
+              <div>NOTAS</div>
             </div>
-          ))}
-        </div>
+            {filteredAttacks.map((atk, i) => (
+              <div
+                key={i}
+                className={onAttackClick ? ddb.trowClickable : ddb.trow}
+                style={{ gridTemplateColumns: ATTACK_COLS }}
+                onClick={() => onAttackClick?.(atk)}
+                role={onAttackClick ? 'button' : undefined}
+                tabIndex={onAttackClick ? 0 : undefined}
+                onKeyDown={onAttackClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onAttackClick(atk); } : undefined}
+              >
+                <div>
+                  <div className={ddb.name}>
+                    {atk.weaponName}
+                    {' '}<ActionTypeBadge type={atk.actionType} />
+                  </div>
+                  <div className={ddb.sub}>{attackSubtitle(atk)}</div>
+                </div>
+                <div className={ddb.center}>{withSquares(atk.range)}</div>
+                <div className={ddb.center}>
+                  <span className={ddb.box}>{signedMod(atk.attackBonus)}</span>
+                </div>
+                <div className={ddb.center}>
+                  <span className={ddb.box} title={atk.damageType}>
+                    {atk.damageDice}{atk.damageBonus !== 0 ? signedMod(atk.damageBonus) : ''}
+                    <span className={styles.damageType}>{atk.damageType.substring(0, 3)}</span>
+                  </span>
+                </div>
+                <div className={ddb.notes}>{atk.properties.join(', ') || '—'}</div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Custom actions */}
@@ -195,8 +232,22 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAtta
         </div>
       )}
 
-      {filteredAttacks.length === 0 && filteredCustom.length === 0 && (
+      {filteredAttacks.length === 0 && filteredCustom.length === 0 && filter !== 'all' && filter !== 'action' && (
         <div className={styles.emptyText}>Nenhuma ação nesta categoria.</div>
+      )}
+
+      {(filter === 'all' || filter === 'action') && (
+        <section>
+          <div className={ddb.sectionHeader}>AÇÕES EM COMBATE</div>
+          <div className={styles.combatList}>
+            {COMBAT_ACTIONS.map(a => (
+              <div key={a.name} className={styles.combatItem} title={a.desc}>
+                <span className={ddb.name}>{a.name}</span>
+                <span className={ddb.sub}>{a.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Add custom action */}
@@ -263,7 +314,7 @@ export function ActionsTab({ weaponAttacks, playState, onUpdatePlayState, onAtta
           </div>
         </div>
       ) : (
-        <button onClick={() => setShowForm(true)} className={styles.addBtn}>
+        <button onClick={() => setShowForm(true)} className={ddb.addLink}>
           ＋ Ação Personalizada
         </button>
       )}

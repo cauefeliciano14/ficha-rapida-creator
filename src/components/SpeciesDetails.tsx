@@ -515,10 +515,12 @@ interface SpeciesDetailsProps {
   setCharacter: any;
   species: any;
   languagesData: any;
+  /** Volta para a lista de espécies (página dedicada estilo D&D Beyond). */
+  onChangeSpecies?: () => void;
 }
 
 export const SpeciesDetails = React.memo(
-  ({ character, setCharacter, species, languagesData }: SpeciesDetailsProps) => {
+  ({ character, setCharacter, species, languagesData, onChangeSpecies }: SpeciesDetailsProps) => {
   if (!species) return null;
 
   const imageRef = useRef<HTMLDivElement>(null);
@@ -587,63 +589,40 @@ export const SpeciesDetails = React.memo(
 
   const imageSrc = `/imgs/portrait_races/${IMAGE_MAP[species.id] ?? species.id}.png`;
 
-  const infoCardStyle: React.CSSProperties = {
-    background: 'rgba(30, 32, 45, 0.4)',
-    border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: '10px',
-    padding: '14px 16px',
-    display: 'flex', flexDirection: 'column', gap: '6px',
-    justifyContent: 'center',
-  };
 
   return (
     <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
-      {/* Hero: image (left) + name/desc/cards (right) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 240px) 1fr', gap: '24px', alignItems: 'stretch' }}>
-        {/* Box 1 (Left Block): Image + 2 Stats */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div ref={imageRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} style={{ aspectRatio: '3/4', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', position: 'relative', flexShrink: 0 }}>
-            <img src={imageSrc} alt={species.name}
-              style={{ width: '115%', height: '115%', objectFit: 'cover', objectPosition: 'center center', transform: `translate(calc(-7.5% + ${parallaxX}px), calc(-7.5% + ${parallaxY}px))`, transition: 'transform 0.3s ease-out', willChange: 'transform' }}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(17,18,24,1), transparent)' }} />
-          </div>
-        </div>
-
-        {/* Box 2 (Right Block): Title + Desc + 2 Stats */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div>
-              <h2 style={{ fontSize: 'clamp(1.4rem, 2vw, 1.9rem)', color: '#fff', margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800 }}>{species.name}</h2>
-              {species.description && (
-                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.65, margin: '0 0 8px 0' }}>{species.description}</p>
-              )}
-              <p style={{ color: '#64748b', fontSize: '0.82rem', margin: 0 }}>
-                <span style={{ color: '#f97316', fontWeight: 600 }}>Traços de {species.name}:</span>{' '}{traitsListText}
-              </p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
-              {[
-                ['Tipo de Criatura', species.vitalInfo.type],
-                ['Tamanho', species.vitalInfo.size],
-                ['Deslocamento', species.vitalInfo.speed],
-                ['Visão no Escuro', darkvisionValue],
-              ].map(([label, value]) => (
-                <div key={label} style={infoCardStyle}>
-                  <span style={{ fontSize: '0.68rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 600 }}>{label}</span>
-                  <span style={{ fontSize: '0.84rem', color: '#f1f5f9', fontWeight: 500, lineHeight: 1.4 }}>
-                    {label === 'Tamanho' && typeof value === 'string' && value.includes(' ou Pequeno') ? (
-                      <>{value.split(' ou Pequeno')[0]} <br /> ou Pequeno{value.split(' ou Pequeno')[1]}</>
-                    ) : value}
-                  </span>
-                </div>
+      {/* D&D Beyond: página da espécie com a arte grande e as informações por cima */}
+      <div ref={imageRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
+        style={{ position: 'relative', minHeight: '420px', display: 'flex', alignItems: 'flex-end', border: '2px solid #b8913a', borderRadius: '12px', overflow: 'hidden', isolation: 'isolate', background: '#0d1114' }}>
+        <img src={imageSrc} alt={species.name}
+          style={{ position: 'absolute', inset: 0, width: '106%', height: '106%', objectFit: 'cover', objectPosition: 'center 25%', zIndex: -2, transform: `translate(calc(-3% + ${parallaxX / 3}px), calc(-3% + ${parallaxY / 3}px))`, transition: 'transform 0.3s ease-out' }}
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
+        <div style={{ position: 'absolute', inset: 0, zIndex: -1, background: 'linear-gradient(90deg, rgba(10,13,16,0.95) 0%, rgba(10,13,16,0.7) 45%, rgba(10,13,16,0.1) 80%), linear-gradient(180deg, rgba(10,13,16,0) 45%, rgba(10,13,16,0.9) 100%)' }} />
+        {onChangeSpecies && (
+          <button type="button" onClick={onChangeSpecies}
+            style={{ position: 'absolute', top: 16, right: 16, padding: '8px 18px', border: '1px solid #e0b75a', borderRadius: 999, background: 'rgba(10,13,16,0.85)', color: '#fff', fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer' }}>
+            Trocar espécie
+          </button>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px', padding: '28px 32px' }}>
+          <span style={{ fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#c9a54a' }}>Livro do Jogador</span>
+          <h2 style={{ margin: 0, fontFamily: "'Spectral', Georgia, serif", fontSize: '3.6rem', fontWeight: 700, lineHeight: 1, color: '#fff' }}>{species.name}</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {[species.vitalInfo.type, species.vitalInfo.size, species.vitalInfo.speed && `Deslocamento ${species.vitalInfo.speed}`, darkvisionValue && darkvisionValue !== '—' && `Visão no escuro ${darkvisionValue}`]
+              .filter(Boolean)
+              .map((pill) => (
+                <span key={String(pill)} style={{ padding: '3px 10px', border: '1px solid #b8913a', borderRadius: 999, background: 'rgba(10,13,16,0.6)', fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#f1e4c3' }}>{pill}</span>
               ))}
-            </div>
           </div>
+          {species.description && (
+            <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.55, color: '#dfe5ea' }}>{species.description}</p>
+          )}
+          <p style={{ margin: 0, fontSize: '0.82rem', color: '#aab4bd' }}>
+            <span style={{ color: '#e0b75a', fontWeight: 600 }}>Traços de {species.name}:</span>{' '}{traitsListText}
+          </p>
         </div>
       </div>
 

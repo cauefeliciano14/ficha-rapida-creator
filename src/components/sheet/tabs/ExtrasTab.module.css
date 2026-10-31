@@ -6,15 +6,15 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-label);
-  font-size: 0.65rem;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: var(--label-spacing);
-  color: var(--text-dim);
-  border-bottom: 1px solid var(--border-faint);
-  padding-bottom: 6px;
-  margin-bottom: 4px;
+  letter-spacing: 0.06em;
+  color: #c53131;
+  border-bottom: 1px solid #c53131;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .hint {

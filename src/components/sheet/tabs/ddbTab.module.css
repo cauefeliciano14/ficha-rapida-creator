@@ -1,0 +1,342 @@
+/* Padrões compartilhados das abas da ficha — estilo D&D Beyond (modo escuro) */
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: 'Roboto', var(--font-body);
+}
+
+/* Linha de pílulas de filtro */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pill {
+  background: #2a3138;
+  border: none;
+  border-radius: 3px;
+  color: #b0b7bd;
+  padding: 3px 9px;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.pill:hover {
+  background: #353d45;
+  color: #fff;
+}
+
+.pillActive {
+  composes: pill;
+  background: #c53131;
+  color: #fff;
+}
+
+.pillActive:hover {
+  background: #d63c3c;
+}
+
+/* Cabeçalho de seção: versalete vermelho + filete fino */
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #c53131;
+  margin-bottom: 6px;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c53131;
+}
+
+.sectionMeta {
+  font-weight: 400;
+  color: #8a9299;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-size: 0.75rem;
+}
+
+.subHeader {
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #c53131;
+  margin: 6px 0 4px;
+}
+
+/* Tabela */
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.thead,
+.trow {
+  display: grid;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 4px;
+}
+
+.thead {
+  padding-top: 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #2a3138;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a9299;
+}
+
+.trow {
+  border-bottom: 1px solid #222a30;
+  font-size: 0.8125rem;
+  color: #e6e8ea;
+}
+
+.trowClickable {
+  composes: trow;
+  cursor: pointer;
+}
+
+.trowClickable:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.center {
+  text-align: center;
+  justify-self: center;
+}
+
+.name {
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.8125rem;
+}
+
+.sub {
+  font-size: 0.6875rem;
+  color: #8a9299;
+  margin-top: 1px;
+}
+
+.notes {
+  font-size: 0.6875rem;
+  color: #b0b7bd;
+}
+
+/* Caixa numérica (acerto/CD, dano) */
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding: 3px 6px;
+  border: 1px solid #3c454d;
+  border-radius: 3px;
+  background: #0f1418;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.boxRed {
+  composes: box;
+  border-color: #c53131;
+}
+
+/* Botões */
+.redBtn {
+  background: #c53131;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  padding: 3px 8px;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.redBtn:hover:not(:disabled) {
+  background: #d63c3c;
+}
+
+.redBtn:disabled {
+  background: #3a2427;
+  color: #7a6a6c;
+  cursor: not-allowed;
+}
+
+.addLink {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  color: #c53131;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.addLink:hover {
+  color: #e05454;
+}
+
+.search {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0f1418;
+  border: 1px solid #2a3138;
+  border-radius: 3px;
+  color: #e6e8ea;
+  padding: 6px 10px;
+  font-size: 0.8125rem;
+}
+
+.search:focus {
+  outline: none;
+  border-color: #c53131;
+}
+
+/* Bloco de característica */
+.feature {
+  padding: 8px 0;
+  border-bottom: 1px solid #222a30;
+}
+
+.featureName {
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.featureSource {
+  font-size: 0.6875rem;
+  color: #8a9299;
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+.featureDesc {
+  font-size: 0.8125rem;
+  color: #c4c9cd;
+  line-height: 1.5;
+  margin-top: 3px;
+  white-space: pre-line;
+}
+
+.nested {
+  border-left: 2px solid #c53131;
+  padding: 4px 0 4px 10px;
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: #c4c9cd;
+}
+
+/* Grade de características (antecedente) */
+.charGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px 16px;
+}
+
+.charLabel {
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8a9299;
+}
+
+.charValue {
+  font-size: 0.8125rem;
+  color: #e6e8ea;
+}
+
+.empty {
+  color: #6b747b;
+  font-size: 0.8125rem;
+  font-style: italic;
+  padding: 6px 0;
+}
+
+/* Checkbox ATIVO */
+.check {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #5a636b;
+  border-radius: 2px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+
+.checkOn {
+  composes: check;
+  background: #c53131;
+  border-color: #c53131;
+}
+
+.checkDisabled {
+  composes: check;
+  opacity: 0.25;
+  cursor: default;
+}
+
+.headerStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.statValue {
+  composes: box;
+  min-width: 48px;
+  font-size: 1rem;
+}
+
+.statLabel {
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8a9299;
+}

@@ -38,6 +38,10 @@ export interface CharacterPlayState {
   attunedItemIds: string[];
   customActions: CustomAction[];
   notes: string;
+  /** Aliados (aba Notas) */
+  allies?: string;
+  /** Inimigos (aba Notas) */
+  enemies?: string;
   extras: string;
   diceHistory: Array<{
     label: string;

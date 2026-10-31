@@ -14,6 +14,7 @@ export const AttributesStepWrapper: React.FC = () => {
     getAttributeBonus,
     selectedBackground,
     validationResult,
+    derivedSheet,
   } = useCharacter();
 
   const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
@@ -33,44 +34,13 @@ export const AttributesStepWrapper: React.FC = () => {
       impactSection="attributes"
     >
       <div className={styles.stepContent}>
-        <div
-          style={{
-            marginBottom: "24px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}
-        >
-          <div>
-            <h2
-              style={{
-                fontSize: "1.4rem",
-                color: "#f1f5f9",
-                margin: "0 0 8px 0",
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <span style={{ color: "#f97316" }}>✦</span> Atributos do
-              Personagem
-            </h2>
-            <p
-              style={{
-                fontSize: "0.85rem",
-                color: "#94a3b8",
-                margin: 0,
-                lineHeight: 1.6,
-                maxWidth: "600px",
-              }}
-            >
-              Escolha o método para determinar seus pontos base. Bônus do
-              antecedente serão adicionados a estes valores.
-            </p>
-          </div>
+        <div style={{ marginBottom: "20px" }}>
+          <h2 style={{ fontSize: "1.4rem", color: "#e6ebef", margin: "0 0 6px 0", fontWeight: 700 }}>
+            Atributos do Personagem
+          </h2>
+          <p style={{ fontSize: "0.85rem", color: "#8a96a0", margin: 0, lineHeight: 1.5 }}>
+            Escolha o método para definir os valores base. Bônus do antecedente são somados automaticamente.
+          </p>
         </div>
 
         <AttributesStep
@@ -78,6 +48,7 @@ export const AttributesStepWrapper: React.FC = () => {
           setCharacter={setCharacter}
           getAttributeBonus={getAttributeBonus}
           selectedBackground={selectedBackground}
+          derived={derivedSheet}
         />
 
         <SmartHints hints={computeSmartHints(character, selectedBackground)} />
