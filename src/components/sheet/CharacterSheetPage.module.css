@@ -319,21 +319,27 @@
 }
 
 /* ── Info Panel (fixed top-right overlay) ── */
+.pageWithPanel {
+  /* D&D Beyond: o painel de detalhes fica ao lado da ficha, sem cobrir nada. */
+  padding-right: calc(clamp(260px, 22vw, 320px) + 24px);
+  transition: padding-right 0.25s ease-out;
+}
+
 .colSidebar {
   display: flex;
   flex-direction: column;
   gap: 10px;
   position: fixed;
-  top: 12px;
+  top: 64px;
   right: 12px;
   width: clamp(260px, 22vw, 320px);
-  max-height: calc(100vh - 24px);
-  max-height: calc(100dvh - 24px);
+  max-height: calc(100vh - 76px);
+  max-height: calc(100dvh - 76px);
   overflow-y: auto;
-  background: rgba(16, 20, 28, 0.96);
+  background: #13191e;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #c53131;
   border-radius: 8px;
   padding: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -1810,4 +1816,24 @@
   font-size: 0.5em;
   font-weight: 600;
   margin-left: 2px;
+}
+
+/* Com o painel lateral aberto (ou tela menor), a faixa de cima quebra em
+   duas linhas em vez de passar por baixo do painel. */
+@container (max-width: 1180px) {
+  .statsBand {
+    flex-wrap: wrap;
+  }
+
+  .statsBandAbilities {
+    flex: 1 1 100%;
+  }
+
+  .statsBandRight {
+    flex: 1 1 100%;
+  }
+
+  .hpPanel {
+    flex: 1 1 280px;
+  }
 }

@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import type { ClassLevel } from '../../types/multiclass';
 import type { CharacterIdentityUpdate } from '../../types/character';
-import { ManageCharacterModal } from './ManageCharacterModal';
 import styles from './SheetHeader.module.css';
 
 interface SheetHeaderProps {
@@ -22,18 +20,12 @@ export function SheetHeader({
   name, portrait, speciesName, className, level: _level, creatureSize: _size, alignment, subclassName, classLevels, backgroundName, onUpdateIdentity,
 }: SheetHeaderProps) {
   void _size;
-  const [manageOpen, setManageOpen] = useState(false);
 
   const isMulticlass = classLevels && classLevels.length > 1;
   const classDisplay = isMulticlass
     ? classLevels.map(cl => `${cl.className} ${cl.level}`).join(' / ')
     : `${className || '—'}${subclassName ? ` (${subclassName})` : ''}`;
 
-  const handleManageSave = (data: { name?: string; portrait?: string | null; alignment?: string | null }) => {
-    if (onUpdateIdentity) {
-      onUpdateIdentity(data);
-    }
-  };
 
   return (
     <>
@@ -55,14 +47,13 @@ export function SheetHeader({
         <div className={styles.infoBlock}>
           {/* Name row */}
           <div className={styles.nameRow}>
-            <span className={styles.name}>{name || 'Sem Nome'}</span>
-            <button
-              className={styles.manageBtn}
-              title="Gerenciar"
-              onClick={() => setManageOpen(true)}
-            >
-              ⚙
-            </button>
+            <input
+              className={styles.name}
+              value={name}
+              placeholder="Sem Nome"
+              aria-label="Nome do personagem"
+              onChange={e => onUpdateIdentity?.({ name: e.target.value })}
+            />
           </div>
 
           {/* D&D Beyond: "Gnomo Bardo 1" numa linha, detalhes menores abaixo */}
@@ -78,15 +69,6 @@ export function SheetHeader({
         </div>
       </div>
 
-      {manageOpen && (
-        <ManageCharacterModal
-          name={name}
-          portrait={portrait}
-          alignment={alignment ?? null}
-          onSave={handleManageSave}
-          onClose={() => setManageOpen(false)}
-        />
-      )}
     </>
   );
 }

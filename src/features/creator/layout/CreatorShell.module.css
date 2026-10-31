@@ -329,3 +329,37 @@
     position: static;
   }
 }
+
+/* Barra superior: mesmo visual do botão "Atalhos" (sóbrio, cantos de 8px). */
+.topActions .savesFab,
+.topActions .undoBtn {
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #c8d0d6;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.topActions .savesFab {
+  padding: 0 12px;
+}
+
+.topActions .undoBtn {
+  width: 32px;
+}
+
+.topActions .savesFab:hover,
+.topActions .undoBtn:hover:not(:disabled) {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
+  filter: none;
+}

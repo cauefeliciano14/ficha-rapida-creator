@@ -24,7 +24,6 @@ import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
 import { useIsDesktop, useIsWide } from '../../hooks/useBreakpoints';
-import { useAbilityViewMode, markToggleFocus, shouldRestoreToggleFocus } from '../../hooks/useAbilityViewMode';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
@@ -182,17 +181,6 @@ export function CharacterSheetPage({
   /* ── Responsive layout ── */
   const isMobile = !useIsDesktop();
   const isDesktopWide = useIsWide();
-
-  /* ── Modo de visualização dos atributos (persistido em localStorage) ── */
-  const abilityView = useAbilityViewMode();
-  const abilityViewMode = abilityView[0];
-  const toggleAbilityViewMode = abilityView[2];
-  const viewModeBtnRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    if (shouldRestoreToggleFocus()) {
-      viewModeBtnRef.current?.focus();
-    }
-  }, []);
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
@@ -776,7 +764,7 @@ export function CharacterSheetPage({
   }, []);
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${sidebar !== null && isDesktopWide ? styles.pageWithPanel : ''}`}>
       {/* Sentinel for scroll detection */}
       <div ref={sentinelRef} style={{ height: 1 }} />
 
@@ -944,27 +932,13 @@ export function CharacterSheetPage({
         {/* 6 ability scores in horizontal row */}
         <div
           className={styles.statsBandAbilities}
-          data-view-mode={abilityViewMode}
-          style={abilityViewMode === 'stacked' ? { gridTemplateColumns: 'repeat(3, 1fr)' } : undefined}
         >
-          <button
-            type="button"
-            ref={viewModeBtnRef}
-            onClick={toggleAbilityViewMode}
-            onFocus={() => markToggleFocus(true)}
-            onBlur={() => markToggleFocus(false)}
-            className={styles.viewModeToggle}
-            aria-label={`Alternar modo de visualização dos atributos (atual: ${abilityViewMode === 'horizontal' ? 'horizontal' : 'empilhado'})`}
-            title="Alternar visualização dos atributos (horizontal / empilhado). A escolha é lembrada entre recarregamentos."
-          >
-            {abilityViewMode === 'horizontal' ? '▦' : '▤'}
-          </button>
           <AbilityScoreCards
             finalAttributes={derivedSheet.finalAttributes}
             modifiers={derivedSheet.modifiers}
             attributeBreakdowns={derivedSheet.attributeBreakdowns}
             onAbilityClick={handleAbilityClick}
-            horizontal={abilityViewMode === 'horizontal'}
+            horizontal
           />
         </div>
 
@@ -1262,8 +1236,9 @@ export function CharacterSheetPage({
                 role="button"
                 tabIndex={0}
               >
+                <div className={styles.statLabel}>CA</div>
                 <div className={styles.statValue}>{derivedSheet.armorClass}</div>
-                <div className={styles.statLabel}>CLASSE ARMADURA</div>
+                <div className={styles.statLabel} style={{ whiteSpace: 'normal', lineHeight: 1.15, textAlign: 'center' }}>CLASSE<br />ARMADURA</div>
               </div>
             </div>
 

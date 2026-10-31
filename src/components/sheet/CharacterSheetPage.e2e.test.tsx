@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll, vi, afterEach } from 'vitest';
-import { act } from 'react';
-import { render, screen, cleanup, within, fireEvent } from '@testing-library/react';
+import { render, screen, cleanup, within } from '@testing-library/react';
 import { CharacterSheetPage } from './CharacterSheetPage';
 import { DiceProvider } from '../../context/DiceContext';
 import { deriveSheet } from '../../rules/engine';
@@ -102,20 +101,4 @@ describe('CharacterSheetPage — E2E (Etapa 6) ordem alfabética + alturas', () 
     expect(screen.getByText('PONTOS DE VIDA')).toBeInTheDocument();
   });
 
-  it('toggle de modo de visualização persiste no localStorage e restaura foco ao recarregar', () => {
-    setViewport(1280);
-    const { unmount } = renderSheet();
-    const toggle = screen.getByRole('button', { name: /Alternar modo de visualização/ });
-    act(() => { toggle.focus(); });
-    expect(window.localStorage.getItem('sheet:abilityViewMode:focused')).toBe('1');
-    act(() => { fireEvent.click(toggle); });
-    expect(window.localStorage.getItem('sheet:abilityViewMode')).toBe('stacked');
-    unmount();
-
-    // "Reload" — re-render: foco deve ser restaurado e modo permanece stacked
-    renderSheet();
-    const toggle2 = screen.getByRole('button', { name: /atual: empilhado/ });
-    expect(toggle2).toBeInTheDocument();
-    expect(document.activeElement).toBe(toggle2);
-  });
 });
