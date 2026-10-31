@@ -16,7 +16,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 118px 1fr;
+  grid-template-columns: 132px 1fr;
   gap: 8px;
   padding: 4px 2px;
   border-bottom: 1px solid #222a30;
@@ -34,4 +34,20 @@
   font-size: 0.75rem;
   line-height: 1.4;
   color: #b0b7bd;
+}
+
+.group + .group {
+  margin-top: 22px;
+}
+
+.groupTitle {
+  margin: 0 0 10px;
+  padding-bottom: 4px;
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a949c;
+  border-bottom: 1px solid #2a333a;
 }

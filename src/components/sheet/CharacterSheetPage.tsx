@@ -1333,10 +1333,11 @@ export function CharacterSheetPage({
 
       </div>
 
-      {/* ===== INFO PANEL (fixed top-right overlay) ===== */}
+      {/* ===== INFO PANEL (gaveta à direita, como no D&D Beyond) ===== */}
+      {/* Portal no body: o desfoque do fundo do criador prenderia o painel fixo. */}
       {sidebar !== null && (
-        isDesktopWide ? (
-          <div className={styles.colSidebar}>
+        isDesktopWide ? createPortal(
+          <div className={`${styles.page} ${styles.colSidebar}`}>
             <div className={styles.colSidebarHeader}>
               <div>
                 {sidebarStack.length > 1 && (
@@ -1350,7 +1351,8 @@ export function CharacterSheetPage({
               <button onClick={closeSidebar} className={styles.colSidebarClose} aria-label="Fechar">✕</button>
             </div>
             {renderSidebarContent()}
-          </div>
+          </div>,
+          document.body,
         ) : (
           <SheetSidebar
             isOpen

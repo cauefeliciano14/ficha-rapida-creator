@@ -40,8 +40,8 @@
 }
 
 @keyframes sidebarSlideIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 /* ── Page ── */
@@ -53,7 +53,6 @@
   padding: clamp(4px, 1vw, 12px);
   background-color: #10141a;
   color: var(--text-body);
-  container-type: inline-size;
   /* Paleta no estilo D&D Beyond (modo escuro): painéis quase pretos,
      molduras finas vermelhas, rótulos em caixa-alta cinza-claro. */
   --ddb-red: #c53131;
@@ -321,8 +320,8 @@
 /* ── Info Panel (fixed top-right overlay) ── */
 .pageWithPanel {
   /* D&D Beyond: o painel de detalhes fica ao lado da ficha, sem cobrir nada. */
-  padding-right: calc(clamp(260px, 22vw, 320px) + 24px);
-  transition: padding-right 0.25s ease-out;
+  /* Como no D&D Beyond: a ficha não muda de tamanho; o painel entra
+     deslizando pela borda direita, de cima a baixo, por cima da ficha. */
 }
 
 .colSidebar {
@@ -330,21 +329,21 @@
   flex-direction: column;
   gap: 10px;
   position: fixed;
-  top: 64px;
-  right: 12px;
-  width: clamp(260px, 22vw, 320px);
-  max-height: calc(100vh - 76px);
-  max-height: calc(100dvh - 76px);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(300px, 26vw, 380px);
   overflow-y: auto;
   background: #13191e;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #c53131;
-  border-radius: 8px;
+  border: none;
+  border-left: 2px solid #c53131;
+  border-radius: 0;
   padding: 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
-  z-index: 80;
-  animation: sidebarSlideIn 0.25s ease-out;
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.6);
+  z-index: 120;
+  animation: sidebarSlideIn 0.22s ease-out;
 }
 
 .colSidebarHeader {
@@ -1836,9 +1835,9 @@
   margin-left: 2px;
 }
 
-/* Com o painel lateral aberto (ou tela menor), a faixa de cima quebra em
+/* Em tela menor, a faixa de cima quebra em
    duas linhas em vez de passar por baixo do painel. */
-@container (max-width: 1180px) {
+@media (max-width: 1180px) {
   .statsBand {
     flex-wrap: wrap;
   }
