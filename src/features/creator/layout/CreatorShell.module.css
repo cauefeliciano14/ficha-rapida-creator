@@ -15,9 +15,8 @@
 
   display: grid;
   grid-template-columns:
-    minmax(200px, 220px)
     minmax(0, 1fr)
-    minmax(220px, 260px);
+    minmax(240px, 280px);
   gap: clamp(12px, 1.4vw, 20px);
   flex: 1;
   min-height: 0;
@@ -34,7 +33,6 @@
 
 .shellSummaryCollapsed {
   grid-template-columns:
-    minmax(200px, 220px)
     minmax(0, 1fr)
     var(--creator-collapsed-rail-size);
 }
@@ -297,9 +295,8 @@
 @media (max-width: 1279px) {
   .shell {
     grid-template-columns:
-      minmax(180px, 200px)
       minmax(0, 1fr)
-      minmax(200px, 240px);
+      minmax(220px, 250px);
   }
 }
 @media (max-width: 1023px) {

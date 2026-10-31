@@ -5,103 +5,74 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 8px 16px;
-  background: linear-gradient(180deg, rgba(16, 20, 26, 0.96), rgba(16, 20, 26, 0.88));
+  padding: 0 16px;
+  min-height: 52px;
+  background: rgba(13, 17, 21, 0.96);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Roboto', sans-serif;
   color: #e2e8f0;
 }
 
-.percentBlock {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  flex-shrink: 0;
-  min-width: 80px;
-}
-
-.percentValue {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fbbf24;
-  font-variant-numeric: tabular-nums;
-}
-
-.percentLabel {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.track {
+.tabs {
   flex: 1;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
-}
-
-.fill {
-  height: 100%;
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
-  border-radius: 999px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fillComplete {
-  background: linear-gradient(90deg, #10b981, #059669);
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.55);
-}
-
-.steps {
   display: flex;
+  align-items: stretch;
+  justify-content: center;
   gap: 4px;
-  flex-shrink: 0;
+  align-self: stretch;
+  min-width: 0;
 }
 
-.dot {
-  width: 22px;
-  height: 22px;
-  display: flex;
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: #8a9aa6;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab:hover {
+  color: #fff;
+}
+
+.tab:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.tabActive {
+  color: #fff;
+  font-weight: 700;
+  border-bottom-color: #c53131;
+}
+
+.tabCheck {
+  color: #6fcf97;
+  font-size: 0.75rem;
+}
+
+.tabCount {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-size: 0.7rem;
+  border-radius: 999px;
+  background: #c53131;
+  color: #fff;
+  font-size: 0.6875rem;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.05);
-  color: #64748b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
-  position: relative;
-}
-
-.dot:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dotActive {
-  background: rgba(251, 191, 36, 0.18);
-  color: #fbbf24;
-  border-color: rgba(251, 191, 36, 0.5);
-  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15);
-}
-
-.dotComplete {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
-.dotPending {
-  background: rgba(249, 115, 22, 0.18);
-  color: #fb923c;
-  border-color: rgba(249, 115, 22, 0.4);
 }
 
 .pendingBadge {
@@ -132,111 +103,65 @@
   flex-shrink: 0;
 }
 
-.quickBuildBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  border: 1px solid rgba(168, 85, 247, 0.5);
+.shortcuts {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.shortcutsBtn {
+  list-style: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #c8d0d6;
+  cursor: pointer;
+  user-select: none;
+}
+
+.shortcutsBtn::-webkit-details-marker {
+  display: none;
+}
+
+.shortcutsBtn:hover {
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-.quickBuildBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
-}
-
-.quickBuildBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.quizBtn, .randomBtn, .templatesBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
+.shortcutsMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: #1a2128;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  z-index: 60;
+}
+
+.shortcutsMenu button {
+  text-align: left;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
   color: #e2e8f0;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font: inherit;
+  font-size: 0.875rem;
   cursor: pointer;
-  flex-shrink: 0;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-  font-family: inherit;
 }
 
-.quizBtn:hover {
-  background: rgba(168, 85, 247, 0.14);
-  border-color: rgba(168, 85, 247, 0.45);
-  color: #c084fc;
-  transform: translateY(-1px);
+.shortcutsMenu button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  filter: none;
 }
 
-.randomBtn {
-  font-size: 0.95rem;
-  padding: 4px 10px;
-}
-
-.randomBtn:hover {
-  background: rgba(251, 191, 36, 0.14);
-  border-color: rgba(251, 191, 36, 0.45);
-  transform: translateY(-1px) rotate(8deg);
-}
-
-.templatesBtn:hover {
-  background: rgba(255, 213, 74, 0.14);
-  border-color: rgba(255, 213, 74, 0.5);
-  color: #ffd54a;
-  transform: translateY(-1px);
-}
-
-@media (max-width: 767px) {
-  .bar {
-    padding: 6px 10px;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .steps {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .percentBlock {
-    min-width: auto;
-  }
-  .percentLabel {
-    display: none;
-  }
-}
-
-/* Telas médias: as bolinhas de etapa repetem o menu lateral, então saem
-   para que os botões da direita não sejam cortados. */
-@media (min-width: 768px) and (max-width: 1279px) {
-  .bar {
-    gap: 10px;
-  }
-  .steps,
-  .percentLabel {
-    display: none;
-  }
-  .percentBlock {
-    min-width: auto;
-  }
-  .track {
-    min-width: 40px;
-  }
+.shortcutsMenu button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
