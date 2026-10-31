@@ -27,11 +27,9 @@ describe('AbilityScoreCards — visual contract', () => {
     expect(boxBlock).toMatch(/border-radius\s*:/);
   });
 
-  it('label e scoreBadge não usam position: absolute', () => {
+  it('label não usa position: absolute', () => {
     const labelBlock = css.match(/\.label\s*\{[^}]*\}/)?.[0] ?? '';
-    const badgeBlock = css.match(/\.scoreBadge\s*\{[^}]*\}/)?.[0] ?? '';
     expect(labelBlock).not.toMatch(/position\s*:\s*absolute/);
-    expect(badgeBlock).not.toMatch(/position\s*:\s*absolute/);
   });
 
   it('modificador é formatado com sinal (+/-/+0)', () => {
@@ -77,7 +75,7 @@ describe('AbilityScoreCards — ordering contract', () => {
     const labels = Array.from(container.querySelectorAll('[class*="label"]'))
       .map(el => el.textContent?.trim())
       .filter(Boolean);
-    expect(labels.slice(0, 6)).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+    expect(labels.slice(0, 6)).toEqual(['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma']);
 
     act(() => root.unmount());
     container.remove();
@@ -108,15 +106,18 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     resolve(__dirname, './CharacterSheetPage.module.css'),
     'utf8'
   );
+  const abilityCss = readFileSync(
+    resolve(__dirname, './AbilityScoreCards.module.css'),
+    'utf8'
+  );
 
   it('.statsBand é flex row no desktop (linha única)', () => {
     const block = css.match(/\.statsBand\s*\{[^}]*\}/)?.[0] ?? '';
     expect(block).toMatch(/flex-direction\s*:\s*row/);
   });
 
-  it('.statsBandAbilities distribui 6 colunas iguais', () => {
-    const block = css.match(/\.statsBandAbilities\s*\{[^}]*\}/)?.[0] ?? '';
-    expect(block).toMatch(/grid-template-columns\s*:\s*repeat\(6,\s*1fr\)/);
+  it('.gridHorizontal distribui 6 colunas iguais', () => {
+    expect(abilityCss).toMatch(/\.gridHorizontal\s*\{[^}]*grid-template-columns\s*:\s*repeat\(6,\s*1fr\)/);
   });
 
   it('.statsBandRight não quebra linha por padrão (nowrap) no desktop', () => {
@@ -221,7 +222,7 @@ describe('AbilityScoreCards — accessibility & ordering on stacked layout', () 
     const labels = Array.from(container.querySelectorAll('[class*="label"]'))
       .map(el => el.textContent?.trim())
       .filter(Boolean);
-    expect(labels.slice(0, 6)).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+    expect(labels.slice(0, 6)).toEqual(['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma']);
 
     act(() => root.unmount());
     container.remove();

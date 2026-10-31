@@ -80,7 +80,7 @@ describe('CharacterSheetPage — E2E (Etapa 6) ordem alfabética + alturas', () 
     const { container } = renderSheet();
     const cards = container.querySelectorAll('[data-ability-key]');
     const labels = Array.from(cards).map(c => within(c as HTMLElement).getAllByText(/^[A-Za-zÀ-ú]+$/)[0]?.textContent);
-    expect(labels).toEqual(['Carisma', 'Constituição', 'Destreza', 'Força', 'Inteligência', 'Sabedoria']);
+    expect(labels).toEqual(['Força', 'Destreza', 'Constituição', 'Inteligência', 'Sabedoria', 'Carisma']);
   });
 
   it('em viewport 1100px todos os blocos PB/Caminhada/Inspiração/HP existem com altura mínima esperada', () => {
@@ -97,7 +97,7 @@ describe('CharacterSheetPage — E2E (Etapa 6) ordem alfabética + alturas', () 
     const { container } = renderSheet();
     const labels = Array.from(container.querySelectorAll('[data-ability-key]'))
       .map(c => c.getAttribute('data-ability-key'));
-    expect(labels).toEqual(['carisma', 'constituicao', 'destreza', 'forca', 'inteligencia', 'sabedoria']);
+    expect(labels).toEqual(['forca', 'destreza', 'constituicao', 'inteligencia', 'sabedoria', 'carisma']);
     expect(screen.getByText('PROFICIÊNCIA')).toBeInTheDocument();
     expect(screen.getByText('PONTOS DE VIDA')).toBeInTheDocument();
   });

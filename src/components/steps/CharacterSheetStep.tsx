@@ -20,7 +20,6 @@ export const CharacterSheetStep: React.FC = () => {
     playState,
     setPlayState,
     selectedBackground,
-    validationResult,
     handleResetCharacter,
     activeCharacterId,
   } = useCharacter();
@@ -45,7 +44,6 @@ export const CharacterSheetStep: React.FC = () => {
     setIsPortraitModalOpen,
   } = useWizard();
 
-  const validationErrors = validationResult.errors;
 
   const handleFullReset = () => {
     handleResetCharacter();
@@ -131,7 +129,6 @@ export const CharacterSheetStep: React.FC = () => {
       setCharacterName={(n: string) => setCharacter(prev => ({ ...prev, name: n }))}
       portrait={character.portrait}
       onPortraitClick={() => setIsPortraitModalOpen(true)}
-      errors={validationErrors}
       isResetMode={true}
       onReset={handleFullReset}
     >

@@ -2,18 +2,18 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: rgba(18, 22, 30, 0.85);
-  border-radius: 6px;
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: center;
+  background: transparent;
+  padding: 4px 0;
+  border: none;
   min-width: 0;
-  max-width: 380px;
+  max-width: 520px;
 }
 
 .portrait {
-  width: 56px;
-  height: 56px;
-  border-radius: 6px;
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
   background: linear-gradient(135deg, var(--surface-dark), var(--surface-elevated));
   border: 2px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -49,8 +49,8 @@
 }
 
 .name {
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-family: 'Roboto', var(--font-body), sans-serif;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--text-bright);
   line-height: 1.2;
@@ -135,4 +135,22 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 180px;
+}
+
+.subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.details {
+  display: flex;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.dotSep {
+  opacity: 0.6;
 }

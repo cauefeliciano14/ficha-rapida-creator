@@ -12,7 +12,7 @@ const ABILITY_LABELS: Array<{ key: string; label: string; abbr: string }> = ([
   { key: 'inteligencia', label: 'Inteligência', abbr: 'INT' },
   { key: 'sabedoria', label: 'Sabedoria', abbr: 'SAB' },
   { key: 'carisma', label: 'Carisma', abbr: 'CAR' },
-] as const).slice().sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
+] as const).slice(); // ordem do livro: FOR, DES, CON, INT, SAB, CAR
 
 interface AbilityScoreCardsProps {
   finalAttributes: Record<string, number>;
@@ -57,8 +57,7 @@ export const AbilityScoreCards = memo(function AbilityScoreCards({ finalAttribut
               {signedMod(mod)}
             </div>
             <div className={styles.scoreBadge}>
-              <span className={styles.scoreLabel}>Total</span>
-              <span className={styles.scoreValue}>{score}</span>
+                            <span className={styles.scoreValue}>{score}</span>
             </div>
           </div>
         );

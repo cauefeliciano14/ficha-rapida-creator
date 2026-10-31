@@ -64,6 +64,25 @@
   background-color: #10141a;
   color: var(--text-body);
   container-type: inline-size;
+  /* Paleta no estilo D&D Beyond (modo escuro): painéis quase pretos,
+     molduras finas vermelhas, rótulos em caixa-alta cinza-claro. */
+  --ddb-red: #c53131;
+  --border-theme: #c53131;
+  --border-theme-dark: #8f2424;
+  --color-primary: #c53131;
+  --color-primary-light: #e04848;
+  --color-primary-glow: rgba(197, 49, 49, 0.35);
+  --color-primary-subtle: rgba(197, 49, 49, 0.14);
+  --surface-card: #13191e;
+  --surface-panel-card: #13191e;
+  --surface-elevated: #1a2228;
+  --surface-inset: #0d1215;
+  --text-bright: #ffffff;
+  --text-secondary: #c8d0d6;
+  --text-dim: #8a9aa6;
+  --text-faint: #5f6d77;
+  --font-label: 'Roboto Condensed', 'Roboto', 'Arial Narrow', sans-serif;
+  background: radial-gradient(ellipse at top, #1c252c 0%, #0b0f12 70%);
 }
 
 /* ── Sticky condensed header ── */
@@ -193,11 +212,9 @@
 .statsBandAbilities {
   flex: 1 1 0;
   min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  align-items: stretch;
+  display: block;
   position: relative;
+  padding-bottom: 4px;
 }
 
 .viewModeToggle {
@@ -245,9 +262,9 @@
 .mainGrid {
   display: grid;
   grid-template-columns: 220px minmax(160px, 260px) 1fr;
-  gap: 6px;
+  gap: 8px;
   max-width: 1400px;
-  margin: 4px auto 0;
+  margin: 18px auto 0;
   align-items: start;
   animation: sheetFadeIn 0.5s ease-out 0.15s both;
   width: 100%;
@@ -723,9 +740,9 @@
   background: var(--surface-panel-card);
   border: 1px solid var(--border-theme);
   border-radius: 6px;
-  padding: clamp(6px, 1vw, 12px);
+  padding: 10px 10px 30px;
   position: relative;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.3);
   isolation: isolate;
 }
 
@@ -740,33 +757,36 @@
 }
 
 .sectionHeader {
+  /* D&D Beyond: o título fica na base da caixa, em caixa-alta, sem faixa. */
   position: absolute;
-  top: -9px;
+  top: auto;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--color-primary);
-  color: #fff;
+  background: transparent;
+  color: var(--text-bright);
   font-family: var(--font-label);
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 2px 14px;
-  border-radius: 4px;
+  padding: 0 6px;
   border: none;
   white-space: nowrap;
   z-index: 3;
-  line-height: 1.5;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  line-height: 1.2;
+  max-width: calc(100% - 12px);
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 /* ── Stat Card (PB, Speed, Init, AC) ── */
 .statBox {
   background: var(--surface-card);
-  border: 2px solid var(--border-theme);
+  border: 1px solid var(--border-theme);
   border-radius: 6px;
   padding: 10px 8px;
   text-align: center;
@@ -887,9 +907,9 @@
   height: 100%;
   align-self: stretch;
   flex: 0 0 auto;
-  border: 2px solid hsl(43, 50%, 35%);
+  border: 1px solid var(--border-theme);
   border-radius: 6px;
-  background: linear-gradient(135deg, hsl(43, 30%, 12%), hsl(43, 20%, 8%));
+  background: var(--surface-card);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -927,7 +947,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: hsl(43, 60%, 55%);
+  color: var(--text-bright);
   white-space: nowrap;
   line-height: 1;
 }

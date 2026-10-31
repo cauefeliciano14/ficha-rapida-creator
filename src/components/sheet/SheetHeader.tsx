@@ -21,7 +21,7 @@ interface SheetHeaderProps {
 export function SheetHeader({
   name, portrait, speciesName, className, level: _level, creatureSize: _size, alignment, subclassName, classLevels, backgroundName, onUpdateIdentity,
 }: SheetHeaderProps) {
-  void _level; void _size;
+  void _size;
   const [manageOpen, setManageOpen] = useState(false);
 
   const isMulticlass = classLevels && classLevels.length > 1;
@@ -65,22 +65,15 @@ export function SheetHeader({
             </button>
           </div>
 
-          {/* Meta rows */}
-          <div className={styles.metaGrid}>
-            <span className={styles.metaLabel}>CLASSE</span>
-            <span className={styles.metaValueAccent}>{classDisplay}</span>
-
-            <span className={styles.metaLabel}>ORIGEM</span>
-            <span className={styles.metaValue}>{backgroundName || 'Não definida'}</span>
-
-            <span className={styles.metaLabel}>ESPÉCIE</span>
-            <span className={styles.metaValue}>{speciesName || 'Não definida'}</span>
+          {/* D&D Beyond: "Gnomo Bardo 1" numa linha, detalhes menores abaixo */}
+          <div className={styles.subtitle}>
+            {[speciesName, classDisplay].filter(Boolean).join(' ')}
+            {!isMulticlass && _level ? ` ${_level}` : ''}
           </div>
-
-          {/* Alignment row */}
-          <div className={styles.alignmentRow}>
-            <span className={styles.metaLabel}>ALINHAMENTO</span>
-            <span className={styles.alignmentBadge}>{alignment || 'Não definido'}</span>
+          <div className={styles.details}>
+            <span>{backgroundName || 'Sem origem'}</span>
+            <span className={styles.dotSep}>•</span>
+            <span>{alignment || 'Sem alinhamento'}</span>
           </div>
         </div>
       </div>
