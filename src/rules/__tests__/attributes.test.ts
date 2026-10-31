@@ -210,3 +210,19 @@ describe('isAttributesStepComplete', () => {
     expect(isAttributesStepComplete({ method: null, base: attrs })).toBe(false);
   });
 });
+
+describe('Rolagem libera o Avançar depois de aplicar os valores', () => {
+  it('com os 6 atributos preenchidos e sem a lista de rolagens (como a validação chama)', () => {
+    expect(isAttributesStepComplete({
+      method: 'random',
+      base: { forca: 14, destreza: 14, constituicao: 14, inteligencia: 17, sabedoria: 15, carisma: 15 },
+    })).toBe(true);
+  });
+
+  it('antes de aplicar (atributos zerados) continua travado', () => {
+    expect(isAttributesStepComplete({
+      method: 'random',
+      base: { forca: 0, destreza: 0, constituicao: 0, inteligencia: 0, sabedoria: 0, carisma: 0 },
+    })).toBe(false);
+  });
+});

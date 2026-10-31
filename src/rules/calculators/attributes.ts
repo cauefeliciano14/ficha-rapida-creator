@@ -204,13 +204,15 @@ export function isAttributesStepComplete(attrs: {
   if (attrs.method === 'random') {
     const baseValues = Object.values(attrs.base as Record<string, number>);
     if (baseValues.length < 6 || !baseValues.every(v => v > 0)) return false;
+    // Os valores já aplicados nos 6 atributos bastam. A lista de rolagens só é
+    // checada quando vier junto (antes, sem ela, a Rolagem nunca deixava avançar).
     if (attrs.randomRolls && attrs.randomRolls.length >= 6) {
       const assignedAttrs = new Set(
         attrs.randomRolls.filter(r => r.assignedTo).map(r => r.assignedTo)
       );
       return assignedAttrs.size >= 6;
     }
-    return false;
+    return true;
   }
 
   return false;
