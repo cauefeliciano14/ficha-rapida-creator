@@ -1390,8 +1390,12 @@
   border: none;
   border-right: 1px solid var(--border-theme-dark);
   color: var(--text-dim);
-  padding: 4px 10px;
-  font-size: 0.85rem;
+  padding: 6px 12px;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -1405,9 +1409,23 @@
   color: var(--text-secondary);
 }
 
-.advantageBtnActive {
-  background: rgba(197, 49, 49, 0.2);
-  color: var(--color-primary-light);
+.advantageBtnActive,
+.advantageBtnActive:hover {
+  background: #c53131;
+  color: #fff;
+}
+
+.diceCardMode {
+  font-family: var(--font-label);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e0b75a;
+}
+
+.diceCardMode s {
+  color: var(--text-dim);
 }
 
 /* ── Saving Throw label ── */

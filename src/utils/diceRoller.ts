@@ -51,10 +51,9 @@ export function rollD20Check(
   const chosen = advantageMode === 'advantage' ? Math.max(roll1, roll2) : Math.min(roll1, roll2);
   const discarded = advantageMode === 'advantage' ? Math.min(roll1, roll2) : Math.max(roll1, roll2);
   const total = chosen + modifier;
-  const modeLabel = advantageMode === 'advantage' ? 'Vantagem' : 'Desvantagem';
 
   return {
-    formula: `2d20${advantageMode === 'advantage' ? 'kh1' : 'kl1'}${modifier >= 0 ? '+' : ''}${modifier} (${modeLabel})`,
+    formula: `2d20 (${advantageMode === 'advantage' ? 'maior' : 'menor'})${modifier >= 0 ? '+' : ''}${modifier}`,
     rolls: [chosen],
     modifier,
     total,

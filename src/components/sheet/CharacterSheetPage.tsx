@@ -832,9 +832,10 @@ export function CharacterSheetPage({
                   key={mode}
                   onClick={() => setAdvantageMode(mode)}
                   className={advantageMode === mode ? `${styles.advantageBtn} ${styles.advantageBtnActive}` : styles.advantageBtn}
-                  title={mode === 'normal' ? 'Normal' : mode === 'advantage' ? 'Vantagem' : 'Desvantagem'}
+                  title={mode === 'normal' ? 'Rolar 1d20' : mode === 'advantage' ? 'Rolar 2d20 e ficar com o maior' : 'Rolar 2d20 e ficar com o menor'}
+                  aria-pressed={advantageMode === mode}
                 >
-                  {mode === 'normal' ? '⚖' : mode === 'advantage' ? '▲' : '▼'}
+                  {mode === 'normal' ? 'Normal' : mode === 'advantage' ? 'Vantagem' : 'Desvantagem'}
                 </button>
               ))}
             </div>
@@ -1382,6 +1383,12 @@ export function CharacterSheetPage({
             >
               {diceToast.result.rolls[0]}
             </div>
+            {diceToast.result.discardedRoll !== undefined && (
+              <div className={styles.diceCardMode}>
+                {diceToast.result.advantageMode === 'advantage' ? 'Vantagem' : 'Desvantagem'}
+                {' · '}descartado <s>{diceToast.result.discardedRoll}</s>
+              </div>
+            )}
             {diceToast.result.isCritical && <div className={styles.diceCardBadge}>Acerto Crítico!</div>}
             {diceToast.result.isFumble && <div className={styles.diceCardBadgeFumble}>Falha Crítica!</div>}
             <div className={styles.diceCardFormula}>{diceToast.result.formula}</div>
