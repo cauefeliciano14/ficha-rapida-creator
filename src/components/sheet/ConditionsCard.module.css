@@ -89,3 +89,57 @@
   color: var(--text-faint);
   cursor: default;
 }
+
+.pillTextBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: help;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  white-space: nowrap;
+}
+
+.pillTextBtn:hover,
+.pillTextBtn[aria-expanded='true'] {
+  color: #fff;
+  text-decoration: underline dotted;
+}
+
+.popover {
+  position: fixed;
+  z-index: 9999;
+  width: 280px;
+  padding: 10px 12px;
+  background: #0d1215;
+  border: 1px solid #c53131;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 16px 40px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+
+.popoverTitle {
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c53131;
+  margin-bottom: 4px;
+}
+
+.effects,
+.previewEffects {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #e6e8ea;
+}
+
+.previewEffects {
+  font-size: 0.68rem;
+  color: #b0b7bd;
+}

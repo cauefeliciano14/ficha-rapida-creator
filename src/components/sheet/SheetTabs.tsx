@@ -10,9 +10,10 @@ import { FeaturesTraitsTab } from './tabs/FeaturesTraitsTab';
 import { BackgroundTab } from './tabs/BackgroundTab';
 import { NotesTab } from './tabs/NotesTab';
 import { ExtrasTab } from './tabs/ExtrasTab';
+import { RulesTab } from './tabs/RulesTab';
 import styles from './SheetTabs.module.css';
 
-type TabId = 'actions' | 'spells' | 'inventory' | 'features' | 'background' | 'notes' | 'extras';
+type TabId = 'actions' | 'spells' | 'inventory' | 'features' | 'background' | 'notes' | 'extras' | 'rules';
 
 const TABS: Array<{ id: TabId; label: string }> = [
   { id: 'actions',    label: 'Ações' },
@@ -22,6 +23,7 @@ const TABS: Array<{ id: TabId; label: string }> = [
   { id: 'background', label: 'Antecedente' },
   { id: 'notes',      label: 'Notas' },
   { id: 'extras',     label: 'Extras' },
+  { id: 'rules',      label: 'Regras' },
 ];
 
 interface Feature { level: number; name: string; description: string }
@@ -207,6 +209,7 @@ export function SheetTabs({
           onUpdateIdentity={onUpdateIdentity}
         />
       )}
+      {activeTab === 'rules' && <RulesTab />}
       {activeTab === 'extras' && (
         <ExtrasTab
           extras={playState.extras}

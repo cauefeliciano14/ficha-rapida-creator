@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.section {
+  min-width: 0;
+}
+
+.list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 8px;
+  padding: 4px 2px;
+  border-bottom: 1px solid #222a30;
+}
+
+.term {
+  font-family: 'Roboto Condensed', var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #b0b7bd;
+}

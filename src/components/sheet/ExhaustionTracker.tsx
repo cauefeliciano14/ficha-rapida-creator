@@ -1,4 +1,6 @@
 import styles from './ExhaustionTracker.module.css';
+import { exhaustionEffect } from '../../data/conditions2024';
+import { withSquares } from '../../utils/format';
 
 interface ExhaustionTrackerProps {
   level: number;
@@ -27,7 +29,7 @@ export function ExhaustionTracker({ level, onChange }: ExhaustionTrackerProps) {
         <span className={styles.label}>EXAUSTÃO</span>
         {level > 0 && (
           <span className={styles.penalty} style={{ color: SEGMENT_COLORS[Math.min(level, SEGMENT_COUNT) - 1] }}>
-            −{level} d20
+            −{exhaustionEffect(level).d20Penalty} d20
           </span>
         )}
       </div>
@@ -45,6 +47,12 @@ export function ExhaustionTracker({ level, onChange }: ExhaustionTrackerProps) {
           );
         })}
       </div>
+      {level > 0 && level < 6 && (
+        <span className={styles.rule}>
+          −{exhaustionEffect(level).d20Penalty} em todo Teste de D20 · Deslocamento −
+          {withSquares(`${exhaustionEffect(level).speedReductionM.toLocaleString('pt-BR')} m`)} · Descanso Longo remove 1 nível
+        </span>
+      )}
       {level >= 6 && (
         <span className={styles.deadLabel}>MORTE</span>
       )}

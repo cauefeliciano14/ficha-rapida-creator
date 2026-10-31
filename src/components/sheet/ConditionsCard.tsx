@@ -1,6 +1,52 @@
 import { useState } from 'react';
-import { D6_CONDITIONS } from '../../rules/calculators/sheet';
+import { createPortal } from 'react-dom';
+import { CONDITIONS_2024, findCondition } from '../../data/conditions2024';
 import styles from './ConditionsCard.module.css';
+
+/** Exaustão tem rastreador próprio; fica fora do seletor. */
+const PICKABLE = CONDITIONS_2024.filter(c => c.name !== 'Exaustão').map(c => c.name);
+
+function ConditionPill({ name, onRemove }: { name: string; onRemove: () => void }) {
+  const info = findCondition(name);
+  const [hover, setHover] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const open = (hover || pinned) && !!info && !!pos;
+
+  const place = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    const w = 280;
+    setPos({ top: r.bottom + 8, left: Math.max(12, Math.min(r.left, window.innerWidth - w - 12)) });
+  };
+
+  return (
+    <div
+      className={styles.pill}
+      onMouseEnter={e => { place(e.currentTarget); setHover(true); }}
+      onMouseLeave={() => setHover(false)}
+    >
+      <button
+        type="button"
+        className={styles.pillTextBtn}
+        aria-expanded={open}
+        onClick={e => { place(e.currentTarget.parentElement as HTMLElement); setPinned(p => !p); }}
+        onBlur={() => setPinned(false)}
+      >
+        {info?.name ?? name}
+      </button>
+      <button onClick={onRemove} className={styles.removeBtn} aria-label={`Remover ${name}`}>✕</button>
+      {open && info && pos && createPortal(
+        <div className={styles.popover} style={{ top: pos.top, left: pos.left }} role="tooltip">
+          <div className={styles.popoverTitle}>{info.name}</div>
+          <ul className={styles.effects}>
+            {info.effects.map(e => <li key={e}>{e}</li>)}
+          </ul>
+        </div>,
+        document.body,
+      )}
+    </div>
+  );
+}
 
 interface ConditionsCardProps {
   activeConditions: string[];
@@ -19,7 +65,9 @@ export function ConditionsCard({
 }: ConditionsCardProps) {
   const [selected, setSelected] = useState('');
 
-  const available = D6_CONDITIONS.filter(c => !activeConditions.includes(c));
+  const activeCanon = activeConditions.map(c => findCondition(c)?.name ?? c);
+  const available = PICKABLE.filter(c => !activeCanon.includes(c));
+  const selectedInfo = selected ? findCondition(selected) : undefined;
 
   const handleAdd = () => {
     if (selected && !activeConditions.includes(selected)) {
@@ -43,10 +91,7 @@ export function ConditionsCard({
           </div>
         )}
         {activeConditions.map(c => (
-          <div key={c} className={styles.pill}>
-            <span className={`${styles.pillText} glossary-term`} data-glossary={c}>{c}</span>
-            <button onClick={() => onRemove(c)} className={styles.removeBtn}>✕</button>
-          </div>
+          <ConditionPill key={c} name={c} onRemove={() => onRemove(c)} />
         ))}
       </div>
 
@@ -69,6 +114,11 @@ export function ConditionsCard({
           +
         </button>
       </div>
+      {selectedInfo && (
+        <ul className={styles.previewEffects}>
+          {selectedInfo.effects.map(e => <li key={e}>{e}</li>)}
+        </ul>
+      )}
     </div>
   );
 }
