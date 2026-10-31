@@ -195,12 +195,20 @@ export function CharacterSheetPage({
   useEffect(() => {
     const parent = pageRef.current?.parentElement;
     if (!parent) return;
-    const update = () => setPageZoom(Math.min(1, parent.clientWidth / SHEET_DESIGN_WIDTH));
+    const update = () => {
+      // Largura útil do pai (sem o padding), senão a ficha passa da borda direita.
+      const cs = getComputedStyle(parent);
+      const usable = parent.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      setPageZoom(Math.min(1, usable / SHEET_DESIGN_WIDTH));
+    };
     update();
-    if (typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(update);
-    ro.observe(parent);
-    return () => ro.disconnect();
+    window.addEventListener('resize', update);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update);
+    ro?.observe(parent);
+    return () => {
+      window.removeEventListener('resize', update);
+      ro?.disconnect();
+    };
   }, []);
 
   /* ── Rest modal state ── */
@@ -796,7 +804,7 @@ export function CharacterSheetPage({
     <div
       ref={pageRef}
       className={`${styles.page} ${sidebar !== null && isDesktopWide ? styles.pageWithPanel : ''}`}
-      style={pageZoom < 1 ? { width: SHEET_DESIGN_WIDTH, zoom: pageZoom } : undefined}
+      style={pageZoom < 1 ? { width: SHEET_DESIGN_WIDTH, maxWidth: 'none', boxSizing: 'border-box', zoom: pageZoom } : undefined}
     >
       {/* Sentinel for scroll detection */}
       <div ref={sentinelRef} style={{ height: 1 }} />

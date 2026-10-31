@@ -317,6 +317,18 @@
   align-items: stretch;
 }
 
+/* Defesas e Condições dividem o espaço e podem encolher (antes a última passava da borda). */
+.combatRowPanels > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.combatRowPanels select,
+.combatRowPanels input {
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* ── Info Panel (fixed top-right overlay) ── */
 .pageWithPanel {
   /* D&D Beyond: o painel de detalhes fica ao lado da ficha, sem cobrir nada. */
