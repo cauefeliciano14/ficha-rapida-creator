@@ -137,7 +137,7 @@ describe('App validation banners by creation step', () => {
 
     expect(view.container.textContent).toContain('Classe');
     expect(view.container.textContent).toContain('Escolha sua Classe');
-    expect(view.container.textContent).toContain('Escolha uma classe ao lado para ver atributos primários');
+    expect(view.container.textContent).toContain('Qual é o seu papel?');
 
     view.cleanup();
   });
@@ -146,7 +146,7 @@ describe('App validation banners by creation step', () => {
 
     const html = view.container.innerHTML;
     expect(html.indexOf('Classe')).toBeGreaterThan(-1);
-    expect(html.indexOf('Escolha uma classe ao lado')).toBeGreaterThan(-1);
+    expect(html.indexOf('Selecionar classe Bárbaro')).toBeGreaterThan(-1);
 
     view.cleanup();
   });

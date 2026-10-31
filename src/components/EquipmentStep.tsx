@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { classStartingSpells } from '../data/spellsData';
 import { isCaster as engineIsCaster } from '../rules/calculators/spells';
 import { getMaxSpellCircle } from '../rules/utils/spellSelection';
 import type { DerivedSheet } from '../rules/types/DerivedSheet';
 import type { Character, Selection, CatalogItemBase } from '../types/character';
 import { getEquipmentForClass, getEquipmentForBackground } from '../data/equipmentData';
 import { getArmorByName } from '../rules/data/armorRules';
-import { sanitizeEquipmentState } from '../rules/utils/equipment';
+import { sanitizeEquipmentState, toggleItemEquipped } from '../rules/utils/equipment';
 import { Accordion } from './equipment/Accordion';
 import { TabBar } from './equipment/TabBar';
 import { StartingEquipment } from './equipment/StartingEquipment';
@@ -28,7 +27,6 @@ interface EquipmentStepProps {
 export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selectedBackground, updateEquipment, updateSpells, derivedSheet }) => {
   const classId = character.characterClass?.id || '';
   const bgId = selectedBackground?.id || '';
-  const spellInfo = classStartingSpells[classId];
   const isCaster = engineIsCaster(classId);
 
   const [activeTab, setActiveTab] = useState('equipment');
@@ -71,17 +69,8 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
     }
   }, [classId, isCaster]);
 
-  // Pre-select starting spells when entering the step (each array checked independently)
-  useEffect(() => {
-    if (!isCaster || !spellInfo) return;
-    updateSpells(prev => ({
-      ...prev,
-      learnedCantrips: prev.learnedCantrips.length === 0 && spellInfo.cantrips.length > 0
-        ? spellInfo.cantrips : prev.learnedCantrips,
-      preparedSpells: prev.preparedSpells.length === 0 && spellInfo.level1.length > 0
-        ? spellInfo.level1 : prev.preparedSpells,
-    }));
-  }, [classId]);
+  // No automatic spell preselection: the player picks cantrips and prepared
+  // spells. Explicit shortcuts (quick build / templates / random) fill them.
 
   // --- Equipment handlers ---
   const handleCommitStartingEquipment = (classOption: 'A' | 'B' | null, bgOption: 'A' | 'B' | null, subChoices: Record<string, string>) => {
@@ -305,6 +294,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
               hasShieldEquipped={equipmentState.hasShieldEquipped}
               onEquipArmor={(armorId) => updateEquipment((prev: any) => ({ ...prev, equippedArmorId: armorId }))}
               onEquipShield={(equipped) => updateEquipment((prev: any) => ({ ...prev, hasShieldEquipped: equipped }))}
+              onToggleEquip={(id) => updateEquipment((prev: any) => toggleItemEquipped(prev, id))}
             />
           </Accordion>
 

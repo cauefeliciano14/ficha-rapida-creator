@@ -34,6 +34,8 @@ export interface InventoryItem {
   isStartingGear?: boolean;
   source?: string;
   itemBase?: CatalogItemBase;
+  /** Arma empunhada/equipada (opcional; fichas antigas não têm o campo). */
+  equipped?: boolean;
 }
 
 /** Aparência física do personagem */

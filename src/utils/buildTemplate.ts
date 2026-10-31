@@ -5,6 +5,7 @@ import speciesRaw from '../data/species.json';
 import bgRaw from '../data/backgrounds.json';
 import { ATTR_KEYS } from './attributeConstants';
 import { calculateModifier, applyBackgroundBonus } from './attributeUtils';
+import { fillStartingSpells } from './quickBuild';
 
 interface ApplyResult {
   character: Character;
@@ -73,7 +74,8 @@ export function applyBuildTemplate(template: BuildTemplate, current: Character):
   };
 
   return {
-    character: nextChar,
+    // Template troca a classe: sobrescreve as magias com as sugeridas dela
+    character: fillStartingSpells(nextChar, true),
     selectedBackground: bg,
     attrChoiceMode: 'double',
     attrPlus1: template.bgPlus1 ?? '',

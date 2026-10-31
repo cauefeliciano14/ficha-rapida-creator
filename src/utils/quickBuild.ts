@@ -5,6 +5,7 @@ import { calculateModifier, applyBackgroundBonus } from './attributeUtils';
 import bgRaw from '../data/backgrounds.json';
 import speciesRaw from '../data/species.json';
 import type { Character, Selection } from '../types/character';
+import { classStartingSpells } from '../data/spellsData';
 
 interface QuickBuildResult {
   character: Character;
@@ -132,6 +133,13 @@ export function applyQuickBuild({ character, selectedBackground }: QuickBuildInp
     notes.push('Equipamento inicial: Opção A escolhida.');
   }
 
+  // 6) Magias iniciais sugeridas (só em arrays vazios) — atalho explícito
+  const filled = fillStartingSpells(nextChar);
+  if (filled !== nextChar) {
+    nextChar = filled;
+    notes.push('Magias iniciais sugeridas selecionadas.');
+  }
+
   return {
     character: nextChar,
     selectedBackground: nextBg,
@@ -139,5 +147,26 @@ export function applyQuickBuild({ character, selectedBackground }: QuickBuildInp
     attrPlus1,
     attrPlus2,
     notes,
+  };
+}
+
+/**
+ * Preenche truques e magias preparadas sugeridos para a classe, apenas nas
+ * listas que estiverem vazias. Usado só por atalhos explícitos (Quick Build,
+ * personagem aleatório, templates) — o fluxo normal não pré-seleciona magias.
+ */
+export function fillStartingSpells(character: Character, overwrite = false): Character {
+  const classId = character.characterClass?.id;
+  const info = classId ? classStartingSpells[classId] : undefined;
+  if (!info || !info.isCaster) return character;
+  const { learnedCantrips, preparedSpells } = character.spells;
+  const nextCantrips = (overwrite || learnedCantrips.length === 0) && info.cantrips.length > 0
+    ? [...info.cantrips] : learnedCantrips;
+  const nextPrepared = (overwrite || preparedSpells.length === 0) && info.level1.length > 0
+    ? [...info.level1] : preparedSpells;
+  if (nextCantrips === learnedCantrips && nextPrepared === preparedSpells) return character;
+  return {
+    ...character,
+    spells: { ...character.spells, learnedCantrips: nextCantrips, preparedSpells: nextPrepared },
   };
 }

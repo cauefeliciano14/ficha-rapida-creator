@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, memo, useCallback } from 'react';
+import React, { useState, useRef, memo, useCallback } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
 import { FeatureExpandable } from '../FeatureExpandable';
@@ -48,76 +48,69 @@ interface ClassCardProps {
   onHoverLeave: () => void;
 }
 const ClassCard = memo(function ClassCard({
-  cls, isSelected, isCompareTarget, showSynergy, onActivate, onHoverEnter, onHoverLeave,
+  cls, isSelected, isCompareTarget, showSynergy, onActivate, onHoverEnter,
 }: ClassCardProps) {
   const meta = getClassCardMeta(cls.id);
   const roleMeta = CLASS_ROLE_META[cls.id];
   const theme = getClassTheme(cls.id);
-  const handleEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
-  }, [cls.id, onHoverEnter]);
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLButtonElement>) => {
-    onHoverEnter(cls.id, e.currentTarget.getBoundingClientRect());
-  }, [cls.id, onHoverEnter]);
   const handleClick = useCallback(() => onActivate(cls.id), [cls.id, onActivate]);
   const handleLearnMore = useCallback((e: React.MouseEvent) => {
     // Hover-preview já é a "Learn more" — força exibição on click
     e.stopPropagation();
-    onHoverEnter(cls.id, (e.currentTarget as HTMLElement).closest('button')!.getBoundingClientRect());
+    onHoverEnter(cls.id, (e.currentTarget as HTMLElement).closest('div')!.getBoundingClientRect());
   }, [cls.id, onHoverEnter]);
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      onMouseEnter={handleEnter}
-      onMouseLeave={onHoverLeave}
-      onFocus={handleFocus}
-      onBlur={onHoverLeave}
+    <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ''} ${isCompareTarget ? cardStyles.cardCompareTarget : ''}`}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
-        ['--tag-bg' as string]: theme.archetypeBg,
-        ['--tag-border' as string]: theme.archetypeBorder,
-        ['--tag-text' as string]: theme.archetypeText,
       } as React.CSSProperties}
-      aria-label={`Selecionar classe ${cls.name}`}
     >
-      {/* D&D Beyond: retrato redondo, nome, uma linha de resumo e seta */}
+      {/* D&D Beyond: arte cheia, flâmula com ícone, nome grande, 2 tags, descrição e ações */}
       <img
         src={getClassHeroArtSrc(cls.id)}
         alt=""
         aria-hidden="true"
         loading="lazy"
         decoding="async"
-        className={cardStyles.thumb}
+        className={cardStyles.art}
       />
-      <span className={cardStyles.content}>
-        <span className={cardStyles.titleRow}>
-          <span className={cardStyles.title}>{cls.name}</span>
-          {(roleMeta?.difficulty === 'Iniciante' || showSynergy) && !isSelected && (
-            <span className={cardStyles.recommendedRibbon}>
-              {showSynergy ? 'Combina' : 'Iniciante'}
-            </span>
-          )}
-        </span>
-        <span className={cardStyles.subtitle}>
-          {[theme.archetypeLabel, meta.primaryAttribute, roleMeta?.roles[0]].filter(Boolean).join(' · ')}
-        </span>
-      </span>
-      <span
-        role="button"
-        tabIndex={0}
-        className={cardStyles.infoBtn}
-        onClick={handleLearnMore}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleLearnMore(e as unknown as React.MouseEvent); }}
-        aria-label={`Saber mais sobre ${cls.name}`}
-        title="Saber mais"
-      >
-        i
-      </span>
-      <span className={cardStyles.chevron} aria-hidden="true">{isSelected ? '✓' : '›'}</span>
-    </button>
+      <div className={cardStyles.scrim} />
+      <div className={cardStyles.banner}>
+        <img src={getClassIconSrc(cls.id)} alt="" aria-hidden="true" className={cardStyles.bannerIcon} />
+      </div>
+      {(roleMeta?.difficulty === 'Iniciante' || showSynergy) && !isSelected && (
+        <span className={cardStyles.recommendedRibbon}>{showSynergy ? 'Combina' : 'Iniciante'}</span>
+      )}
+      <div className={cardStyles.content}>
+        <h3 className={cardStyles.title}>{cls.name}</h3>
+        <div className={cardStyles.tagsRow}>
+          <span className={cardStyles.tag}>{theme.archetypeLabel}</span>
+          {meta.primaryAttribute ? <span className={cardStyles.tag}>{meta.primaryAttribute}</span> : null}
+        </div>
+        {cls.description ? <p className={cardStyles.description}>{cls.description}</p> : null}
+        <div className={cardStyles.footer}>
+          <span className={cardStyles.source}>Livro do Jogador</span>
+          <button
+            type="button"
+            className={cardStyles.actionBtn}
+            onClick={handleLearnMore}
+            aria-label={`Saber mais sobre ${cls.name}`}
+          >
+            Saber mais
+          </button>
+          <button
+            type="button"
+            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
+            onClick={handleClick}
+            aria-label={`Selecionar classe ${cls.name}`}
+          >
+            {isSelected ? '✓ Selecionada' : 'Selecionar'}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 });
 
@@ -242,7 +235,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Scroll após selecionar classe: painel de detalhe para sempre na mesma altura
   const detailsRef = useRef<HTMLDivElement | null>(null);
-  const pendingScrollRef = useRef(false);
+  // D&D Beyond: lista de classes e, depois de escolher, uma página dedicada.
+  const [browsing, setBrowsing] = useState(!selectedClass);
 
   const handleHoverEnter = useCallback((classId: string, rect: DOMRect) => {
     if (!isDesktop || compareMode || pinned) return;
@@ -268,25 +262,12 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
       const cls = (bgData.classes as Array<{ id: string; name: string; description: string }>).find(c => c.id === classId);
       if (cls) {
         handleSelectClass(cls);
-        pendingScrollRef.current = true;
+        setBrowsing(false);
+        window.scrollTo({ top: 0 });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compareMode, handleSelectClass]);
-
-  // Rola a página até o painel de detalhe da classe, parando sempre na mesma
-  // altura: logo abaixo da barra de progresso fixa do topo.
-  useEffect(() => {
-    if (!pendingScrollRef.current || !selectedClass) return;
-    pendingScrollRef.current = false;
-    const el = detailsRef.current;
-    if (!el) return;
-    const bar = document.getElementById('creator-progress-bar');
-    const barH = bar ? bar.getBoundingClientRect().height : 0;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const top = el.getBoundingClientRect().top + window.scrollY - barH - 12;
-    window.scrollTo({ top: Math.max(top, 0), behavior: reduce ? 'auto' : 'smooth' });
-  }, [selectedClass]);
 
   // ── Smart hints ──
   const smartHints = computeSmartHints(character, selectedBackground);
@@ -345,14 +326,12 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
       impactSection="class"
     >
       <div className={layoutStyles.stepRoot}>
-        <div className={layoutStyles.sectionIntro}>
-          <div className={layoutStyles.sectionTitleRow}>
-            <span className={layoutStyles.sectionIcon}>✦</span>
-            <span>Escolha sua Classe</span>
-          </div>
-          <p className={layoutStyles.sectionDescription}>
-            A classe define o que seu herói sabe fazer. Clique numa delas para ver os detalhes.
-          </p>
+        {browsing || !selectedClass ? (
+        <>
+        <div className={cardStyles.pageIntro}>
+          <span className={cardStyles.eyebrow}>Escolha uma classe</span>
+          <h2 className={cardStyles.pageTitle}>Qual é o seu papel?</h2>
+          <span className={cardStyles.srOnly}>Escolha sua Classe</span>
         </div>
 
         <div className={cardStyles.cardGrid}>
@@ -384,7 +363,9 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             {compareMode ? '✕ Sair da comparação' : '⚖ Comparar classes'}
           </button>
         </div>
-
+        </>
+        ) : (
+        <>
         {selectedClass && smartHints.length > 0 && <SmartHints hints={smartHints} />}
 
         <div className={layoutStyles.detailsColumn} ref={detailsRef}>
@@ -397,26 +378,23 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
           ) : (
             <>
               <div className={`${layoutStyles.summaryCardBase} ${styles.classSummaryCard}`}>
-                <div className={styles.summaryHeroPanel}>
-                  <div className={styles.summaryHeroWrap}>
-                    <img src={getClassHeroArtSrc(selectedClass.id)} alt={`Arte de ${selectedClass.name}`} className={styles.summaryHeroArt} />
-                    <div className={styles.summaryHeroOverlay} />
-                  </div>
-                  <div className={styles.summaryHeroContent}>
-                    <div className={styles.summaryTopRow}>
-                      <div className={styles.summaryBadge}>
-                        <img src={getClassIconSrc(selectedClass.id)} alt="" aria-hidden="true" className={styles.summaryBadgeIcon} />
-                        Classe selecionada
-                      </div>
+                {/* D&D Beyond: página dedicada da classe com a arte grande */}
+                <div className={cardStyles.hero}>
+                  <img src={getClassHeroArtSrc(selectedClass.id)} alt={`Arte de ${selectedClass.name}`} className={cardStyles.heroArt} />
+                  <div className={cardStyles.heroScrim} />
+                  <button type="button" className={cardStyles.heroChange} onClick={() => setBrowsing(true)}>
+                    Trocar classe
+                  </button>
+                  <div className={cardStyles.heroContent}>
+                    <img src={getClassIconSrc(selectedClass.id)} alt="" aria-hidden="true" className={cardStyles.heroIcon} />
+                    <span className={cardStyles.eyebrow}>Livro do Jogador</span>
+                    <h2 className={cardStyles.heroTitle}>{selectedClass.name}</h2>
+                    <div className={cardStyles.tagsRow}>
+                      <span className={cardStyles.tag}>{getClassTheme(selectedClass.id).archetypeLabel}</span>
+                      {selectedClassMeta?.primaryAttribute ? <span className={cardStyles.tag}>{selectedClassMeta.primaryAttribute}</span> : null}
+                      {selectedClassMeta?.hitDie ? <span className={cardStyles.tag}>Dado de vida {selectedClassMeta.hitDie}</span> : null}
                     </div>
-                    <h3 className={styles.summaryTitle}>{selectedClass.name}</h3>
-                    <p className={styles.summaryDescription}>{selectedClass.description}</p>
-                    <div className={styles.summaryStatsInline}>
-                      <SummaryStat label="Dado de vida" value={selectedClassMeta?.hitDie || '—'} />
-                      {selectedClassMeta?.primaryAttribute ? (
-                        <SummaryStat label="Atributo-chave" value={selectedClassMeta.primaryAttribute || '—'} />
-                      ) : null}
-                    </div>
+                    <p className={cardStyles.heroDescription}>{selectedClass.description}</p>
                   </div>
                 </div>
                 <div className={styles.traitsHeader}>
@@ -494,6 +472,8 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             </>
           )}
         </div>
+        </>
+        )}
       </div>
 
       <ComparisonModal
@@ -526,11 +506,3 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   );
 };
 
-function SummaryStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={styles.summaryStat}>
-      <div className={styles.summaryStatLabel}>{label}</div>
-      <div className={styles.summaryStatValue}>{value}</div>
-    </div>
-  );
-}

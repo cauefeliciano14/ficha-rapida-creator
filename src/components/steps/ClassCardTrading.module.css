@@ -1,140 +1,317 @@
 /* ─────────────────────────────────────────────────────────────
-   Lista de classes no estilo D&D Beyond: linhas compactas com
-   retrato redondo, nome, uma linha de resumo e seta. Todas as
-   classes cabem na tela de uma vez.
+   Classes no estilo da tela "Choose a Class" do D&D Beyond:
+   grade de 3 colunas, arte cheia, moldura dourada, flâmula com
+   ícone, nome grande, 2 tags, descrição e Saber mais/Selecionar.
+   Depois de escolher, uma página dedicada com a arte grande.
    ─────────────────────────────────────────────────────────── */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.pageIntro {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9a54a;
+}
+
+.pageTitle {
+  margin: 0;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+}
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .card {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  min-height: 72px;
-  padding: 10px 14px 10px 10px;
-  text-align: left;
-  color: inherit;
-  font: inherit;
-  background: #1a2128;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 300px;
+  border: 2px solid #b8913a;
+  border-radius: 10px 10px 4px 4px;
+  background: #0d1114;
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  background: #212a33;
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: #e0b75a;
+  box-shadow: 0 0 24px -6px var(--card-glow, rgba(224, 183, 90, 0.5));
 }
 
-.card:focus-visible {
-  outline: 2px solid var(--card-glow, #c53131);
-  outline-offset: 2px;
-}
-
-.cardSelected,
-.cardSelected:hover {
-  border-color: #c53131;
-  background: rgba(197, 49, 49, 0.12);
+.cardSelected {
+  border-color: #e0b75a;
+  box-shadow: 0 0 0 2px #c53131, 0 0 28px -6px rgba(197, 49, 49, 0.6);
 }
 
 .cardCompareTarget {
-  border-color: #d4a017;
+  box-shadow: 0 0 0 2px #d4a017;
 }
 
-.thumb {
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
-  border-radius: 50%;
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: center 20%;
-  border: 2px solid var(--banner-color, rgba(255, 255, 255, 0.2));
-  background: #0d1215;
+  object-position: center 18%;
+  z-index: -2;
+  transition: transform 0.6s ease;
 }
 
-.content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.card:hover .art {
+  transform: scale(1.04);
 }
 
-.titleRow {
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(10, 13, 16, 0) 25%, rgba(10, 13, 16, 0.75) 55%, rgba(10, 13, 16, 0.97) 100%);
+}
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 14px;
+  width: 46px;
+  height: 58px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  padding-bottom: 8px;
+  background: var(--banner-color, #8f2424);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
 }
 
-.title {
-  font-family: 'Roboto', var(--font-body), sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.subtitle {
-  font-size: 0.8rem;
-  color: #8a9aa6;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.bannerIcon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .recommendedRibbon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(10, 13, 16, 0.8);
+  border: 1px solid rgba(111, 207, 151, 0.6);
+  color: #6fcf97;
   font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 12px;
+}
+
+.title {
+  margin: 0;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 3px 10px;
+  border: 1px solid #b8913a;
+  border-radius: 999px;
+  background: rgba(10, 13, 16, 0.6);
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6fcf97;
-  border: 1px solid rgba(111, 207, 151, 0.4);
-  border-radius: 999px;
-  padding: 1px 7px;
+  color: #f1e4c3;
 }
 
-.infoBtn {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  display: inline-flex;
+.description {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #dfe5ea;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #c8d0d6;
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 0.8rem;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-.infoBtn:hover {
-  border-color: #fff;
+.source {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.7rem;
+  color: #b8913a;
+}
+
+.actionBtn {
+  white-space: nowrap;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  background: rgba(10, 13, 16, 0.85);
+  color: #fff;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  background: #fff;
+  color: #0d1114;
+  filter: none;
+}
+
+.actionBtnSelect {
+  border-color: #e0b75a;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+  padding-right: 20px;
+}
+
+.cardSelected .actionBtnSelect {
+  background: #c53131;
+  border-color: #c53131;
+}
+
+/* ── Página dedicada da classe ── */
+.hero {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  border: 2px solid #b8913a;
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #0d1114;
+}
+
+.heroArt {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 20%;
+  z-index: -2;
+}
+
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(10, 13, 16, 0.95) 0%, rgba(10, 13, 16, 0.7) 40%, rgba(10, 13, 16, 0.05) 75%),
+    linear-gradient(180deg, rgba(10, 13, 16, 0) 50%, rgba(10, 13, 16, 0.85) 100%);
+}
+
+.heroChange {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 18px;
+  border: 1px solid #e0b75a;
+  border-radius: 999px;
+  background: rgba(10, 13, 16, 0.85);
+  color: #fff;
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.heroChange:hover {
+  background: #e0b75a;
+  color: #0d1114;
+  filter: none;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+  padding: 28px 32px;
+}
+
+.heroIcon {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  margin-bottom: 8px;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 3.6rem;
+  font-weight: 700;
+  line-height: 1;
   color: #fff;
 }
 
-.chevron {
-  width: 16px;
-  flex-shrink: 0;
-  text-align: center;
-  font-size: 1.4rem;
-  line-height: 1;
-  color: #5f6d77;
-}
-
-.cardSelected .chevron {
-  color: #e04848;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
+.heroDescription {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #dfe5ea;
 }

@@ -44,16 +44,6 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes diceToastIn {
-  from { opacity: 0; transform: translateY(16px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes diceToastOut {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to { opacity: 0; transform: translateY(16px) scale(0.9); }
-}
-
 /* ── Page ── */
 .page {
   width: 100%;
@@ -560,183 +550,131 @@
   margin: 12px 0;
 }
 
-/* ── Dice Result Toast (D&D Beyond style floating roll) ── */
-.diceToast {
+/* ── Dice Result overlay (centered roll card) ── */
+.diceOverlay {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 300px;
-  background: rgba(16, 20, 28, 0.97);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.1);
-  z-index: 90;
-  animation: diceToastIn 0.3s ease-out;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.diceToastExiting {
-  animation: diceToastOut 0.25s ease-in forwards;
-}
-
-.diceToastHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.diceToastLabel {
-  font-family: var(--font-label);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.diceToastClose {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
-  color: var(--text-dim);
-  font-size: 0.7rem;
+  background: rgba(5, 8, 10, 0.45);
+  animation: diceOverlayIn 0.18s ease-out;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
 }
 
-.diceToastClose:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-bright);
+.diceOverlayExiting {
+  animation: diceOverlayOut 0.25s ease-in forwards;
 }
 
-.diceToastBody {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.diceToastD20 {
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--text-bright);
-  flex-shrink: 0;
-}
-
-.diceToastD20Crit {
-  composes: diceToastD20;
-  background: rgba(0, 199, 151, 0.1);
-  border-color: rgba(0, 199, 151, 0.3);
-  color: var(--color-hp-positive);
-  text-shadow: 0 0 12px rgba(0, 199, 151, 0.4);
-}
-
-.diceToastD20Fumble {
-  composes: diceToastD20;
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: var(--color-hp-negative);
-  text-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
-}
-
-.diceToastInfo {
-  flex: 1;
-  min-width: 0;
+.diceCard {
+  position: relative;
+  width: min(340px, 100%);
+  background: #13191e;
+  border: 1px solid #c53131;
+  border-radius: 6px;
+  padding: 20px 20px 16px;
+  color: #ffffff;
+  font-family: 'Roboto', var(--font-body, sans-serif);
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(197, 49, 49, 0.25);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+  animation: diceCardIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
 }
 
-.diceToastTotal {
-  font-size: 1.3rem;
-  font-weight: 900;
-  color: var(--text-bright);
-  line-height: 1.2;
-}
+.diceCardCrit { border-color: #00c797; box-shadow: 0 16px 48px rgba(0,0,0,.75), 0 0 24px rgba(0,199,151,.35); }
+.diceCardFumble { box-shadow: 0 16px 48px rgba(0,0,0,.75), 0 0 24px rgba(197,49,49,.5); }
 
-.diceToastFormula {
-  font-family: var(--font-code);
-  font-size: 0.7rem;
-  color: var(--text-dim);
+.diceCardClose {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: #c8d0d6;
+  font-size: 0.75rem;
+  cursor: pointer;
 }
+.diceCardClose:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-.diceToastCritBadge {
-  display: inline-block;
-  font-family: var(--font-label);
-  font-size: 0.55rem;
-  font-weight: 800;
+.diceCardLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-hp-positive);
-  background: rgba(0, 199, 151, 0.12);
-  border: 1px solid rgba(0, 199, 151, 0.25);
-  border-radius: 3px;
-  padding: 1px 6px;
-  margin-top: 2px;
-  width: fit-content;
+  color: #ffffff;
+  padding: 0 28px;
 }
 
-.diceToastFumbleBadge {
-  composes: diceToastCritBadge;
-  color: var(--color-hp-negative);
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.25);
+.diceCardD20 {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  margin: 6px 0 2px;
 }
+.diceCardD20Crit { composes: diceCardD20; color: #00c797; text-shadow: 0 0 18px rgba(0, 199, 151, 0.5); }
+.diceCardD20Fumble { composes: diceCardD20; color: #e04848; text-shadow: 0 0 18px rgba(197, 49, 49, 0.6); }
 
-.diceToastActions {
-  display: flex;
-  gap: 6px;
-  padding-top: 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.diceToastReroll {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  color: var(--text-secondary);
-  font-family: var(--font-label);
-  font-size: 0.6rem;
-  font-weight: 700;
+.diceCardBadge {
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: #00c797;
+  border: 1px solid rgba(0, 199, 151, 0.4);
+}
+.diceCardBadgeFumble { composes: diceCardBadge; color: #e04848; border-color: rgba(197, 49, 49, 0.6); }
+
+.diceCardFormula {
+  font-family: var(--font-code, monospace);
+  font-size: 0.85rem;
+  color: #c8d0d6;
+}
+
+.diceCardTotal {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  border-top: 1px solid rgba(197, 49, 49, 0.4);
+  padding-top: 8px;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.diceCardReroll {
+  margin-top: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid #c53131;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
+.diceCardReroll:hover { background: rgba(197, 49, 49, 0.18); }
 
-.diceToastReroll:hover {
-  background: rgba(197, 49, 49, 0.12);
-  border-color: var(--color-primary-light);
-  color: var(--color-primary-light);
+@keyframes diceOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes diceOverlayOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes diceCardIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
 }
-
-/* ── Dice toast responsive ── */
+@media (prefers-reduced-motion: reduce) {
+  .diceOverlay, .diceCard { animation: none; }
+}
 
 /* ── D&D Beyond themed panel box ── */
 .redBox {
@@ -1816,12 +1754,6 @@
   }
 }
 @media (max-width: 479px) {
-  .diceToast {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    bottom: 12px;
-  }
   .statsBand {
     gap: 4px;
   }

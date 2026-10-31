@@ -88,3 +88,41 @@ export function hasWeaponProficiency(weaponName: string, weaponProficiencies: st
   if (!weapon) return false;
   return getWeaponTrainingLabels(weapon).some((label) => weaponProficiencies.includes(label));
 }
+
+export type EquipKind = 'armor' | 'shield' | 'weapon' | null;
+
+/** Diz se o item precisa ser equipado para funcionar (armadura, escudo ou arma). */
+export function getEquipKind(itemName: string): EquipKind {
+  const armor = getArmorByName(itemName);
+  if (armor) return armor.type === 'shield' ? 'shield' : 'armor';
+  return getWeaponByName(itemName) ? 'weapon' : null;
+}
+
+/**
+ * Alterna o estado "equipado" de um item do inventário.
+ * Armadura: só uma por vez (equipar outra substitui). Escudo: hasShieldEquipped.
+ * Arma: flag opcional `equipped` no próprio item.
+ */
+export function toggleItemEquipped<T extends {
+  inventory: Array<{ id: string; name: string; equipped?: boolean }>;
+  equippedArmorId: string | null;
+  hasShieldEquipped: boolean;
+}>(equipment: T, itemId: string): T {
+  const item = equipment.inventory.find((entry) => entry.id === itemId);
+  if (!item) return equipment;
+  const kind = getEquipKind(item.name);
+  if (kind === 'armor') {
+    const armorId = getArmorByName(item.name)!.id;
+    return { ...equipment, equippedArmorId: equipment.equippedArmorId === armorId ? null : armorId };
+  }
+  if (kind === 'shield') {
+    return { ...equipment, hasShieldEquipped: !equipment.hasShieldEquipped };
+  }
+  if (kind === 'weapon') {
+    return {
+      ...equipment,
+      inventory: equipment.inventory.map((entry) => (entry.id === itemId ? { ...entry, equipped: !entry.equipped } : entry)),
+    };
+  }
+  return equipment;
+}

@@ -217,7 +217,7 @@ export function CharacterSheetPage({
     diceToastTimer.current = setTimeout(() => {
       setDiceToastExiting(true);
       setTimeout(() => { setDiceToast(null); setDiceToastExiting(false); }, 250);
-    }, 5000);
+    }, 4000);
   }, []);
 
   const dismissDiceToast = useCallback(() => {
@@ -225,6 +225,13 @@ export function CharacterSheetPage({
     setDiceToastExiting(true);
     setTimeout(() => { setDiceToast(null); setDiceToastExiting(false); }, 250);
   }, []);
+
+  useEffect(() => {
+    if (!diceToast) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') dismissDiceToast(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [diceToast, dismissDiceToast]);
 
   /* ── XP state ── */
   const [xpInput, setXpInput] = useState('');
@@ -1367,35 +1374,42 @@ export function CharacterSheetPage({
         )
       )}
 
-      {/* ===== DICE RESULT TOAST (D&D Beyond style) ===== */}
+      {/* ===== DICE RESULT (centered overlay card) ===== */}
       {diceToast && (
-        <div className={`${styles.diceToast} ${diceToastExiting ? styles.diceToastExiting : ''}`}>
-          <div className={styles.diceToastHeader}>
-            <span className={styles.diceToastLabel}>{diceToast.label}</span>
-            <button onClick={dismissDiceToast} className={styles.diceToastClose} aria-label="Fechar">✕</button>
-          </div>
-          <div className={styles.diceToastBody}>
-            <div className={
-              diceToast.result.isCritical ? styles.diceToastD20Crit
-                : diceToast.result.isFumble ? styles.diceToastD20Fumble
-                  : styles.diceToastD20
-            }>
+        <div
+          className={`${styles.diceOverlay} ${diceToastExiting ? styles.diceOverlayExiting : ''}`}
+          onClick={dismissDiceToast}
+          data-testid="dice-result-overlay"
+        >
+          <div
+            className={`${styles.diceCard} ${diceToast.result.isCritical ? styles.diceCardCrit : diceToast.result.isFumble ? styles.diceCardFumble : ''}`}
+            role="status"
+            aria-live="assertive"
+            aria-atomic="true"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={dismissDiceToast} className={styles.diceCardClose} aria-label="Fechar">✕</button>
+            <div className={styles.diceCardLabel}>{diceToast.label}</div>
+            <div
+              className={
+                diceToast.result.isCritical ? styles.diceCardD20Crit
+                  : diceToast.result.isFumble ? styles.diceCardD20Fumble
+                    : styles.diceCardD20
+              }
+              aria-label={`Dado: ${diceToast.result.rolls[0]}`}
+            >
               {diceToast.result.rolls[0]}
             </div>
-            <div className={styles.diceToastInfo}>
-              <div className={styles.diceToastTotal}>Total: {diceToast.result.total}</div>
-              <div className={styles.diceToastFormula}>{diceToast.result.formula}</div>
-              {diceToast.result.isCritical && <div className={styles.diceToastCritBadge}>Acerto Crítico!</div>}
-              {diceToast.result.isFumble && <div className={styles.diceToastFumbleBadge}>Falha Crítica!</div>}
-            </div>
-          </div>
-          {diceToast.onReroll && (
-            <div className={styles.diceToastActions}>
-              <button onClick={diceToast.onReroll} className={styles.diceToastReroll}>
+            {diceToast.result.isCritical && <div className={styles.diceCardBadge}>Acerto Crítico!</div>}
+            {diceToast.result.isFumble && <div className={styles.diceCardBadgeFumble}>Falha Crítica!</div>}
+            <div className={styles.diceCardFormula}>{diceToast.result.formula}</div>
+            <div className={styles.diceCardTotal}>Total: {diceToast.result.total}</div>
+            {diceToast.onReroll && (
+              <button onClick={diceToast.onReroll} className={styles.diceCardReroll}>
                 🎲 Rolar Novamente
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 

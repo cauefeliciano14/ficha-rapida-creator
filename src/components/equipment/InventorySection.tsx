@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import css from './equipment.module.css';
 import { getArmorByName } from '../../rules/data/armorRules';
+import { getEquipKind } from '../../rules/utils/equipment';
 import type { InventoryItem } from '../../types/character';
 
 interface InventorySectionProps {
@@ -11,6 +12,7 @@ interface InventorySectionProps {
   hasShieldEquipped?: boolean;
   onEquipArmor?: (armorId: string | null) => void;
   onEquipShield?: (equipped: boolean) => void;
+  onToggleEquip?: (id: string) => void;
 }
 
 const separator: React.CSSProperties = {
@@ -66,7 +68,7 @@ const tagColor = (tag: string): { bg: string; color: string } => {
   return map[tag] || { bg: 'rgba(255,255,255,0.08)', color: '#94a3b8' };
 };
 
-export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, onRemoveItem, onChangeQuantity, equippedArmorId, hasShieldEquipped, onEquipArmor, onEquipShield }) => {
+export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, onRemoveItem, onChangeQuantity, equippedArmorId, hasShieldEquipped, onEquipArmor, onEquipShield, onToggleEquip }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (inventory.length === 0) {
@@ -88,7 +90,9 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
         const isShieldItem = armorEntry && armorEntry.type === 'shield';
         const isEquippedArmor = isArmorItem && equippedArmorId === armorEntry.id;
         const isEquippedShield = isShieldItem && hasShieldEquipped;
-        const isEquipped = isEquippedArmor || isEquippedShield;
+        const equipKind = getEquipKind(item.name);
+        const isEquipped = Boolean(isEquippedArmor || isEquippedShield || (equipKind === 'weapon' && item.equipped));
+        const canToggle = equipKind !== null && (onToggleEquip || (equipKind !== 'weapon' && onEquipArmor && onEquipShield));
         return (
           <div key={item.id} style={{
             background: i % 2 === 0 ? 'var(--surface-row-alt)' : 'transparent',
@@ -117,22 +121,31 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
                 <button onClick={() => onChangeQuantity(item.id, -1)} style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid var(--border-input)', background: 'var(--surface-ghost)', color: 'var(--text-body)', cursor: 'pointer', fontSize: '0.8rem' }}>-</button>
                 <span style={{ color: 'var(--text-bright)', fontWeight: 600, fontSize: '0.85rem', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
                 <button onClick={() => onChangeQuantity(item.id, 1)} style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid var(--border-input)', background: 'var(--surface-ghost)', color: 'var(--text-body)', cursor: 'pointer', fontSize: '0.8rem' }}>+</button>
-                {(isArmorItem || isShieldItem) && onEquipArmor && onEquipShield && (
+                {canToggle && (
                   <button
+                    type="button"
+                    aria-pressed={isEquipped}
+                    title={isEquipped ? 'Clique para desequipar' : 'Equipar este item'}
                     onClick={() => {
-                      if (isArmorItem) {
-                        onEquipArmor(isEquippedArmor ? null : armorEntry.id);
+                      if (onToggleEquip) {
+                        onToggleEquip(item.id);
+                      } else if (isArmorItem) {
+                        onEquipArmor?.(isEquippedArmor ? null : armorEntry.id);
                       } else if (isShieldItem) {
-                        onEquipShield(!hasShieldEquipped);
+                        onEquipShield?.(!hasShieldEquipped);
                       }
                     }}
                     style={{
-                      background: isEquipped ? 'var(--color-magic-bg)' : 'var(--border-faint)',
-                      border: `1px solid ${isEquipped ? 'var(--color-magic-border)' : 'rgba(255,255,255,0.07)'}`,
+                      background: isEquipped ? '#c53131' : 'transparent',
+                      border: '1px solid #c53131',
                       borderRadius: '5px',
-                      color: isEquipped ? 'var(--color-magic)' : 'var(--text-faint)',
-                      padding: '3px 8px',
+                      color: isEquipped ? '#fff' : '#e57373',
+                      padding: '3px 10px',
                       fontSize: '0.72rem',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.4px',
+                      minWidth: '76px',
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
                     }}
