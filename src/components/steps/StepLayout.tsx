@@ -44,7 +44,7 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
   portrait,
   onPortraitClick,
   errors,
-  hrMarginBottom = '16px',
+  hrMarginBottom: _hrMarginBottom,
   impactSection,
   hideSummary,
   hideHeader,
@@ -72,8 +72,16 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
         {/* As etapas ficam nas abas da barra superior (estilo D&D Beyond). */}
         <main className={`${shellStyles.main} ${isSheetStep ? shellStyles.mainFullSheet : ''}`}>
           <div className={`${shellStyles.mainInner} ${hideHeader ? styles.mainInnerNoHeader : ''} ${isSheetStep ? styles.mainInnerFullSheet : ''}`}>
+            {!hideHeader && impactSection && (
+              <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'flex-end' }}>
+                <WhyMatters contextKey={impactSection} variant="link" />
+              </div>
+            )}
+            {errors && errors.length > 0 && <ValidationBanner errors={errors} />}
+            <div className={styles.content}>{children}</div>
+            {/* D&D Beyond: navegação no fim da etapa, não no topo */}
             {!hideHeader && (
-              <>
+              <div className={styles.footerNav}>
                 <StepHeader
                   onPrev={onPrev}
                   onNext={onNext}
@@ -85,16 +93,8 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
                   isResetMode={isResetMode}
                   onReset={onReset}
                 />
-                <hr className={styles.separator} style={{ marginBottom: hrMarginBottom }} />
-                {impactSection && (
-                  <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'flex-end' }}>
-                    <WhyMatters contextKey={impactSection} variant="link" />
-                  </div>
-                )}
-              </>
+              </div>
             )}
-            {errors && errors.length > 0 && <ValidationBanner errors={errors} />}
-            <div className={styles.content}>{children}</div>
           </div>
         </main>
 

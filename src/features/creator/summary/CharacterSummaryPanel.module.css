@@ -545,3 +545,47 @@ details[open] > .quickSheetSummary .quickSheetChevron {
 .flashHighlight {
   animation: flashHighlight 1.8s var(--ease-out) forwards;
 }
+
+/* ── Resumo enxuto (estilo D&D Beyond) ── */
+.identitySubtitle {
+  margin: 10px 0 8px;
+  font-size: 0.85rem;
+  color: #c8d0d6;
+}
+
+.identityOrigin {
+  color: #8a9aa6;
+}
+
+.attrGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.attrGrid .summaryPillCard {
+  padding: 6px 2px;
+  text-align: center;
+}
+
+.attrGrid .pillLabelRow {
+  justify-content: center;
+}
+
+.panel .identityCard,
+.panel .summaryPillCard {
+  background: #1a2128;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.panel .identityCard:hover,
+.panel .summaryPillCard:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+  transform: none;
+}
+
+.identityCard > .alignmentSelect {
+  width: 100%;
+}

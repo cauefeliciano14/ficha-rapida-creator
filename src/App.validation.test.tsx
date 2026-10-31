@@ -126,7 +126,8 @@ describe('App validation banners by creation step', () => {
 
     expect(view.container.textContent).toContain('Resumo');
     expect(view.container.textContent).toContain('Atributos finais');
-    expect(view.container.textContent).toContain('Pendências');
+    // Pendências agora aparecem como contadores nas abas de etapa (barra superior).
+    expect(view.container.textContent).toMatch(/\d+ pendentes?/);
 
     view.cleanup();
   });

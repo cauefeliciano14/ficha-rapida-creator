@@ -1,8 +1,6 @@
 import { memo, useMemo, useRef, useEffect, useState } from 'react';
 import { useCharacter } from '../../../context/CharacterContext';
 import { useWizard } from '../../../context/WizardContext';
-import { getLanguageDisplayNames } from '../../../utils/languagePresentation';
-import { ATTR_ABBR } from '../../../utils/attributeConstants';
 import { FANTASY_NAMES } from '../../../data/fantasyNames';
 import { HelpTooltip } from '../../../components/ui/HelpTooltip';
 import { alignmentsData } from '../../../data/alignmentsData';
@@ -12,25 +10,9 @@ import { buildSummaryCopyText } from '../../../utils/summaryCopy';
 import styles from './CharacterSummaryPanel.module.css';
 import { useWhyDidYouRender } from '../../../utils/renderDiagnostics';
 
-const STEP_LABELS: Record<string, string> = {
-  class: 'Classe',
-  background: 'Origem',
-  species: 'Espécie',
-  attributes: 'Atributos',
-  equipment: 'Equipamento',
-};
-
-const STEP_INDEX: Record<string, number> = {
-  class: 0,
-  background: 1,
-  species: 2,
-  attributes: 3,
-  equipment: 4,
-};
-
 function CharacterSummaryPanelInner() {
   const { character, setCharacter, selectedBackground, derivedSheet, characterLevel, validationResult } = useCharacter();
-  const { setCurrentStep, setIsPortraitModalOpen } = useWizard();
+  const { setIsPortraitModalOpen } = useWizard();
 
   useWhyDidYouRender('CharacterSummaryPanel', {
     characterClassId: character.characterClass?.id,
@@ -154,34 +136,8 @@ function CharacterSummaryPanelInner() {
     [derivedSheet.finalAttributes],
   );
 
-  const presentedLanguages = useMemo(
-    () => getLanguageDisplayNames(derivedSheet.languages),
-    [derivedSheet.languages],
-  );
-
-  const keySkills = useMemo(
-    () => derivedSheet.skills
-      .filter(s => s.proficient)
-      .slice(0, 6)
-      .map(s => `${s.label} (${ATTR_ABBR[s.attribute] ?? s.attribute.slice(0, 3).toUpperCase()})`),
-    [derivedSheet.skills],
-  );
-
-  const pendingItems = useMemo(
-    () => Object.entries(validationResult.byStep)
-      .filter(([, issues]) => issues.length > 0)
-      .map(([key, issues]) => ({
-        key,
-        label: STEP_LABELS[key] ?? key,
-        count: Array.from(new Set(issues)).length,
-        stepIndex: STEP_INDEX[key] ?? -1,
-      })),
-    [validationResult.byStep],
-  );
-
   const identityFlash = flashedSections.has('identity');
   const attrFlash = flashedSections.has('attributes');
-  const skillsFlash = flashedSections.has('skills') || flashedSections.has('languages');
 
   return (
     <div className={styles.panel}>
@@ -198,31 +154,6 @@ function CharacterSummaryPanelInner() {
         </button>
       </div>
 
-
-      {pendingItems.length > 0 && (
-        <div className={`${styles.identityCard} ${styles.pendingCard}`}>
-          <div className={styles.cardHeader}>
-            <div>
-              <div className={styles.pendingTitle}>Pendências ({pendingItems.length})</div>
-            </div>
-            <span className={styles.pendingHint}>clique para resolver</span>
-          </div>
-          <div className={styles.pendingList}>
-            {pendingItems.map((item) => (
-              <button
-                key={item.key}
-                className={styles.pendingRow}
-                onClick={() => { if (item.stepIndex >= 0) setCurrentStep(item.stepIndex); }}
-                title={`Ir para ${item.label}`}
-                disabled={item.stepIndex < 0}
-              >
-                <span className={styles.pendingLabel}>{item.label}</span>
-                <span className={styles.pendingCount}>{item.count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className={`${styles.identityCard} ${identityFlash ? styles.flashHighlight : ''}`}>
         <div className={styles.identityHeader}>
@@ -275,40 +206,21 @@ function CharacterSummaryPanelInner() {
             </div>
           </div>
         </div>
-        <div className={styles.identityMetaList}>
-          <div className={styles.identityMetaRow}>
-            <span className={styles.identityMetaLabel}>Classe</span>
-            <span className={character.characterClass?.name ? styles.identityMetaValuePrimary : styles.identityMetaValueEmpty}>
-              {character.characterClass?.name || 'Não definida'}
-            </span>
-          </div>
-          <div className={styles.identityMetaRow}>
-            <span className={styles.identityMetaLabel}>Origem</span>
-            <span className={selectedBackground?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
-              {selectedBackground?.name || 'Não definida'}
-            </span>
-          </div>
-          <div className={styles.identityMetaRow}>
-            <span className={styles.identityMetaLabel}>Espécie</span>
-            <span className={character.species?.name ? styles.identityMetaValue : styles.identityMetaValueEmpty}>
-              {character.species?.name || 'Não definida'}
-            </span>
-          </div>
-          <div className={styles.identityMetaRow}>
-            <span className={styles.identityMetaLabel}>Alinhamento</span>
-            <select
-              className={styles.alignmentSelect}
-              value={character.alignment ?? ''}
-              onChange={e => setCharacter((prev: any) => ({ ...prev, alignment: e.target.value || null }))}
-              aria-label="Alinhamento do personagem"
-            >
-              <option value="">— Escolher —</option>
-              {alignmentsData.map(a => (
-                <option key={a.id} value={a.title}>{a.title}</option>
-              ))}
-            </select>
-          </div>
+        <div className={styles.identitySubtitle}>
+          {[character.species?.name, character.characterClass?.name].filter(Boolean).join(' ') || 'Escolha classe e espécie'}
+          {selectedBackground?.name ? <span className={styles.identityOrigin}> · {selectedBackground.name}</span> : null}
         </div>
+        <select
+          className={styles.alignmentSelect}
+          value={character.alignment ?? ''}
+          onChange={e => setCharacter((prev: any) => ({ ...prev, alignment: e.target.value || null }))}
+          aria-label="Alinhamento do personagem"
+        >
+          <option value="">Alinhamento…</option>
+          {alignmentsData.map(a => (
+            <option key={a.id} value={a.title}>{a.title}</option>
+          ))}
+        </select>
       </div>
 
       <div className={styles.quickFactsGrid}>
@@ -321,39 +233,12 @@ function CharacterSummaryPanelInner() {
         <div className={styles.cardHeader}>
           <div className={styles.identityTitle}>Atributos finais</div>
         </div>
-        <div className={styles.quickFactsGrid}>
+        <div className={styles.attrGrid}>
           {coreStats.map(([label, value]) => (
             <SummaryPill key={label} label={String(label)} value={String(value)} />
           ))}
         </div>
       </div>
-
-      <div className={`${styles.identityCard} ${skillsFlash ? styles.flashHighlight : ''}`}>
-        <div className={styles.cardHeader}>
-          <div className={styles.identityTitle}>Perícias e idiomas</div>
-        </div>
-
-        {keySkills.length > 0 ? (
-          <ul className={styles.tagList}>
-            {keySkills.map((skill) => <li key={skill} className={styles.tagItem}>{skill}</li>)}
-          </ul>
-        ) : (
-          <p className={styles.emptyState}>Nenhuma perícia consolidada ainda.</p>
-        )}
-
-        {presentedLanguages.length > 0 && (
-          <>
-            <div className={styles.subLabel}>Idiomas</div>
-            <ul className={styles.tagList}>
-              {presentedLanguages.map((language) => (
-                <li key={language} className={styles.tagItem}>{language}</li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
-
-
 
 
       {/* ── Campos de Identidade (colapsáveis) ── */}
