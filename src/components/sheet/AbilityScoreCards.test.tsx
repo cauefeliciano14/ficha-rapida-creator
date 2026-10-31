@@ -125,8 +125,8 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     expect(block).toMatch(/flex-wrap\s*:\s*nowrap/);
   });
 
-  it('empilha até 1023px (mantém linha única acima)', () => {
-    expect(css).toMatch(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?\.statsBand\s*\{[^}]*flex-direction\s*:\s*column/);
+  it('empilha só no celular (até 599px) (mantém linha única acima)', () => {
+    expect(css).toMatch(/@media\s*\(max-width:\s*599px\)\s*\{[\s\S]*?\.statsBand\s*\{[^}]*flex-direction\s*:\s*column/);
   });
 
   it('blocos de PB, Caminhada, Inspiração e HP têm a mesma altura mínima (110px)', () => {
@@ -138,9 +138,9 @@ describe('CharacterSheetPage statsBand — single-row contract', () => {
     expect(hpPanel).toMatch(/min-height\s*:\s*110px/);
   });
 
-  it('na quebra <=1023px todos os blocos preservam altura mínima de 110px e largura fluida', () => {
-    const block = css.match(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
-      ?? css.match(/@media\s*\(max-width:\s*1023px\)\s*\{[\s\S]*?^\}/m)?.[0]
+  it('na quebra <=599px todos os blocos preservam altura mínima de 110px e largura fluida', () => {
+    const block = css.match(/@media\s*\(max-width:\s*599px\)\s*\{[\s\S]*?\n\}\s*\}/)?.[0]
+      ?? css.match(/@media\s*\(max-width:\s*599px\)\s*\{[\s\S]*?^\}/m)?.[0]
       ?? '';
     expect(block).toMatch(/\.statsBandRight\s*>\s*\.statBox[\s\S]*?min-height\s*:\s*110px/);
     expect(block).toMatch(/\.statsBandRight\s*>\s*\.hpPanel[\s\S]*?min-height\s*:\s*110px/);

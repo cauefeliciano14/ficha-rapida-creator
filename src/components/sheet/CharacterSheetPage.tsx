@@ -23,7 +23,7 @@ import { SheetSidebar } from './SheetSidebar';
 import { AbilityDetailPanel, AttackDetailPanel } from './DiceResultPanel';
 import { ExhaustionTracker } from './ExhaustionTracker';
 import { CollapsibleSection } from './CollapsibleSection';
-import { useIsDesktop, useIsWide } from '../../hooks/useBreakpoints';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { RestModal, type RestRestoredResource } from './RestModal';
 import { ClassResourcesCard } from './ClassResourcesCard';
 import { LevelUpModal } from './LevelUpModal';
@@ -42,6 +42,9 @@ import {
 } from '../../data/sidebarDescriptions';
 import type { ClassLevel } from '../../types/multiclass';
 import styles from './CharacterSheetPage.module.css';
+
+/** Largura em que a ficha foi desenhada; abaixo disso ela encolhe por inteiro. */
+const SHEET_DESIGN_WIDTH = 1320;
 
 /* ── Sidebar state ── */
 type SidebarState =
@@ -181,8 +184,24 @@ export function CharacterSheetPage({
   }, []);
 
   /* ── Responsive layout ── */
-  const isMobile = !useIsDesktop();
-  const isDesktopWide = useIsWide();
+  // Só celular troca o layout; no desktop a ficha encolhe por zoom (ver pageZoom).
+  const isMobile = useMediaQuery('(max-width: 599px)');
+  const isDesktopWide = !isMobile;
+
+  // Como no D&D Beyond: a ficha tem um tamanho de projeto fixo e, em janela
+  // menor, encolhe inteira (zoom) em vez de cortar ou rearrumar os blocos.
+  const pageRef = useRef<HTMLDivElement>(null);
+  const [pageZoom, setPageZoom] = useState(1);
+  useEffect(() => {
+    const parent = pageRef.current?.parentElement;
+    if (!parent) return;
+    const update = () => setPageZoom(Math.min(1, parent.clientWidth / SHEET_DESIGN_WIDTH));
+    update();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(update);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, []);
 
   /* ── Rest modal state ── */
   const [restModal, setRestModal] = useState<'short' | 'long' | null>(null);
@@ -774,7 +793,11 @@ export function CharacterSheetPage({
   }, []);
 
   return (
-    <div className={`${styles.page} ${sidebar !== null && isDesktopWide ? styles.pageWithPanel : ''}`}>
+    <div
+      ref={pageRef}
+      className={`${styles.page} ${sidebar !== null && isDesktopWide ? styles.pageWithPanel : ''}`}
+      style={pageZoom < 1 ? { width: SHEET_DESIGN_WIDTH, zoom: pageZoom } : undefined}
+    >
       {/* Sentinel for scroll detection */}
       <div ref={sentinelRef} style={{ height: 1 }} />
 

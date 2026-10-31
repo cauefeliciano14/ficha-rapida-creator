@@ -1674,16 +1674,7 @@
 
 /* ── Responsive: 1024–1279px (3 columns, compact) ── */
 
-/* ── Reduced Motion ── */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .statsBand {
-    grid-template-columns: 200px minmax(150px, 240px) 1fr;
-  }
-  .mainGrid {
-    grid-template-columns: 200px minmax(150px, 240px) 1fr;
-  }
-}
-@media (max-width: 1023px) {
+@media (max-width: 599px) {
   .statsBand {
     flex-direction: column;
     align-items: stretch;
@@ -1712,7 +1703,7 @@
     min-height: 110px;
   }
 }
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (max-width: 599px) {
   .statsBand {
     grid-template-columns: minmax(160px, 1fr) minmax(280px, 2.5fr);
   }
@@ -1845,7 +1836,7 @@
 
 /* Em tela menor, a faixa de cima quebra em
    duas linhas em vez de passar por baixo do painel. */
-@media (max-width: 1180px) {
+@media (max-width: 599px) {
   .statsBand {
     flex-wrap: wrap;
   }
