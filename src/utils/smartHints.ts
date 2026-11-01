@@ -93,14 +93,7 @@ export function computeSmartHints(
           id: 'primary-low',
           severity: 'warning',
           title: `${ATTR_LABELS[primary]} baixa para ${className}`,
-          message: `Sua ${ATTR_LABELS[primary]} (${value}) está abaixo do recomendado (13+) para um ${className}. Você terá penalidades em ataques e habilidades-chave da classe.`,
-        });
-      } else if (value < 15) {
-        hints.push({
-          id: 'primary-medium',
-          severity: 'tip',
-          title: `${ATTR_LABELS[primary]} pode ser maior`,
-          message: `${className} se beneficia muito de ${ATTR_LABELS[primary]} 15+. Considere distribuir mais pontos nesse atributo.`,
+          message: `${ATTR_LABELS[primary]} ${value} é o atributo principal do ${className}. Abaixo de 13, ataques e habilidades da classe ficam fracos.`,
         });
       }
     }
@@ -108,58 +101,12 @@ export function computeSmartHints(
 
   // 2) Constituição baixa em qualquer classe (resistência geral)
   const con = getFinalAttribute(character, 'constituicao');
-  if (con !== null && con < 12) {
+  if (con !== null && con < 10) {
     hints.push({
       id: 'con-low',
       severity: 'warning',
       title: 'Constituição muito baixa',
-      message: `Constituição ${con} significa poucos pontos de vida e testes de resistência fracos contra magias de área. O ideal é manter pelo menos 12-14.`,
-    });
-  }
-
-  // 3) Sinergia de antecedente
-  if (selectedBackground?.id && !isSynergy(classId, selectedBackground.id)) {
-    hints.push({
-      id: 'bg-synergy',
-      severity: 'info',
-      title: 'Antecedente sem sinergia',
-      message: `O antecedente "${selectedBackground.name}" não é o mais sinérgico com ${className}. Confira a etapa de Origem para ver opções recomendadas.`,
-    });
-  }
-
-  // 4) Suporte a destreza para classes de leve/sem armadura
-  const dex = getFinalAttribute(character, 'destreza');
-  if (dex !== null && ['monge', 'ladino', 'guardiao', 'bardo', 'feiticeiro', 'mago', 'bruxo'].includes(classId) && dex < 13) {
-    hints.push({
-      id: 'dex-low',
-      severity: 'tip',
-      title: 'Destreza ajuda na CA',
-      message: `Sem armadura pesada, ${className} depende da Destreza para Classe de Armadura. ${dex} é baixo — considere subir para 14+.`,
-    });
-  }
-
-  // 5) Sugestão de Standard Array
-  const suggestion = classAttributeSuggestions[classId];
-  const base = (character.attributes as any)?.base;
-  if (suggestion && base) {
-    const primaryIdx = ATTR_KEYS.indexOf(primary);
-    if (primaryIdx >= 0) {
-      const suggestedPrimary = suggestion[primaryIdx];
-      const baseValue = base[primary];
-      if (typeof baseValue === 'number' && baseValue < suggestedPrimary - 2) {
-        // Já coberto por #1 normalmente; mantém só dica leve
-      }
-    }
-  }
-
-  // 6) Identidade do papel (info contextual)
-  const meta = CLASS_ROLE_META[classId];
-  if (meta && hints.length === 0) {
-    hints.push({
-      id: 'role-info',
-      severity: 'info',
-      title: `${className}: ${meta.tagline}`,
-      message: `Papel ideal: ${meta.roles.join(' / ')}. Estilo: ${meta.playstyle} (${meta.range}). Dificuldade: ${meta.difficulty}.`,
+      message: `Constituição ${con} dá modificador negativo: você perde pontos de vida a cada nível.`,
     });
   }
 
@@ -169,39 +116,9 @@ export function computeSmartHints(
 /* ============================================================
  * Hints específicos da etapa de Espécie
  * ============================================================ */
-export function computeSpeciesHints(character: Character): SmartHint[] {
-  const hints: SmartHint[] = [];
-  const cls = character.characterClass;
-  const sp = character.species;
-  if (!cls || !sp) return hints;
-
-  const classId = cls.id;
-  const speciesId = sp.id;
-  const synergy = SPECIES_CLASS_GREAT[speciesId];
-
-  if (synergy && synergy.classes.includes(classId)) {
-    hints.push({
-      id: 'species-great-match',
-      severity: 'tip',
-      title: `${sp.name} é ótimo para ${cls.name}`,
-      message: synergy.reason,
-    });
-  } else {
-    // Tenta sugerir uma espécie melhor
-    const better = Object.entries(SPECIES_CLASS_GREAT)
-      .filter(([, v]) => v.classes.includes(classId))
-      .map(([id]) => id);
-    if (better.length > 0) {
-      hints.push({
-        id: 'species-suggestion',
-        severity: 'info',
-        title: `Outras espécies sinérgicas com ${cls.name}`,
-        message: `Considere também: ${better.slice(0, 4).join(', ').replace(/-/g, ' ')}. Sua escolha atual ainda funciona — apenas perde alguns bônus mecânicos clássicos.`,
-      });
-    }
-  }
-
-  return hints;
+export function computeSpeciesHints(_character: Character): SmartHint[] {
+  // Sinergia de espécie é opinião, não erro: a etapa já mostra os traços.
+  return [];
 }
 
 /* ============================================================
@@ -216,11 +133,7 @@ export function computeEquipmentHints(character: Character): SmartHint[] {
   const inventory: any[] = equipment.inventory ?? equipment.items ?? [];
   const lower = (s: string) => (s || '').toLowerCase();
 
-  const hasArmor = inventory.some(i => {
-    const cat = lower(i.itemBase?.category || i.itemBase?.type || '');
-    return cat.includes('armadura') || cat.includes('armor');
-  });
-  const hasShield = inventory.some(i => lower(i.name).includes('escudo'));
+  const hasArmor = inventory.some(i => getEquipKind(i.name) === 'armor');
   const hasWeapon = inventory.some(i => {
     if (getEquipKind(i.name) === 'weapon') return true; // itens iniciais não têm itemBase
     const cat = lower(i.itemBase?.category || i.itemBase?.type || '');
@@ -236,8 +149,8 @@ export function computeEquipmentHints(character: Character): SmartHint[] {
     hints.push({
       id: 'no-armor',
       severity: 'warning',
-      title: 'Você não tem armadura equipada',
-      message: `${cls.name} normalmente entra em combate com armadura. Sem CA decente, você cairá rápido em batalhas.`,
+      title: 'Sem armadura',
+      message: `${cls.name} sabe usar armadura, mas você não tem nenhuma. Sua CA fica baixa.`,
     });
   }
 
@@ -246,16 +159,7 @@ export function computeEquipmentHints(character: Character): SmartHint[] {
       id: 'no-weapon',
       severity: 'warning',
       title: 'Nenhuma arma no inventário',
-      message: 'Mesmo conjuradores costumam carregar uma arma simples (adaga, cajado) para emergências.',
-    });
-  }
-
-  if (['guerreiro', 'paladino', 'clerigo'].includes(cls.id) && !hasShield) {
-    hints.push({
-      id: 'no-shield',
-      severity: 'tip',
-      title: 'Considere um escudo',
-      message: `+2 de CA é enorme para ${cls.name}. Vale o slot da mão se você usa arma de uma mão.`,
+      message: 'Adicione ao menos uma arma simples, como uma Adaga.',
     });
   }
 
@@ -263,8 +167,8 @@ export function computeEquipmentHints(character: Character): SmartHint[] {
     hints.push({
       id: 'no-focus',
       severity: 'tip',
-      title: 'Foco arcano/divino ausente',
-      message: 'Conjuradores precisam de um foco (cajado, símbolo, varinha) ou bolsa de componentes para conjurar magias com componente material.',
+      title: 'Sem foco de conjuração',
+      message: 'Magias com componente Material precisam de um foco ou de uma Bolsa de Componentes.',
     });
   }
 
