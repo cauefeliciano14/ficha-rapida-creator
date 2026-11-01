@@ -1,3 +1,4 @@
+import { portraitSrc } from '../../../utils/portraitSrc';
 import styles from './MobileNavBar.module.css';
 import { useWizard } from '../../../context/WizardContext';
 import { useCharacter } from '../../../context/CharacterContext';
@@ -40,7 +41,7 @@ export function MobileTopBar({
     <>
       <div className={styles.topBar}>
         {character.portrait ? (
-          <img src={character.portrait} alt="" className={styles.topPortrait} />
+          <img src={portraitSrc(character.portrait)} alt="" className={styles.topPortrait} />
         ) : (
           <div className={styles.topPortraitPlaceholder}>🧙</div>
         )}

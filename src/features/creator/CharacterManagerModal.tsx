@@ -1,3 +1,4 @@
+import { portraitSrc } from '../../utils/portraitSrc';
 import React, { useMemo, useRef, useState } from 'react';
 import {
   listSavedCharacters,
@@ -124,7 +125,7 @@ export function CharacterManagerModal({ onClose }: CharacterManagerModalProps) {
                 <div key={c.id} className={`${styles.card} ${isActive ? styles.cardActive : ''}`} onClick={() => handleLoad(c)}>
                   <div className={styles.cardVisual}>
                     {c.portrait ? (
-                      <img src={c.portrait} alt={c.name} className={styles.cardPortrait} />
+                      <img src={portraitSrc(c.portrait)} alt={c.name} className={styles.cardPortrait} />
                     ) : (
                       <div className={styles.cardPortraitFallback}>?</div>
                     )}
