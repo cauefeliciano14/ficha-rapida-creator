@@ -15,21 +15,20 @@ export const Accordion: React.FC<AccordionProps> = ({ title, badge, isOpen, onTo
   const bodyRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
 
+  // Aberto: anima até a altura do conteúdo e depois solta (sem limite), para a
+  // lista crescer quando algo dentro dela expande. Fechado: volta a 0.
   useEffect(() => {
-    if (bodyRef.current) {
-      setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
+    const el = bodyRef.current;
+    if (!el) return;
+    if (isOpen) {
+      setHeight(el.scrollHeight);
+      const t = setTimeout(() => setHeight(undefined), 260);
+      return () => clearTimeout(t);
     }
+    setHeight(el.scrollHeight);
+    const id = requestAnimationFrame(() => setHeight(0));
+    return () => cancelAnimationFrame(id);
   }, [isOpen]);
-
-  // Re-measure when children change while open
-  useEffect(() => {
-    if (isOpen && bodyRef.current) {
-      const id = requestAnimationFrame(() => {
-        if (bodyRef.current) setHeight(bodyRef.current.scrollHeight);
-      });
-      return () => cancelAnimationFrame(id);
-    }
-  }, [children, isOpen]);
 
   return (
     <div className={`${css.accordionWrap} ${incomplete ? css.accordionWrapIncomplete : ''}`}>
