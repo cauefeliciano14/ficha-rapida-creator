@@ -201,3 +201,27 @@
   line-height: 1.5;
   color: #dfe5ea;
 }
+
+/* Voltar sempre visível no topo da etapa. */
+.topNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.backLink {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: transparent;
+  color: #dfe5ea;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backLink:hover {
+  border-color: #e0b75a;
+  color: #fff;
+}

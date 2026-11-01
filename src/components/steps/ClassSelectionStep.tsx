@@ -25,6 +25,8 @@ export interface ClassSelectionStepProps {
 
 const getClassIconSrc = (classId: string) => `/imgs/icone_classe/${classId}.png`;
 const getClassHeroArtSrc = (classId: string) => `/imgs/${classId}.png`;
+// Recorte sem moldura e sem borda rasgada, todos do mesmo jeito (gerado a partir dos PNGs).
+const getClassCardArtSrc = (classId: string) => `/imgs/class_art/${classId}.webp`;
 
 type ClassDetails = {
   basicTraits: Record<string, string>;
@@ -69,7 +71,7 @@ const ClassCard = memo(function ClassCard({
     >
       {/* D&D Beyond: arte cheia, flâmula com ícone, nome grande, 2 tags, descrição e ações */}
       <img
-        src={getClassHeroArtSrc(cls.id)}
+        src={getClassCardArtSrc(cls.id)}
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -378,6 +380,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
             </div>
           ) : (
             <>
+              <button type="button" className={cardStyles.backToList} onClick={() => setBrowsing(true)}>← Todas as classes</button>
               <div className={`${layoutStyles.summaryCardBase} ${styles.classSummaryCard}`}>
                 {/* D&D Beyond: página dedicada da classe com a arte grande */}
                 <div className={cardStyles.hero}>

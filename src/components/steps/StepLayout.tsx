@@ -71,9 +71,14 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
         {/* As etapas ficam nas abas da barra superior (estilo D&D Beyond). */}
         <main className={`${shellStyles.main} ${isSheetStep ? shellStyles.mainFullSheet : ''}`}>
           <div className={`${shellStyles.mainInner} ${hideHeader ? styles.mainInnerNoHeader : ''} ${isSheetStep ? styles.mainInnerFullSheet : ''}`}>
-            {!hideHeader && impactSection && (
-              <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'flex-end' }}>
-                <WhyMatters contextKey={impactSection} variant="link" />
+            {!hideHeader && (onPrev || impactSection) && (
+              <div className={styles.topNav}>
+                {onPrev ? (
+                  <button type="button" className={styles.backLink} onClick={onPrev}>
+                    ← Voltar{STEP_LABELS[currentStep] ? ` para ${STEP_LABELS[currentStep]}` : ''}
+                  </button>
+                ) : <span />}
+                {impactSection && <WhyMatters contextKey={impactSection} variant="link" />}
               </div>
             )}
             <div className={styles.content}>{children}</div>

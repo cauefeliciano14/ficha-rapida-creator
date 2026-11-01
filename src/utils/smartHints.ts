@@ -79,6 +79,9 @@ export function computeSmartHints(
   const hints: SmartHint[] = [];
   const cls = character.characterClass;
   if (!cls) return hints;
+  // Atributos ainda não distribuídos (todos iguais): avisar seria barulho.
+  const values = ATTR_KEYS.map(k => getFinalAttribute(character, k));
+  if (values.every(v => v === values[0])) return hints;
 
   const classId = cls.id;
   const className = cls.name;
