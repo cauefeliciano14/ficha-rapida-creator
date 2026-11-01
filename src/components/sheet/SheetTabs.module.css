@@ -58,3 +58,20 @@
     animation: none;
   }
 }
+
+/* Pendência na aba (ex.: magias para escolher depois de subir de nível). */
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  margin-left: 5px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #c53131;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+}

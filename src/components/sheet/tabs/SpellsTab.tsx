@@ -1,3 +1,4 @@
+import { missingSpellPicks, missingSpellText } from '../../../rules/utils/spellPending';
 import { useMemo, useState } from 'react';
 import type { DerivedSheet } from '../../../rules/types/DerivedSheet';
 import type { CharacterPlayState } from '../../../types/playState';
@@ -53,6 +54,12 @@ export function SpellsTab({
   const [showAddSpell, setShowAddSpell] = useState(false);
   const [addSearch, setAddSearch] = useState('');
 
+  const missingSpells = missingSpellPicks({
+    cantripsKnown: derivedSheet.cantripsKnown,
+    preparedSpellCount: derivedSheet.preparedSpellCount,
+    learnedCantrips,
+    preparedSpells,
+  });
   const racialCantrips = derivedSheet.racialCantrips ?? [];
   const bonusCantrips = derivedSheet.bonusCantrips ?? [];
   const bonusPreparedSpells = derivedSheet.bonusPreparedSpells ?? [];
@@ -222,6 +229,11 @@ export function SpellsTab({
       )}
 
       {/* Search bar */}
+      {missingSpells.total > 0 && (
+        <div className={styles.pendingSpells} role="status">
+          Falta escolher {missingSpellText(missingSpells)}. Use <strong>+ Adicionar Magia</strong>.
+        </div>
+      )}
       <div className={styles.searchRow}>
         <input
           type="text"

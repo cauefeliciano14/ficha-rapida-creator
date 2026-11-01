@@ -657,3 +657,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.pendingSpells {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #c9a54a;
+  border-radius: 6px;
+  background: rgba(201, 165, 74, 0.08);
+  color: #dfe5ea;
+  font-size: 0.8rem;
+}

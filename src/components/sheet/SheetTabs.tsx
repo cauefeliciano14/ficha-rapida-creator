@@ -1,3 +1,4 @@
+import { missingSpellPicks, missingSpellText } from '../../rules/utils/spellPending';
 import type { SpellRoll } from './tabs/SpellsTab';
 import { useState } from 'react';
 import type { DerivedSheet } from '../../rules/types/DerivedSheet';
@@ -111,19 +112,31 @@ export function SheetTabs({
 }: SheetTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('actions');
 
+  const missingSpells = missingSpellPicks({
+    cantripsKnown: derivedSheet.cantripsKnown,
+    preparedSpellCount: derivedSheet.preparedSpellCount,
+    learnedCantrips,
+    preparedSpells,
+  });
+
   return (
     <div>
       {/* Tab bar */}
       <div className={styles.tabBar}>
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
-          >
-            {tab.label.toUpperCase()}
-          </button>
-        ))}
+        {TABS.map(tab => {
+          const pending = tab.id === 'spells' && derivedSheet.isCaster ? missingSpells.total : 0;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
+              title={pending ? `Falta escolher ${missingSpellText(missingSpells)}` : undefined}
+            >
+              {tab.label.toUpperCase()}
+              {pending > 0 && <span className={styles.tabBadge}>{pending}</span>}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab content */}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TabBarProps {
-  tabs: { id: string; label: string }[];
+  tabs: { id: string; label: string; badge?: number; badgeTitle?: string }[];
   activeTab: string;
   onTabChange: (id: string) => void;
 }
@@ -35,6 +35,15 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabChange }) 
           }}
         >
           {tab.label}
+          {tab.badge ? (
+            <span
+              title={tab.badgeTitle}
+              aria-label={tab.badgeTitle}
+              style={{ marginLeft: 8, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 18, height: 18, padding: '0 5px', borderRadius: 999, background: '#c53131', color: '#fff', fontSize: '0.7rem', fontWeight: 700, lineHeight: 1, verticalAlign: 'middle' }}
+            >
+              {tab.badge}
+            </span>
+          ) : null}
         </button>
       );
     })}

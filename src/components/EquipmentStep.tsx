@@ -1,3 +1,4 @@
+import { missingSpellPicks, missingSpellText } from '../rules/utils/spellPending';
 import React, { useState, useEffect } from 'react';
 import { isCaster as engineIsCaster } from '../rules/calculators/spells';
 import { getMaxSpellCircle } from '../rules/utils/spellSelection';
@@ -248,8 +249,17 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   };
 
   // --- Tabs ---
+  const missingSpells = missingSpellPicks({
+    cantripsKnown: derivedSheet?.cantripsKnown,
+    preparedSpellCount: derivedSheet?.preparedSpellCount,
+    learnedCantrips: spellsState.learnedCantrips,
+    preparedSpells: spellsState.preparedSpells,
+  });
   const tabs = isCaster
-    ? [{ id: 'equipment', label: 'Equipamentos' }, { id: 'spells', label: 'Magias' }]
+    ? [
+      { id: 'equipment', label: 'Equipamentos' },
+      { id: 'spells', label: 'Magias', badge: missingSpells.total, badgeTitle: `Falta escolher ${missingSpellText(missingSpells)}` },
+    ]
     : [{ id: 'equipment', label: 'Equipamentos' }];
 
   const inventoryCount = equipmentState.inventory.length;
