@@ -251,3 +251,25 @@
   background: #fff;
   color: #0d1114;
 }
+
+/* Mesmo formato dos cards de Classe: arte em retrato, figura inteira. */
+.card {
+  aspect-ratio: 5 / 7;
+  min-height: 0;
+}
+
+.art {
+  object-position: center top;
+}
+
+.scrim {
+  background: linear-gradient(180deg, rgba(10, 13, 16, 0) 45%, rgba(10, 13, 16, 0.8) 66%, rgba(10, 13, 16, 0.97) 100%);
+}
+
+.cardGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.content {
+  max-width: none;
+}

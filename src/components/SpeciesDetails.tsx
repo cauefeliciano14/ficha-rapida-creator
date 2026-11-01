@@ -587,7 +587,7 @@ export const SpeciesDetails = React.memo(
   const alwaysExclude = ['Visão no Escuro'];
   const excludedTraitNames = specialTraits[species.id] || alwaysExclude;
 
-  const imageSrc = `/imgs/portrait_races/${IMAGE_MAP[species.id] ?? species.id}.png`;
+  const imageSrc = `/imgs/species_art/${species.id}.webp`;
 
 
   return (
