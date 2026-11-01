@@ -27,6 +27,7 @@ export const AttributesStepWrapper: React.FC = () => {
       onPrev={() => setCurrentStep(2)}
       onNext={() => setCurrentStep(4)}
       canAdvance={canAdvance}
+      errors={validationErrors}
       characterName={character.name}
       setCharacterName={(n) => setCharacter((prev) => ({ ...prev, name: n }))}
       portrait={character.portrait}

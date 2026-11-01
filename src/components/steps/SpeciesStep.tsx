@@ -126,6 +126,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
       onPrev={() => setCurrentStep(1)}
       onNext={() => setCurrentStep(3)}
       canAdvance={canAdvance}
+      errors={validationErrors}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))

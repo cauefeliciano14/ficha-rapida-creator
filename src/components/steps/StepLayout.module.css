@@ -177,3 +177,27 @@
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* Pendências logo acima do Avançar */
+.pendingBox {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid #c9a54a;
+  border-radius: 6px;
+  background: rgba(201, 165, 74, 0.08);
+}
+
+.pendingTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #e0b75a;
+  margin-bottom: 4px;
+}
+
+.pendingList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #dfe5ea;
+}

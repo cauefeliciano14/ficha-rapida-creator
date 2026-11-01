@@ -319,6 +319,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
     <StepLayout
       onNext={() => setCurrentStep(1)}
       canAdvance={canAdvance}
+      errors={validationErrors}
       characterName={character.name}
       setCharacterName={(name: string) => setCharacter((prev) => ({ ...prev, name }))}
       portrait={character.portrait}

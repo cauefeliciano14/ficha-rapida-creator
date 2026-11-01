@@ -1,5 +1,4 @@
 import { StepHeader } from '../StepHeader';
-import { ValidationBanner } from '../ValidationBanner';
 import { CharacterSummaryPanel } from '../../features/creator/summary/CharacterSummaryPanel';
 import { type ChoiceImpactSection } from '../../features/creator/ChoiceImpact';
 import { WhyMatters } from '../ui/WhyMatters';
@@ -77,8 +76,16 @@ export const StepLayout: React.FC<StepLayoutProps> = ({
                 <WhyMatters contextKey={impactSection} variant="link" />
               </div>
             )}
-            {errors && errors.length > 0 && <ValidationBanner errors={errors} />}
             <div className={styles.content}>{children}</div>
+            {/* O que ainda falta, logo acima do Avançar (antes ele só ficava cinza sem explicar). */}
+            {!canAdvance && errors && errors.length > 0 && (
+              <div className={styles.pendingBox} role="status">
+                <div className={styles.pendingTitle}>Para avançar, falta:</div>
+                <ul className={styles.pendingList}>
+                  {errors.map(e => <li key={e}>{e}</li>)}
+                </ul>
+              </div>
+            )}
             {/* D&D Beyond: navegação no fim da etapa, não no topo */}
             {!hideHeader && (
               <div className={styles.footerNav}>

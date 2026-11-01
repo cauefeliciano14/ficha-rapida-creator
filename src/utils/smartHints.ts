@@ -1,3 +1,4 @@
+import { getEquipKind } from '../rules/utils/equipment';
 /**
  * Smart Hints — analisa o estado atual do personagem e gera
  * avisos contextuais não-bloqueantes, separados das validações
@@ -221,6 +222,7 @@ export function computeEquipmentHints(character: Character): SmartHint[] {
   });
   const hasShield = inventory.some(i => lower(i.name).includes('escudo'));
   const hasWeapon = inventory.some(i => {
+    if (getEquipKind(i.name) === 'weapon') return true; // itens iniciais não têm itemBase
     const cat = lower(i.itemBase?.category || i.itemBase?.type || '');
     return cat.includes('arma') || cat.includes('weapon');
   });

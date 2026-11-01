@@ -165,6 +165,7 @@ export const BackgroundStep: React.FC = () => {
       onPrev={() => setCurrentStep(0)}
       onNext={() => setCurrentStep(2)}
       canAdvance={canAdvance}
+      errors={validationErrors}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))

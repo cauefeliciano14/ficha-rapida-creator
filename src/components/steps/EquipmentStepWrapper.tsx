@@ -30,6 +30,7 @@ export const EquipmentStepWrapper: React.FC = () => {
       onPrev={() => setCurrentStep(3)}
       onNext={() => setCurrentStep(5)}
       canAdvance={canAdvance}
+      errors={validationErrors}
       characterName={character.name}
       setCharacterName={(n: string) =>
         setCharacter((prev) => ({ ...prev, name: n }))

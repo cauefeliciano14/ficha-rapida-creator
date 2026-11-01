@@ -357,7 +357,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
         byStep.equipment.push(`Selecione no máximo ${requiredCantrips} truque(s) para esta classe no nível ${level}.`);
       } else if (requiredCantrips > 0 && selectedCantrips.length < requiredCantrips) {
         const current = selectedCantrips.length;
-        byStep.equipment.push(`Escolha mais ${requiredCantrips - current} truque(s) para completar a seleção (${current}/${requiredCantrips}).`);
+        byStep.equipment.push(`Escolha mais ${requiredCantrips - current} truque(s) na aba Magias (${current}/${requiredCantrips}).`);
       }
 
       const spellVerb = mode === 'known' ? 'Escolha' : 'Prepare';
@@ -365,7 +365,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
         byStep.equipment.push(`Selecione no máximo ${requiredPreparedSpells} magia(s) preparada(s) para esta classe no nível ${level}.`);
       } else if (requiredPreparedSpells > 0 && preparedSpells.length < requiredPreparedSpells) {
         const current = preparedSpells.length;
-        byStep.equipment.push(`${spellVerb} mais ${requiredPreparedSpells - current} magia(s) para completar a seleção (${current}/${requiredPreparedSpells}).`);
+        byStep.equipment.push(`${spellVerb} mais ${requiredPreparedSpells - current} magia(s) na aba Magias (${current}/${requiredPreparedSpells}).`);
       }
 
       const invalidCantrips = selectedCantrips.filter((spell) => !validCantrips.has(spell));
