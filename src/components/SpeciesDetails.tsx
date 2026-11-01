@@ -592,15 +592,21 @@ export const SpeciesDetails = React.memo(
 
   return (
     <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+      {onChangeSpecies && (
+        <button type="button" onClick={onChangeSpecies}
+          style={{ alignSelf: 'flex-start', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 4, background: 'transparent', color: '#dfe5ea', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
+          ← Todas as espécies
+        </button>
+      )}
 
       {/* D&D Beyond: página da espécie com a arte grande e as informações por cima */}
       <div ref={imageRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
         style={{ position: 'relative', minHeight: '420px', display: 'flex', alignItems: 'flex-end', border: '2px solid #b8913a', borderRadius: '12px', overflow: 'hidden', isolation: 'isolate', background: '#0d1114' }}>
         <img src={imageSrc} alt={species.name}
-          style={{ position: 'absolute', inset: 0, width: '106%', height: '106%', objectFit: 'cover', objectPosition: 'center 25%', zIndex: -2, transform: `translate(calc(-3% + ${parallaxX / 3}px), calc(-3% + ${parallaxY / 3}px))`, transition: 'transform 0.3s ease-out' }}
+          style={{ position: 'absolute', top: 0, right: 0, width: '48%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', zIndex: -2, WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)', maskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)' }}
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
-        <div style={{ position: 'absolute', inset: 0, zIndex: -1, background: 'linear-gradient(90deg, rgba(10,13,16,0.95) 0%, rgba(10,13,16,0.7) 45%, rgba(10,13,16,0.1) 80%), linear-gradient(180deg, rgba(10,13,16,0) 45%, rgba(10,13,16,0.9) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: -1, background: 'linear-gradient(90deg, rgba(10,13,16,0.6) 0%, rgba(10,13,16,0) 60%)' }} />
         {onChangeSpecies && (
           <button type="button" onClick={onChangeSpecies}
             style={{ position: 'absolute', top: 16, right: 16, padding: '8px 18px', border: '1px solid #e0b75a', borderRadius: 999, background: 'rgba(10,13,16,0.85)', color: '#fff', fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer' }}>

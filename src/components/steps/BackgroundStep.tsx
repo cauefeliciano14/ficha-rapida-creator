@@ -226,6 +226,7 @@ export const BackgroundStep: React.FC = () => {
           <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }} ref={detailsRef}>
             {selectedBackground ? (
               <div id="background-details" className={styles.selectionDetails}>
+                <button type="button" className={cardStyles.backToList} onClick={() => setBrowsing(true)}>← Todas as origens</button>
                 <div className={`${styles.summaryCardBase} ${styles.selectionPanel} ${bgStyles.detailsCard}`}>
                   <div className={cardStyles.hero}>
                     {getBackgroundTheme(selectedBackground.id).art ? (
