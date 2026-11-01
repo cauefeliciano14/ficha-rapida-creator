@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './SmartHints.module.css';
 import type { SmartHint } from '../../utils/smartHints';
 
@@ -17,7 +18,8 @@ export function SmartHints({ hints }: SmartHintsProps) {
   const visible = hints.filter(h => !dismissed.has(h.id));
   if (visible.length === 0) return null;
 
-  return (
+  // Fica no canto inferior direito, sem empurrar o conteúdo da etapa.
+  return createPortal(
     <div className={styles.container} role="status" aria-live="polite">
       {visible.map(h => (
         <div key={h.id} className={`${styles.hint} ${styles[h.severity]}`}>
@@ -35,6 +37,7 @@ export function SmartHints({ hints }: SmartHintsProps) {
           >✕</button>
         </div>
       ))}
-    </div>
+    </div>,
+    document.body,
   );
 }

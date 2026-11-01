@@ -1,3 +1,4 @@
+import { CLASS_BLURB } from '../../data/cardBlurbs';
 import React, { useState, useRef, memo, useCallback } from 'react';
 import bgData from '../../data/db.json';
 import classDetailsData from '../../data/classDetails.json';
@@ -11,8 +12,6 @@ import { isClassSynergyForBg } from '../../data/classSynergies';
 import { CLASS_ROLE_META } from '../../data/classRoles';
 import { ComparisonModal } from '../ComparisonModal';
 import { ClassHeroPreview } from '../ui/ClassHeroPreview';
-import { SmartHints } from '../ui/SmartHints';
-import { computeSmartHints } from '../../utils/smartHints';
 import { useIsMobile } from '../../hooks/useBreakpoints';
 import { getClassCardMeta as getClassCardMetaCached } from '../../data/classMetaCache';
 import { useWhyDidYouRender } from '../../utils/renderDiagnostics';
@@ -24,7 +23,6 @@ export interface ClassSelectionStepProps {
 }
 
 const getClassIconSrc = (classId: string) => `/imgs/icone_classe/${classId}.png`;
-const getClassHeroArtSrc = (classId: string) => `/imgs/${classId}.png`;
 // Recorte sem moldura e sem borda rasgada, todos do mesmo jeito (gerado a partir dos PNGs).
 const getClassCardArtSrc = (classId: string) => `/imgs/class_art/${classId}.webp`;
 
@@ -50,20 +48,20 @@ interface ClassCardProps {
   onHoverLeave: () => void;
 }
 const ClassCard = memo(function ClassCard({
-  cls, isSelected, isCompareTarget, showSynergy, onActivate, onHoverEnter,
+  cls, isSelected, isCompareTarget, showSynergy, onActivate,
 }: ClassCardProps) {
   const meta = getClassCardMeta(cls.id);
   const roleMeta = CLASS_ROLE_META[cls.id];
   const theme = getClassTheme(cls.id);
   const handleClick = useCallback(() => onActivate(cls.id), [cls.id, onActivate]);
-  const handleLearnMore = useCallback((e: React.MouseEvent) => {
-    // Hover-preview já é a "Learn more" — força exibição on click
-    e.stopPropagation();
-    onHoverEnter(cls.id, (e.currentTarget as HTMLElement).closest('div')!.getBoundingClientRect());
-  }, [cls.id, onHoverEnter]);
   return (
     <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ''} ${isCompareTarget ? cardStyles.cardCompareTarget : ''}`}
+      role="button"
+      tabIndex={0}
+      aria-label={`Abrir classe ${cls.name}`}
+      onClick={handleClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
@@ -91,25 +89,10 @@ const ClassCard = memo(function ClassCard({
           <span className={cardStyles.tag}>{theme.archetypeLabel}</span>
           {meta.primaryAttribute ? <span className={cardStyles.tag}>{meta.primaryAttribute}</span> : null}
         </div>
-        {cls.description ? <p className={cardStyles.description}>{cls.description}</p> : null}
+        <p className={cardStyles.description}>{CLASS_BLURB[cls.id] ?? cls.description}</p>
         <div className={cardStyles.footer}>
           <span className={cardStyles.source}>Livro do Jogador</span>
-          <button
-            type="button"
-            className={cardStyles.actionBtn}
-            onClick={handleLearnMore}
-            aria-label={`Saber mais sobre ${cls.name}`}
-          >
-            Saber mais
-          </button>
-          <button
-            type="button"
-            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
-            onClick={handleClick}
-            aria-label={`Selecionar classe ${cls.name}`}
-          >
-            {isSelected ? '✓ Selecionada' : 'Selecionar'}
-          </button>
+          <span className={cardStyles.actionBtn} aria-hidden="true">Saber mais</span>
         </div>
       </div>
     </div>
@@ -272,7 +255,6 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
   }, [compareMode, handleSelectClass]);
 
   // ── Smart hints ──
-  const smartHints = computeSmartHints(character, selectedBackground);
 
 
   const handleCompareClick = (classId: string) => {
@@ -369,7 +351,6 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
         </>
         ) : (
         <>
-        {selectedClass && smartHints.length > 0 && <SmartHints hints={smartHints} />}
 
         <div className={layoutStyles.detailsColumn} ref={detailsRef}>
           {!selectedClass || !classDetails ? (
@@ -384,7 +365,7 @@ export const ClassSelectionStep: React.FC<ClassSelectionStepProps> = ({ language
               <div className={`${layoutStyles.summaryCardBase} ${styles.classSummaryCard}`}>
                 {/* D&D Beyond: página dedicada da classe com a arte grande */}
                 <div className={cardStyles.hero}>
-                  <img src={getClassHeroArtSrc(selectedClass.id)} alt={`Arte de ${selectedClass.name}`} className={cardStyles.heroArt} />
+                  <img src={getClassCardArtSrc(selectedClass.id)} alt={`Arte de ${selectedClass.name}`} className={cardStyles.heroArt} />
                   <div className={cardStyles.heroScrim} />
                   <button type="button" className={cardStyles.heroChange} onClick={() => setBrowsing(true)}>
                     Trocar classe

@@ -244,13 +244,17 @@
 }
 
 .heroArt {
+  /* A arte (retrato) ocupa a direita e some suavemente para a esquerda. */
   position: absolute;
-  inset: 0;
-  width: 100%;
+  top: 0;
+  right: 0;
+  width: 48%;
   height: 100%;
   object-fit: cover;
-  object-position: 70% 20%;
+  object-position: center 15%;
   z-index: -2;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%);
 }
 
 .heroScrim {
@@ -258,8 +262,8 @@
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, rgba(10, 13, 16, 0.95) 0%, rgba(10, 13, 16, 0.7) 40%, rgba(10, 13, 16, 0.05) 75%),
-    linear-gradient(180deg, rgba(10, 13, 16, 0) 50%, rgba(10, 13, 16, 0.85) 100%);
+    linear-gradient(90deg, rgba(10, 13, 16, 0.6) 0%, rgba(10, 13, 16, 0) 60%),
+    linear-gradient(180deg, rgba(10, 13, 16, 0) 70%, rgba(10, 13, 16, 0.6) 100%);
 }
 
 .heroChange {
@@ -333,4 +337,15 @@
 .backToList:hover {
   border-color: #e0b75a;
   color: #fff;
+}
+
+/* O card inteiro abre a página de detalhes. */
+.card {
+  cursor: pointer;
+}
+
+.card:hover .actionBtn,
+.card:focus-visible .actionBtn {
+  background: #fff;
+  color: #0d1114;
 }

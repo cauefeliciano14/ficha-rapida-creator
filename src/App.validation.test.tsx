@@ -146,7 +146,7 @@ describe('App validation banners by creation step', () => {
 
     const html = view.container.innerHTML;
     expect(html.indexOf('Classe')).toBeGreaterThan(-1);
-    expect(html.indexOf('Selecionar classe Bárbaro')).toBeGreaterThan(-1);
+    expect(html.indexOf('Abrir classe Bárbaro')).toBeGreaterThan(-1);
 
     view.cleanup();
   });

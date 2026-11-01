@@ -1,3 +1,4 @@
+import { BACKGROUND_BLURB } from "../../data/cardBlurbs";
 import React, { useRef, useState, memo, useCallback } from "react";
 import backgroundsData from "../../data/backgrounds.json";
 import talentsData from "../../data/talents.json";
@@ -31,12 +32,16 @@ const BackgroundCard = memo(function BackgroundCard({
 }: BackgroundCardProps) {
   const theme = getBackgroundTheme(bg.id);
   const [artFailed, setArtFailed] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const handleClick = useCallback(() => onActivate(bg.id), [bg.id, onActivate]);
   const showArt = !!theme.art && !artFailed;
   return (
     <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      role="button"
+      tabIndex={0}
+      aria-label={`Abrir origem ${bg.name}`}
+      onClick={handleClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
@@ -65,7 +70,7 @@ const BackgroundCard = memo(function BackgroundCard({
       <div className={cardStyles.content}>
         <h3 className={cardStyles.title}>{bg.name}</h3>
         {bg.description ? (
-          <p className={`${cardStyles.description} ${expanded ? cardStyles.descriptionExpanded : ""}`}>{bg.description}</p>
+          <p className={cardStyles.description}>{BACKGROUND_BLURB[bg.id] ?? bg.description}</p>
         ) : null}
         {bg.talent ? (
           <span className={cardStyles.featLine}>
@@ -75,23 +80,7 @@ const BackgroundCard = memo(function BackgroundCard({
         ) : null}
         <div className={cardStyles.footer}>
           <span className={cardStyles.source}>Livro do Jogador</span>
-          <button
-            type="button"
-            className={cardStyles.actionBtn}
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            aria-label={`Saber mais sobre ${bg.name}`}
-          >
-            {expanded ? "Menos" : "Saber mais"}
-          </button>
-          <button
-            type="button"
-            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
-            onClick={handleClick}
-            aria-label={`Selecionar origem ${bg.name}`}
-          >
-            {isSelected ? "✓ Selecionada" : "Selecionar"}
-          </button>
+          <span className={cardStyles.actionBtn} aria-hidden="true">Saber mais</span>
         </div>
       </div>
     </div>

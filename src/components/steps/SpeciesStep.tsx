@@ -1,3 +1,4 @@
+import { SPECIES_BLURB } from "../../data/cardBlurbs";
 import React, { useState, memo, useCallback } from "react";
 import speciesData from "../../data/species.json";
 import { SpeciesDetails } from "../SpeciesDetails";
@@ -25,17 +26,18 @@ interface SpeciesCardProps {
   onDetails: (id: string) => void;
 }
 const SpeciesCard = memo(function SpeciesCard({
-  sp, isSelected, isCompareTarget, onActivate, onDetails,
+  sp, isSelected, isCompareTarget, onActivate,
 }: SpeciesCardProps) {
   const theme = getSpeciesTheme(sp.id);
   const handleClick = useCallback(() => onActivate(sp.id), [sp.id, onActivate]);
-  const handleDetails = useCallback(
-    (e: React.MouseEvent) => { e.stopPropagation(); onDetails(sp.id); },
-    [sp.id, onDetails],
-  );
   return (
     <div
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      role="button"
+      tabIndex={0}
+      aria-label={`Abrir espécie ${sp.name}`}
+      onClick={handleClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
         ['--card-glow' as string]: theme.glow,
         ['--banner-color' as string]: theme.banner,
@@ -47,20 +49,10 @@ const SpeciesCard = memo(function SpeciesCard({
       <div className={cardStyles.scrim} />
       <div className={cardStyles.content}>
         <h3 className={cardStyles.title}>{sp.name}</h3>
-        {sp.description ? <p className={cardStyles.description}>{sp.description}</p> : null}
+        <p className={cardStyles.description}>{SPECIES_BLURB[sp.id] ?? sp.description}</p>
         <div className={cardStyles.footer}>
           <span className={cardStyles.source}>Livro do Jogador</span>
-          <button type="button" className={cardStyles.actionBtn} onClick={handleDetails} aria-label={`Saber mais sobre ${sp.name}`}>
-            Saber mais
-          </button>
-          <button
-            type="button"
-            className={`${cardStyles.actionBtn} ${cardStyles.actionBtnSelect}`}
-            onClick={handleClick}
-            aria-label={`Selecionar espécie ${sp.name}`}
-          >
-            {isSelected ? "✓ Selecionada" : "Selecionar"}
-          </button>
+          <span className={cardStyles.actionBtn} aria-hidden="true">Saber mais</span>
         </div>
       </div>
     </div>

@@ -388,3 +388,14 @@
   .heroTitle { font-size: 2.6rem; }
   .heroContent { padding: 56px 20px 20px; }
 }
+
+/* O card inteiro abre a página de detalhes. */
+.card {
+  cursor: pointer;
+}
+
+.card:hover .actionBtn,
+.card:focus-visible .actionBtn {
+  background: #fff;
+  color: #0d1114;
+}

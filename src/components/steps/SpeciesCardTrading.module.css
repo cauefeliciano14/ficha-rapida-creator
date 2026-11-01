@@ -240,3 +240,14 @@
   .card:hover { transform: none; }
   .card:hover .art { transform: none; }
 }
+
+/* O card inteiro abre a página de detalhes. */
+.card {
+  cursor: pointer;
+}
+
+.card:hover .actionBtn,
+.card:focus-visible .actionBtn {
+  background: #fff;
+  color: #0d1114;
+}
