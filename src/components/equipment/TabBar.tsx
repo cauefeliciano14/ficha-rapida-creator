@@ -7,11 +7,12 @@ interface TabBarProps {
 }
 
 export const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabChange }) => (
+  <>
   <div style={{
     display: 'flex',
     gap: '0',
     borderBottom: '2px solid rgba(255,255,255,0.06)',
-    marginBottom: '20px',
+    marginBottom: tabs.some(t => t.badge && t.id !== activeTab) ? '8px' : '20px',
   }}>
     {tabs.map(tab => {
       const active = tab.id === activeTab;
@@ -48,4 +49,16 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabChange }) 
       );
     })}
   </div>
+  {/* Pendência escrita por extenso, não só o número na aba. */}
+  {tabs.filter(t => t.badge && t.badgeTitle && t.id !== activeTab).map(t => (
+    <button
+      key={`pending-${t.id}`}
+      type="button"
+      onClick={() => onTabChange(t.id)}
+      style={{ display: 'block', width: '100%', marginBottom: 16, padding: '8px 12px', border: '1px solid #c53131', borderRadius: 6, background: 'rgba(197,49,49,0.12)', color: '#fff', fontSize: '0.85rem', textAlign: 'left', cursor: 'pointer' }}
+    >
+      ⚠ Pendente: {t.badgeTitle.replace(/^Falta /, '')} na aba {t.label} →
+    </button>
+  ))}
+  </>
 );
