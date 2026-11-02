@@ -142,7 +142,9 @@ export function SheetTabs({
       {/* Pendência sempre escrita por extenso, não só o número na aba. */}
       {derivedSheet.isCaster && missingSpells.total > 0 && activeTab !== 'spells' && (
         <button type="button" className={styles.pendingNotice} onClick={() => setActiveTab('spells')}>
-          ⚠ Pendente: escolher {missingSpellText(missingSpells)} na aba Magias →
+          <span aria-hidden="true" style={{ fontSize: '1.1rem' }}>⚠</span>
+          <span style={{ flex: 1 }}>Falta escolher {missingSpellText(missingSpells)}</span>
+          <span className={styles.pendingCta}>Escolher magias →</span>
         </button>
       )}
 

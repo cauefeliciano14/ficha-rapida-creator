@@ -55,7 +55,7 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, activeTab, onTabChange }) 
       key={`pending-${t.id}`}
       type="button"
       onClick={() => onTabChange(t.id)}
-      style={{ display: 'block', width: '100%', marginBottom: 16, padding: '8px 12px', border: '1px solid #c53131', borderRadius: 6, background: 'rgba(197,49,49,0.12)', color: '#fff', fontSize: '0.85rem', textAlign: 'left', cursor: 'pointer' }}
+      style={{ display: 'block', width: '100%', marginBottom: 16, padding: '10px 14px', border: '1px solid #e05252', borderLeft: '5px solid #e05252', borderRadius: 6, background: '#3a1416', color: '#fff', fontSize: '0.92rem', fontWeight: 700, textAlign: 'left', cursor: 'pointer', boxShadow: '0 0 14px rgba(224,82,82,0.25)' }}
     >
       ⚠ Pendente: {t.badgeTitle.replace(/^Falta /, '')} na aba {t.label} →
     </button>
