@@ -488,8 +488,8 @@ describe('Validação explícita de inconsistências em magia e equipamento', ()
       equipmentChoices: { classOption: 'A', backgroundOption: 'A' },
       inventory: [{ name: 'Espada Longa' }, { name: 'Roupas de Viagem' }],
     }));
-    expect(r.byStep.equipment.some((e) => e.includes('pacote de equipamento de classe'))).toBe(true);
-    expect(r.byStep.equipment.some((e) => e.includes('pacote de equipamento de antecedente'))).toBe(true);
+    expect(r.byStep.equipment.some((e) => e.includes('não bate com a classe atual'))).toBe(true);
+    expect(r.byStep.equipment.some((e) => e.includes('não bate com a origem atual'))).toBe(true);
   });
 });
 

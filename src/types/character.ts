@@ -89,6 +89,8 @@ export interface Character {
     classOption: 'A' | 'B' | null;
     backgroundOption: 'A' | 'B' | null;
     startingEquipmentAdded: boolean;
+    /** Ouro que veio dos pacotes iniciais (para refazer sem duplicar). */
+    startingGold?: number;
     inventory: InventoryItem[];
     currency: { cp: number; sp: number; ep: number; gp: number; pp: number; };
     equippedArmorId: string | null;

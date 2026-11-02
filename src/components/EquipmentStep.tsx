@@ -78,6 +78,20 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
   // spells. Explicit shortcuts (quick build / templates / random) fill them.
 
   // --- Equipment handlers ---
+  // Tira os itens e o ouro do pacote inicial e volta a mostrar a escolha (A/B).
+  // Serve quando a classe ou a origem mudou depois de pegar o equipamento.
+  const handleResetStartingEquipment = () => {
+    updateEquipment(prev => ({
+      ...prev,
+      inventory: prev.inventory.filter(i => !i.isStartingGear),
+      currency: { ...prev.currency, gp: Math.max(0, prev.currency.gp - (prev.startingGold ?? 0)) },
+      classOption: null,
+      backgroundOption: null,
+      startingEquipmentAdded: false,
+      startingGold: 0,
+    }));
+  };
+
   const handleCommitStartingEquipment = (classOption: 'A' | 'B' | null, bgOption: 'A' | 'B' | null, subChoices: Record<string, string>) => {
     const classEq = getEquipmentForClass(classId);
     const bgEq = getEquipmentForBackground(bgId);
@@ -125,6 +139,9 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
       draft.classOption = classOption;
       draft.backgroundOption = bgOption;
       draft.startingEquipmentAdded = true;
+      // Guarda o ouro dado pelos pacotes, para poder refazer sem duplicar.
+      draft.startingGold = (classOption === 'A' ? classEq.optionA.gold : classOption === 'B' ? classEq.optionB.gold : 0)
+        + (bgOption === 'A' ? bgEq.optionA.gold : bgOption === 'B' ? bgEq.optionB.gold : 0);
 
       // Auto-equip: if the starting package contains exactly one armor, equip it.
       // If it contains a shield, equip that too.
@@ -287,6 +304,7 @@ export const EquipmentStep: React.FC<EquipmentStepProps> = ({ character, selecte
               currentBgOption={equipmentState.backgroundOption}
               startingEquipmentAdded={equipmentState.startingEquipmentAdded}
               onCommit={handleCommitStartingEquipment}
+              onReset={handleResetStartingEquipment}
             />
           </Accordion>
 

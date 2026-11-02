@@ -11,12 +11,13 @@ interface StartingEquipmentProps {
   currentBgOption: 'A' | 'B' | null;
   startingEquipmentAdded: boolean;
   onCommit: (classOption: 'A' | 'B' | null, bgOption: 'A' | 'B' | null, subChoices: Record<string, string>) => void;
+  onReset?: () => void;
 }
 
 export const StartingEquipment: React.FC<StartingEquipmentProps> = ({
   classId, className, bgId, bgName,
   currentClassOption, currentBgOption, startingEquipmentAdded,
-  onCommit,
+  onCommit, onReset,
 }) => {
   const classEq = getEquipmentForClass(classId);
   const bgEq = getEquipmentForBackground(bgId);
@@ -97,7 +98,17 @@ export const StartingEquipment: React.FC<StartingEquipmentProps> = ({
     return (
       <div style={{ color: 'var(--color-success-light)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span>{'\u2713'}</span>
-        <span>Equipamento inicial já adicionado ao inventário.</span>
+        <span style={{ flex: 1 }}>Equipamento inicial já adicionado ao inventário.</span>
+        {onReset && (
+          <button
+            type="button"
+            onClick={onReset}
+            title="Tira os itens e o ouro do pacote inicial e deixa escolher de novo"
+            style={{ padding: '6px 12px', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 4, background: 'transparent', color: '#dfe5ea', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}
+          >
+            ↺ Refazer equipamento inicial
+          </button>
+        )}
       </div>
     );
   }

@@ -283,7 +283,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
     const classStartingItems = getStartingGearBySource(inventory, 'class');
     if (choices.equipmentChoices.classOption === 'A') {
       if (!hasMinimumInventoryForItems(inventory, classPackage.optionA.items)) {
-        byStep.equipment.push('O inventário não corresponde ao pacote de equipamento de classe selecionado.');
+        byStep.equipment.push('O equipamento inicial não bate com a classe atual. Use "Refazer equipamento inicial".');
       }
       if (hasUnresolvedSubChoiceForPackage(classStartingItems, classPackage.optionA.items)) {
         byStep.equipment.push('Há subescolha faltando no pacote de equipamento de classe.');
@@ -299,7 +299,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
     const backgroundStartingItems = getStartingGearBySource(inventory, 'bg');
     if (choices.equipmentChoices.backgroundOption === 'A') {
       if (!hasMinimumInventoryForItems(inventory, backgroundPackage.optionA.items)) {
-        byStep.equipment.push('O inventário não corresponde ao pacote de equipamento de antecedente selecionado.');
+        byStep.equipment.push('O equipamento inicial não bate com a origem atual. Use "Refazer equipamento inicial".');
       }
       if (hasUnresolvedSubChoiceForPackage(backgroundStartingItems, backgroundPackage.optionA.items)) {
         byStep.equipment.push('Há subescolha faltando no pacote de equipamento de antecedente.');
