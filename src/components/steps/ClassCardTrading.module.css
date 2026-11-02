@@ -361,7 +361,7 @@
   position: relative;
   inset: auto;
   height: auto;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 3 / 2;
   object-position: center;
   z-index: 0;
 }
