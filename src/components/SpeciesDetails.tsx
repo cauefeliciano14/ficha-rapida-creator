@@ -7,11 +7,6 @@ import { TalentChoiceSection, checkTalentComplete } from './TalentChoices';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const IMAGE_MAP: Record<string, string> = {
-  aasimar: 'aasimar', anao: 'anoes', draconato: 'draconatos', elfo: 'elfos',
-  gnomo: 'gnomos', golias: 'golias', humano: 'humanos', orc: 'orcs',
-  pequenino: 'pequeninos', tiferino: 'tiferinos',
-};
 
 const ALL_SKILLS = [
   'Acrobacia', 'Arcanismo', 'Atletismo', 'Atuação', 'Enganação', 'Furtividade',
@@ -524,22 +519,6 @@ export const SpeciesDetails = React.memo(
   if (!species) return null;
 
   const imageRef = useRef<HTMLDivElement>(null);
-  const [parallaxX, setParallaxX] = useState(0);
-  const [parallaxY, setParallaxY] = useState(0);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;  // -0.5 to 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setParallaxX(-x * 30);  // opposite direction, max 15px
-    setParallaxY(-y * 30);
-  };
-
-  const handleMouseLeave = () => {
-    setParallaxX(0);
-    setParallaxY(0);
-  };
-
   const choices: Record<string, string> = character.choices || {};
 
   const setChoice = (key: string, val: string) =>
@@ -600,7 +579,7 @@ export const SpeciesDetails = React.memo(
       )}
 
       {/* D&D Beyond: página da espécie com a arte grande e as informações por cima */}
-      <div ref={imageRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
+      <div ref={imageRef}
         style={{ position: 'relative', minHeight: '420px', display: 'flex', alignItems: 'flex-end', border: '2px solid #b8913a', borderRadius: '12px', overflow: 'hidden', isolation: 'isolate', background: '#0d1114' }}>
         <img src={imageSrc} alt={species.name}
           style={{ position: 'absolute', top: 0, right: 0, width: '48%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', zIndex: -2, WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)', maskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)' }}

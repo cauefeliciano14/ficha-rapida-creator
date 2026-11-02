@@ -5,9 +5,6 @@ import { getEquipKind } from '../rules/utils/equipment';
  * obrigatórias. Foco: ajudar a otimizar escolhas, não impedir.
  */
 import type { Character } from '../types/character';
-import { CLASS_ROLE_META } from '../data/classRoles';
-import { isSynergy } from '../data/classSynergies';
-import classAttributeSuggestions from '../data/classAttributeSuggestions';
 
 export type HintSeverity = 'info' | 'warning' | 'tip';
 
@@ -44,27 +41,6 @@ const PRIMARY_ATTR_BY_CLASS: Record<string, typeof ATTR_KEYS[number]> = {
   paladino: 'forca',
 };
 
-/**
- * Sinergias notáveis Espécie × Classe (apenas as combinações mais clássicas,
- * não exaustivo). Usadas para gerar hints positivos/negativos contextuais.
- */
-const SPECIES_CLASS_GREAT: Record<string, { classes: string[]; reason: string }> = {
-  anao:        { classes: ['guerreiro', 'paladino', 'clerigo'], reason: 'PV extra, resistência a venenos e proficiência com armas marciais combinam com tanks e linha de frente.' },
-  'anao-da-colina': { classes: ['clerigo', 'druida'], reason: '+1 PV por nível e Sabedoria fortalecem conjuradores divinos.' },
-  'anao-da-montanha': { classes: ['guerreiro', 'paladino'], reason: '+2 Força e proficiência com armaduras pesadas reforçam tanks marciais.' },
-  elfo:        { classes: ['mago', 'ladino', 'guardiao'], reason: 'Destreza, visão no escuro e Percepção dão furtividade e exploração superiores.' },
-  'alto-elfo': { classes: ['mago', 'feiticeiro', 'bruxo'], reason: 'Truque arcano extra e Inteligência impulsionam conjuradores arcanos.' },
-  'elfo-da-floresta': { classes: ['guardiao', 'druida'], reason: 'Deslocamento +35 e furtividade na natureza são ideais para batedores.' },
-  halfling:    { classes: ['ladino', 'bardo'], reason: 'Sortudo e Bravo aumentam a sobrevivência de classes de Destreza/Carisma.' },
-  humano:      { classes: ['bardo', 'clerigo', 'paladino', 'guerreiro'], reason: 'Versátil: talento extra e perícia adicional servem qualquer classe.' },
-  golias:      { classes: ['barbaro', 'guerreiro'], reason: 'Tamanho gigante, +Força e Pedregulho Poderoso devastam em corpo a corpo.' },
-  draconato:   { classes: ['paladino', 'feiticeiro'], reason: 'Sopro elemental e resistência sinergizam com Carisma e combate misto.' },
-  tiefling:    { classes: ['bruxo', 'feiticeiro', 'bardo'], reason: 'Magia ancestral e resistência a fogo combinam com conjuradores carismáticos.' },
-  aasimar:     { classes: ['paladino', 'clerigo'], reason: 'Mãos curativas e resistência radiante reforçam o tema sagrado.' },
-  gnomo:       { classes: ['mago', 'bardo'], reason: 'Astúcia Gnômica protege contra magias mentais — perfeito para conjuradores.' },
-  'meio-orc':  { classes: ['barbaro', 'guerreiro'], reason: 'Resistência Implacável e Ataques Selvagens potencializam dano marcial.' },
-  'meio-elfo': { classes: ['bardo', 'paladino', 'feiticeiro'], reason: 'Bônus de Carisma e perícias extras combinam com classes sociais.' },
-};
 
 function getFinalAttribute(character: Character, attr: typeof ATTR_KEYS[number]): number | null {
   const final = (character.attributes as any)?.final;
@@ -74,7 +50,7 @@ function getFinalAttribute(character: Character, attr: typeof ATTR_KEYS[number])
 
 export function computeSmartHints(
   character: Character,
-  selectedBackground: any | null,
+  _selectedBackground: unknown,
 ): SmartHint[] {
   const hints: SmartHint[] = [];
   const cls = character.characterClass;
