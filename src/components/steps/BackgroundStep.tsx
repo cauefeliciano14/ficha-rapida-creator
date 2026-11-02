@@ -61,9 +61,6 @@ const BackgroundCard = memo(function BackgroundCard({
         <div className={cardStyles.artFallback} aria-hidden="true" />
       )}
       <div className={cardStyles.scrim} />
-      <div className={cardStyles.banner} aria-hidden="true">
-        <span className={cardStyles.bannerLetter}>{bg.name.charAt(0)}</span>
-      </div>
       {isRecommended && !isSelected && (
         <span className={cardStyles.recommendedRibbon}>Combina</span>
       )}
