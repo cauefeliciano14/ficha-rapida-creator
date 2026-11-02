@@ -13,7 +13,7 @@ export function buildSummaryCopyText(
   return [
     `Classe: ${className || 'Não definida'}`,
     `Raça: ${speciesName || 'Não definida'}`,
-    `Origem: ${backgroundName || 'Não definida'}`,
+    `Antecedente: ${backgroundName || 'Não definida'}`,
     `Atributos: ${attrs}`,
   ].join('\n');
 }

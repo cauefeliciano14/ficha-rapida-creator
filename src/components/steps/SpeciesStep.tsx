@@ -32,7 +32,7 @@ const SpeciesCard = memo(function SpeciesCard({
   const handleClick = useCallback(() => onActivate(sp.id), [sp.id, onActivate]);
   return (
     <div
-      className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
+      className={`${cardStyles.card} ${cardStyles.cardWide} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
       role="button"
       tabIndex={0}
       aria-label={`Abrir raça ${sp.name}`}

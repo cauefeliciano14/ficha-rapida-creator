@@ -61,7 +61,7 @@ describe('MobileNavBar — selos de pendências por etapa', () => {
     render(<MobileBottomNav />);
 
     expect(badgeText('Classe')).toBe('1');
-    expect(badgeText('Origem')).toBe('1');
+    expect(badgeText('Antecedente')).toBe('1');
     expect(badgeText('Raça')).toBe('1');
     expect(badgeText('Atributos')).toBe('1');
     expect(badgeText('Equip.')).toBe('2');

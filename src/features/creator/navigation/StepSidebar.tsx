@@ -7,7 +7,7 @@ import styles from './StepSidebar.module.css';
 
 const ITEMS = [
   { index: 0, label: 'Classe', key: 'class' },
-  { index: 1, label: 'Origem', key: 'background' },
+  { index: 1, label: 'Antecedente', key: 'background' },
   { index: 2, label: 'Raça', key: 'species' },
   { index: 3, label: 'Atributos', key: 'attributes' },
   { index: 4, label: 'Equipamento', key: 'equipment' },

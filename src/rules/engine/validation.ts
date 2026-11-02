@@ -299,7 +299,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
     const backgroundStartingItems = getStartingGearBySource(inventory, 'bg');
     if (choices.equipmentChoices.backgroundOption === 'A') {
       if (!hasMinimumInventoryForItems(inventory, backgroundPackage.optionA.items)) {
-        byStep.equipment.push('O equipamento inicial não bate com a origem atual. Use "Refazer equipamento inicial".');
+        byStep.equipment.push('O equipamento inicial não bate com o antecedente atual. Use "Refazer equipamento inicial".');
       }
       if (hasUnresolvedSubChoiceForPackage(backgroundStartingItems, backgroundPackage.optionA.items)) {
         byStep.equipment.push('Há subescolha faltando no pacote de equipamento de antecedente.');

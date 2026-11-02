@@ -429,3 +429,42 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+/* Antecedentes usam a ilustração do livro (cenário largo): imagem inteira em
+   cima, texto embaixo. Vale mais que o formato em pé acima. */
+.card {
+  aspect-ratio: auto;
+  justify-content: flex-start;
+}
+
+.card .art {
+  position: relative;
+  inset: auto;
+  height: auto;
+  aspect-ratio: 852 / 318;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.card .scrim {
+  display: none;
+}
+
+.card .content {
+  flex: 1;
+}
+
+/* Página do antecedente: o cenário do livro ocupa o fundo inteiro. */
+.heroArt {
+  width: 100%;
+  object-position: center;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.heroScrim {
+  background:
+    linear-gradient(90deg, rgba(10, 13, 16, 0.92) 0%, rgba(10, 13, 16, 0.6) 45%, rgba(10, 13, 16, 0.1) 80%),
+    linear-gradient(180deg, rgba(10, 13, 16, 0) 55%, rgba(10, 13, 16, 0.7) 100%);
+}

@@ -71,7 +71,7 @@ export function SheetHeader({
             {!isMulticlass && _level ? ` ${_level}` : ''}
           </div>
           <div className={styles.details}>
-            <span>{backgroundName || 'Sem origem'}</span>
+            <span>{backgroundName || 'Sem antecedente'}</span>
             <span className={styles.dotSep}>•</span>
             <span>{alignment || 'Sem alinhamento'}</span>
           </div>

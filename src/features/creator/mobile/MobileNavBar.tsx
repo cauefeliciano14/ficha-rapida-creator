@@ -6,7 +6,7 @@ import { countUniqueIssues, stepHasSelection } from '../../../utils/wizardProgre
 
 const STEPS = [
   { label: 'Classe', icon: '⚔️', key: 'class' },
-  { label: 'Origem', icon: '📜', key: 'background' },
+  { label: 'Antecedente', icon: '📜', key: 'background' },
   { label: 'Raça', icon: '🧝', key: 'species' },
   { label: 'Atributos', icon: '🎲', key: 'attributes' },
   { label: 'Equip.', icon: '🛡️', key: 'equipment' },

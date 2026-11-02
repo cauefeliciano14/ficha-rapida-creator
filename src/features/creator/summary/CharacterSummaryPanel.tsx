@@ -147,7 +147,7 @@ function CharacterSummaryPanelInner() {
           type="button"
           className={styles.copyBtn}
           onClick={handleCopySummary}
-          title="Copiar classe, raça, origem e atributos como texto"
+          title="Copiar classe, raça, antecedente e atributos como texto"
           aria-label="Copiar resumo do personagem"
         >
           {copied ? '✓ Copiado' : '⧉ Copiar'}

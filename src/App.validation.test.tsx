@@ -154,7 +154,7 @@ describe('App validation banners by creation step', () => {
   it('shows background pending errors on step 1 without requiring the sheet page', async () => {
     const view = await renderAppAtStep(1);
 
-    expect(view.container.textContent).toContain('Escolha sua Origem: Antecedente');
+    expect(view.container.textContent).toContain('Escolha seu Antecedente');
     expect(view.container.textContent).toContain('Escolha um antecedente ao lado');
 
     view.cleanup();

@@ -566,7 +566,7 @@ export const SpeciesDetails = React.memo(
   const alwaysExclude = ['Visão no Escuro'];
   const excludedTraitNames = specialTraits[species.id] || alwaysExclude;
 
-  const imageSrc = `/imgs/species_art/${species.id}.webp`;
+  const imageSrc = `/imgs/species_art/${species.id}.jpg`;
 
 
   return (
@@ -582,10 +582,10 @@ export const SpeciesDetails = React.memo(
       <div ref={imageRef}
         style={{ position: 'relative', minHeight: '420px', display: 'flex', alignItems: 'flex-end', border: '2px solid #b8913a', borderRadius: '12px', overflow: 'hidden', isolation: 'isolate', background: '#0d1114' }}>
         <img src={imageSrc} alt={species.name}
-          style={{ position: 'absolute', top: 0, right: 0, width: '48%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%', zIndex: -2, WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)', maskImage: 'linear-gradient(90deg, transparent 0%, #000 30%)' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: -2 }}
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
-        <div style={{ position: 'absolute', inset: 0, zIndex: -1, background: 'linear-gradient(90deg, rgba(10,13,16,0.6) 0%, rgba(10,13,16,0) 60%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: -1, background: 'linear-gradient(90deg, rgba(10,13,16,0.92) 0%, rgba(10,13,16,0.6) 45%, rgba(10,13,16,0.1) 80%), linear-gradient(180deg, rgba(10,13,16,0) 55%, rgba(10,13,16,0.7) 100%)' }} />
         {onChangeSpecies && (
           <button type="button" onClick={onChangeSpecies}
             style={{ position: 'absolute', top: 16, right: 16, padding: '8px 18px', border: '1px solid #e0b75a', borderRadius: 999, background: 'rgba(10,13,16,0.85)', color: '#fff', fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer' }}>

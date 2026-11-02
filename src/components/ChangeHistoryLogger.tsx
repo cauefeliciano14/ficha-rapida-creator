@@ -51,7 +51,7 @@ export function ChangeHistoryLogger() {
       if (bgId) {
         logChange({
           type: 'background',
-          description: `Origem alterada para ${selectedBackground?.name ?? bgId}`,
+          description: `Antecedente alterado para ${selectedBackground?.name ?? bgId}`,
           previous: prevBgRef.current ?? undefined,
           current: bgId,
         });

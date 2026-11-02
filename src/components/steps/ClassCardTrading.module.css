@@ -349,3 +349,27 @@
   background: #fff;
   color: #0d1114;
 }
+
+/* Raças: a ilustração de grupo do livro é larga, então vai inteira em cima e
+   o texto fica embaixo (sem recortar as pessoas da cena). */
+.cardWide {
+  aspect-ratio: auto;
+  justify-content: flex-start;
+}
+
+.cardWide .art {
+  position: relative;
+  inset: auto;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-position: center;
+  z-index: 0;
+}
+
+.cardWide .scrim {
+  display: none;
+}
+
+.cardWide .content {
+  flex: 1;
+}

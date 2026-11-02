@@ -13,7 +13,7 @@ const CharacterSheetStep = lazy(() => import('../../components/steps/CharacterSh
 
 const STEPS = [
   { label: 'Classe', icon: '⚔️' },
-  { label: 'Origem', icon: '📜' },
+  { label: 'Antecedente', icon: '📜' },
   { label: 'Raça', icon: '🧝' },
   { label: 'Atributos', icon: '🎲' },
   { label: 'Equipamento', icon: '🛡️' },

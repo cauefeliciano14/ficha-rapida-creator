@@ -12,7 +12,7 @@ describe('buildSummaryCopyText', () => {
     const lines = text.split('\n');
     expect(lines[0]).toBe('Classe: Bárbaro');
     expect(lines[1]).toBe('Raça: Humano');
-    expect(lines[2]).toBe('Origem: Soldado');
+    expect(lines[2]).toBe('Antecedente: Soldado');
     expect(lines[3]).toBe('Atributos: FOR 15 · DES 10 · CON 14 · INT 8 · SAB 13 · CAR 12');
   });
 
@@ -21,7 +21,7 @@ describe('buildSummaryCopyText', () => {
     const lines = text.split('\n');
     expect(lines[0]).toBe('Classe: Não definida');
     expect(lines[1]).toBe('Raça: Não definida');
-    expect(lines[2]).toBe('Origem: Não definida');
+    expect(lines[2]).toBe('Antecedente: Não definida');
     expect(lines[3]).toBe('Atributos: FOR 0 · DES 0 · CON 0 · INT 0 · SAB 0 · CAR 0');
   });
 });

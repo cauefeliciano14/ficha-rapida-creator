@@ -39,7 +39,7 @@ const BackgroundCard = memo(function BackgroundCard({
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
       role="button"
       tabIndex={0}
-      aria-label={`Abrir origem ${bg.name}`}
+      aria-label={`Abrir antecedente ${bg.name}`}
       onClick={handleClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
@@ -166,7 +166,7 @@ export const BackgroundStep: React.FC = () => {
         <div className={cardStyles.pageIntro}>
           <span className={cardStyles.eyebrow}>Escolha um antecedente</span>
           <h2 className={cardStyles.pageTitle}>Onde tudo começou?</h2>
-          <span className={cardStyles.srOnly}>Escolha sua Origem: Antecedente</span>
+          <span className={cardStyles.srOnly}>Escolha seu Antecedente</span>
         </div>
 
         <div className={cardStyles.cardGrid}>
@@ -208,7 +208,7 @@ export const BackgroundStep: React.FC = () => {
             onClick={() => { setCompareMode(m => !m); setCompareIds([null, null]); }}
             className={`${cardStyles.compareBtn} ${compareMode ? cardStyles.compareBtnActive : ""}`}
           >
-            {compareMode ? '✕ Sair da comparação' : '⚖ Comparar origens'}
+            {compareMode ? '✕ Sair da comparação' : '⚖ Comparar antecedentes'}
           </button>
         </div>
 
@@ -223,7 +223,7 @@ export const BackgroundStep: React.FC = () => {
           <div className={styles.selectionDetails} style={{ gridColumn: '1 / -1' }} ref={detailsRef}>
             {selectedBackground ? (
               <div id="background-details" className={styles.selectionDetails}>
-                <button type="button" className={cardStyles.backToList} onClick={() => setBrowsing(true)}>← Todas as origens</button>
+                <button type="button" className={cardStyles.backToList} onClick={() => setBrowsing(true)}>← Todos os antecedentes</button>
                 <div className={`${styles.summaryCardBase} ${styles.selectionPanel} ${bgStyles.detailsCard}`}>
                   <div className={cardStyles.hero}>
                     {getBackgroundTheme(selectedBackground.id).art ? (
@@ -585,7 +585,7 @@ export const BackgroundStep: React.FC = () => {
       <ComparisonModal
         isOpen={compareOpen}
         onClose={() => { setCompareOpen(false); setCompareIds([null, null]); }}
-        title="Comparação de Origens"
+        title="Comparação de Antecedentes"
         itemA={buildBgComparison(compareIds[0])}
         itemB={buildBgComparison(compareIds[1])}
       />

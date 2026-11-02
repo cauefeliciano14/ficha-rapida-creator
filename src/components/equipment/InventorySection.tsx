@@ -232,7 +232,7 @@ export const InventorySection: React.FC<InventorySectionProps> = ({ inventory, o
                   {item.source && (
                     <div>
                       <div style={detailLabel}>Fonte</div>
-                      <div style={detailValue}>{item.source === 'class' ? 'Classe' : item.source === 'bg' ? 'Origem' : 'Comprado'}</div>
+                      <div style={detailValue}>{item.source === 'class' ? 'Classe' : item.source === 'bg' ? 'Antecedente' : 'Comprado'}</div>
                     </div>
                   )}
                 </div>

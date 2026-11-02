@@ -81,7 +81,7 @@ export function ChoiceImpact({ section }: Props) {
         }
 
         if (selectedBackground.equipment) {
-          result.push({ icon: '🎒', text: `Equipamento de origem disponível` });
+          result.push({ icon: '🎒', text: `Equipamento de antecedente disponível` });
         }
 
         return result.length > 0 ? result.slice(0, 4) : null;

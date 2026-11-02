@@ -144,7 +144,7 @@ export const StartingEquipment: React.FC<StartingEquipmentProps> = ({
       {/* Background Equipment */}
       <div className={css.cardBg}>
         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 600, marginBottom: '10px' }}>
-          Equipamento de {bgName || 'Origem'}
+          Equipamento de {bgName || 'Antecedente'}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div style={optionStyle(tempBgOption === 'A', tempBgOption === 'B')} onClick={() => setTempBgOption(tempBgOption === 'A' ? null : 'A')}>
