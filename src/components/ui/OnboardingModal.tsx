@@ -19,7 +19,7 @@ const STEPS: Step[] = [
   {
     icon: '📋',
     title: '6 Etapas Guiadas',
-    body: 'Siga as etapas na ordem: Classe, Antecedente, Espécie, Atributos, Equipamento e Ficha Final. Use a barra lateral para navegar entre elas e o resumo à direita para acompanhar suas escolhas.',
+    body: 'Siga as etapas na ordem: Classe, Antecedente, Raça, Atributos, Equipamento e Ficha Final. Use a barra lateral para navegar entre elas e o resumo à direita para acompanhar suas escolhas.',
   },
   {
     icon: '🎲',

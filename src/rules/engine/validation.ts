@@ -232,7 +232,7 @@ export function validateChoices(choices: CharacterChoices): ValidationResult {
   }
 
   if (!choices.speciesId) {
-    byStep.species.push('Escolha uma espécie para definir os traços do personagem.');
+    byStep.species.push('Escolha uma raça para definir os traços do personagem.');
   } else {
     const manualLangs = (choices.languageSelections ?? []).filter(
       l => !['thieves-cant', 'druidic', 'common'].includes(l)

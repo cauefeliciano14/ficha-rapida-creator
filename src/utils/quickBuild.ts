@@ -116,7 +116,7 @@ export function applyQuickBuild({ character, selectedBackground }: QuickBuildInp
       allSpecies[0];
     if (fallback) {
       nextChar = { ...nextChar, species: fallback };
-      notes.push(`Espécie padrão definida: ${fallback.name}.`);
+      notes.push(`Raça padrão definida: ${fallback.name}.`);
     }
   }
 

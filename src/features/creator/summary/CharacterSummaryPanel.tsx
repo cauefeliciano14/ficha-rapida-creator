@@ -147,7 +147,7 @@ function CharacterSummaryPanelInner() {
           type="button"
           className={styles.copyBtn}
           onClick={handleCopySummary}
-          title="Copiar classe, espécie, origem e atributos como texto"
+          title="Copiar classe, raça, origem e atributos como texto"
           aria-label="Copiar resumo do personagem"
         >
           {copied ? '✓ Copiado' : '⧉ Copiar'}
@@ -207,7 +207,7 @@ function CharacterSummaryPanelInner() {
           </div>
         </div>
         <div className={styles.identitySubtitle}>
-          {[character.species?.name, character.characterClass?.name].filter(Boolean).join(' ') || 'Escolha classe e espécie'}
+          {[character.species?.name, character.characterClass?.name].filter(Boolean).join(' ') || 'Escolha classe e raça'}
           {selectedBackground?.name ? <span className={styles.identityOrigin}> · {selectedBackground.name}</span> : null}
         </div>
         <select

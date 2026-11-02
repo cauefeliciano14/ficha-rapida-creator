@@ -154,7 +154,7 @@ export function BackgroundTab({
           </div>
           {speciesName && (
             <div>
-              <div className={ddb.charLabel}>Espécie</div>
+              <div className={ddb.charLabel}>Raça</div>
               <div className={ddb.charValue}>{speciesName}</div>
             </div>
           )}

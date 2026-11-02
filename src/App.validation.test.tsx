@@ -163,8 +163,8 @@ describe('App validation banners by creation step', () => {
   it('shows species pending errors on step 2 without requiring the sheet page', async () => {
     const view = await renderAppAtStep(2);
 
-    expect(view.container.textContent).toContain('Escolha sua Espécie: Raça');
-    expect(view.container.textContent).toContain('Escolha uma espécie acima');
+    expect(view.container.textContent).toContain('Escolha sua Raça');
+    expect(view.container.textContent).toContain('Escolha uma raça acima');
 
     view.cleanup();
   });

@@ -44,7 +44,7 @@ export function RestModal({ type, isOpen, onClose, onConfirm, restoredResources 
               <ul>
                 <li>Todos os Pontos de Vida</li>
                 <li>Todos os Espaços de Magia</li>
-                <li>Conjurações grátis de magias de talento/espécie</li>
+                <li>Conjurações grátis de magias de talento/raça</li>
                 <li>Inspiração Heróica</li>
                 <li>Condições removidas</li>
                 <li>Recursos de classe (curto e longo)</li>

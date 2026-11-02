@@ -186,7 +186,7 @@ export function buildPrintableSheetHtml(d: PrintableSheetData): string {
   </section>
 
   ${features ? `<section><h2>Características de classe</h2>${features}</section>` : ''}
-  ${traits ? `<section><h2>Traços de espécie</h2>${traits}</section>` : ''}
+  ${traits ? `<section><h2>Traços de raça</h2>${traits}</section>` : ''}
   ${d.backstory ? `<section><h2>História</h2><p class="story">${esc(d.backstory)}</p></section>` : ''}
 </body></html>`;
 }

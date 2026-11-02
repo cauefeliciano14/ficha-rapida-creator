@@ -377,7 +377,7 @@ const HumanoVersatil: React.FC<ChoiceProps & { character: any; setCharacter: any
           />
           {!talentComplete && (
             <p style={{ margin: '10px 0 0 0', fontSize: '0.8rem', color: '#f97316', lineHeight: 1.5 }}>
-              Complete todas as escolhas obrigatórias deste talento para liberar o avanço da etapa de espécie.
+              Complete todas as escolhas obrigatórias deste talento para liberar o avanço da etapa de raça.
             </p>
           )}
         </SubSection>
@@ -574,7 +574,7 @@ export const SpeciesDetails = React.memo(
       {onChangeSpecies && (
         <button type="button" onClick={onChangeSpecies}
           style={{ alignSelf: 'flex-start', padding: '6px 12px', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 4, background: 'transparent', color: '#dfe5ea', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}>
-          ← Todas as espécies
+          ← Todas as raças
         </button>
       )}
 
@@ -589,7 +589,7 @@ export const SpeciesDetails = React.memo(
         {onChangeSpecies && (
           <button type="button" onClick={onChangeSpecies}
             style={{ position: 'absolute', top: 16, right: 16, padding: '8px 18px', border: '1px solid #e0b75a', borderRadius: 999, background: 'rgba(10,13,16,0.85)', color: '#fff', fontFamily: "'Roboto Condensed', Roboto, sans-serif", fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer' }}>
-            Trocar espécie
+            Trocar raça
           </button>
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px', padding: '28px 32px' }}>

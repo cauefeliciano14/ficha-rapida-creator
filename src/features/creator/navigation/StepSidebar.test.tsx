@@ -67,7 +67,7 @@ describe('StepSidebar — selos de pendências por etapa', () => {
     });
     render(<StepSidebar />);
 
-    for (const label of ['Classe', 'Origem', 'Espécie', 'Atributos', 'Equipamento']) {
+    for (const label of ['Classe', 'Origem', 'Raça', 'Atributos', 'Equipamento']) {
       expect(badgeOf(label)?.textContent).toBe('1');
     }
   });
@@ -84,7 +84,7 @@ describe('StepSidebar — selos de pendências por etapa', () => {
     state.validationResult = makeValidation({});
     render(<StepSidebar />);
 
-    for (const label of ['Classe', 'Origem', 'Espécie', 'Atributos', 'Equipamento', 'Ficha']) {
+    for (const label of ['Classe', 'Origem', 'Raça', 'Atributos', 'Equipamento', 'Ficha']) {
       expect(badgeOf(label)?.textContent).toBe('✓');
     }
   });
@@ -101,6 +101,6 @@ describe('StepSidebar — selos de pendências por etapa', () => {
     render(<StepSidebar />);
 
     expect(badgeOf('Classe')?.textContent).toBe('1');
-    expect(badgeOf('Espécie')?.textContent).toBe('1');
+    expect(badgeOf('Raça')?.textContent).toBe('1');
   });
 });

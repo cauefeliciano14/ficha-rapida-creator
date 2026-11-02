@@ -12,7 +12,7 @@ export interface StepProgress {
 const STEP_DEFS: Array<{ key: StepProgress['key']; label: string; index: number }> = [
   { key: 'class', label: 'Classe', index: 0 },
   { key: 'background', label: 'Origem', index: 1 },
-  { key: 'species', label: 'Espécie', index: 2 },
+  { key: 'species', label: 'Raça', index: 2 },
   { key: 'attributes', label: 'Atributos', index: 3 },
   { key: 'equipment', label: 'Equipamento', index: 4 },
 ];

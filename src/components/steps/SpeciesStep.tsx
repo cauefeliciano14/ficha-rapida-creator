@@ -35,7 +35,7 @@ const SpeciesCard = memo(function SpeciesCard({
       className={`${cardStyles.card} ${isSelected ? cardStyles.cardSelected : ""} ${isCompareTarget ? cardStyles.cardCompareTarget : ""}`}
       role="button"
       tabIndex={0}
-      aria-label={`Abrir espécie ${sp.name}`}
+      aria-label={`Abrir raça ${sp.name}`}
       onClick={handleClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       style={{
@@ -131,9 +131,9 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
         {browsing || !character.species ? (
         <>
         <div className={cardStyles.pageIntro}>
-          <span className={cardStyles.eyebrow}>Escolha uma espécie</span>
+          <span className={cardStyles.eyebrow}>Escolha uma raça</span>
           <h2 className={cardStyles.pageTitle}>Qual é a sua linhagem?</h2>
-          <span className={cardStyles.srOnly}>Escolha sua Espécie: Raça</span>
+          <span className={cardStyles.srOnly}>Escolha sua Raça</span>
         </div>
 
         <button
@@ -146,7 +146,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
             alignSelf: 'flex-start', marginBottom: '4px',
           }}
         >
-          {compareMode ? '✕ Sair da comparação' : '⚖ Comparar espécies'}
+          {compareMode ? '✕ Sair da comparação' : '⚖ Comparar raças'}
         </button>
 
         {speciesHints.length > 0 && <SmartHints hints={speciesHints} />}
@@ -173,7 +173,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
             );
           })}
         </div>
-        <p className={cardStyles.srOnly}>Escolha uma espécie acima para ver traços raciais, linhagens e idiomas disponíveis.</p>
+        <p className={cardStyles.srOnly}>Escolha uma raça acima para ver traços raciais, linhagens e idiomas disponíveis.</p>
         </>
         ) : (
         <div className={styles.selectionLayout}>
@@ -195,7 +195,7 @@ export const SpeciesStep: React.FC<SpeciesStepProps> = ({ languagesData }) => {
       <ComparisonModal
         isOpen={compareOpen}
         onClose={() => { setCompareOpen(false); setCompareIds([null, null]); }}
-        title="Comparação de Espécies"
+        title="Comparação de Raças"
         itemA={buildSpComparison(compareIds[0])}
         itemB={buildSpComparison(compareIds[1])}
       />

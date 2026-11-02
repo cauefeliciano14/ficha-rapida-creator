@@ -63,7 +63,7 @@ export function ChangeHistoryLogger() {
       if (speciesId) {
         logChange({
           type: 'species',
-          description: `Espécie alterada para ${character.species?.name ?? speciesId}`,
+          description: `Raça alterada para ${character.species?.name ?? speciesId}`,
           previous: prevSpeciesRef.current ?? undefined,
           current: speciesId,
         });

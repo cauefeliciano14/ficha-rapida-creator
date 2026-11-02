@@ -8,7 +8,7 @@ type FilterId = 'all' | 'class' | 'species' | 'feats';
 const FILTERS: Array<{ id: FilterId; label: string }> = [
   { id: 'all', label: 'Todas' },
   { id: 'class', label: 'Classe' },
-  { id: 'species', label: 'Espécie' },
+  { id: 'species', label: 'Raça' },
   { id: 'feats', label: 'Talentos' },
 ];
 
@@ -112,7 +112,7 @@ export function FeaturesTraitsTab({
               <div className={ddb.featureName}>
                 {talent.name}
                 <span className={ddb.featureSource}>
-                  {talent.source === 'background' ? 'Antecedente' : 'Espécie'}
+                  {talent.source === 'background' ? 'Antecedente' : 'Raça'}
                 </span>
               </div>
               {talent.notes.length > 0 && (

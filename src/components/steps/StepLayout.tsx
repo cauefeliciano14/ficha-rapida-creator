@@ -28,7 +28,7 @@ export interface StepLayoutProps {
 const STEP_LABELS: Record<number, string> = {
   1: 'Classe',
   2: 'Origem',
-  3: 'Espécie',
+  3: 'Raça',
   4: 'Atributos',
   5: 'Equipamento',
   6: 'Ficha',

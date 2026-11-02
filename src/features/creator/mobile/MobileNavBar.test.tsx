@@ -62,7 +62,7 @@ describe('MobileNavBar — selos de pendências por etapa', () => {
 
     expect(badgeText('Classe')).toBe('1');
     expect(badgeText('Origem')).toBe('1');
-    expect(badgeText('Espécie')).toBe('1');
+    expect(badgeText('Raça')).toBe('1');
     expect(badgeText('Atributos')).toBe('1');
     expect(badgeText('Equip.')).toBe('2');
   });
@@ -78,7 +78,7 @@ describe('MobileNavBar — selos de pendências por etapa', () => {
     render(<MobileBottomNav />);
 
     expect(badgeText('Classe')).toBe('✓');
-    expect(badgeText('Espécie')).toBe('1');
+    expect(badgeText('Raça')).toBe('1');
   });
 
   it('etapa concluída e já visitada mostra o check do ícone, sem selo duplicado', () => {
@@ -94,6 +94,6 @@ describe('MobileNavBar — selos de pendências por etapa', () => {
 
     expect(badgeText('Classe')).toBeNull();
     expect(navItem('Classe').textContent).toContain('✓');
-    expect(badgeText('Espécie')).toBe('1');
+    expect(badgeText('Raça')).toBe('1');
   });
 });

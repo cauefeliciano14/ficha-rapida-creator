@@ -47,15 +47,15 @@ export const WHY_MATTERS: Record<string, WhyMattersEntry> = {
     tip: 'Escolha um antecedente cujos bônus de atributo combinem com sua classe.',
   },
   species: {
-    title: 'Por que a espécie importa?',
-    why: 'A espécie define características inatas como deslocamento, sentidos especiais e traços raciais únicos — escolhas permanentes.',
+    title: 'Por que a raça importa?',
+    why: 'A raça define características inatas como deslocamento, sentidos especiais e traços raciais únicos — escolhas permanentes.',
     impact: [
       'Define deslocamento base (geralmente 9m)',
       'Concede sentidos especiais (Visão no Escuro, Sentido Trêmulo)',
       'Adiciona traços ativos/passivos (resistências, magias inatas)',
       'Pode dar idiomas extras e tamanhos diferentes',
     ],
-    tip: 'No PHB 2024 a espécie NÃO dá mais bônus de atributos — isso vem do antecedente.',
+    tip: 'No PHB 2024 a raça NÃO dá mais bônus de atributos — isso vem do antecedente.',
   },
   attributes: {
     title: 'Por que os atributos importam?',
