@@ -4,17 +4,33 @@ import { useWizard } from '../../../context/WizardContext';
 import { computeWizardProgress } from '../../../utils/wizardProgress';
 import styles from './GlobalProgressBar.module.css';
 
+/** Junta mensagens iguais e tira o final que só repete a etapa ("para continuar"…). */
+function groupPending(messages: string[]): Array<{ msg: string; count: number }> {
+  const out: Array<{ msg: string; count: number }> = [];
+  for (const raw of messages) {
+    const msg = raw
+      .replace(/\s+(para concluir a etapa de [^.]+|para continuar|antes de avançar)\.?$/i, '.')
+      .replace(/^Defina Escolha/, 'Escolha');
+    const hit = out.find(o => o.msg === msg);
+    if (hit) hit.count += 1;
+    else out.push({ msg, count: 1 });
+  }
+  return out;
+}
+
 interface Props {
   onQuickBuild?: () => void;
   quickBuildDisabled?: boolean;
   onOpenQuiz?: () => void;
   onRandomize?: () => void;
   onOpenTemplates?: () => void;
+  /** Baixa o arquivo da ficha para mandar ao mestre. */
+  onSendToGM?: () => void;
   /** Ações fixas à esquerda da barra (personagens, desfazer/refazer). */
   leading?: ReactNode;
 }
 
-export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize, onOpenTemplates, leading }: Props) {
+export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz, onRandomize, onOpenTemplates, onSendToGM, leading }: Props) {
   const { character, selectedBackground, validationResult } = useCharacter();
   const { currentStep, goToStep } = useWizard();
 
@@ -49,17 +65,44 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz
       </nav>
 
       {progress.totalPending > 0 ? (
-        <span className={styles.pendingBadge} title="Total de escolhas pendentes">
-          ⚠ {progress.totalPending} pendente{progress.totalPending > 1 ? 's' : ''}
-        </span>
+        <details className={styles.pendingMenu}>
+          <summary className={styles.pendingBadge} title="Ver o que falta">
+            ⚠ {progress.totalPending} pendente{progress.totalPending > 1 ? 's' : ''} ▾
+          </summary>
+          {/* O que falta, por etapa; clicar leva até a etapa. */}
+          <div className={styles.pendingPanel}>
+            {progress.steps.filter(st => st.pending > 0).map(st => (
+              <div key={st.key} className={styles.pendingGroup}>
+                <div className={styles.pendingStep}>{st.label}</div>
+                <ul className={styles.pendingList}>
+                  {groupPending(validationResult.byStep[st.key] ?? []).map(({ msg, count }) => (
+                    <li key={msg}>
+                      <button
+                        type="button"
+                        className={styles.pendingItem}
+                        onClick={(e) => {
+                          (e.currentTarget.closest('details') as HTMLDetailsElement | null)?.removeAttribute('open');
+                          goToStep(st.index);
+                        }}
+                      >
+                        {msg}{count > 1 ? ` (×${count})` : ''}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </details>
       ) : (
         <span className={styles.allDone}>✓ Tudo certo</span>
       )}
 
-      {(onOpenTemplates || onOpenQuiz || onRandomize || onQuickBuild) && (
+      {(onOpenTemplates || onOpenQuiz || onRandomize || onQuickBuild || onSendToGM) && (
         <details className={styles.shortcuts}>
           <summary className={styles.shortcutsBtn}>Atalhos ▾</summary>
           <div className={styles.shortcutsMenu}>
+            <div className={styles.shortcutsGroup}>Criar mais rápido</div>
             {onOpenTemplates && (
               <button type="button" onClick={onOpenTemplates} title="Personagens prontos em 1 clique">
                 Personagens prontos
@@ -84,6 +127,14 @@ export function GlobalProgressBar({ onQuickBuild, quickBuildDisabled, onOpenQuiz
               >
                 Completar o resto automaticamente
               </button>
+            )}
+            {onSendToGM && (
+              <>
+                <div className={styles.shortcutsGroup}>Ficha</div>
+                <button type="button" onClick={onSendToGM} title="Baixa o arquivo da ficha para você enviar ao mestre (ex.: pelo Discord)">
+                  📤 Enviar ficha ao mestre
+                </button>
+              </>
             )}
           </div>
         </details>

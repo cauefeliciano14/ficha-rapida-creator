@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import classDetailsData from '../../data/classDetails.json';
 import { CharacterSheetPage } from '../sheet/CharacterSheetPage';
-import { loadSavedCharacter, downloadCharacterFile } from '../../utils/persistence';
 import { StepLayout } from './StepLayout';
 import { getSpeciesTraits, getSpeciesName } from '../../rules/data/speciesRules';
 import { ITEM_COST_MAP } from '../../data/itemCostMap';
@@ -21,7 +20,6 @@ export const CharacterSheetStep: React.FC = () => {
     setPlayState,
     selectedBackground,
     handleResetCharacter,
-    activeCharacterId,
   } = useCharacter();
 
   const handleUpdateIdentity = (update: CharacterIdentityUpdate) => {
@@ -132,20 +130,6 @@ export const CharacterSheetStep: React.FC = () => {
       isResetMode={true}
       onReset={handleFullReset}
     >
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-        <button
-          type="button"
-          className="share-sheet-btn"
-          title="Baixa o arquivo da ficha para você enviar ao mestre (ex.: pelo Discord)"
-          onClick={() => {
-            const saved = activeCharacterId ? loadSavedCharacter(activeCharacterId) : null;
-            if (saved) downloadCharacterFile(saved);
-            else window.alert('A ficha ainda não foi salva. Escolha ao menos a classe e tente de novo.');
-          }}
-        >
-          📤 Enviar ficha ao mestre
-        </button>
-      </div>
       <CharacterSheetPage
         characterName={character.name}
         portrait={character.portrait}

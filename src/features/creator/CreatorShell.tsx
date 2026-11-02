@@ -1,3 +1,4 @@
+import { loadSavedCharacter, downloadCharacterFile } from '../../utils/persistence';
 import { useEffect, useState, useRef, lazy, Suspense, useCallback } from 'react';
 import languagesData from '../../data/languages.json';
 import { CREATION_STORAGE_KEY, CREATION_STATE_VERSION } from '../../utils/persistence';
@@ -209,6 +210,12 @@ export function CreatorShell() {
     }
   }, [activeCharacterId]);
 
+  const handleSendToGM = useCallback(() => {
+    const saved = activeCharacterId ? loadSavedCharacter(activeCharacterId) : null;
+    if (saved) downloadCharacterFile(saved);
+    else window.alert('A ficha ainda não foi salva. Escolha ao menos a classe e tente de novo.');
+  }, [activeCharacterId]);
+
   // Persistence routed through the idle queue: writes are coalesced, diffed,
   // and flushed in requestIdleCallback so they never block typing/clicking.
   useEffect(() => {
@@ -287,7 +294,7 @@ export function CreatorShell() {
             canUndo={canUndo}
             canRedo={canRedo}
           />
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} onSendToGM={handleSendToGM} />
           <div
             className={`${mobileStyles.mobileContent} ${swipeHint === 'left' ? mobileStyles.swipeHintLeft : ''} ${swipeHint === 'right' ? mobileStyles.swipeHintRight : ''}`}
             style={swipeHint ? { '--swipe-progress': swipeProgress } as React.CSSProperties : undefined}
@@ -311,7 +318,7 @@ export function CreatorShell() {
         </>
       ) : (
         <>
-          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} leading={topActions} />
+          <GlobalProgressBar onQuickBuild={handleQuickBuild} quickBuildDisabled={!character.characterClass} onOpenQuiz={() => setIsQuizOpen(true)} onRandomize={handleRandomize} onOpenTemplates={() => setIsTemplatesOpen(true)} onSendToGM={handleSendToGM} leading={topActions} />
           {showSaved && <div className="saved-indicator">✓ Progresso salvo</div>}
           <AnimatePresence>
             <motion.div
